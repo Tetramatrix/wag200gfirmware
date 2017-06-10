@@ -1,0 +1,456 @@
+cache.o: cache.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/kreint.h)
+dcache.o: dcache.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h)
+dir.o: dir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h)
+ext_attr.o: ext_attr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h)
+file.o: file.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fsfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fsfilter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h)
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h)
+journal.o: journal.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h)
+journal_ext2.o: journal_ext2.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext2/fs.h)
+journal_ext3.o: journal_ext3.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/fs/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+journal_obdfs.o: journal_obdfs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/obdfs/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+journal_reiserfs.o: journal_reiserfs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/reiserfs/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/reiserfs/fs/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reiserfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reiserfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reiserfs_fs_sb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reiserfs_fs_sb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reiserfs_fs_i.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reiserfs_fs_i.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+journal_xfs.o: journal_xfs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/xfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_journal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_journal.h)
+kml.o: kml.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+kml_decode.o: kml_decode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+kml_reint.o: kml_reint.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mmu_context.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mmu_context.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h)
+kml_setup.o: kml_setup.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+kml_utils.o: kml_utils.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h)
+methods.o: methods.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fsfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fsfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext2/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/fs/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/obdfs/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/obdfs/fs/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h)
+presto.o: presto.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/kreint.h)
+psdev.o: psdev.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/kreint.h)
+super.o: super.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext2_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h)
+sysctl.o: sysctl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/swapctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/swapctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sysctl.h)
+upcall.o: upcall.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h)
+vfs.o: vfs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_upcall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_psdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/intermezzo_kml.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/ext/attr.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fs/posix/acl.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/loop/discard.h)

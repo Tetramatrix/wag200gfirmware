@@ -1,0 +1,42 @@
+psargs.o: psargs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h)
+psopcode.o: psopcode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h)
+psparse.o: psparse.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdispat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdispat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdebug.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdebug.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h)
+psscope.o: psscope.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h)
+pstree.o: pstree.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h)
+psutils.o: psutils.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h)
+pswalk.o: pswalk.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdispat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdispat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h)
+psxface.o: psxface.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acparser.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdispat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acdispat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/amlcode.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h)

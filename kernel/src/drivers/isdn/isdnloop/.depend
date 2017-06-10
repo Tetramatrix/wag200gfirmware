@@ -1,0 +1,21 @@
+isdnloop.o: isdnloop.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   isdnloop.h $(dep_isdnloop.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/x25.h)
+dep_isdnloop.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h)

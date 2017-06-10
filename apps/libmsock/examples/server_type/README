@@ -1,0 +1,19 @@
+Dump the header from the web server. In most cases you'll be able to tell the
+type of the web server. Some people intentionally turn it off.
+
+Example: 
+
+    $ ./server_type http://www.yaoo.com/
+    HTTP/1.0 200 OK
+    MIME-Version: 1.0
+    Date: Sat, 10 Jul 1999 17:36:38 GMT
+    Server: NaviServer/2.0 AOLserver/2.3.3
+    Content-Type: text/html
+    Content-Length: 371
+    Last-Modified: Tue, 02 Feb 1999 20:42:03 GMT
+    Version: Tue, 02 Feb 1999 20:42:03 GMT
+
+
+-- 
+muquit
+

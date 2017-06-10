@@ -1,0 +1,164 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /home/chi/Linksys/projekt/code/kernel/src/vmlinux
+                0xffffffff94231000                .=_fbss
+
+.text           0xffffffff94231000     0x1ee0
+ *(.text)
+ .text          0xffffffff94231000      0x1b0 inflate.o
+                0xffffffff94231180                printf
+                0xffffffff94231000                tikernelunzip
+ .text          0xffffffff942311b0     0x1b60 Decoder.o
+                0xffffffff94231468                CRangeDecoder_GetProcessedSize
+                0xffffffff9423201c                CDecoderLiteral_DecodeNormal
+                0xffffffff94232c20                init_LenCoder_Variables
+                0xffffffff94232b44                cm_hwDecodeLZMA
+                0xffffffff94232380                Init
+                0xffffffff942311fc                CRangeDecoder_Normalize
+                0xffffffff94231a98                CDecoderLength_Create
+                0xffffffff94232208                CDecoder_CDecoder
+                0xffffffff94232124                UpdateShortRep
+                0xffffffff94231aa0                CDecoderLength_Init
+                0xffffffff94231358                CRangeDecoder_DecodeDirectBits
+                0xffffffff9423210c                UpdateRep
+                0xffffffff94232318                Create
+                0xffffffff942312a4                CRangeDecoder_GetThreshold
+                0xffffffff94232bd4                init_RangeCoder_Variables
+                0xffffffff942319b0                CDecoderLength_Initialize
+                0xffffffff94231f80                CDecoderLiteral_Init
+                0xffffffff94231d58                CDecoder2_DecodeWithMatchByte
+                0xffffffff942315e0                CBitTreeDecoder_Decode
+                0xffffffff942313dc                CRangeDecoder_DecodeBit
+                0xffffffff94231770                CReverseBitTreeDecoder2_Decode
+                0xffffffff94231bf0                CDecoder2_Init
+                0xffffffff942316c0                CReverseBitTreeDecoder2_Create
+                0xffffffff942318c0                CReverseBitTreeDecoder_Decode
+                0xffffffff94231b30                CDecoderLength_Decode
+                0xffffffff94231580                CBitTreeDecoder_Init
+                0xffffffff942320d4                CState_Init
+                0xffffffff94231860                CReverseBitTreeDecoder_Init
+                0xffffffff94231f2c                CDecoderLiteral_Create
+                0xffffffff94232bf0                init_AriBitCoder_Variables
+                0xffffffff94231c90                CDecoder2_DecodeNormal
+                0xffffffff942311e0                mmalloc
+                0xffffffff942321a8                RareOutputStream_GetOneByte
+                0xffffffff94231484                CMyBitDecoder_Decode
+                0xffffffff94232a78                SetDictionarySize
+                0xffffffff94232180                RareOutputStream_OutStreamInit
+                0xffffffff94232630                CodeReal
+                0xffffffff94232ad8                SetPosBitsProperties
+                0xffffffff9423129c                CRangeDecoder_ReleaseStream
+                0xffffffff94231254                CRangeDecoder_Init
+                0xffffffff942320f4                UpdateMatch
+                0xffffffff94232a9c                SetLiteralProperties
+                0xffffffff94232c94                GetLenToPosState
+                0xffffffff9423213c                CBaseCoder_Init
+                0xffffffff942312d8                CRangeDecoder_Decode
+                0xffffffff942320dc                UpdateChar
+                0xffffffff94231ff4                CDecoderLiteral_GetState
+                0xffffffff942321c0                RareOutputStream_CopyBackBlock
+                0xffffffff94232cb0                init_LZMA_Variables
+                0xffffffff94231470                CMyBitDecoder_Init
+                0xffffffff94231704                CReverseBitTreeDecoder2_Init
+                0xffffffff94232070                CDecoderLiteral_DecodeWithMatchByte
+                0xffffffff942311b0                pprintf
+                0xffffffff9423218c                RareOutputStream_PutOneByte
+ *(.rodata)
+ .rodata        0xffffffff94232d10      0x150 inflate.o
+ .rodata        0xffffffff94232e60       0x80 Decoder.o
+                0xffffffff94232ec4                kMatchChoiceRepetitionIndex
+                0xffffffff94232e80                kRepNextStates
+                0xffffffff94232eb0                kStartPosModelIndex
+                0xffffffff94232ecc                kNumMoveBitsForPosCoders
+                0xffffffff94232ebc                kMainChoiceMatchIndex
+                0xffffffff94232edc                kNumLitContextBitsMax
+                0xffffffff94232ec8                kNumMoveBitsForMainChoice
+                0xffffffff94232eac                kNumAlignBits
+                0xffffffff94232e64                kNumStates
+                0xffffffff94232e74                kMatchNextStates
+                0xffffffff94232ea8                kMatchMinLen
+                0xffffffff94232e8c                kShortRepNextStates
+                0xffffffff94232e60                kNumRepDistances
+                0xffffffff94232e98                kNumPosSlotBits
+                0xffffffff94232eb8                kMainChoiceLiteralIndex
+                0xffffffff94232ed0                kNumMoveBitsForAlignCoders
+                0xffffffff94232eb4                kEndPosModelIndex
+                0xffffffff94232ea0                kDicLogSizeMax
+                0xffffffff94232e9c                kDicLogSizeMin
+                0xffffffff94232e68                kLiteralNextStates
+                0xffffffff94232ec0                kMatchChoiceDistanceIndex
+                0xffffffff94232ea4                kNumLenToPosStates
+                0xffffffff94232ed4                kNumMoveBitsForPosSlotCoder
+                0xffffffff94232ed8                kNumLitPosStatesBitsEncodingMax
+ *(.rodata1)
+ *(.gnu.warning)
+ *(.text.init)
+ *(.data.init)
+
+.data           0xffffffff94232ee0    0x934c2
+ *(*)
+ .data          0xffffffff94232ee0       0x10 inflate.o
+                0xffffffff94232ee4                prnt
+                0xffffffff94232ee0                ke
+ .bss           0xffffffff94232ef0       0x20 inflate.o
+ .reginfo       0xffffffff94232f10       0x18 inflate.o
+ .mdebug        0xffffffff94232f28      0x4e4 inflate.o
+ .note          0xffffffff9423340c       0x14 inflate.o
+ .data          0xffffffff94233420       0x60 Decoder.o
+                0xffffffff9423343c                kNumLenBits
+                0xffffffff9423344c                kBitModelTotal
+                0xffffffff94233460                kNumMidSymbols
+                0xffffffff94233470                kAlignTableSize
+                0xffffffff94233474                kAlignMask
+                0xffffffff94233458                kNumPosStatesEncodingMax
+                0xffffffff94233438                kNumPosStatesBitsEncodingMax
+                0xffffffff94233440                kNumMidBits
+                0xffffffff94233454                kNumPosStatesMax
+                0xffffffff9423346c                intkMatchMaxLen
+                0xffffffff94233430                kNumMoveBits
+                0xffffffff9423347c                kNumFullDistances
+                0xffffffff94233468                kDistTableSizeMax
+                0xffffffff94233428                kNumMoveReducingBits
+                0xffffffff94233448                kTopValue
+                0xffffffff9423345c                kNumLowSymbols
+                0xffffffff94233444                kNumHighBits
+                0xffffffff94233450                kBitPrice
+                0xffffffff94233464                kNumSymbolsTotal
+                0xffffffff94233434                kNumPosStatesBitsMax
+                0xffffffff9423342c                kNumBitPriceShiftBits
+                0xffffffff94233420                kNumTopBits
+                0xffffffff94233424                kNumBitModelTotalBits
+                0xffffffff94233478                kNumPosModels
+ .bss           0xffffffff94233480       0x10 Decoder.o
+ .mdebug        0xffffffff94233490     0x26b0 Decoder.o
+ .note          0xffffffff94235b40       0x14 Decoder.o
+ .data          0xffffffff94235b54    0x9084e zimage.o
+                0xffffffff942c63a2                _binary_zimage_7z_end
+                0xffffffff942c63a2                kernelimage_end
+                0xffffffff94235b54                _binary_zimage_7z_start
+                0xffffffff94235b54                kernelimage
+
+bss             0xffffffff942c63a2     0x9c5e
+                0xffffffff942c63a2                inflate_bss_start=.
+ *(.dynbss)
+ *(.bss)
+ *(COMMON)
+ *(.sbss)
+ *(.scommon)
+                0xffffffff942c63a2                inflate_bss_end=.
+ *fill*         0xffffffff942c63a2     0x1c5e
+                0xffffffff942c8000                .=ALIGN(0x8000)
+                0xffffffff942c8000                inflate_slide_window=.
+ *fill*         0xffffffff942c8000 0x1c5e00008000
+                0xffffffff942d8000                .=(.+0x8000)
+                0xffffffff942d0000                inflate_free_memory_start=.
+LOAD inflate.o
+LOAD Decoder.o
+LOAD zimage.o
+OUTPUT(inflate elf32-tradlittlemips)

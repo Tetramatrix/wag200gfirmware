@@ -1,0 +1,1015 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Basic Setup</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!--
+// var connMethods = ["bridgedonly","1483bridged","routed","ipoa","pppoe","pppoa"];
+// only used if options have no values
+
+var wan_encapmode;
+
+function init()
+{
+ 	var cf = document.forms[0];
+	wan_encapmode = cf.wan_encapmode.options[cf.wan_encapmode.selectedIndex].value;
+	dataToVisible(cf);
+	setDivs();
+	setPppoE();
+	setPppo();
+	setIdleAlive();
+	SelMTU();
+	SetDHCP();
+	setVC();
+	SetQOS();
+	SetFixIP();
+}
+
+function ChangeWanMode()
+{
+    setDivs();
+    setPppo();
+    setPppoE();
+    SelTYPE();
+    SetFixIP();
+}
+
+function setDivs()
+{
+ 	var cf = document.forms[0];
+	wan_encapmode = cf.wan_encapmode.options[cf.wan_encapmode.selectedIndex].value;
+	show_hide("WanMultiplexDIV", (wan_encapmode != "pppoa"));
+	show_hide("PPPoAMultiplexDIV", (wan_encapmode == "pppoa"));
+	show_hide("bridgedDIV", (wan_encapmode == "1483bridged"));
+	//show_hide("bridgedDIV2", (wan_encapmode == "1483bridged")); //alan
+	show_hide("routedDIV", (wan_encapmode == "routed") || (wan_encapmode == "1483bridged") || (wan_encapmode == "ipoa"));
+	show_hide("pppoDIV", (wan_encapmode == "pppoe") || (wan_encapmode == "pppoa"));
+	show_hide("brDIV", (wan_encapmode == "1483bridged") || (wan_encapmode == "routed")|| (wan_encapmode == "ipoa"));
+	show_hide("oeDIV", (wan_encapmode == "pppoe"));
+	show_hide("oaDIV", (wan_encapmode == "pppoa"));
+	show_hide("hrDIV", (wan_encapmode == "1483bridged") || (wan_encapmode == "routed") || (wan_encapmode == "pppoe") || (wan_encapmode == "pppoa"));
+	//show_hide("optDIV01", (wan_encapmode != "bridgedonly"));
+	//show_hide("optDIV02", (wan_encapmode != "bridgedonly"));  //alan
+	//show_hide("optDIV03", (wan_encapmode != "bridgedonly"));
+}
+
+function setPppoE()
+{
+	var cf = document.forms[0];
+	pppoe_enable = cf.ipppoe_enable.options[cf.ipppoe_enable.selectedIndex].value;
+	wan_encapmode = cf.wan_encapmode.options[cf.wan_encapmode.selectedIndex].value;
+	if(wan_encapmode=="1483bridged")
+	{
+		show_hide("pppoDIV", (pppoe_enable == 1));
+	if(pppoe_enable == 1){
+		cf.PoeUserName.value=cf.PppoeUserName.value;
+        	cf.PoePasswd.value=cf.PppoePasswd.value;
+		}
+	}
+}
+
+function setPppo()
+{
+    var cf = document.forms[0];
+	wan_encapmode = cf.wan_encapmode.options[cf.wan_encapmode.selectedIndex].value;
+
+    if(wan_encapmode == "pppoe")
+    {
+        cf.PoeUserName.value=cf.PppoeUserName.value;
+        cf.PoePasswd.value=cf.PppoePasswd.value;
+    }
+    else if(wan_encapmode == "pppoa")
+    {
+        cf.PoeUserName.value=cf.PppoaUserName.value;
+        cf.PoePasswd.value=cf.PppoaPasswd.value;
+    }
+}
+
+function setIdleAlive()
+{
+    var cf = document.forms[0];
+	var flag=cf.pppoeDODC[0].checked|cf.pppoeDODC[1].checked<<1;
+    switch(flag)
+    {
+    case 1:
+        setDisabled(false,cf.poeIdleTime);
+        setDisabled(true,cf.pppoeRedialTime);
+        break;
+    case 2:
+        setDisabled(true,cf.poeIdleTime);
+        setDisabled(false,cf.pppoeRedialTime);
+        break;
+    }
+}
+
+
+//  set the dhcp server start IP to match LAN IP
+function SetDhcpSIP()
+{
+	var cf = document.forms[0];
+	if( !isInteger(cf.lan_ip_1.value, 1, 254, false)
+	 || !isInteger(cf.lan_ip_2.value, 0, 255, false)
+	 || !isInteger(cf.lan_ip_3.value, 0, 255, false)
+	 || !isInteger(cf.lan_ip_4.value, 1, 253, false) )
+	{
+	   alert(msg_invalid_lan_ip);
+	   return;
+	}
+	if( isInteger(cf.lan_ip_1.value, 224, 247, false) )
+	{
+	   alert(msg_invalid_lan_ip);
+	   return;
+	}
+	if( (parseInt(cf.lan_ip_1.value) == 127) 
+	 && (parseInt(cf.lan_ip_2.value) == 0) 
+	 && (parseInt(cf.lan_ip_3.value) == 0) 
+	 && (parseInt(cf.lan_ip_4.value) == 1) )
+	{
+	   alert(msg_invalid_lan_ip);
+	   return;
+	}
+	setHTML(self, "dhcpstartSPAN", (cf.lan_ip_1.value+"." + cf.lan_ip_2.value+"." + cf.lan_ip_3.value+".") );
+
+}
+
+
+function setVC()
+{
+ 	var cf = document.forms[0];
+	var dflag = cf.wan_autodetect[0].checked;
+	cf.wan_vpi.disabled = cf.wan_vci.disabled = dflag;
+}
+
+function SetQOS()
+{
+    var cf = document.forms[0];
+
+	if(cf.wan_qostype.options[cf.wan_qostype.selectedIndex].value == "ubr")
+		cf.wan_pcr.disabled=true;
+	else
+		cf.wan_pcr.disabled=false;
+	if(cf.wan_qostype.options[cf.wan_qostype.selectedIndex].value != "vbr")
+		cf.wan_scr.disabled=true;
+	else
+		cf.wan_scr.disabled=false;
+}
+
+
+function SelTYPE()
+{
+    var cf = document.forms[0];
+	cf.wan_autodetect[0].disabled = false;
+	cf.wan_autodetect[1].disabled = false;
+	setVC();
+}
+
+function SelMTU()
+{
+	    var cf = document.forms[0];
+		if(getSelected(cf.mtu_type) == "auto")
+			cf.mtu_size.disabled = true;
+		else
+			cf.mtu_size.disabled = false;
+}
+
+function checkData()
+{
+	var cf = document.forms[0];
+	var msg = "";
+	var mask;
+	var max_num;
+	var dhcp_min_ip;
+	var dhcp_max_ip;
+	var ip_num;
+	var lan_ip4 = parseInt(cf.lan_ip_4.value);
+	var dhcp_start_ip = parseInt(cf.dhcp_start.value);
+	var dhcp_end_ip;
+
+	wan_encapmode = cf.wan_encapmode.options[cf.wan_encapmode.selectedIndex].value;
+    	pppoe_enable = cf.ipppoe_enable.options[cf.ipppoe_enable.selectedIndex].value;
+	if( (wan_encapmode == "routed") || (wan_encapmode == "1483bridged" && getRadioCheckedValue(cf.bridged_dhcpenable) == "fixedip") )
+
+	// need to add "1483bridged" with static IP
+	{
+		if(badIP(cf.wan_ip_1,cf.wan_ip_2,cf.wan_ip_3,cf.wan_ip_4,254))
+			msg+= msg_invalid_wan_ip;
+		if(badMask(cf.wan_mask_1,cf.wan_mask_2,cf.wan_mask_3,cf.wan_mask_4))
+			msg+= msg_invalid_wan_mask;
+		if(badIP(cf.wan_gw_1,cf.wan_gw_2,cf.wan_gw_3,cf.wan_gw_4,254))
+			msg+= msg_invalid_wan_gw;
+		if(badIP(cf.wan_dns1_1,cf.wan_dns1_2,cf.wan_dns1_3,cf.wan_dns1_4,255))
+			msg+= msg_primary_dns;
+		if (!blankIP(cf.wan_dns2_1,cf.wan_dns2_2,cf.wan_dns2_3,cf.wan_dns2_4))
+		 	if(badIP(cf.wan_dns2_1,cf.wan_dns2_2,cf.wan_dns2_3,cf.wan_dns2_4,255))
+				msg+= msg_secondary_dns;
+	}
+	if(wan_encapmode == "pppoe" || wan_encapmode == "pppoa"
+		|| (wan_encapmode == "1483bridged"&& pppoe_enable ==1) )
+	{
+		/*msg+= checkBlank(cf.PoeUserName, msg_user_name);*/
+		if(getRadioCheckedValue(cf.pppoeDODC) == "pppoeDODC")
+			msg+= checkInt(cf.poeIdleTime, msg_pppoe_idle, 1, 99, true);
+		if(getRadioCheckedValue(cf.pppoeDODC) == "pppoeKA")
+			msg+= checkInt(cf.pppoeRedialTime, msg_pppoe_redial, 20, 180, true);
+	}
+
+	if(wan_encapmode == "pppoe" || (wan_encapmode == "1483bridged"&& pppoe_enable ==1) )
+	{
+		msg+= checkBlank(cf.PoeUserName, msg_user_name);
+		msg+= checkBlank(cf.PoePasswd, msg_password);
+		cf.PppoeUserName.value=cf.PoeUserName.value;
+		cf.PppoePasswd.value=cf.PoePasswd.value;
+	}
+	else if(wan_encapmode == "pppoa")
+	{
+		msg+= checkBlank(cf.PoeUserName, msg_user_name);
+		msg+= checkBlank(cf.PoePasswd, msg_password);
+		cf.PppoaUserName.value=cf.PoeUserName.value;
+		cf.PppoaPasswd.value=cf.PoePasswd.value;
+	}
+
+	if(getSelected(cf.wan_qostype) != "ubr")
+		msg+= checkInt(cf.wan_pcr, msg_wan_pcr, 0, 65535, true);
+	if(getSelected(cf.wan_qostype) == "vbr")
+		msg+= checkInt(cf.wan_scr, msg_wan_scr, 0, 65535, true);
+
+	if(getRadioCheckedValue(cf.wan_autodetect) == "disable")
+	{
+		msg+=checkInt(cf.wan_vpi, msg_wan_vpi, 0, 255, true);
+		msg+=checkInt(cf.wan_vci, msg_wan_vci, 0, 65535, true);
+	}
+	if(wan_encapmode == "pppoe" || (wan_encapmode == "1483bridged"&& pppoe_enable ==1) ) {
+		if(getSelected(cf.mtu_type) == "manual")
+			msg+= checkInt(cf.mtu_size, msg_mtu_size, 576, 1492, true);
+	} else {
+		if(getSelected(cf.mtu_type) == "manual")
+			msg+= checkInt(cf.mtu_size, msg_mtu_size, 576, 1500, true);
+	}
+
+	if(badIP(cf.lan_ip_1,cf.lan_ip_2,cf.lan_ip_3,cf.lan_ip_4,254))
+		msg+= msg_invalid_lan_ip;
+
+	if( isInteger(cf.lan_ip_1.value, 224, 247, false) )
+	{
+		msg+= msg_invalid_lan_ip;
+	}
+	if( (parseInt(cf.lan_ip_1.value) == 127) 
+	 && (parseInt(cf.lan_ip_2.value) == 0) 
+	 && (parseInt(cf.lan_ip_3.value) == 0) 
+	 && (parseInt(cf.lan_ip_4.value) == 1) )
+	{
+		msg+= msg_invalid_lan_ip;
+	}
+	if(getRadioCheckedValue(cf.lan_dhcp) == "enable")
+	{
+		mask 		= 8 - cf.lan_mask.selectedIndex;
+		max_num 	= 255 >> cf.lan_mask.selectedIndex;
+		ip_num 		= max_num - (dhcp_start_ip & max_num);
+		dhcp_min_ip 	= (lan_ip4 & (255 - max_num)) + 1;
+		dhcp_max_ip 	= dhcp_min_ip + max_num - 2;
+
+		if (dhcp_max_ip == lan_ip4)
+			dhcp_max_ip = dhcp_max_ip - 1;
+
+		if ( parseInt(cf.dhcp_num.value) < ip_num)
+		    dhcp_end_ip=parseInt(cf.dhcp_num.value);
+		else
+		    dhcp_end_ip=ip_num;
+		if (((dhcp_start_ip - 1) < lan_ip4) && ((dhcp_start_ip + dhcp_end_ip) > lan_ip4))
+			msg+= msg_lan_in_dhcp_ip;
+		if ((lan_ip4 >> mask) != (dhcp_start_ip >> mask))
+			msg+= msg_invalid_dhcp_ip;
+		msg+= checkInt(cf.dhcp_start, msg_dhcp_start, dhcp_min_ip, dhcp_max_ip, true);
+		msg+= checkInt(cf.dhcp_num, msg_dhcp_num, 1, ip_num, true);
+		msg+= checkInt(cf.dhcp_lease, msg_dhcp_lease, 0, 4320, true);
+
+		if (!blankIP(cf.static_dns0_1,cf.static_dns0_2,cf.static_dns0_3,cf.static_dns0_4))
+			if(badIP(cf.static_dns0_1,cf.static_dns0_2,cf.static_dns0_3,cf.static_dns0_4,255))
+				msg+= msg_static_dns_1;
+		if (!blankIP(cf.static_dns1_1,cf.static_dns1_2,cf.static_dns1_3,cf.static_dns1_4))
+			if(badIP(cf.static_dns1_1,cf.static_dns1_2,cf.static_dns1_3,cf.static_dns1_4,255))
+				msg+= msg_static_dns_2;
+		if (!blankIP(cf.static_dns2_1,cf.static_dns2_2,cf.static_dns2_3,cf.static_dns2_4))
+			if(badIP(cf.static_dns2_1,cf.static_dns2_2,cf.static_dns2_3,cf.static_dns2_4,255))
+				msg+= msg_static_dns_3;
+		if (!blankIP(cf.wan_wins_1,cf.wan_wins_2,cf.wan_wins_3,cf.wan_wins_4))
+			if(badIP(cf.wan_wins_1,cf.wan_wins_2,cf.wan_wins_3,cf.wan_wins_4,255))
+				msg+= msg_static_wins;
+	} else if (getRadioCheckedValue(cf.lan_dhcp) == "relay") {
+		if (!blankIP(cf.dhcpserver_ip_1,cf.dhcpserver_ip_2,cf.dhcpserver_ip_3,cf.dhcpserver_ip_4))
+			if(badIP(cf.dhcpserver_ip_1,cf.dhcpserver_ip_2,cf.dhcpserver_ip_3,cf.dhcpserver_ip_4,255))
+				msg+= msg_dhcp_servers;
+	}
+
+	msg+=checkInt(cf.timer_interval,msg_time_interval,60,86400,true);
+
+	dataToHidden(cf);
+	return checkMsg(msg);
+}
+
+
+//DHCP
+
+function SetDHCP()
+{
+ 	var cf = document.forms[0];
+	var dhcpType = getRadioCheckedValue(cf.lan_dhcp);
+	if (dhcpType == "enable")
+	{
+		cf.dhcpserver_ip_1.disabled = true;
+        cf.dhcpserver_ip_2.disabled = true;
+        cf.dhcpserver_ip_3.disabled = true;
+        cf.dhcpserver_ip_4.disabled = true;
+        cf.dhcp_start.disabled = false;
+        cf.dhcp_num.disabled = false;
+        cf.dhcp_lease.disabled = false;
+        cf.static_dns0_1.disabled = false;
+        cf.static_dns0_2.disabled = false;
+        cf.static_dns0_3.disabled = false;
+        cf.static_dns0_4.disabled = false;
+        cf.static_dns1_1.disabled = false;
+        cf.static_dns1_2.disabled = false;
+        cf.static_dns1_3.disabled = false;
+        cf.static_dns1_4.disabled = false;
+        cf.static_dns2_1.disabled = false;
+        cf.static_dns2_2.disabled = false;
+        cf.static_dns2_3.disabled = false;
+        cf.static_dns2_4.disabled = false;
+        cf.wan_wins_1.disabled = false;
+        cf.wan_wins_2.disabled = false;
+        cf.wan_wins_3.disabled = false;
+        cf.wan_wins_4.disabled = false;
+	}
+
+	else if  (dhcpType == "disable")
+	{
+		cf.dhcpserver_ip_1.disabled = true;
+        cf.dhcpserver_ip_2.disabled = true;
+        cf.dhcpserver_ip_3.disabled = true;
+        cf.dhcpserver_ip_4.disabled = true;
+        cf.dhcp_start.disabled = true;
+        cf.dhcp_num.disabled = true;
+        cf.dhcp_lease.disabled = true;
+        cf.static_dns0_1.disabled = true;
+        cf.static_dns0_2.disabled = true;
+        cf.static_dns0_3.disabled = true;
+        cf.static_dns0_4.disabled = true;
+        cf.static_dns1_1.disabled = true;
+        cf.static_dns1_2.disabled = true;
+        cf.static_dns1_3.disabled = true;
+        cf.static_dns1_4.disabled = true;
+        cf.static_dns2_1.disabled = true;
+        cf.static_dns2_2.disabled = true;
+        cf.static_dns2_3.disabled = true;
+        cf.static_dns2_4.disabled = true;
+        cf.wan_wins_1.disabled = true;
+        cf.wan_wins_2.disabled = true;
+        cf.wan_wins_3.disabled = true;
+        cf.wan_wins_4.disabled = true;
+	}
+
+	else if (dhcpType == "relay")
+	{
+		cf.dhcpserver_ip_1.disabled = false;
+        cf.dhcpserver_ip_2.disabled = false;
+        cf.dhcpserver_ip_3.disabled = false;
+        cf.dhcpserver_ip_4.disabled = false;
+        cf.dhcp_start.disabled = true;
+        cf.dhcp_num.disabled = true;
+        cf.dhcp_lease.disabled = true;
+        cf.static_dns0_1.disabled = true;
+        cf.static_dns0_2.disabled = true;
+        cf.static_dns0_3.disabled = true;
+        cf.static_dns0_4.disabled = true;
+        cf.static_dns1_1.disabled = true;
+        cf.static_dns1_2.disabled = true;
+        cf.static_dns1_3.disabled = true;
+        cf.static_dns1_4.disabled = true;
+        cf.static_dns2_1.disabled = true;
+        cf.static_dns2_2.disabled = true;
+        cf.static_dns2_3.disabled = true;
+        cf.static_dns2_4.disabled = true;
+        cf.wan_wins_1.disabled = true;
+        cf.wan_wins_2.disabled = true;
+        cf.wan_wins_3.disabled = true;
+        cf.wan_wins_4.disabled = true;
+	}
+}
+
+function SetFixIP()
+{
+ 	var cf = document.forms[0];
+	var dhcpType = getRadioCheckedValue(cf.bridged_dhcpenable);
+	wan_encapmode = cf.wan_encapmode.options[cf.wan_encapmode.selectedIndex].value;
+
+	if(dhcpType == "fixedip" || wan_encapmode == "routed")
+	{
+		cf.wan_ip_1.disabled = false;
+        cf.wan_ip_2.disabled = false;
+        cf.wan_ip_3.disabled = false;
+        cf.wan_ip_4.disabled = false;
+        cf.wan_mask_1.disabled = false;
+        cf.wan_mask_2.disabled = false;
+        cf.wan_mask_3.disabled = false;
+        cf.wan_mask_4.disabled = false;
+        cf.wan_gw_1.disabled = false;
+        cf.wan_gw_2.disabled = false;
+        cf.wan_gw_3.disabled = false;
+        cf.wan_gw_4.disabled = false;
+        cf.wan_dns1_1.disabled = false;
+        cf.wan_dns1_2.disabled = false;
+        cf.wan_dns1_3.disabled = false;
+        cf.wan_dns1_4.disabled = false;
+        cf.wan_dns2_1.disabled = false;
+        cf.wan_dns2_2.disabled = false;
+        cf.wan_dns2_3.disabled = false;
+        cf.wan_dns2_4.disabled = false;
+	}
+	else if(dhcpType == "dhcp")
+	{
+        cf.wan_ip_1.disabled = true;
+        cf.wan_ip_2.disabled = true;
+        cf.wan_ip_3.disabled = true;
+        cf.wan_ip_4.disabled = true;
+        cf.wan_mask_1.disabled = true;
+        cf.wan_mask_2.disabled = true;
+        cf.wan_mask_3.disabled = true;
+        cf.wan_mask_4.disabled = true;
+        cf.wan_gw_1.disabled = true;
+        cf.wan_gw_2.disabled = true;
+        cf.wan_gw_3.disabled = true;
+        cf.wan_gw_4.disabled = true;
+        cf.wan_dns1_1.disabled = true;
+        cf.wan_dns1_2.disabled = true;
+        cf.wan_dns1_3.disabled = true;
+        cf.wan_dns1_4.disabled = true;
+        cf.wan_dns2_1.disabled = true;
+        cf.wan_dns2_2.disabled = true;
+        cf.wan_dns2_3.disabled = true;
+        cf.wan_dns2_4.disabled = true;
+	}
+}
+//-->
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onLoad="init();">
+<form name="setup" method="POST" action="setup.cgi">
+<div align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></td><td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </td></tr>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></td></tr>
+
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Setup</TD><td width="556" align="right" height="33" class="pname">@product_descrip#</TD><td width="90" height="12" align="center" class="mname">@product_name#</TD></TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD></TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+  <table border="0" cellspacing="0" width="646" height="100%">
+  <tr>
+     <td height="10" background="UI_07.gif"> </td><td height="10" background="UI_06.gif" colspan="6"> </td></tr>
+  <tr>
+     <td class="thistab" width="83">Setup</td>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></td>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></td>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></td>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></td>
+	 <td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></td>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></td></tr>
+  </table></td></tr>
+
+<!-- sub menu-->
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <span class="current">Basic Setup</span><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Setup_DDNS.htm">DDNS</a>&nbsp;&nbsp;<b class="separator">|</b>
+  <a class="submenu" href="setup.cgi?next_file=Setup_routing.htm">Advanced Routing</a>
+ </td></tr>
+</table><!-- data table-->
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgcolor="#E7E7E7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></td><td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></td></tr>
+<tr>
+<td valign="top"></td>
+</tr>
+
+<tr>
+      <td width="164" height="24" colspan="2" align="right" class="bwhead">Internet 
+        Setup</td><td width="454">&nbsp;  </td><td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif">
+		&nbsp;&nbsp; <A href="help/h_Setup.htm" class="submenu" target="_blank">Help... </A></td></tr>
+
+
+<tr>
+      <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">Internet Connection Type</td>
+	  <td width="8" background="UI_04.gif"> </td>
+	  <td>
+	  <table class="std">
+	  <tr>
+	  <td nowrap width="125">Encapsulation:&nbsp;</td><td nowrap>
+	  <SELECT onchange="ChangeWanMode();" name="wan_encapmode">
+	  <OPTION value="bridgedonly">Bridge Mode Only</OPTION>
+	  <OPTION value="1483bridged">RFC 1483 Bridged</OPTION>
+	  <OPTION value="routed">RFC 1483 Routed</OPTION>
+	  <OPTION value="pppoe">RFC 2516 PPPoE</OPTION>
+	  <OPTION value="pppoa">RFC 2364 PPPoA</OPTION>
+	  </SELECT>
+	  </td></tr>
+	  </table></td>
+     <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif">
+     <IMG SRC="rh_cisco.gif" WIDTH="192" HEIGHT="64" ALT="Cisco Logo" BORDER="0"></td>
+</tr>
+
+<tr>
+  <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">VC Settings</td>
+  <td width="8" background="UI_04.gif"> </td><td valign="top">
+
+<div ID="WanMultiplexDIV" style="display:none">
+ <table class="std">
+ <tr>
+  <td nowrap width="125">Multiplexing:&nbsp;</td><td nowrap>
+  <INPUT type="radio" name="wan_multiplex" value="llc"><B> LLC</B>&nbsp;
+  <INPUT type="radio" name="wan_multiplex" value="vc"><B> VC</B></td></tr>
+</table>
+</div>
+<div ID="PPPoAMultiplexDIV" style="display:none">
+ <table class="std">
+ <tr>
+  <td nowrap width="125">Multiplexing:&nbsp;</td><td nowrap>
+  <INPUT type="radio" name="pppoa_multiplex" value="llc"><B> LLC</B>&nbsp;
+  <INPUT type="radio" name="pppoa_multiplex" value="vc"><B> VC</B></td></tr>
+</table>
+</div>
+</td>
+</tr>
+
+<tr>
+  <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">&nbsp;</td>
+  <td width="8" background="UI_04.gif"> </td><td valign="top">
+ <table class="std">
+ <tr>
+  <td nowrap width="125">Qos Type:&nbsp;</td><td nowrap>
+  <SELECT name="wan_qostype" onchange="SetQOS();">
+  <OPTION value="ubr">UBR</OPTION>
+  <OPTION value="cbr">CBR</OPTION>
+  <OPTION value="vbr">VBR</OPTION>
+  </SELECT></td></tr>
+  <tr>
+  <td nowrap>Pcr Rate:&nbsp;</td><td nowrap>
+  <INPUT type="text" class="num" maxlength="5" size="5" value="@wan_pcr#" name="wan_pcr">
+  &nbsp; cps &nbsp;
+  </td></tr>
+  <tr>
+  <td nowrap>Scr Rate:&nbsp;</td><td nowrap>
+  <INPUT type="text" class="num" maxlength="5" size="5" value="@wan_scr#" name="wan_scr">
+  &nbsp; cps &nbsp;
+  </td></tr>
+ <tr>
+  <td nowrap>Autodetect:&nbsp;</td><td nowrap>
+  <INPUT type="radio" name="wan_autodetect" value="enable" onClick="setVC();"><B> Enable</B>&nbsp;
+  <INPUT type="radio" name="wan_autodetect" value="disable" onClick="setVC();"><B> Disable</B></td></tr>
+ <tr>
+  <td nowrap>Virtual Circuit:&nbsp;</td><td nowrap>
+  <INPUT type="text" class="num" maxlength="3" size="5" value="@wan_vpi#" name="wan_vpi">&nbsp;&nbsp;VPI (Range 0~255)</td></tr>
+ <tr>
+  <td nowrap>&nbsp;</td><td nowrap>
+  <INPUT type="text" class="num" maxlength="5" size="5" value="@wan_vci#" name="wan_vci">&nbsp;&nbsp;VCI (Range 0~65535)</td>
+ </tr>
+ <tr>
+  <td nowrap>DSL Modulation:&nbsp;</td>
+  <td nowrap>
+  	<SELECT name=dsl_modulation> 
+  		<OPTION value="MMODE" selected>MultiMode</OPTION> 
+  		<OPTION value="T1413">T1.413</OPTION> 
+  		<OPTION value="GDMT">G.dmt</OPTION> 
+  		<OPTION value="GLITE">G.lite</OPTION>
+  		<OPTION value="AD2MOD">ADSL2</OPTION>
+  		<OPTION value="A2PMOD">ADSL2+</OPTION>
+  	</SELECT>
+  </td>
+ </tr>
+ </table></td></tr>
+
+<tr>
+<td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">
+ <div ID="brDIV" align="right" style="display:none">
+ <table class="std">
+ <tr><td nowrap class="boldhead"><br>IP Settings</td></tr>
+ </table>
+ </div>
+ <div ID="oeDIV" align="right" style="display:none">
+ <table class="std">
+ <tr><td nowrap class="boldhead"><br>PPPoE Settings</td></tr>
+ </table>
+ </div>
+ <div ID="oaDIV" align="right" style="display:none">
+ <table class="std">
+ <tr><td nowrap class="boldhead"><br>PPPoA Settings</td></tr>
+ </table>
+ </div>
+</td>
+<td width="8" background="UI_04.gif"> </td><td valign="top">
+
+ <div ID="hrDIV">
+ <hr class="std">
+ </div>
+
+ <div ID="bridgedDIV" style="display:none">
+ <table class="std">
+  <tr>
+   <td nowrap><INPUT type="radio" name="bridged_dhcpenable" value="dhcp" onclick="SetFixIP()"></td><td nowrap><B> Obtain an IP Address Automatically</B></td></tr>
+  <tr>
+   <td nowrap><INPUT type="radio" name="bridged_dhcpenable" value="fixedip" onclick="SetFixIP()"></td><td nowrap><B> Use the following IP Address:</B></td></tr>
+ </table>
+
+ </div>
+
+
+ <div ID="routedDIV" style="display:none">
+ <table class="std">
+<tr>
+<td width="125" nowrap>Internet IP Address:</td>
+<td nowrap>
+<INPUT type="text" name="wan_ip_1" value="" class="ipnum" maxlength="3" size="3"> .
+
+<INPUT type="text" name="wan_ip_2" value="" class="ipnum" maxlength="3" size="3"> .
+
+<INPUT type="text" name="wan_ip_3" value="" class="ipnum" maxlength="3" size="3"> .
+<INPUT type="text" name="wan_ip_4" value="" class="ipnum" maxlength="3" size="3"></td></tr>
+ <tr>
+  <td nowrap>Subnet Mask:</td><td nowrap>
+  <INPUT type="text" name="wan_mask_1" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_mask_2" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_mask_3" value="" class="ipnum" maxlength="3" size="3"> .
+  <INPUT type="text" name="wan_mask_4" value="" class="ipnum" maxlength="3" size="3"></td></tr>
+
+ <tr>
+    <td nowrap>Default Gateway:</td>
+	<td nowrap>
+	<INPUT type="text" name="wan_gw_1" value="" class="ipnum" maxlength="3" size="3"> .
+        <INPUT type="text" name="wan_gw_2" value="" class="ipnum" maxlength="3" size="3"> .
+        <INPUT type="text" name="wan_gw_3" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_gw_4" value="" class="ipnum" maxlength="3" size="3"></td>
+</tr>
+
+  <tr>
+  <td nowrap>Primary DNS:</td>
+  <td nowrap>
+  <INPUT type="text" name="wan_dns1_1" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_dns1_2" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_dns1_3" value="" class="ipnum" maxlength="3" size="3"> .
+  <INPUT type="text" name="wan_dns1_4" value="" class="ipnum" maxlength="3" size="3"></td>
+ </tr>
+
+  <tr>
+  <td nowrap>Secondary DNS:</td>
+  <td nowrap>
+  <INPUT type="text" name="wan_dns2_1" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_dns2_2" value="" class="ipnum" maxlength="3" size="3"> .
+    <INPUT type="text" name="wan_dns2_3" value="" class="ipnum" maxlength="3" size="3"> .
+  <INPUT type="text" name="wan_dns2_4" value="" class="ipnum" maxlength="3" size="3"></td>
+ </tr>
+ </table>
+ </div>
+
+ <div ID="bridgedDIV2" style="display:none">
+ <hr class="std">
+ <table class="std">
+ <tr>
+  <td width="125" nowrap>PPPoE Session :</td>
+  <td nowrap><SELECT onchange="setPppoE();" name="ipppoe_enable"> 
+  			<OPTION value=0>Disable	</OPTION> 
+  			<OPTION value=1>Enable	</OPTION>
+  	     </SELECT>
+  </td></tr>
+ </table>
+ </div>
+
+ <div ID="pppoDIV" style="display:none">
+ <table class="std">
+ <tr>
+  <td width="125" nowrap>Username:</td>
+  <td nowrap><INPUT type="text" name="PoeUserName" value="" maxLength="62" size="26" ></td></tr>
+
+ <tr>
+  <td nowrap>Password:</td>
+  <td nowrap><INPUT type="password" name="PoePasswd" value="" maxLength="43" size="26" ></td>
+</tr>
+ </table>
+
+ <table class="leftclose" cellspacing="0" cellpadding="2" border="0">
+ <tr>
+  <td nowrap><INPUT type="radio" name="pppoeDODC" value="pppoeDODC" onClick="setIdleAlive()">
+  Connect on Demand: Max Idle Time </td>
+  <td nowrap><INPUT type="text" class="num" name="poeIdleTime" value="@poeIdleTime#" maxLength="4"  size="4" ></td>
+  <td nowrap> Minutes</td>
+  </tr>
+ </table>
+
+ <table class="leftclose" cellspacing="0" cellpadding="2" border="0">
+ <tr>
+  <td nowrap><INPUT type="radio" name="pppoeDODC" value="pppoeKA" onClick="setIdleAlive()">
+  Keep Alive: Redial period</td>
+  <td nowrap><INPUT type="text" class="num" name="pppoeRedialTime" value="@pppoeRedialTime#" maxLength="3"  size="4" ></td>
+  <td nowrap> Seconds</td></tr>
+ </table>
+ </div>
+
+ </td></tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top">&nbsp;  </td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td><hr class="std"></td>
+</tr>
+
+<tr>
+     <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">
+	 <!-- <div ID="optDIV01" style="display:none"> -->
+	    Optional Settings 
+      <BR>(required by some ISPs)
+     <!-- </div> -->
+     </td>
+	<td width="8" background="UI_04.gif"> </td>
+	<td valign="top">
+<!--<div ID="optDIV02" style="display:none"> alan-->
+ <table class="std">
+ <tr>
+  <td width="125" nowrap>Host Name:</td>
+  <td nowrap><INPUT type="text" name="hostname" value="@hostname#" maxlength="22" size="26"></td>
+</tr>
+
+ <tr>
+  <td nowrap>Domain Name:</td>
+  <td nowrap><INPUT type="text" name="domainname" value="@domainname#" maxlength="22" size="26" ></td>
+</tr>
+ <tr>
+  <td nowrap>MTU:</td>
+  <td nowrap>
+  <select size="1" onchange="SelMTU();" name="mtu_type">
+     <option value="auto">Auto</option>
+	 <option value="manual">Manual</option>
+  </select></td></tr>
+<tr>
+  <td nowrap>Size: </td>
+  <td nowrap><INPUT type="text" name="mtu_size" value="@mtu_size#" class="num" maxLength="5" size="5" ></td>
+</tr>
+</table>
+<!--</div>  alan-->
+</td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top">&nbsp;  </td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td>
+    <!-- <div ID="optDIV03" style="display:none"> -->
+    <hr class="std">
+    <!-- </div> -->
+ </td>
+</tr>
+
+<tr>
+ <td width="164" height="24" colspan="2" align="right" class="bwhead">Network Setup</td>
+ <td>&nbsp;   </td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">Router IP</td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+ <table class="std">
+<tr>
+ <td width="125" nowrap>Local IP Address:</td>
+ <td nowrap>
+  <INPUT type="text" name="lan_ip_1" value="" class="ipnum" maxlength="3" size="3" onChange="SetDhcpSIP();"> .
+    <INPUT type="text" name="lan_ip_2" value="" class="ipnum" maxlength="3" size="3" onChange="SetDhcpSIP();"> .
+    <INPUT type="text" name="lan_ip_3" value="" class="ipnum" maxlength="3" size="3" onChange="SetDhcpSIP();"> .
+  <INPUT type="text" name="lan_ip_4" value="" class="ipnum" maxlength="3" size="3"></td>
+</tr>
+<tr>
+ <td nowrap>Subnet Mask:</td>
+ <td nowrap>
+<select name="lan_mask" size="1" class="num">
+<option value="0">255.255.255.0</option>
+<option value="1">255.255.255.128</option>
+<option value="2">255.255.255.192</option>
+<option value="3">255.255.255.224</option>
+<option value="4">255.255.255.240</option>
+<option value="5">255.255.255.248</option>
+<option value="6">255.255.255.252</option>
+</select></td></tr>
+ </table></td></tr>
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top">&nbsp;  </td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td><hr class="std"></td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">Network Address<br>Server Settings (DHCP)</td>
+<td width="8" background="UI_04.gif"> </td>
+<td valign="top">
+ <table class="std">
+ <tr>
+ <TD width="125">DHCP Server:</TD>
+ <TD nowrap>
+ <INPUT  type="radio" name="lan_dhcp" value="enable" onclick="SetDHCP()"><B>Enable</B>
+ <INPUT  type="radio" name="lan_dhcp" value="disable" onclick="SetDHCP()"><B>Disable</B>
+ <INPUT type="radio" name="lan_dhcp" value="relay" onclick="SetDHCP()"><B>DHCP Relay</B></TD></tr>
+<tr>
+<TD>DHCP Server:</TD>
+<TD nowrap>
+ <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="dhcpserver_ip_1"> .
+  <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="dhcpserver_ip_2"> .
+  <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="dhcpserver_ip_3"> .
+ <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="dhcpserver_ip_4"></TD></tr><tr>
+<TD nowrap>Starting IP Address:</TD>
+<TD nowrap><table border="0" cellpadding="0" cellspacing="0">
+<tr><td nowrap class="num" ID="dhcpstartSPAN">@ip_prefix#</td><td nowrap><INPUT class="ipnum" maxlength="3" size="3" value="@dhcp_start#" name="dhcp_start"></td></tr></table></TD>
+</tr>
+<tr>
+<TD nowrap>Maximum Number of <BR>DHCP Users:</TD>
+<TD nowrap><INPUT type="text" class="num" maxlength="3" size="3" value="@dhcp_num#" name="dhcp_num"></TD>
+</tr>
+<tr>
+<TD nowrap>Client Lease Time:</TD>
+<TD nowrap><INPUT  type="text" class="num" maxlength="4" size="4" value="@dhcp_lease#" name="dhcp_lease">
+&nbsp;minutes (0 means one day)</TD>
+</tr>
+<tr>
+<TD>Static DNS 1:</TD>
+<TD nowrap>
+		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns0_1"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns0_2"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns0_3"> .
+		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns0_4"></TD></tr>
+<tr>
+<TD>Static DNS 2:</TD>
+<TD nowrap>
+		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns1_1"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns1_2"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns1_3"> .
+ 		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns1_4"></TD></tr>
+<tr>
+<TD>Static DNS 3:</TD>
+<TD nowrap>
+		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns2_1"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns2_2"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns2_3"> .
+		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="static_dns2_4"></TD></tr>
+<tr>
+<TD>WINS:</TD>
+<TD nowrap>
+		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="wan_wins_1"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="wan_wins_2"> .
+		  		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="wan_wins_3"> .
+ 		  <INPUT type="text" class="ipnum" maxlength="3" size="3" value="" name="wan_wins_4"></TD></tr>
+</table>
+</td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top">&nbsp;  </td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td><hr class="std"></td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" align="right" valign="top" class="boldhead">Time Settings</td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+
+ <table class="std">
+ <tr><td nowrap>Time Zone:</td></tr>
+ <tr>
+  <td nowrap><SELECT NAME="time_zone" SIZE="1">
+	  <OPTION VALUE="-12" >(GMT-12:00) Kwajalein</OPTION>
+	  <OPTION VALUE="-11" >(GMT-11:00) Midway Island, Samoa</OPTION>
+	  <OPTION VALUE="-10" >(GMT-10:00) Hawaii</OPTION>
+	  <OPTION VALUE="-9" >(GMT-09:00) Alaska</OPTION>
+	  <OPTION VALUE="-8">(GMT-08:00) Pacific Time (USA &amp; Canada)</OPTION>
+	  <OPTION VALUE="-7 1" >(GMT-07:00) Arizona</OPTION>
+	  <OPTION VALUE="-7 2" >(GMT-07:00) Mountain Time (USA &amp; Canada)</OPTION>                              
+	  <OPTION VALUE="-6 1" >(GMT-06:00) Mexico</OPTION>
+	  <OPTION VALUE="-6 2" >(GMT-06:00) Central Time (USA &amp; Canada)</OPTION>
+	  <OPTION VALUE="-5 1" >(GMT-05:00) Indiana East, Colombia, Panama</OPTION>
+	  <OPTION VALUE="-5 2" >(GMT-05:00) Eastern Time (USA &amp; Canada)</OPTION>  
+	  <OPTION VALUE="-4 1" >(GMT-04:00) Bolivia, Venezuela</OPTION>
+	  <OPTION VALUE="-4 2" >(GMT-04:00) Atlantic Time (Canada), Brazil West</OPTION>
+	  <OPTION VALUE="-3 1" >(GMT-03:00) Guyana</OPTION>
+	  <OPTION VALUE="-3 2" >(GMT-03:00) Brazil East, Greenland</OPTION>
+	  <OPTION VALUE="-2" >(GMT-02:00) Mid-Atlantic</OPTION>
+	  <OPTION VALUE="-1" >(GMT-01:00) Azores</OPTION>
+	  <OPTION VALUE="+0 1" >(GMT) Gambia, Liberia, Morocco</OPTION>
+	  <OPTION VALUE="+0 2" >(GMT) England</OPTION>
+	  <OPTION VALUE="+1 1" >(GMT+01:00) Tunisia</OPTION>
+	  <OPTION VALUE="+1 2" >(GMT+01:00) France, Germany, Italy</OPTION>
+	  <OPTION VALUE="+2 1" >(GMT+02:00) South Africa</OPTION>
+	  <OPTION VALUE="+2 2" >(GMT+02:00) Greece, Ukraine, Romania, Turkey</OPTION>
+	  <OPTION VALUE="+3" >(GMT+03:00) Iraq, Jordan, Kuwait</OPTION>
+	  <OPTION VALUE="+4" >(GMT+04:00) Armenia</OPTION>
+	  <OPTION VALUE="+5" >(GMT+05:00) Pakistan, Russia</OPTION>
+	  <OPTION VALUE="+6" >(GMT+06:00) Bangladesh, Russia</OPTION>
+	  <OPTION VALUE="+7" >(GMT+07:00) Thailand, Russia</OPTION>
+	  <OPTION VALUE="+8 1" >(GMT+08:00) China, Hong Kong, Australia Western</OPTION>
+	  <OPTION VALUE="+8 2">(GMT+08:00) Singapore, Taiwan, Russia</OPTION>
+	  <OPTION VALUE="+9" >(GMT+09:00) Japan, Korea</OPTION>
+	  <OPTION VALUE="+10 1" >(GMT+10:00) Guam, Russia</OPTION>
+	  <OPTION VALUE="+10 2" >(GMT+10:00) Australia</OPTION>
+	  <OPTION VALUE="+11" >(GMT+11:00) Solomon Islands</OPTION>
+	  <OPTION VALUE="+12 1" >(GMT+12:00) Fiji</OPTION>
+	  <OPTION VALUE="+12 2" >(GMT+12:00) New Zealand</OPTION>
+	</SELECT></td></tr>
+
+	<tr>
+   <td nowrap>Time Interval :
+   	<INPUT class=num maxLength=5 size=8 name="timer_interval" value="@timer_interval#">seconds
+   </td>   
+  </tr>
+
+ <tr>
+  <td nowrap><INPUT type="checkbox" name="auto_dls" value="auto_dls"> Automatically adjust clock for daylight saving changes.</td>
+</tr>
+<tr>
+ <td nowrap><br></td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </td>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="submit" name="save" value="Save Settings" class="stdbutton" onClick="return checkData();">
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=Setup.htm'"> &nbsp;  &nbsp; </td></tr>
+</table>
+
+</div>
+
+
+
+
+<input type="hidden" name="c4_wan_ip_" value="@c4_wan_ip_#">
+<input type="hidden" name="c4_wan_mask_" value="@c4_wan_mask_#">
+<input type="hidden" name="c4_wan_gw_" value="@c4_wan_gw_#">
+<input type="hidden" name="c4_wan_dns1_" value="@c4_wan_dns1_#">
+<input type="hidden" name="c4_wan_dns2_" value="@c4_wan_dns2_#">
+<input type="hidden" name="c4_lan_ip_" value="@c4_lan_ip_#">
+<input type="hidden" name="c4_dhcpserver_ip_" value="@c4_dhcpserver_ip_#">
+<input type="hidden" name="c4_static_dns0_" value="@c4_static_dns0_#">
+<input type="hidden" name="c4_static_dns1_" value="@c4_static_dns1_#">
+<input type="hidden" name="c4_static_dns2_" value="@c4_static_dns2_#">
+<input type="hidden" name="c4_wan_wins_" value="@c4_wan_wins_#">
+
+<input type="hidden" name="h_wan_encapmode" value="@h_wan_encapmode#">
+<input type="hidden" name="h_wan_multiplex" value="@h_wan_multiplex#">
+<input type="hidden" name="h_pppoa_multiplex" value="@h_pppoa_multiplex#">
+<input type="hidden" name="h_wan_qostype" value="@h_wan_qostype#">
+<input type="hidden" name="h_wan_autodetect" value="@h_wan_autodetect#">
+<input type="hidden" name="h_dsl_modulation" value="@h_dsl_modulation#">
+<input type="hidden" name="h_bridged_dhcpenable" value="@h_bridged_dhcpenable#">
+<input type="hidden" name="h_pppoeDODC" value="@h_pppoeDODC#">
+<input type="hidden" name="h_mtu_type" value="@h_mtu_type#">
+<input type="hidden" name="h_lan_mask" value="@h_lan_mask#">
+<input type="hidden" name="h_lan_dhcp" value="@h_lan_dhcp#">
+<input type="hidden" name="h_time_zone" value="@h_time_zone#">
+<input type="hidden" name="h_auto_dls" value="@h_auto_dls#">
+<input type="hidden" name="PppoeUserName" value="@PppoeUserName#">
+<input type="hidden" name="PppoePasswd" value="@PppoePasswd#">
+<input type="hidden" name="PppoaUserName" value="@PppoaUserName#">
+<input type="hidden" name="PppoaPasswd" value="@PppoaPasswd#">
+<input type="hidden" name="h_ipppoe_enable" value="@h_ipppoe_enable#">
+
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="Setup.htm">
+<input type="hidden" name="next_file" value="Setup.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+aux.o: aux.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+dentry.o: dentry.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+file.o: file.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+dep_fist.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/modversions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/modversions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/modversions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/limits.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/limits.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mman.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mman.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h)
+inode.o: inode.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+main.o: main.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h)
+meta.o: meta.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+mmap.o: mmap.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+state.o: state.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)
+super.o: super.c \
+   fist.h $(dep_fist.h) \
+   mini_fo.h $(dep_mini_fo.h)

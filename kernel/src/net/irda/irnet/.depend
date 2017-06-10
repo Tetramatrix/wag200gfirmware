@@ -1,0 +1,31 @@
+dep_irnet.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/devfs_fs_kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/devfs_fs_kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ppp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ppp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_channel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_channel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irias_object.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irias_object.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/discovery.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/discovery.h)
+irnet_irda.o: irnet_irda.c \
+   irnet_irda.h $(dep_irnet_irda.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+dep_irnet_irda.h += \
+   irnet.h $(dep_irnet.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+irnet_ppp.o: irnet_ppp.c \
+   irnet_ppp.h $(dep_irnet_ppp.h)
+dep_irnet_ppp.h += \
+   irnet.h $(dep_irnet.h)

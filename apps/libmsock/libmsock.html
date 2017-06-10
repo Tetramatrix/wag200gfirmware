@@ -1,0 +1,276 @@
+<html>
+<head>
+    <title>libmsock</title>
+<link rev=made href="mailto:ma_muquit@fccc.edu">
+<STYLE TYPE="text/css"><!--
+A:link { font-weight:bold; color: #4f65fa; text-decoration: none; }
+A:visited { text-decoration: none; }
+A:hover { color:#9F9900; text-decoration: underline; }
+--></STYLE>
+</head>
+<body background="../bg.gif" bgcolor="#ffffff" link="#0000ff" vlink="#169756"
+alink="#ff0000" text="#000000">
+
+<blockquote>
+<center>
+<p>
+<table border=0 bgcolor="#eeeeee" cellpadding=10 cellspacing=5>
+<tr align="center">
+<td>
+<b>libmsock.a</b> <br>
+A library for TCP/IP client-server applications on Unix <br>
+<a href="http://www.fccc.edu/users/muquit">Muhammad A Muquit</a>
+</td>
+</tr>
+</table>
+</center>
+
+
+
+<hr noshade size="1">
+<font size="+1"><b>Description</b></font><br>
+These functions can be used to develop TCP/IP client-server applications 
+on Unix. The functions encapsulate the complexities of BSD socket APIs.
+I don't deserver credit for these functions, all credit belong to
+<a href="http://www.lcg.org/sock-faq/"> Unix Socket programming FAQ</a>
+example code.  I just cleaned them out, added a few, created this library, 
+wrote this documentation and wrote few examples.
+<p>
+
+<font size="+1"><b>Synopsis</b></font>
+<p>
+<code>
+<font color="#000099">
+    #include &lt;msock.h&gt;<br>
+<br>
+    int ServerSocket(u_short port,int max_servers);<br>
+    int ClientSocket(char *netaddress,u_short port);<br>
+    int sockGets(int sockfd,char *str,size_t count);<br>
+    int sockRead(int sockfd,char *str,size_t count);<br>
+    int sockPuts(int sockfd,char *str);<br>
+    int sockWrite(int sockfd,char *str,size_t count);<br>
+    int getPeerInfo(int sockfd,char *cli_host,char *cli_ip,u_short *cli_port);<br>
+    int atoport(char *service,char *proto);<br>
+    struct in_addr *atoaddr(char *address);<br>
+</font>
+</pre>
+
+There are several routines available for SSL if compiled with -DUSE_SSEL=1 
+flag.  You will need 
+<a href="http://www.psy.uq.edu.au:8080/~ftp/Crypto/">SSLeay</a>.
+SSLeay is a free implementation of Netscape's Secure Socket Layer - the 
+software encryption protocol behind the Netscape Secure Server and the 
+Netscape Navigator Browser.  The routines are:
+<pre>
+<font color="#000099">
+    int sockReadSSL(SSL *ssl,char *buf,size_t n);
+    int sockWriteSSL(SSL *ssl,char *str,size_t count);
+    int sockGetsSSL(SSL *ssl,char *str,size_t count);
+    int sockPutsSSL(SSL *ssl,char *str);
+</font>
+</pre>
+
+<P>
+<dl>
+<dt>
+<code><b><font color="#000099">int ServerSocket(u_short port,int max_servers)</font></b></code><br>
+<dd>This function listens on a port and returns connections.  The connection is
+returned as the socket file descriptor. The socket is of type SOCK_STREAM
+and AF_INET family.  The function will create a new process for every 
+incoming connections, so in the listening process, it will never return. 
+Only when a connection comes in and a new process for it is created, the 
+function will return.This means, the caller should never loop.
+<p>
+The parameters are as follows:
+<pre>
+<font color="#000099">
+u_short port        The port to listens to (host byte order)
+int max_servers     The maximum number of connection to queue up before 
+                    having them rejected automatically.
+                    </font>
+</pre>
+<p>
+<font color="#ff0000">
+The function returns the socked file descriptor (a positive number)  on 
+success and -1 on failure.
+</font>
+<p>
+<b>NOTE</b>: _NEVER_ convert port to network byte order by calling htons().  It 
+will be converted by the function. The options SO_REUSEADDR option is set 
+on the socket file descriptor. Read the Chapter 7 of Unix Network 
+Programming (2nd Ed) by Stevens for details on the socket
+options.  
+</dl>
+<P>
+<dl>
+<code><b><font color="000099">int ClientSocket(char *netaddress,u_short port)</font></b></code><br>
+<dd>This function makes a connection to a given server's stream socket. 
+The parameters are as follows:
+<pre>
+<font color="#000099">
+char    *netaddress The host to connect to. The netaddress can
+                    be the hostname or the IP address (dot separated 8 octets).
+u_short port        The port to connect to
+</font>
+</pre>
+<p>
+<font color="#ff0000">
+The function returns the socked file descriptor (a positive number)  on 
+success and -1 on failure.
+</font>
+<p>
+<b>NOTE</b>: _NEVER_ convert port to network byte order by calling htons().  It 
+will be converted by the function.
+</dl>
+
+<P>
+<dl>
+<dt>
+<code><b><font color="000099">int sockGets(int sockfd,char *str,size_t count)</font></b></code><br>
+
+<dd>This function reads from a socket until it receives a line feed character. 
+It fills the buffer "str" up to the maximum size "count".
+<pre>
+<font color="#000099">
+The parameters are as follows:
+int sockfd      The socket to read from.
+char *str       The buffer to fill up.
+size_t  count   The maximum number of bytes to stuff to str.
+</font>
+</pre>
+<font color="#ff0000">
+This function returns the number of bytes read from the socket or -1 if
+the connection is closed unexpectedly.
+</font>
+<p>
+WARNING: If a single line exceeds the length of count, the data will be 
+read and discarded.
+</dl>
+
+<p>
+<dl>
+<code><b><font color="000099">int sockRead(int sockfd,char *str,size_t count)</font></b></code><br>
+<dd>This function reads the "count" number of bytes and stuffs to str. str 
+must have enough space. This routine is like read() system call except 
+that it makes sure all the requested number of bytes are read.
+Note, str must have enough space to hold the "count" number of bytes.
+<p>
+<font color="#ff0000">
+The function returns &gt= 0 if succeeds and -1 if there is any error.
+</font>
+</dl>
+
+<P>
+<dl>
+<code><b><font color="000099">int sockPuts(int sockfd,char *str)</font></b></code><br>
+<dd>This function writes a character string out to a socket. 
+<p>
+<font color="#ff0000">
+The function returns number of bytes written to the socket or 
+-1 if the connection is closed while it is trying to write.
+</font>
+</dl>
+
+<P>
+<dl>
+<code><b><font color="000099">int sockWrite(int sockfd,char *str,size_t count)</font></b></code><br>
+<dd>This function is like the write() system call, except that it will make 
+sure all data is transmitted.
+<p>
+<font color="#ff0000">
+The function returns number of bytes written to the socket and -1 in case of
+any error.
+</font>
+</dl>
+
+<p>
+<dl>
+<code><b><font color="000099">int getPeerInfo(int sockfd,char *cli_host,char *cli_ip,u_short *cli_port)</font></b></code><br>
+<dd>This function gets information about the host connected to the socket. 
+The parameters are as follows:
+<pre>
+<font color="#000099">
+int sockfd       The connected socket
+char *cli_host   The hostname connected to the socket <font color="#ff0000">(returns)</font>
+char *cli_ip     The IP address of the host connected <font color="#ff0000">(returns)</font>
+u_short *cli_port The client side port of the host <font color="#ff0000">(returns)</font>
+</font>
+</pre>
+Note, cli_host, cli_ip must have enough space to hold the info.
+</dl>
+
+<P>
+<dl>
+<code><b><font color="000099">int atoport(char *service,char *proto)</font></b></code><br>
+<dd>This function takes a service name and a service type and returns a port 
+number. If the service name is not found, it tries it as a decimal number. 
+The number returned is byte ordered for the network.
+<p>
+<font color="#ff0000">
+The function returns a positive number if succeeds and -1 if fails.
+</font>
+</dl>
+<p>
+<dl>
+<code><b><font color="000099">struct in_addr *atoaddr(char *address)</font></b></code><br>
+<dd>This function converts ASCII text to <B>in_addr</B> struct.
+<font color="#ff0000"> NULL is returned if the address can not be found.
+</font>
+</dl>
+<p>
+<table border=0 bgcolor="#eeeeee" cellpadding=10 cellspacing=10>
+<tr><td>
+<li>  Download: <a href="src/libmsock.tar.gz">libmsock.tar.gz</a>
+</td>
+</tr>
+</table>
+
+<p>
+<font size="+1"><b>Compile</b></font><br>
+<table border=0 bgcolor="#eeeeee" cellpadding=10 cellspacing=10>
+<tr>
+<td valign="top">
+<code>
+<font color="#000099">
+    $ gunzip &lt; libmsock.tar.gz | tar xvf -<br>
+    $ cd libmsock<br>
+    $ ./configure<br>
+    $ make
+</font>
+</code>
+</td>
+ </tr>
+ </table>
+If make succeeds the library libmsock.a will be created. To install it
+copy <b>libmsock.a</b> to   /usr/local/lib and <b>msock.h</b> in 
+/usr/local/include.  Go to the
+examples and its sub-directories, type make to create an example.
+
+<p>
+<font size="+1"><b>Examples</b></font><br>
+Several examples programs supplied in the examples directory with Makefiles.
+<br>
+<table border=0 bgcolor="#eeeeee" cellpadding=10 cellspacing=10>
+<tr>
+<td>
+ <li><b>echod</b> - an echo server (<a href="echod.c">echod.c</a>) <br>
+ <li><b>htget</b> - get a webpage from a web server(<a href="htget.c">htget.c</a>)
+    <br>
+ <li> <b>server_type</b> - identify the type of a web server (<a href="server_type.c">server_type.c</a>)
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<font size="+1"><b>Todo</b></font><br>
+Write examples about SSL routines. Provide more interesting examples.
+<p>
+Last updated: Jul-10-1999
+<hr noshade size="1">
+<center>
+| <a href="http://www.fccc.edu/users/muquit/">Home</a> | <a href="http://www.fccc.edu/users/muquit/sitemap/sitemap.html">Sitemap</a> |
+</center>
+</body>
+</html>

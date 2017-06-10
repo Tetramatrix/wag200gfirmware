@@ -1,0 +1,94 @@
+amd7930.o: amd7930.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   amd7930.h $(dep_amd7930.h) \
+   ../../isdn/hisax/hisax.h $(dep_../../isdn/hisax/hisax.h) \
+   ../../isdn/hisax/isdnl1.h $(dep_../../isdn/hisax/isdnl1.h)
+dep_amd7930.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h)
+audio.o: audio.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/devfs_fs_kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/devfs_fs_kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+cs4231.o: cs4231.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h) \
+   cs4231.h $(dep_cs4231.h)
+dep_cs4231.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h)
+dbri.o: dbri.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   dbri.h $(dep_dbri.h) \
+   ../../isdn/hisax/hisax.h $(dep_../../isdn/hisax/hisax.h) \
+   ../../isdn/hisax/isdnl1.h $(dep_../../isdn/hisax/isdnl1.h)
+dep_dbri.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   cs4215.h $(dep_cs4215.h)
+dmy.o: dmy.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   dummy.h $(dep_dummy.h)
+dep_dummy.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h)

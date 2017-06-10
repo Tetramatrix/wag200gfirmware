@@ -1,0 +1,64 @@
+hci_uart.o: hci_uart.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluetooth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluetooth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluez.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluez.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_uart.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_uart.h)
+hci_usb.o: hci_usb.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluetooth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluetooth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluez.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluez.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_usb.h)
+hci_vhci.o: hci_vhci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluetooth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluetooth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluez.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/bluez.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_vhci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/bluetooth/hci_vhci.h)

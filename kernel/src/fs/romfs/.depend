@@ -1,0 +1,11 @@
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/romfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/romfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)

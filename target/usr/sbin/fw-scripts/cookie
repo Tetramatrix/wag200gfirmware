@@ -1,0 +1,40 @@
+UT=10
+INTERVAL=15
+
+user=`/usr/sbin/nvram get pppoe_username | awk 'BEGIN{FS="=";}{print $2;}'`
+pwd=`/usr/sbin/nvram get pppoe_password | awk 'BEGIN{FS="=";}{print $2;}'`
+
+while sleep $INTERVAL
+do
+        let TIMEOUT=$TIMEOUT-1
+
+        if [ $TIMEOUT -le 0 ]
+        then
+                break
+        fi
+
+        kill=`ps | grep pinging | grep -v grep | awk '{print $1}'`
+        kill -9 $kill
+
+        pppd=`ps | grep pppd-2.4.4 | grep -v grep | awk '{print $2}'`
+
+        if [ $pppd = "root" ]
+        then
+
+          #
+          # Hook
+          # execute local script rc.local if present
+          #
+
+          if [ -x /mnt/mtd5/rc.local ]
+          then
+            /mnt/mtd5/rc.local&
+          fi
+          break
+
+        else
+                /usr/sbin/pppd-2.4.4 plugin /lib/rp-pppoe.so eth0 user $user password $pwd nodetach defaultroute usepeerdns ipcp-accept-remote ipcp-accept-local lcp-echo-interval 15 lcp-echo-failure 3 mru 1492 mtu 1492& > /dev/null
+                TIMEOUT=10
+        fi
+done
+

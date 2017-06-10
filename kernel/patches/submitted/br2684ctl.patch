@@ -1,0 +1,23 @@
+--- br2684ctl.c.orig	2008-04-21 03:03:12.000000000 +0200
++++ br2684ctl.c	2008-04-21 03:04:04.000000000 +0200
+@@ -198,7 +198,7 @@
+ 
+ void usage(char *s)
+ {
+-  printf("usage: %s [-b] [[-c number] [-e 0|1] [-s sndbuf] [-q qos] [-p 0|1] "
++  printf("usage: %s [-b] [[-c number] [-e 0|1] [-s sndbuf] [-t qos] [-p 0|1] "
+ 	 "[-a [itf.]vpi.vci]*]*\n", s);
+   printf("  encapsulations: 0=llc, 1=vcmux\n  payloads: 0=routed, 1=bridged\n");
+   exit(1);
+@@ -225,9 +225,9 @@
+ 
+   openlog (LOG_NAME,LOG_OPTION,LOG_FACILITY);
+   if (argc>1)
+-    while ((c = getopt(argc, argv,"q:a:bc:e:s:p:?h")) !=EOF)
++    while ((c = getopt(argc, argv,"t:a:bc:e:s:p:?h")) !=EOF)
+       switch (c) {
+-      case 'q':
++      case 't':
+ 	printf ("optarg : %s",optarg);
+ 	if (text2qos(optarg,&params.reqqos,0))
+ 	  fprintf(stderr,"QOS parameter invalid\n");

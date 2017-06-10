@@ -1,0 +1,535 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Firmware Upgrade</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<style type="text/css">
+BODY, P, TABLE, TD, UL, OL, LI, DD, INPUT, SELECT
+         { color:black; font: normal 8pt Arial,Helvetica,sans-serif; }
+</style>
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+// upgrade FW
+
+var showit = "block";
+var hideit = "none";
+
+function setDisabled(OnOffFlag,formFields)
+{
+	for (var i = 1; i < setDisabled.arguments.length; i++)
+		setDisabled.arguments[i].disabled = OnOffFlag;
+}
+
+function show_hide(el,shownow)  // IE & NS6; shownow = true, false
+{
+//	alert("el = " + el);
+	if (document.all)
+		document.all(el).style.display = (shownow) ? showit : hideit ;
+	else if (document.getElementById)
+		document.getElementById(el).style.display = (shownow) ? showit : hideit ;
+}
+
+var pc = 0;
+var back_page="index.htm";
+
+
+function load()
+{
+	pc+=1;
+
+	if (pc > 100)
+	{
+		location.href = back_page;
+		clearTimeout(time);
+		return;
+	}
+	setWidth(self, "lpc", pc + "%");
+	setHTML(self, "percent", pc + "%");
+	time = setTimeout("load()",1650);//unit:0.1 second
+}
+
+function setHTML(windowObj, el, htmlStr)
+{
+    if (document.all)
+	{
+	  if (windowObj.document.all(el) )
+        windowObj.document.all(el).innerHTML = htmlStr;
+	}
+	else if (document.getElementById)
+	{
+	  if (windowObj.document.getElementById(el) )
+	    windowObj.document.getElementById(el).innerHTML = htmlStr;
+	}
+}
+
+function setWidth(windowObj, el, newwidth)
+{
+    if (document.all)
+	{
+	  if (windowObj.document.all(el) )
+        windowObj.document.all(el).style.width = newwidth ;
+	}
+	else if (document.getElementById)
+	{
+	  if (windowObj.document.getElementById(el) )
+	    windowObj.document.getElementById(el).style.width = newwidth;
+	}
+}
+
+function check_lang()
+{
+	var cf = document.forms[0];
+	dataToHidden(cf);
+	cf.submit()
+	return true;
+}
+
+function checkData()
+{
+   var cf = document.forms[1];
+   var upgrade=cf.remote_upgrade_disable.value;
+	 var localip=cf.remote_ip_in_local.value;
+
+	if(upgrade==1&&localip==0)
+				return false;   
+	if(cf.mtenFWUpload.value.length == 0)
+	{
+		alert(nofile_msg);
+		return false;
+	}
+
+	if (!confirm(up_msg))
+		return false;
+    setDisabled(true, cf.upgrade);
+	show_hide("uploadStatus", true);
+    load();
+	return true;
+}
+
+
+
+
+
+var showchar = '|';
+
+var maxchars = 60;
+
+var delay_time = 1200;
+
+var counter=0;
+
+var num=0;
+
+function progress(){
+
+	var F = document.forms[1];
+
+	if(num == 20){
+
+		clearTimeout(timerID);
+
+		alert(msg_up_fail);
+
+		return false;
+
+	}
+
+	if (counter < maxchars)	{
+
+		counter++;
+
+		var tmp = '';
+
+		for (var i=0; i < counter; i++)
+
+			tmp = tmp + showchar;
+
+		F.process.value = tmp;
+
+		timerID = setTimeout('progress()',delay_time);
+
+	}
+
+	else{
+
+		counter = 0;
+
+		num ++;
+
+		progress();
+
+        }
+
+}
+
+
+function stop(){
+
+	if(ie4)
+
+  		document.all['style0'].style.visibility = 'hidden';
+
+}
+
+
+function upgrade_wan_1(F){
+
+	if(ns4)
+
+            delay_time = 1500;
+
+
+
+        choose_disable(F.Upgrade_lan);
+
+
+        F.submit_button.value = "upgrade_wan_test";
+
+        F.submit();
+}
+
+function progress_wan(){
+
+        var F = document.forms[1];
+
+        if(num == 2){
+
+                clearTimeout(timerID);
+
+                alert(msg_up_fail);
+
+                return false;
+
+        }
+
+        if (counter < maxchars) {
+
+                counter++;
+
+                var tmp = '';
+
+                for (var i=0; i < counter; i++)
+
+                        tmp = tmp + showchar;
+
+                F.process_wan.value = tmp;
+
+                timerID = setTimeout('progress_wan()',delay_time);
+
+        }
+
+        else{
+
+                counter = 0;
+
+                num ++;
+
+                progress_wan();
+	}
+}
+
+function cancel(F)
+{
+	window.location.href="Upgrade.asp";
+}
+
+function upgrade_lan(F){
+
+	var len = F.file.value.length;
+
+	var ext = new Array('.','b','i','n');
+
+	if (F.file.value == '')	{
+
+		alert(msg_sel_file);
+
+		return false;
+
+	}
+
+	var IMAGE = F.file.value.toLowerCase();
+
+	for (i=0; i < 4; i++)	{
+
+		if (ext[i] != IMAGE.charAt(len-4+i)){
+
+			alert(msg_incrt_file);
+
+			return false;
+
+		}
+
+	}
+
+
+
+	if(ns4)
+
+		delay_time = 1500;
+
+
+
+	choose_disable(F.Upgrade_wan);
+
+
+
+	F.submit_button.value = "Upgrade";
+   	F.submit();
+
+   	//document.onstop = stop;
+
+   	progress();
+
+}
+
+
+
+/*
+function version()
+{
+	alert("There is no latest version to upgrade");
+}
+function init()
+{
+	if (no_wan_upgrade_version == 0)
+	{
+		if(confirm(''))
+		{
+        		document.firmware.submit_button.value = "upgrade_wan_download";
+        		choose_disable(document.firmware.Upgrade_lan);
+			document.firmware.submit();
+			progress_wan();
+		}
+		else
+		{
+
+        		document.firmware.submit_button.value = "upgrade_wan_cancel";
+			document.firmware.submit();
+		}
+	}
+	if (no_wan_upgrade_version == 1)
+		version();
+}
+*/
+
+function init()
+{	
+	 var cf = document.forms[1];
+	 var cf1 = document.forms[0];
+   	var upgradedisable=cf.remote_upgrade_disable.value;
+	 var localip=cf.remote_ip_in_local.value;
+	 dataToVisible(cf1);	
+	 if(upgradedisable==1&&localip==0)
+		setDisabled(true,cf.mtenFWUpload,cf.upgrade); 
+
+}
+//
+//-->
+</script>
+</head>
+
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onLoad="init();">
+<form method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Administration</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+  <table border="0" cellspacing="0" width="646" height="100%">
+    <tr>
+              <td height="10" colspan="5" background="UI_06.gif"></TD>
+			  <td height="10" background="UI_07.gif"></TD><td height="10" colspan="1" background="UI_06.gif"></TD>
+</TR>
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="thistab" width="105">Administration</TD>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+</TR>
+  </table></TD>
+</TR>
+
+<!-- sub menu-->
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Administration.htm">Management</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Log.htm">Reporting</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Diagnostics.htm">Diagnostics</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Backup.htm">Backup&amp;Restore</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Factorydefaults.htm">Factory Defaults</a><b class="separator">|</b>&nbsp;&nbsp;
+  <span class="current">Firmware Upgrade</span><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Reboot.htm">Reboot</a>&nbsp;&nbsp;
+ </TD>
+</TR>
+</table><!-- data table-->
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" height="300" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD><td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Firmware Upgrade</TD>
+  <td width="454">&nbsp;  </TD>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif">
+  <SPAN>&nbsp;&nbsp; <A href="help/h_FUpgrade.htm" class="submenu" target="_blank">Help...</a></span></TD>
+</TR>
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7"> </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+ <table class="std">
+ <tr> 
+ <td width="159" nowrap valign="middle">Language:&nbsp</TD>  
+            <td nowrap colspan="2"><select name="upgrade_langpkt" size="1" onChange="check_lang();">
+                <option value="1">English</option>
+                <option value="2">French</option>
+                <option value="3">German</option>
+                <option value="4">Swedish</option>
+              </select></td>
+ </tr>
+ </table>
+ <hr class="std">
+ <input type="hidden" name="todo" value="save">
+ <input type="hidden" name="h_upgrade_langpkt" value="@h_upgrade_langpkt#">
+ <input type="hidden" name="this_file" value="FirmwareUpgrade.htm">
+ <input type="hidden" name="next_file" value="FirmwareUpgrade.htm">
+ <input type="hidden" name="message" value="@msg_text#">
+</form>
+<form name="firmwareupgrade" method="POST" action="upgrade_flash.cgi" ENCTYPE="multipart/form-data" onSubmit="  return checkData();">
+ <table class="std">
+ <tr>
+  <td nowrap ALIGN="CENTER" height="30"><B style="color:#0000ff; font-size:120%">Firmware Upgrade</b></TD>
+</TR>
+ <tr>
+  <td nowrap>Please Select a File to Upgrade
+  <BR><b>File Path:</b><input type="FILE" name="mtenFWUpload" value="" size="45" maxlength="128" style="width:320px">
+  <br>
+<!--
+  <FONT face=Arial color=#ff0000 size=2><B>Warning: </B>Upgrading firmware from wan side may take a few minutes,<BR> please don't turn off the power or press the reset button.</FONT>
+  <br>
+-->
+  </TD>
+</TR>
+<!--
+<tr>
+  <td nowrap align="center"><INPUT type=text name=process_wan size=40 maxlength=120 value='' onFocus=blur()></TD>
+</TR>
+
+<tr>
+  <td nowrap align="center"><B><FONT color=red>Upgrade must NOT be interrupted !</FONT></B></TD>
+</TR>
+-->
+ <tr>
+  <td nowrap align="center"><INPUT type="submit"  name="upgrade" value="Upgrade"></TD>
+</TR>
+ </table>
+ <hr class="std">
+  </TD>
+   <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+</TR>
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top"></TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+ <div ID="uploadStatus" style="display:none">
+
+<table class="std" border="0" cellpadding="0" cellspacing="0">
+<tr>
+ <td height="40" width="20" valign="top" align="right"><b class="red">Warning:</b>&nbsp; &nbsp;</TD>
+ <td valign="top" colspan="2" align="left" class="red">
+  Upgrading firmware may take a few minutes, please don't turn off the power or press the reset button.</TD>
+ <td width="40"> &nbsp; </td>
+</TR>
+
+<tr>
+ <td colspan="3" align="left">
+	<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" bordercolor="#999999" id="AutoNumber19" style="border-style: solid; border-width: 1px">
+	<tr>
+	<td align="left">
+		<table id="lpc" bgcolor="#999999" height="25">
+		<tr><td></TD>
+		</TR>
+		</table></TD>
+	</TR>
+	</table>
+  </TD>
+   <td id="percent" width="40" align="center"></TD>
+</TR>
+
+<tr>
+ <td height="40" rowspan="2" colspan="4" align="center" nowrap><b class="red">Upgrade must NOT be interrupted !</b>
+ <br>&nbsp;</TD>
+</TR>
+</table></div>
+ </TD>
+</TR>
+
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+ <!--
+  	<input type="button" name="save" value="Cancel Upgrades" class="stdbutton" onClick="javascript:cancel(document.forms[0]);">
+-->
+</TD>
+</TR>
+
+
+</table>
+<input type="hidden" name = "remote_upgrade_disable" value="@remote_upgrade_disable#">
+<input type="hidden" name = "remote_ip_in_range" value="@remote_ip_in_range#">
+<input type="hidden" name = "remote_ip_in_local" value="@remote_ip_in_local#">
+<input type="hidden" name="this_file" value="FirmwareUpgrade.htm">
+<input type="hidden" name="next_file" value="FirmwareUpgrade.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</div></form>
+</body>
+
+</html>

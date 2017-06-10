@@ -1,0 +1,5 @@
+#!/bin/sh
+SYSLOG "WAN Response to ping packet"
+#$IPTABLES -A INPUT -m limit --limit 1/s -p icmp -i $WANIF -j ACCEPT  # Append this rule because we have to do prevent DOS first
+  
+$IPTABLES -A INPUT  -p icmp -i $WANIF -j ACCEPT 

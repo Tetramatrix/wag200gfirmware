@@ -1,0 +1,40 @@
+bm.o: bm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)
+bm_osl.o: bm_osl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)
+bmdriver.o: bmdriver.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)
+bmnotify.o: bmnotify.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)
+bmpm.o: bmpm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bmpower.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bmpower.h)
+bmpower.o: bmpower.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bmpower.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bmpower.h)
+bmrequest.o: bmrequest.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)
+bmsearch.o: bmsearch.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)
+bmutils.o: bmutils.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h)

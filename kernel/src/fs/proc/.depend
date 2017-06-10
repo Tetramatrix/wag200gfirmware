@@ -1,0 +1,141 @@
+array.o: array.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/highmem.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/highmem.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/processor.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/processor.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/s390.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h)
+base.o: base.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h)
+generic.o: generic.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h)
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/limits.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/limits.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+kcore.o: kcore.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/user.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/user.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/a.out.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/a.out.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/elf.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/elf.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/elfcore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/elfcore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/highmem.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/highmem.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/kcore/aout.h)
+kmsg.o: kmsg.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+proc_devtree.o: proc_devtree.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+proc_misc.o: proc_misc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/modules.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sgi/ds1286.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/s390.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/generic/isa/dma.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ppc32.h)
+proc_tty.o: proc_tty.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h)
+root.o: root.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/soc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sysctl.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sysvipc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/binfmt/misc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/binfmt/misc/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sun/openpromfs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sun/openpromfs/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/devicetree.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ppc/rtas.h)

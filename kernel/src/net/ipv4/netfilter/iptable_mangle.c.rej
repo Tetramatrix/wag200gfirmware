@@ -1,0 +1,17 @@
+***************
+*** 165,171 ****
+  		|| (*pskb)->nh.iph->daddr != daddr
+  		|| (*pskb)->nfmark != nfmark
+  		|| (*pskb)->nh.iph->tos != tos))
+- 		return ip_route_me_harder(pskb) == 0 ? ret : NF_DROP;
+  
+  	return ret;
+  }
+--- 193,199 ----
+  		|| (*pskb)->nh.iph->daddr != daddr
+  		|| (*pskb)->nfmark != nfmark
+  		|| (*pskb)->nh.iph->tos != tos))
++ 		return route_me_harder(*pskb) == 0 ? ret : NF_DROP;
+  
+  	return ret;
+  }

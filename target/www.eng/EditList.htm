@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Internet Access PC List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<meta HTTP-EQUIV="Expires" CONTENT="Mon, 06 Jan 1990 00:00:01 GMT">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+function checkData()
+{
+    var cf = document.forms[0];
+	var macstr = "";
+	var msg = "";
+	var i;
+   
+    for( i=1; i<9; i++)
+    {
+		macstr = eval("cf.macAddr" + i + ".value");
+		if ( macstr.length == 0 || macstr == "000000000000")
+			continue;
+        if(badMac( eval("cf.macAddr" + i), true ))
+			msg+= addstr(msg_bad_mac_pc, i);
+    }
+	
+    for(i=1; i < 7; i++)
+    {
+        if( !isInteger(eval("cf.ipaddr" + i + ".value"), 0, 255, false) )
+           msg+= addstr(msg_invalid_ipnum, i );
+    }
+	
+	if (   !isInteger(cf.ipaddr_range11.value, 0, 255, false) 
+	    || !isInteger(cf.ipaddr_range12.value, 0, 255, false) 
+		|| isBigger(cf.ipaddr_range11.value, cf.ipaddr_range12.value) )
+		msg+= msg_invalid_range1;
+	
+	if (   !isInteger(cf.ipaddr_range21.value, 0, 255, false) 
+	    || !isInteger(cf.ipaddr_range22.value, 0, 255, false) 
+		|| isBigger(cf.ipaddr_range21.value, cf.ipaddr_range22.value) )
+		msg+= msg_invalid_range2;
+
+	dataToHidden(cf);
+	return checkMsg(msg);
+}
+
+//
+//-->	
+</script>
+</head>
+<BODY bgColor="#808080" onload="dataToVisible(document.forms[0])">
+<FORM name="editlist" method="POST" action="setup.cgi">
+<div align="center">
+<TABLE border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+<TR>
+  <td bgcolor="#6666cc">
+  <BR>
+  <hr size="1" color="#ffffff">
+  <img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+  </TD>
+</TR>
+    <tr>
+    <td height="15" bgcolor="#E7E7E7"></TD>
+</TR>
+    
+    <tr>
+    <td>
+    <table border="0" cellspacing="0" cellpadding="4">
+	    <tr>
+             <td height="7" bgcolor="#E7E7E7"  width="160"></TD>
+			 <td height="7" colspan="2" width="500"></TD>
+	    
+</TR>	
+        <tr>
+            <td height="24" class="bwhead" valign="top">Internet Access PC List</TD>
+<td>&nbsp;</TD>
+
+</TR>
+<tr>
+<td bgColor="#e7e7e7" class="boldhead" valign="top">&nbsp;</TD>
+<td height="1" width="500" bgcolor="#FFFFFF" align="center">
+<TABLE cellSpacing="0" cellPadding="10" width="500" border="1">
+<tr><td>
+<div align="center">
+<table border="0" cellpadding="0" cellspacing="0" id="AutoNumber3" width="378">
+  <tr>
+  <td height="25" align="center" colspan="4">
+<b class="sub">List of PCs</b>
+</TD>
+</TR>
+  <tr>
+  <td height="25" align="center" colspan="4">
+Enter MAC Address of the PCs in this format: xxxxxxxxxxxx
+</TD>
+</TR>
+<tr>
+  <th height="25" width="50" align="center"> MAC 01</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr1" value="@macAddr1#"></TD>
+  <th height="25" width="50" align="center">  MAC 05</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr5"  value="@macAddr5#"></TD>
+</TR>
+  <tr>
+  <th height="25" width="50" align="center">  MAC 02</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr2" value="@macAddr2#"></TD>
+  <th height="25" width="50" align="center">  MAC 06</th><td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr6"  value="@macAddr6#"></TD>
+</TR>
+  <tr>
+  <th height="25" width="50" align="center">  MAC 03</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr3"  value="@macAddr3#"></TD>
+  <th height="25" width="50" align="center">  MAC 07</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr7" value="@macAddr7#"></TD>
+</TR>
+  <tr>
+  <th height="25" width="50" align="center">  MAC 04</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr4" value="@macAddr4#"></TD>
+  <th height="25" width="50" align="center">  MAC 08</th>
+  <td height="25" width="138" align="center">
+  <INPUT type="Text" class="num" size="18" maxlength="17" name="macAddr8" value="@macAddr8#"></TD>
+</TR>
+  </table>
+  
+  <table border="0" cellpadding="0" cellspacing="0" width="378">
+  <tr><td height="25" align="center"><hr></TD></TR>
+  </table>
+  
+  <table border="0" cellpadding="0" cellspacing="0" width="378">
+  <tr>
+  <td height="25" align="center" colspan="4">Enter the IP Address of the PCs</TD>
+</TR>
+<tr>
+  <th height="25" width="50" align="center"> IP 01</th>
+  <td height="25" width="138" align="center"> @ip_prefix# 
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr1" value="@ipaddr1#">  </TD>
+  <th height="25" width="50" align="center">  IP 04</th>
+  <td height="25" width="138" align="center">  @ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr4" value="@ipaddr2#">  </TD>
+</TR>
+  <tr>
+  <th height="25" width="50" align="center">  IP 02</th>
+  <td height="25" width="138" align="center">  @ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr2" value="@ipaddr3#"> </TD>
+  <th height="25" width="50" align="center"> IP 05</th>
+  <td height="25" width="138" align="center">  @ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3"  name="ipaddr5" value="@ipaddr4#">  </TD>
+</TR>
+  <tr>
+  <th height="25" width="50" align="center">  IP 03</th>
+  <td height="25" width="138" align="center">  @ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr3" value="@ipaddr5#">  </TD>
+  <th height="25" width="50" align="center">  IP 06</th>
+  <td height="25" width="138" align="center">  @ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr6" value="@ipaddr6#">  </TD>
+</TR>
+</table>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="378">
+  <tr><td height="25" align="center"><hr></TD></TR>
+  </table>
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="378">
+<tr>
+  <td height="25" align="center" colspan="2">Enter the IP Range of the PCs</TD>
+</TR>
+<tr>
+  <th height="25" align="center" nowrap>IP Range 01</Th>
+  <th height="25" align="center" nowrap>IP Range 02</Th>  
+</TR>
+
+<tr>
+  <td height="25" nowrap align="center" valign="baseline">@ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr_range11" value="@ipaddr_range11#"> 
+  ~
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr_range12" value="@ipaddr_range12#"></TD>
+
+<td height="25" nowrap align="center" valign="baseline">  @ip_prefix#
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr_range21" value="@ipaddr_range21#"> 
+  ~
+  <INPUT type="Text" class="ipnum" maxlength="3" size="3" name="ipaddr_range22" value="@ipaddr_range22#"></TD>
+</TR>
+</table>
+</div></TD>
+</TR>
+</table>
+				
+<center>	
+   <BR><input type="SUBMIT" name="save" value="Save Settings" class="slbutton" onClick="return checkData();">
+   <input type="button" name="cancel" value="Cancel Changes" class="slbutton" onClick="location.href='setup.cgi?next_file=EditList.htm'">
+<input type="BUTTON" name="close" value="Close" class="slbutton" onClick="self.close()">
+</center>
+<BR> &nbsp; 
+				
+				</TD>
+</TR>
+                             
+            </table>
+			</TD>
+</TR>
+        </table></div>
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="EditList.htm">
+<input type="hidden" name="next_file" value="EditList.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+</html>
+

@@ -1,0 +1,10 @@
+#!/bin/bash
+i=/usr/sbin/iptables
+
+#$i -D PREROUTING 5 -t nat
+#$i -D FORWARD 12
+
+
+$i -t nat -A PREROUTING -p tcp --dport 6881:6999 -j TRIGGER --trigger-type dnat
+$i -I FORWARD 25 -p tcp --dport 6881:6999 -j TRIGGER --trigger-type in
+$i -t nat -A PREROUTING -i ppp0 -p tcp --dport 6881 -j TRIGGER --trigger-type out --trigger-proto all --trigger-match 6881-6999 --trigger-relate 6881-6999

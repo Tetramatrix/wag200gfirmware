@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>DDNS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- Start Script
+function init()
+{
+	dataToVisible(document.forms[0]);
+	setDivs();
+}
+
+function setDivs()
+{
+ 	var cf = document.forms[0];
+	show_hide("dyndnsDIV", (cf.ddns.selectedIndex == 1));
+	show_hide("tzoDIV", (cf.ddns.selectedIndex == 2));
+	show_hide("statusDIV", (cf.ddns.selectedIndex != 0));
+}
+
+function checkData()
+{
+    var cf = document.forms[0];
+    var msg = "";  
+	var service = getSelected(cf.ddns);
+	
+	if( service == "dyndns")
+	{
+		msg+= checkBlank(cf.dyndns_user, msg_username);
+		msg+= checkBlank(cf.dyndns_pw, msg_password);		
+		msg+= checkBlank(cf.dyndns_domain, msg_hostname);
+	}
+	else if (service == "tzo")
+	{
+		msg+= checkBlank(cf.tzo_user, msg_email_addr);
+		msg+= checkBlank(cf.tzo_pw, msg_key);		
+		msg+= checkBlank(cf.tzo_domain, msg_domain);
+	}
+	
+	ddns_st.innerHTML = msg_ddns_info;
+	dataToHidden(cf);
+	return checkMsg(msg);
+}
+
+	
+//-->
+</script>
+
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onLoad="init();">
+<form name="ddns" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+      <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></td>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </td>
+</tr>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></td>
+</tr>
+
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Setup</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+  <table border="0" cellspacing="0" width="646" height="100%">
+  <tr>
+     <td height="10" background="UI_07.gif"> </td>
+	 <td height="10" background="UI_06.gif" colspan="6"> </td>
+  </tr>
+  <tr>
+     <td class="thistab" width="83">Setup</td>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></td>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></td>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></td>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></td>
+	 <td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></td>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></td>
+  </tr>
+  </table>
+ </td>
+</tr>
+
+<!-- sub menu--> 
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Setup.htm">Basic Setup</a><b class="separator">|</b>&nbsp;&nbsp;
+  <span class="current">DDNS</span>&nbsp;&nbsp;<b class="separator">|</b>
+  <a class="submenu" href="setup.cgi?next_file=Setup_routing.htm">Advanced Routing</a>
+ </td>
+</tr>
+</table>
+
+
+<!-- data table--> 
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" height="300" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgcolor="#E7E7E7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></td>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></td>
+</tr>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">DDNS</td>
+  <td width="454">&nbsp;  </td>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+      >&nbsp;&nbsp; <A href="help/h_DDNS.htm" class="submenu" target="_blank">Help... </A></SPAN></td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top" class="boldhead">DDNS Service</td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+ <table class="std">
+ <tr>
+<td nowrap><SELECT name="ddns" size="1" onChange="stdAction(this.form, 'change_ddns');"> 
+<OPTION value="disable">Disabled</OPTION> 
+<OPTION value="ddnsorg">DynDNS.org</OPTION> 
+<OPTION value="tzo">TZO.com</OPTION> 
+</SELECT></td>
+ </tr>
+ </table>
+</td>
+<td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></td>
+</tr>
+
+
+<tr>
+ <td width="156" valign="top" bgcolor="#E7E7E7">&nbsp;  </td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+ 
+ <div ID="dyndnsDIV">
+ <hr class="std">
+ <table class="std">
+ <tr>
+  <td nowrap width="130">Username:</td>
+  <td nowrap><INPUT type="text" name="dyndns_user" value="@dyndns_user#" maxLength="62" size="30" ></td>
+ </tr>
+ <tr>
+  <td nowrap>Password:</td>
+  <td nowrap><INPUT type="password" name="dyndns_pw" value="@dyndns_pw#" maxLength="60" size="30" ></td>
+ </tr>
+ <tr>
+  <td nowrap>Host Name:</td>
+  <td nowrap><INPUT type="text" name="dyndns_domain" value="@dyndns_domain#" maxLength="64" size="30" ></td>
+ </tr>
+ <tr>
+  <td nowrap>Internet IP Address:</td>
+  <td nowrap>@wan_ip#</td>
+ </tr>
+ </table>
+ </div>
+
+<div ID="tzoDIV"> 
+<hr class="std">
+<table class="std">
+ <tr>
+  <td nowrap width="130">E-mail Address:</td>
+  <td nowrap><INPUT type="text" name="tzo_user" value="@tzo_user#" maxLength="60" size="30" ></td>
+ </tr>
+ <tr>
+  <td nowrap>TZO Password:</td>
+  <td nowrap><INPUT type="password" name="tzo_pw" value="@tzo_pw#" maxLength="60" size="30" ></td>
+ </tr>
+ <tr>
+  <td nowrap>Domain Name:</td>
+  <td nowrap><INPUT type="text" name="tzo_domain" value="@tzo_domain#" maxLength="64" size="30" ></td>
+ </tr>
+ <tr>
+  <td nowrap>Internet IP Address:</td>
+  <td nowrap>@wan_ip#</td>
+ </tr>
+ </table>
+ </div>
+ 
+ <div ID="statusDIV">
+ <table class="std">
+ <tr>
+  <td nowrap width="130">Status:</td>
+  <td id="ddns_st" nowrap>@ddns_status#</td>
+ </tr>
+ <tr>
+  <td nowrap colspan="2"><INPUT type="submit" name="ddnsconnect" value="Connect" onClick="this.form.todo.value='connect_ddns';return checkData();"></td>
+ </tr>
+ </table>
+ </div>
+ 
+ <br> &nbsp; 
+ </td>
+</tr>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </td>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="SUBMIT" name="save" value="Save Settings" class="stdbutton" onClick="return checkData();">
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=Setup_DDNS.htm'"> &nbsp;  &nbsp; </td>
+</tr>
+
+
+</table>
+
+</div>
+
+
+<!-- ServerStart -->
+<input type="hidden" name="h_ddns" value="@h_ddns#">
+<!-- ServerEnd -->
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="Setup_DDNS.htm">
+<input type="hidden" name="next_file" value="Setup_DDNS.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>     
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+#undef  CONFIG_USB_PSP_HOST11

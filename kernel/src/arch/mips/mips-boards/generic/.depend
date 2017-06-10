@@ -1,0 +1,107 @@
+cmdline.o: cmdline.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h)
+display.o: display.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/sead.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/sead.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/sead2.h)
+gdb_hook.o: gdb_hook.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serialP.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serialP.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/serial.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/serial.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/atlas.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/atlas.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/atlas.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/saa9730_uart.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/saa9730_uart.h)
+init.o: init.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/gt64120.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/gt64120.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/malta.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/malta.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/adam2_env.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/adam2_env.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/pspboot.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/env_backcmpt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/env_backcmpt.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/adam2.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/adam2/jmp/tbl.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/soc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/malta.h)
+memory.o: memory.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bootmem.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bootmem.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/soc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/malta.h)
+mipsIRQ.o: mipsIRQ.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/stackframe.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/stackframe.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/atlas.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/malta.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/intc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/sead2.h)
+pci.o: pci.c \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/gt64120.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/gt64120.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/malta.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/malta.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/malta.h)
+printf.o: printf.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serialP.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serialP.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/serial.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/serial.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/soc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/addrspace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/addrspace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/atlas.h)
+reset.o: reset.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/reboot.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/reboot.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/atlas.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/atlas.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/atlas.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/soc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/malta.h)
+time.o: time.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/hardirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/hardirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/div64.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/div64.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/hrtime.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/hrtime.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mc146818rtc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mc146818rtc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timex.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timex.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/generic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/iic.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/soc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/avalanche/generic/pal.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/7seg.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/atlas.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/malta.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/high/res/timers.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/evm3.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/cpu/frequency/avalanche.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/cpu/mips32.h)

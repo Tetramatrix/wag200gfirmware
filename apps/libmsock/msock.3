@@ -1,0 +1,169 @@
+.\" man page for msock library a library of utility routines for unux
+.\" unix socket programming. 
+.\" document re-formatted, Jan-31-1998
+.\" 
+.\" this doc is not updated use the HTML doc. -- mm, jul-10-1999
+.\"
+
+.ad l
+.nh
+.TH "(libmsock.a 1.1)"
+.SH "libmsock.a - A library for TCP/IP client-server applications on Unix"
+.PP
+.SH SYNOPSIS
+.nf
+.ft CW
+
+#include <msock.h>
+
+int ServerSocket(u_short port,int max_servers);
+int ClientSocket(char *netaddress,u_short port);
+int sockGets(int sockfd,char *str,size_t count);
+int sockRead(int sockfd,char *str,size_t count);
+int sockPuts(int sockfd,char *str);
+int sockWrite(int sockfd,char *str,size_t count);
+int getPeerInfo(int sockfd,char *cli_host,char *cli_ip,u_short *cli_port);
+int atoport(char *service,char *proto);
+struct in_addr *atoaddr(char *address);
+.ft R
+.fi
+
+There are several routines available for SSL if compiled with -DUSE_SSEL=1 
+flag.  You will need SSLeay (http://www.psy.uq.edu.au:8080/~ftp/Crypto/).
+SSLeay is a free implementation of Netscape's Secure Socket Layer - the 
+software encryption protocol behind the Netscape Secure Server and the 
+Netscape Navigator Browser.  The routines are:
+.nf
+.ft CW
+
+int sockReadSSL(SSL *ssl,char *buf,size_t n);
+int sockWriteSSL(SSL *ssl,char *str,size_t count);
+int sockGetsSSL(SSL *ssl,char *str,size_t count);
+int sockPutsSSL(SSL *ssl,char *str);
+
+.ft R
+.fi
+
+.SH "DESCRIPTION"
+These functions are used to develop TCP/IP client-server applications 
+on Unix. The functions encapsulate the complexities of BSD socket APIs.
+
+.SS "int ServerSocket(u_short port,int max_servers)"
+.PP
+This function listens on a port and returns connections.  The connection is
+returned as the socket file descriptor. The socket is of type SOCK_STREAM
+and AF_INET family.  The function will create a new process for every 
+incoming connections, so in the listening process, it will never return. 
+Only when a connection comes in and a new process for it is created, the 
+function will return.This means, the caller should never loop.
+.PP
+.nf
+The parameters are as follows:
+.ft CW
+u_short port        The port to listens to (host byte order)
+int max_servers     The maximum number of connection to
+                    queue up before having them rejected
+                    automatically.
+.fi
+.ft R
+.PP
+NOTE: _NEVER_ convert port to network byte order by calling htons().  It 
+will be converted by the function. The options SO_REUSEADDR and SO_KEEPALIVE
+options are set on the socket file descriptor. Read the Chapter 7 of
+Unix Network Programming (2nd Ed) by Stevens for details on the socket
+options.
+.PP
+The function returns the socked file descriptor (a positive number)  on 
+success and -1 on failure.
+
+.SS "int ClientSocket(char *netaddress,u_short port)"
+.PP
+This function makes a connection to a given server's stream socket. 
+.PP
+.nf
+The parameters are as follows:
+.ft CW
+char    *netaddress The host to connect to. The netaddress can
+                    be the hostname or the IP address (dot
+                    separated 8 octets).
+u_short port        The port to connect to
+.fi
+.ft R
+.PP
+NOTE: _NEVER_ convert port to network byte order by calling htons().  It 
+will be converted by the function.
+.PP
+The function returns the socked file descriptor (a positive number)  on 
+success and -1 on failure.
+.PP
+.SS "int sockGets(int sockfd,char *str,size_t count)"
+.PP
+This function reads from a socket until it receives a line feed character. 
+It fills the buffer "str" up to the maximum size "count".
+.PP
+.nf
+The parameters are as follows:
+.ft CW
+int sockfd      The socket to read from.
+char *str       The buffer to fill up.
+size_t  count   The maximum number of bytes to stuff to str.
+.fi
+.ft R
+.PP
+This function returns -1 if the socket is closed during reading operation.
+.PP
+WARNING: If a single line exceeds the length of count, the data will be 
+read and discarded.
+.PP
+.SS "int sockRead(int sockfd,char *str,size_t count)"
+.PP
+This function reads the "count" number of bytes and stuffs to str. str 
+must have enough space. This routine is like read() system call except 
+that it makes sure all the requested number of bytes are read.
+.PP
+Note, str must have enough space to hold the "count" number of bytes.
+.PP
+.SS "int sockPuts(int sockfd,char *str)"
+This function writes a character string out to a socket. It will return -1 
+if the connection is closed while it is trying to write.
+.PP
+.SS "int sockWrite(int sockfd,char *str,size_t count)"
+This function is like the write() system call, except that it will make 
+sure all data is transmitted.
+.PP    
+.SS "int getPeerInfo(int sockfd,char *cli_host,char *cli_ip,u_short *cli_port)"
+.PP
+This function gets information about the host connected to the socket. 
+.PP
+.nf
+The parameters are as follows:
+.ft CW
+int sockfd       The connected socket
+char *cli_host   The hostname connected to the socket (returns)
+char *cli_ip     The IP address of the host connected (returns)
+u_short *cli_port The client side port of the host (returns)
+.fi
+.ft R
+.PP
+Note, cli_host, cli_ip must have enough space to hold the info.
+.PP
+.SS "int atoport(char *service,char *proto)"
+.PP
+This function takes a service name and a service type and returns a port 
+number. If the service name is not found, it tries it as a decimal number. 
+.PP
+The number returned is byte ordered for the network.
+.PP
+.SS "struct in_addr *atoaddr(char *address)"
+.PP
+This function converts ASCII text to \fBin_addr\fP struct. NULL is 
+returned if the address can not be found.
+.PP
+
+.SH ACKNOWLEDGMENT
+UNIX socket programming FAQ. (http://www.ibrado.com/sock-faq/)
+.SH AUTHORS
+.nf
+Muhammad A Muquit
+# ma_muquit@fccc.edu, Dec-19-96
+.fi

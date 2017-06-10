@@ -1,0 +1,6 @@
+#!/bin/sh
+/usr/sbin/rc wan_basic stop
+/bin/rm /tmp/wan_uptime
+/bin/echo "search WAG200G" > /etc/resolv.conf
+/bin/echo "i0" > /proc/led
+

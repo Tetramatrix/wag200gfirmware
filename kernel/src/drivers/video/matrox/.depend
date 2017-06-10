@@ -1,0 +1,128 @@
+i2c-matroxfb.o: i2c-matroxfb.c \
+   matroxfb_base.h $(dep_matroxfb_base.h) \
+   matroxfb_maven.h $(dep_matroxfb_maven.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c-algo-bit.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c-algo-bit.h)
+matroxfb_DAC1064.o: matroxfb_DAC1064.c \
+   matroxfb_DAC1064.h $(dep_matroxfb_DAC1064.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   matroxfb_accel.h $(dep_matroxfb_accel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/mystique.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/g100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/32mb.h)
+dep_matroxfb_DAC1064.h += \
+   matroxfb_base.h $(dep_matroxfb_base.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/mystique.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/g100.h)
+matroxfb_Ti3026.o: matroxfb_Ti3026.c \
+   matroxfb_Ti3026.h $(dep_matroxfb_Ti3026.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   matroxfb_accel.h $(dep_matroxfb_accel.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/millenium.h)
+dep_matroxfb_Ti3026.h += \
+   matroxfb_base.h $(dep_matroxfb_base.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/millenium.h)
+matroxfb_accel.o: matroxfb_accel.c \
+   matroxfb_accel.h $(dep_matroxfb_accel.h) \
+   matroxfb_DAC1064.h $(dep_matroxfb_DAC1064.h) \
+   matroxfb_Ti3026.h $(dep_matroxfb_Ti3026.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h)
+dep_matroxfb_accel.h += \
+   matroxfb_base.h $(dep_matroxfb_base.h)
+matroxfb_base.o: matroxfb_base.c \
+   matroxfb_base.h $(dep_matroxfb_base.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   matroxfb_accel.h $(dep_matroxfb_accel.h) \
+   matroxfb_DAC1064.h $(dep_matroxfb_DAC1064.h) \
+   matroxfb_Ti3026.h $(dep_matroxfb_Ti3026.h) \
+   matroxfb_maven.h $(dep_matroxfb_maven.h) \
+   matroxfb_crtc2.h $(dep_matroxfb_crtc2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ppc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/32mb.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtrr.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/multihead.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/compat/xpmac.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/millenium.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/mystique.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/g100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/g450.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/all/ppc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nvram.h)
+dep_matroxfb_base.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtrr.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb24.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb24.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/compat/xpmac.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ppc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/macmodes.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/macmodes.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/mystique.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/g100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/millenium.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/32mb.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/multihead.h)
+matroxfb_crtc2.o: matroxfb_crtc2.c \
+   matroxfb_maven.h $(dep_matroxfb_maven.h) \
+   matroxfb_crtc2.h $(dep_matroxfb_crtc2.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   matroxfb_DAC1064.h $(dep_matroxfb_DAC1064.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+dep_matroxfb_crtc2.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c-algo-bit.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c-algo-bit.h) \
+   matroxfb_base.h $(dep_matroxfb_base.h)
+matroxfb_g450.o: matroxfb_g450.c \
+   matroxfb_g450.h $(dep_matroxfb_g450.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   matroxfb_DAC1064.h $(dep_matroxfb_DAC1064.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+dep_matroxfb_g450.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   matroxfb_base.h $(dep_matroxfb_base.h)
+matroxfb_maven.o: matroxfb_maven.c \
+   matroxfb_maven.h $(dep_matroxfb_maven.h) \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   matroxfb_DAC1064.h $(dep_matroxfb_DAC1064.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/div64.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/div64.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+dep_matroxfb_maven.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c-algo-bit.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2c-algo-bit.h) \
+   matroxfb_base.h $(dep_matroxfb_base.h)
+matroxfb_misc.o: matroxfb_misc.c \
+   matroxfb_misc.h $(dep_matroxfb_misc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/matroxfb.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/matrox/multihead.h)
+dep_matroxfb_misc.h += \
+   matroxfb_base.h $(dep_matroxfb_base.h)

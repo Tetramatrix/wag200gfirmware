@@ -1,0 +1,16 @@
+***************
+*** 91,96 ****
+  	use_clustering: ENABLE_CLUSTERING,			\
+  	use_new_eh_code: 1,					\
+  	highmem_io: 1,						\
+  }
+  
+  #endif /* _AIC7XXX_LINUX_HOST_H_ */
+--- 91,97 ----
+  	use_clustering: ENABLE_CLUSTERING,			\
+  	use_new_eh_code: 1,					\
+  	highmem_io: 1,						\
++ 	can_do_varyio: 1,					\
+  }
+  
+  #endif /* _AIC7XXX_LINUX_HOST_H_ */

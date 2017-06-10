@@ -1,0 +1,47 @@
+8
+
+dir
+5734
+svn://svn.m0k.org/Transmission/trunk/macosx/Sparkle.framework/Versions/A/Resources/es.lproj
+svn://svn.m0k.org/Transmission
+
+
+
+2007-07-31T02:58:53.842443Z
+2569
+charles
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+f4695dd4-2c0a-0410-b89c-da849a56a58e
+
+SUAutomaticUpdateAlert.nib
+dir
+
+SUUpdateAlert.nib
+dir
+
+Sparkle.strings
+file
+
+
+
+
+2008-05-01T05:35:42.000000Z
+730fa52b52614100c3f8d954af20b254
+2007-04-15T16:51:48.387248Z
+1721
+livings124
+has-props
+

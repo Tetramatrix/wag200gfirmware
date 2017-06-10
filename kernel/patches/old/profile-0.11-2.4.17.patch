@@ -1,0 +1,3571 @@
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/Documentation/Configure.help linux-2.4.17-profile/Documentation/Configure.help
+--- linux-2.4.17/Documentation/Configure.help	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/Documentation/Configure.help	Wed Jan  2 15:01:35 2002
+@@ -17571,6 +17571,20 @@
+ 
+   If unsure, say N.
+ 
++/dev/profile support
++CONFIG_PROFILING
++  Saying Y here will compile in support for kernel profiling. To use it
++  you need to create the character special device /dev/profile with
++  major 192 and minor 0 using mknod. User-level commands such as kernprof
++  and gprof can then be used to control the provided facilities and to
++  generate user-readable profiles. If you do not want to profile the
++  kernel, say N here.
++
++  This driver is also available as a module ( = code which can be
++  inserted in and removed from the running kernel whenever you want).
++  The module will be called profile.o. If you want to compile it as a
++  module, say M here and read Documentation/modules.txt.
++
+ /dev/nvram support
+ CONFIG_NVRAM
+   If you say Y here and create a character special file /dev/nvram
+@@ -22260,6 +22274,25 @@
+   faster. However, when a problem occurs with the kernel, the
+   information that is reported is severely limited. Most people
+   should say N here.
++
++Function-entry instrumentation
++CONFIG_MCOUNT
++  This will instrument the kernel with calls to mcount(), which enables 
++  call-graph and call-count profiling.  Because mcount() is called at 
++  entry to each function, this will slow down execution somewhat.
++  If you do not plan to use profiling, say N here.
++
++  IMPORTANT NOTICE: Do not use this option if you compile the i386 kernel
++  with stock gcc. If you do, the kernel will crash or hang at boot time.
++  Find a simple patch at http://oss.sgi.com/projects/kernprof/download
++  to modify egcs-1.1.2 and rebuild gcc.  
++
++Function-limit recursion
++CONFIG_LIMIT_RECURS
++  On certain hardware, call-graph profiling and exit instrumentation may
++  cause kernel crashes because of excessive recursive invocations of the
++  instrumentation functions.  Answer Y to limit the level of recursion
++  permitted to 3.
+ 
+ Verbose user fault messages
+ CONFIG_DEBUG_USER
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/Makefile linux-2.4.17-profile/Makefile
+--- linux-2.4.17/Makefile	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/Makefile	Wed Jan  2 15:01:35 2002
+@@ -89,7 +89,19 @@
+ CPPFLAGS := -D__KERNEL__ -I$(HPATH)
+ 
+ CFLAGS := $(CPPFLAGS) -Wall -Wstrict-prototypes -Wno-trigraphs -O2 \
+-	  -fomit-frame-pointer -fno-strict-aliasing -fno-common
++	  -fno-strict-aliasing -fno-common
++
++# Turn on -pg to instrument the kernel with calls to mcount().
++# Unfortunately, gcc won't allow -pg without frame pointers.
++ifdef CONFIG_MCOUNT
++  CFLAGS += -pg
++  CFLAGS_KERNEL += -pg
++  CONFIG_FRAME_POINTER = 1
++endif
++ifndef CONFIG_FRAME_POINTER
++  CFLAGS += -fomit-frame-pointer
++endif
++
+ AFLAGS := -D__ASSEMBLY__ $(CPPFLAGS)
+ 
+ #
+@@ -333,7 +345,7 @@
+ 	$(CC) $(CFLAGS) $(CFLAGS_KERNEL) -DUTS_MACHINE='"$(ARCH)"' -c -o init/version.o init/version.c
+ 
+ init/main.o: init/main.c include/config/MARKER
+-	$(CC) $(CFLAGS) $(CFLAGS_KERNEL) $(PROFILING) -c -o $*.o $<
++	$(CC) $(CFLAGS) $(CFLAGS_KERNEL) -c -o $*.o $<
+ 
+ fs lib mm ipc kernel drivers net: dummy
+ 	$(MAKE) CFLAGS="$(CFLAGS) $(CFLAGS_KERNEL)" $(subst $@, _dir_$@, $@)
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/boot/compressed/Makefile linux-2.4.17-profile/arch/i386/boot/compressed/Makefile
+--- linux-2.4.17/arch/i386/boot/compressed/Makefile	Tue Sep 11 23:08:12 2001
++++ linux-2.4.17-profile/arch/i386/boot/compressed/Makefile	Wed Jan  2 15:01:35 2002
+@@ -32,8 +32,13 @@
+ head.o: head.S
+ 	$(CC) $(AFLAGS) -traditional -c head.S
+ 
++ifdef CONFIG_MCOUNT
++misc.o: misc.c
++	$(CC) $(subst -pg,,$(CFLAGS)) -c misc.c
++else
+ misc.o: misc.c
+ 	$(CC) $(CFLAGS) -c misc.c
++endif
+ 
+ piggy.o:	$(SYSTEM)
+ 	tmppiggy=_tmp_$$$$piggy; \
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/config.in linux-2.4.17-profile/arch/i386/config.in
+--- linux-2.4.17/arch/i386/config.in	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/i386/config.in	Wed Jan  2 15:01:35 2002
+@@ -415,4 +415,17 @@
+    bool '  Verbose BUG() reporting (adds 70K)' CONFIG_DEBUG_BUGVERBOSE
+ fi
+ 
++tristate 'Kernel Profiling Support' CONFIG_PROFILING
++if [ "$CONFIG_PROFILING" != "n" ]; then
++   define_bool CONFIG_FRAME_POINTER y
++fi
++bool 'Instrument kernel at entry to all C functions' CONFIG_MCOUNT
++if [ "$CONFIG_MCOUNT" = "y" ]; then
++   define_bool CONFIG_FRAME_POINTER y
++   define_bool CONFIG_X86_MSR y
++   define_bool CONFIG_X86_CPUID y
++   define_bool CONFIG_PROFILING y
++   bool '  Limit recursion in entry profiling' CONFIG_LIMIT_RECURS
++fi
++
+ endmenu
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/apic.c linux-2.4.17-profile/arch/i386/kernel/apic.c
+--- linux-2.4.17/arch/i386/kernel/apic.c	Fri Nov  9 14:12:55 2001
++++ linux-2.4.17-profile/arch/i386/kernel/apic.c	Wed Jan  2 15:01:35 2002
+@@ -23,6 +23,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/mc146818rtc.h>
+ #include <linux/kernel_stat.h>
++#include <linux/profile.h>
+ 
+ #include <asm/atomic.h>
+ #include <asm/smp.h>
+@@ -33,10 +34,6 @@
+ /* Using APIC to generate smp_local_timer_interrupt? */
+ int using_apic_timer = 0;
+ 
+-int prof_multiplier[NR_CPUS] = { 1, };
+-int prof_old_multiplier[NR_CPUS] = { 1, };
+-int prof_counter[NR_CPUS] = { 1, };
+-
+ int get_maxlvt(void)
+ {
+ 	unsigned int v, ver, maxlvt;
+@@ -913,9 +910,36 @@
+ 	smp_call_function(setup_APIC_timer, (void *)calibration_result, 1, 1);
+ }
+ 
++#if defined(CONFIG_PROFILING)
++
++int prof_multiplier[NR_CPUS] = { [0 ... NR_CPUS - 1] = 1 };
++int prof_old_multiplier[NR_CPUS] = { [0 ... NR_CPUS - 1] = 1 };
++int prof_counter[NR_CPUS] = { [0 ... NR_CPUS - 1] = 1 };
++
++void smp_apic_perfctr_overflow_interrupt(struct pt_regs *regs)
++{
++	prof_hook_p prof_hook = prof_perfctr_hook;
++
++	ack_APIC_irq();
++	if (prof_hook)
++		prof_hook(regs);
++}
++
++void __init setup_APIC_perfctr_vector(void *unused)
++{
++	(void) apic_read(APIC_LVTPC);
++	apic_write(APIC_LVTPC, PERFCTR_OVFL_VECTOR);
++}
++ 
++void __init setup_APIC_perfctr(void)
++{
++	smp_call_function(setup_APIC_perfctr_vector, NULL, 1, 1);
++	setup_APIC_perfctr_vector(NULL);
++}
++
+ /*
+- * the frequency of the profiling timer can be changed
+- * by writing a multiplier value into /proc/profile.
++ * Change the frequency of the profiling timer.  The multiplier is specified
++ * by an appropriate ioctl() on /dev/profile.
+  */
+ int setup_profiling_timer(unsigned int multiplier)
+ {
+@@ -940,6 +964,7 @@
+ 
+ 	return 0;
+ }
++#endif
+ 
+ #undef APIC_DIVISOR
+ 
+@@ -955,37 +980,32 @@
+ 
+ inline void smp_local_timer_interrupt(struct pt_regs * regs)
+ {
+-	int user = user_mode(regs);
++#if defined(CONFIG_PROFILING)
+ 	int cpu = smp_processor_id();
+ 
+-	/*
+-	 * The profiling function is SMP safe. (nothing can mess
+-	 * around with "current", and the profiling counters are
+-	 * updated with atomic operations). This is especially
+-	 * useful with a profiling multiplier != 1
+-	 */
+-	if (!user)
+-		x86_do_profile(regs->eip);
++	prof_hook_p prof_hook = prof_timer_hook;
+ 
+-	if (--prof_counter[cpu] <= 0) {
+-		/*
+-		 * The multiplier may have changed since the last time we got
+-		 * to this point as a result of the user writing to
+-		 * /proc/profile. In this case we need to adjust the APIC
+-		 * timer accordingly.
+-		 *
+-		 * Interrupts are already masked off at this point.
+-		 */
+-		prof_counter[cpu] = prof_multiplier[cpu];
+-		if (prof_counter[cpu] != prof_old_multiplier[cpu]) {
+-			__setup_APIC_LVTT(calibration_result/prof_counter[cpu]);
+-			prof_old_multiplier[cpu] = prof_counter[cpu];
+-		}
++	if (prof_hook)
++		prof_hook(regs);
++
++	if (--prof_counter[cpu] > 0)
++		return;
++
++	/*
++	 * The multiplier may have changed since the last time we got here
++	 * as a result of the user changing the profiling frequency.
++	 * In this case we need to adjust the APIC timer accordingly.
++	 */
++	prof_counter[cpu] = prof_multiplier[cpu];
++	if (prof_counter[cpu] != prof_old_multiplier[cpu]) {
++		__setup_APIC_LVTT(calibration_result/prof_counter[cpu]);
++		prof_old_multiplier[cpu] = prof_counter[cpu];
++	}
++#endif
+ 
+ #ifdef CONFIG_SMP
+-		update_process_times(user);
++	update_process_times(user_mode(regs));
+ #endif
+-	}
+ 
+ 	/*
+ 	 * We take the 'long' return path, and there every subsystem
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/i386_ksyms.c linux-2.4.17-profile/arch/i386/kernel/i386_ksyms.c
+--- linux-2.4.17/arch/i386/kernel/i386_ksyms.c	Tue Nov 13 09:13:20 2001
++++ linux-2.4.17-profile/arch/i386/kernel/i386_ksyms.c	Wed Jan  2 15:01:35 2002
+@@ -163,6 +163,16 @@
+ EXPORT_SYMBOL_NOVERS(memcpy);
+ EXPORT_SYMBOL_NOVERS(memset);
+ 
++#if defined(CONFIG_PROFILING)
++EXPORT_SYMBOL(prof_multiplier);
++EXPORT_SYMBOL(setup_profiling_timer);
++#endif /* CONFIG_PROFILING */
++
++#if defined(CONFIG_MCOUNT)
++extern void mcount(void);
++EXPORT_SYMBOL(mcount);
++#endif /*  CONFIG_MCOUNT */
++
+ #ifdef CONFIG_HAVE_DEC_LOCK
+ EXPORT_SYMBOL(atomic_dec_and_lock);
+ #endif
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/i8259.c linux-2.4.17-profile/arch/i386/kernel/i8259.c
+--- linux-2.4.17/arch/i386/kernel/i8259.c	Mon Sep 17 23:03:09 2001
++++ linux-2.4.17-profile/arch/i386/kernel/i8259.c	Wed Jan  2 15:01:35 2002
+@@ -95,6 +95,13 @@
+ BUILD_SMP_TIMER_INTERRUPT(apic_timer_interrupt,LOCAL_TIMER_VECTOR)
+ BUILD_SMP_INTERRUPT(error_interrupt,ERROR_APIC_VECTOR)
+ BUILD_SMP_INTERRUPT(spurious_interrupt,SPURIOUS_APIC_VECTOR)
++
++#if defined(CONFIG_PROFILING)
++/*
++ * We use the performance-monitoring counter overflow interrupt for profiling
++ */
++BUILD_SMP_TIMER_INTERRUPT(apic_perfctr_overflow_interrupt, PERFCTR_OVFL_VECTOR)
++#endif
+ #endif
+ 
+ #define IRQ(x,y) \
+@@ -487,6 +494,11 @@
+ 	/* IPI vectors for APIC spurious and error interrupts */
+ 	set_intr_gate(SPURIOUS_APIC_VECTOR, spurious_interrupt);
+ 	set_intr_gate(ERROR_APIC_VECTOR, error_interrupt);
++
++#if defined(CONFIG_PROFILING)
++	/* self generated IPI for performance counter overflow */
++	set_intr_gate(PERFCTR_OVFL_VECTOR, apic_perfctr_overflow_interrupt);
++#endif
+ #endif
+ 
+ 	/*
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/irq.c linux-2.4.17-profile/arch/i386/kernel/irq.c
+--- linux-2.4.17/arch/i386/kernel/irq.c	Thu Oct 25 13:53:46 2001
++++ linux-2.4.17-profile/arch/i386/kernel/irq.c	Wed Jan  2 15:01:35 2002
+@@ -1112,29 +1112,6 @@
+ 
+ #endif
+ 
+-static int prof_cpu_mask_read_proc (char *page, char **start, off_t off,
+-			int count, int *eof, void *data)
+-{
+-	unsigned long *mask = (unsigned long *) data;
+-	if (count < HEX_DIGITS+1)
+-		return -EINVAL;
+-	return sprintf (page, "%08lx\n", *mask);
+-}
+-
+-static int prof_cpu_mask_write_proc (struct file *file, const char *buffer,
+-					unsigned long count, void *data)
+-{
+-	unsigned long *mask = (unsigned long *) data, full_count = count, err;
+-	unsigned long new_value;
+-
+-	err = parse_hex_value(buffer, count, &new_value);
+-	if (err)
+-		return err;
+-
+-	*mask = new_value;
+-	return full_count;
+-}
+-
+ #define MAX_NAMELEN 10
+ 
+ static void register_irq_proc (unsigned int irq)
+@@ -1170,26 +1147,12 @@
+ #endif
+ }
+ 
+-unsigned long prof_cpu_mask = -1;
+-
+ void init_irq_proc (void)
+ {
+-	struct proc_dir_entry *entry;
+ 	int i;
+ 
+ 	/* create /proc/irq */
+ 	root_irq_dir = proc_mkdir("irq", 0);
+-
+-	/* create /proc/irq/prof_cpu_mask */
+-	entry = create_proc_entry("prof_cpu_mask", 0600, root_irq_dir);
+-
+-	if (!entry)
+-	    return;
+-
+-	entry->nlink = 1;
+-	entry->data = (void *)&prof_cpu_mask;
+-	entry->read_proc = prof_cpu_mask_read_proc;
+-	entry->write_proc = prof_cpu_mask_write_proc;
+ 
+ 	/*
+ 	 * Create entries for all existing IRQs.
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/semaphore.c linux-2.4.17-profile/arch/i386/kernel/semaphore.c
+--- linux-2.4.17/arch/i386/kernel/semaphore.c	Fri Nov  9 13:58:02 2001
++++ linux-2.4.17-profile/arch/i386/kernel/semaphore.c	Wed Jan  2 15:01:35 2002
+@@ -15,6 +15,7 @@
+ #include <linux/config.h>
+ #include <linux/sched.h>
+ #include <asm/semaphore.h>
++#include <asm/profile.h>
+ 
+ /*
+  * Semaphores are implemented using a two-way counter:
+@@ -182,6 +183,11 @@
+ ".align 4\n"
+ ".globl __down_failed\n"
+ "__down_failed:\n\t"
++	MCOUNT_STEXT_LOCK"\n\t"
++#if defined(CONFIG_FRAME_POINTER)
++	"pushl %ebp\n\t"
++	"movl  %esp,%ebp\n\t"
++#endif
+ 	"pushl %eax\n\t"
+ 	"pushl %edx\n\t"
+ 	"pushl %ecx\n\t"
+@@ -189,6 +195,10 @@
+ 	"popl %ecx\n\t"
+ 	"popl %edx\n\t"
+ 	"popl %eax\n\t"
++#if defined(CONFIG_FRAME_POINTER)
++	"movl %ebp,%esp\n\t"
++	"popl %ebp\n\t"
++#endif
+ 	"ret"
+ );
+ 
+@@ -197,11 +207,20 @@
+ ".align 4\n"
+ ".globl __down_failed_interruptible\n"
+ "__down_failed_interruptible:\n\t"
++	MCOUNT_STEXT_LOCK"\n\t"
++#if defined(CONFIG_FRAME_POINTER)
++	"pushl %ebp\n\t"
++	"movl  %esp,%ebp\n\t"
++#endif
+ 	"pushl %edx\n\t"
+ 	"pushl %ecx\n\t"
+ 	"call __down_interruptible\n\t"
+ 	"popl %ecx\n\t"
+ 	"popl %edx\n\t"
++#if defined(CONFIG_FRAME_POINTER)
++	"movl %ebp,%esp\n\t"
++	"popl %ebp\n\t"
++#endif
+ 	"ret"
+ );
+ 
+@@ -210,11 +229,20 @@
+ ".align 4\n"
+ ".globl __down_failed_trylock\n"
+ "__down_failed_trylock:\n\t"
++	MCOUNT_STEXT_LOCK"\n\t"
++#if defined(CONFIG_FRAME_POINTER)
++	"pushl %ebp\n\t"
++	"movl  %esp,%ebp\n\t"
++#endif
+ 	"pushl %edx\n\t"
+ 	"pushl %ecx\n\t"
+ 	"call __down_trylock\n\t"
+ 	"popl %ecx\n\t"
+ 	"popl %edx\n\t"
++#if defined(CONFIG_FRAME_POINTER)
++	"movl %ebp,%esp\n\t"
++	"popl %ebp\n\t"
++#endif
+ 	"ret"
+ );
+ 
+@@ -223,6 +251,7 @@
+ ".align 4\n"
+ ".globl __up_wakeup\n"
+ "__up_wakeup:\n\t"
++	MCOUNT_STEXT_LOCK"\n\t"
+ 	"pushl %eax\n\t"
+ 	"pushl %edx\n\t"
+ 	"pushl %ecx\n\t"
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/smpboot.c linux-2.4.17-profile/arch/i386/kernel/smpboot.c
+--- linux-2.4.17/arch/i386/kernel/smpboot.c	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/i386/kernel/smpboot.c	Wed Jan  2 15:01:35 2002
+@@ -967,10 +967,6 @@
+  * Cycle through the processors sending APIC IPIs to boot each.
+  */
+ 
+-extern int prof_multiplier[NR_CPUS];
+-extern int prof_old_multiplier[NR_CPUS];
+-extern int prof_counter[NR_CPUS];
+-
+ static int boot_cpu_logical_apicid;
+ /* Where the IO area was mapped on multiquad, always 0 otherwise */
+ void *xquad_portio = NULL;
+@@ -994,15 +990,8 @@
+ #endif
+ 	/*
+ 	 * Initialize the logical to physical CPU number mapping
+-	 * and the per-CPU profiling counter/multiplier
+ 	 */
+ 
+-	for (cpu = 0; cpu < NR_CPUS; cpu++) {
+-		prof_counter[cpu] = 1;
+-		prof_old_multiplier[cpu] = 1;
+-		prof_multiplier[cpu] = 1;
+-	}
+-
+ 	init_cpu_to_apicid();
+ 
+ 	/*
+@@ -1209,6 +1198,15 @@
+ 	 * Set up all local APIC timers in the system:
+ 	 */
+ 	setup_APIC_clocks();
++
++#if defined(CONFIG_PROFILING)
++	/*
++	 * Set up all local APIC performance counter overflow vectors,
++	 * if available:
++	 */
++	if (cpu_has_msr && boot_cpu_data.x86 == 6)
++		setup_APIC_perfctr();
++#endif
+ 
+ 	/*
+ 	 * Synchronize the TSC with the AP
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/kernel/time.c linux-2.4.17-profile/arch/i386/kernel/time.c
+--- linux-2.4.17/arch/i386/kernel/time.c	Sun Nov 11 10:20:21 2001
++++ linux-2.4.17-profile/arch/i386/kernel/time.c	Wed Jan  2 15:01:35 2002
+@@ -41,6 +41,7 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/smp.h>
++#include <linux/profile.h>
+ 
+ #include <asm/io.h>
+ #include <asm/smp.h>
+@@ -58,12 +59,6 @@
+ #include <asm/fixmap.h>
+ #include <asm/cobalt.h>
+ 
+-/*
+- * for x86_do_profile()
+- */
+-#include <linux/irq.h>
+-
+-
+ unsigned long cpu_khz;	/* Detected as we calibrate the TSC */
+ 
+ /* Number of usecs that the last interrupt was delayed */
+@@ -419,8 +414,10 @@
+  * system, in that case we have to call the local interrupt handler.
+  */
+ #ifndef CONFIG_X86_LOCAL_APIC
+-	if (!user_mode(regs))
+-		x86_do_profile(regs->eip);
++#if defined(CONFIG_PROFILING)
++	if (prof_timer_hook)
++		prof_timer_hook(regs);
++#endif
+ #else
+ 	if (!using_apic_timer)
+ 		smp_local_timer_interrupt(regs);
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/lib/Makefile linux-2.4.17-profile/arch/i386/lib/Makefile
+--- linux-2.4.17/arch/i386/lib/Makefile	Mon Sep 10 07:31:30 2001
++++ linux-2.4.17-profile/arch/i386/lib/Makefile	Wed Jan  2 15:01:35 2002
+@@ -14,5 +14,6 @@
+ obj-$(CONFIG_X86_USE_3DNOW) += mmx.o
+ obj-$(CONFIG_HAVE_DEC_LOCK) += dec_and_lock.o
+ obj-$(CONFIG_DEBUG_IOVIRT)  += iodebug.o
++obj-$(CONFIG_MCOUNT)	    += mcount.o
+ 
+ include $(TOPDIR)/Rules.make
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/i386/lib/mcount.S linux-2.4.17-profile/arch/i386/lib/mcount.S
+--- linux-2.4.17/arch/i386/lib/mcount.S	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/arch/i386/lib/mcount.S	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,66 @@
++/*
++ * Copyright (C) 2000 SGI
++ *
++ * Written by Dimitris Michailidis dimitris@sgi.com
++ *
++ * This file implements mcount(), which is used to collect profiling data.
++ * We provide several variants to accomodate different types of callers at
++ * the lowest possible overhead.
++ */
++
++#include <linux/config.h>
++#include <linux/linkage.h>
++
++#define MCOUNT_HEAD  \
++	pushl %ecx          /* We must protect the arguments of FASTCALLs */; \
++	movl mcount_hook, %ecx;  \
++	testl %ecx, %ecx;  \
++	jz 1f;  \
++	pushl %eax;  \
++	pushl %edx;  \
++        movl 12(%esp), %edx  /* mcount()'s parent */
++
++#define MCOUNT_TAIL \
++	call *%ecx;  \
++	popl %edx;  \
++	popl %eax;  \
++1:	popl %ecx
++
++/*
++ * This is the main variant and is called by C code.  GCC's -pg option
++ * automatically instruments every C function with a call to this.
++ */
++ENTRY(mcount)
++#if defined(CONFIG_PROFILING) || defined(CONFIG_PROFILING_MODULE)
++	MCOUNT_HEAD
++#ifdef CONFIG_FRAME_POINTER
++        movl 4(%ebp), %eax  /* mcount()'s parent's parent */
++#endif
++	MCOUNT_TAIL
++#endif
++	ret
++
++/*
++ * This variant is used by assembly functions.  Must be inserted by hand.
++ */
++ENTRY(mcount_asm)
++#if defined(CONFIG_PROFILING) || defined(CONFIG_PROFILING_MODULE)
++	MCOUNT_HEAD
++        movl 16(%esp), %eax  /* mcount()'s parent's parent */
++	MCOUNT_TAIL
++#endif
++	ret
++/*
++ * This variant is used by assembly functions in section .stext.lock.
++ * Must be inserted by hand.
++ */
++ENTRY(mcount_stext_lock)
++#if defined(CONFIG_PROFILING) || defined(CONFIG_PROFILING_MODULE)
++	MCOUNT_HEAD
++        movl 16(%esp), %eax  /* mcount()'s parent's parent */
++	addl 1(%eax), %eax   /* this and the next lines are magic */
++	leal 5(%eax), %eax
++	MCOUNT_TAIL
++#endif
++	ret
++
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/config.in linux-2.4.17-profile/arch/ia64/config.in
+--- linux-2.4.17/arch/ia64/config.in	Fri Nov  9 14:26:17 2001
++++ linux-2.4.17-profile/arch/ia64/config.in	Wed Jan  2 15:01:35 2002
+@@ -275,4 +275,11 @@
+    bool '  Turn on irq debug checks (slow!)' CONFIG_IA64_DEBUG_IRQ
+ fi
+ 
++tristate 'Kernel Profiling Support' CONFIG_PROFILING
++bool 'Instrument kernel at entry to all C functions' CONFIG_MCOUNT
++if [ "$CONFIG_MCOUNT" != "n" ]; then
++    define_bool CONFIG_PROFILING y
++    bool '  Limit recursion in entry profiling' CONFIG_LIMIT_RECURS
++fi
++
+ endmenu
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/kernel/Makefile linux-2.4.17-profile/arch/ia64/kernel/Makefile
+--- linux-2.4.17/arch/ia64/kernel/Makefile	Fri Nov  9 14:26:17 2001
++++ linux-2.4.17-profile/arch/ia64/kernel/Makefile	Wed Jan  2 15:01:35 2002
+@@ -26,3 +26,6 @@
+ obj-$(CONFIG_IA64_BRL_EMU) += brl_emu.o
+ 
+ include $(TOPDIR)/Rules.make
++
++smpboot.o: smpboot.c
++	$(CC) $(subst -pg,,$(CFLAGS)) -c $<
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/kernel/ia64_ksyms.c linux-2.4.17-profile/arch/ia64/kernel/ia64_ksyms.c
+--- linux-2.4.17/arch/ia64/kernel/ia64_ksyms.c	Fri Nov  9 14:26:17 2001
++++ linux-2.4.17-profile/arch/ia64/kernel/ia64_ksyms.c	Wed Jan  2 15:01:35 2002
+@@ -147,3 +147,8 @@
+ #include <linux/proc_fs.h>
+ extern struct proc_dir_entry *efi_dir;
+ EXPORT_SYMBOL(efi_dir);
++
++#if defined(CONFIG_MCOUNT)
++extern void _mcount(void);
++EXPORT_SYMBOL(_mcount);
++#endif
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/kernel/time.c linux-2.4.17-profile/arch/ia64/kernel/time.c
+--- linux-2.4.17/arch/ia64/kernel/time.c	Fri Nov  9 14:26:17 2001
++++ linux-2.4.17-profile/arch/ia64/kernel/time.c	Wed Jan  2 15:01:35 2002
+@@ -15,6 +15,7 @@
+ #include <linux/sched.h>
+ #include <linux/time.h>
+ #include <linux/interrupt.h>
++#include <linux/profile.h>
+ 
+ #include <asm/delay.h>
+ #include <asm/efi.h>
+@@ -33,29 +34,6 @@
+ 
+ #endif
+ 
+-static void
+-do_profile (unsigned long ip)
+-{
+-	extern unsigned long prof_cpu_mask;
+-	extern char _stext;
+-
+-	if (!((1UL << smp_processor_id()) & prof_cpu_mask))
+-		return;
+-
+-	if (prof_buffer && current->pid) {
+-		ip -= (unsigned long) &_stext;
+-		ip >>= prof_shift;
+-		/*
+-		 * Don't ignore out-of-bounds IP values silently, put them into the last
+-		 * histogram slot, so if present, they will show up as a sharp peak.
+-		 */
+-		if (ip > prof_len - 1)
+-			ip = prof_len - 1;
+-
+-		atomic_inc((atomic_t *) &prof_buffer[ip]);
+-	}
+-}
+-
+ /*
+  * Return the number of micro-seconds that elapsed since the last update to jiffy.  The
+  * xtime_lock must be at least read-locked when calling this routine.
+@@ -160,14 +138,11 @@
+ 		       ia64_get_itc(), new_itm);
+ 
+ 	while (1) {
+-		/*
+-		 * Do kernel PC profiling here.  We multiply the instruction number by
+-		 * four so that we can use a prof_shift of 2 to get instruction-level
+-		 * instead of just bundle-level accuracy.
+-		 */
++#if defined(CONFIG_PROFILING)
+ 		if (!user_mode(regs))
+-			do_profile(regs->cr_iip + 4*ia64_psr(regs)->ri);
+-
++			if (prof_timer_hook)
++				prof_timer_hook(regs);
++#endif
+ #ifdef CONFIG_SMP
+ 		smp_do_timer(regs);
+ #endif
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/lib/Makefile linux-2.4.17-profile/arch/ia64/lib/Makefile
+--- linux-2.4.17/arch/ia64/lib/Makefile	Tue Jul 31 10:30:08 2001
++++ linux-2.4.17-profile/arch/ia64/lib/Makefile	Wed Jan  2 15:01:35 2002
+@@ -16,6 +16,8 @@
+ 	flush.o io.o do_csum.o								\
+ 	memcpy.o memset.o strlen.o swiotlb.o
+ 
++obj-$(CONFIG_MCOUNT) += mcount.o
++
+ IGNORE_FLAGS_OBJS =	__divsi3.o __udivsi3.o __modsi3.o __umodsi3.o \
+ 			__divdi3.o __udivdi3.o __moddi3.o __umoddi3.o
+ 
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/lib/mcount.S linux-2.4.17-profile/arch/ia64/lib/mcount.S
+--- linux-2.4.17/arch/ia64/lib/mcount.S	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/arch/ia64/lib/mcount.S	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,43 @@
++/*
++ * Code from glibc written by David Mosberger <davidm@hpl.hp.com>
++ * Modifications by Goutham Rao <goutham.rao@intel.com>
++ */
++#include <asm/asmmacro.h>
++
++GLOBAL_ENTRY(_mcount)
++        alloc loc0 = ar.pfs, 4, 3, 3, 0
++        mov loc1 = rp
++	movl loc2 = mcount_hook
++        ;;
++	ld8 loc2=[loc2]
++	;;
++        mov out0 = in2
++        mov out1 = rp
++	cmp.eq p6,p7=r0,loc2
++	;;
++(p6)	br .here
++(p7)	ld8 loc2=[loc2]
++	;;
++	mov b7=loc2
++	br.call.sptk.few rp = b7
++        ;;
++.here:
++{
++        .mii
++        mov gp = in1
++        mov r2 = ip
++        mov ar.pfs = loc0
++}
++        ;;
++        adds r2 = 1f - .here, r2
++        mov b7 = loc1
++        mov rp = in2
++        ;;
++        mov b6 = r2
++        br.ret.sptk.few b6
++
++1:      alloc r2 = ar.pfs, 0, 0, 9, 0
++        mov ar.pfs = r40
++        br b7
++END(_mcount)
++
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/ia64/sn/fprom/Makefile linux-2.4.17-profile/arch/ia64/sn/fprom/Makefile
+--- linux-2.4.17/arch/ia64/sn/fprom/Makefile	Thu Apr  5 12:51:47 2001
++++ linux-2.4.17-profile/arch/ia64/sn/fprom/Makefile	Wed Jan  2 15:01:35 2002
+@@ -20,8 +20,15 @@
+ 
+ .S.o:
+ 	$(CC)  -D__ASSEMBLY__ $(AFLAGS) $(AFLAGS_KERNEL) -c -o $*.o $<
+-.c.o:
+-	$(CC)  $(CFLAGS) $(CFLAGS_KERNEL) -c -o $*.o $<
++
++fpmem.o: fpmem.c
++	$(CC)  $(subst -pg,,$(CFLAGS)) $(subst -pg,,$(CFLAGS_KERNEL)) -c -o $*.o $<
++
++fw-emu.o: fw-emu.c
++	$(CC)  $(subst -pg,,$(CFLAGS)) $(subst -pg,,$(CFLAGS_KERNEL)) -c -o $*.o $<
++
++main.o: main.c
++	$(CC)  $(subst -pg,,$(CFLAGS)) $(subst -pg,,$(CFLAGS_KERNEL)) -c -o $*.o $<
+ 
+ clean:
+ 	rm -f *.o fprom
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/config.in linux-2.4.17-profile/arch/mips64/config.in
+--- linux-2.4.17/arch/mips64/config.in	Sun Sep  9 10:43:02 2001
++++ linux-2.4.17-profile/arch/mips64/config.in	Wed Jan  2 15:01:35 2002
+@@ -267,6 +267,12 @@
+ 
+ #bool 'Debug kmalloc/kfree' CONFIG_DEBUG_MALLOC
+ bool 'Are you using a crosscompiler' CONFIG_CROSSCOMPILE
++tristate 'Kernel Profiling Support' CONFIG_PROFILING
++bool 'Instrument kernel with calls to mcount()' CONFIG_MCOUNT
++if [ "$CONFIG_MCOUNT" != "n" ]; then
++    define_bool CONFIG_PROFILING y
++    bool '  Limit recursion in entry profiling' CONFIG_LIMIT_RECURS
++fi
+ if [ "$CONFIG_MODULES" = "y" ]; then
+    bool ' Build fp execption handler module' CONFIG_MIPS_FPE_MODULE
+ fi
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/kernel/ioctl32.c linux-2.4.17-profile/arch/mips64/kernel/ioctl32.c
+--- linux-2.4.17/arch/mips64/kernel/ioctl32.c	Sat Sep  1 11:01:28 2001
++++ linux-2.4.17-profile/arch/mips64/kernel/ioctl32.c	Wed Jan  2 15:01:35 2002
+@@ -19,6 +19,7 @@
+ #include <linux/vt.h>
+ #include <linux/kd.h>
+ #include <linux/netdevice.h>
++#include <linux/profile.h>
+ #include <linux/route.h>
+ #include <linux/hdreg.h>
+ #include <linux/blkpg.h>
+@@ -723,6 +724,24 @@
+ 	IOCTL32_HANDLER(SIOCGSTAMP, do_siocgstamp),
+ 
+ #endif /* CONFIG_NET */
++
++	IOCTL32_DEFAULT(PROF_START),
++	IOCTL32_DEFAULT(PROF_STOP),
++	IOCTL32_DEFAULT(PROF_RESET),
++	IOCTL32_DEFAULT(PROF_SET_SAMPLE_FREQ),
++	IOCTL32_DEFAULT(PROF_GET_SAMPLE_FREQ),
++	IOCTL32_DEFAULT(PROF_GET_PC_RES),
++	IOCTL32_DEFAULT(PROF_GET_ON_OFF_STATE),
++	IOCTL32_DEFAULT(PROF_SET_DOMAIN),
++	IOCTL32_DEFAULT(PROF_GET_DOMAIN),
++	IOCTL32_DEFAULT(PROF_SET_MODE),
++	IOCTL32_DEFAULT(PROF_GET_MODE),
++	IOCTL32_DEFAULT(PROF_SET_PERFCTR_EVENT),
++	IOCTL32_DEFAULT(PROF_GET_PERFCTR_EVENT),
++	IOCTL32_DEFAULT(PROF_SET_ENABLE_MAP),
++	IOCTL32_DEFAULT(PROF_GET_ENABLE_MAP),
++	IOCTL32_DEFAULT(PROF_SET_PID),
++	IOCTL32_DEFAULT(PROF_GET_PID),
+ 
+ 	IOCTL32_HANDLER(EXT2_IOC32_GETFLAGS, do_ext2_ioctl),
+ 	IOCTL32_HANDLER(EXT2_IOC32_SETFLAGS, do_ext2_ioctl),
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/kernel/mips64_ksyms.c linux-2.4.17-profile/arch/mips64/kernel/mips64_ksyms.c
+--- linux-2.4.17/arch/mips64/kernel/mips64_ksyms.c	Sun Sep  9 10:43:01 2001
++++ linux-2.4.17-profile/arch/mips64/kernel/mips64_ksyms.c	Wed Jan  2 15:01:35 2002
+@@ -119,3 +119,8 @@
+ 
+ EXPORT_SYMBOL(get_wchan);
+ EXPORT_SYMBOL(_flush_tlb_page);
++
++#if defined(CONFIG_MCOUNT)
++extern void _mcount(void);
++EXPORT_SYMBOL(_mcount);
++#endif
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/kernel/smp.c linux-2.4.17-profile/arch/mips64/kernel/smp.c
+--- linux-2.4.17/arch/mips64/kernel/smp.c	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/mips64/kernel/smp.c	Wed Jan  2 15:01:35 2002
+@@ -107,12 +107,6 @@
+ 	sendintr(cpu, DORESCHED);
+ }
+ 
+-/* Not really SMP stuff ... */
+-int setup_profiling_timer(unsigned int multiplier)
+-{
+-	return 0;
+-}
+-
+ /*
+  * Run a function on all other CPUs.
+  *  <func>      The function to run. This must be fast and non-blocking.
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/lib/Makefile linux-2.4.17-profile/arch/mips64/lib/Makefile
+--- linux-2.4.17/arch/mips64/lib/Makefile	Sun Feb  4 21:48:46 2001
++++ linux-2.4.17-profile/arch/mips64/lib/Makefile	Wed Jan  2 15:01:35 2002
+@@ -14,4 +14,6 @@
+ 	  rtc-no.o memset.o memcpy.o strlen_user.o strncpy_user.o \
+ 	  strnlen_user.o watch.o
+ 
++obj-$(CONFIG_MCOUNT) += mcount.o
++
+ include $(TOPDIR)/Rules.make
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/lib/mcount.S linux-2.4.17-profile/arch/mips64/lib/mcount.S
+--- linux-2.4.17/arch/mips64/lib/mcount.S	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/arch/mips64/lib/mcount.S	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,64 @@
++/*
++ * Copyright (C) 2000 Silicon Graphics, Inc.
++ *
++ * Written by Ulf Carlsson (ulfc@engr.sgi.com)
++ *
++ * This file implements mcount(), which is used to collect profiling data.
++ * We provide several variants to accomodate different types of callers at
++ * the lowest possible overhead.
++ */
++
++#include <asm/regdef.h>
++#include <asm/asm.h>
++#include <linux/config.h>
++
++.macro MCOUNT
++	.set	push
++	.set	noat
++	.set	noreorder
++#if defined(CONFIG_PROFILING) || defined(CONFIG_PROFILING_MODULE)
++	ld	t9, (mcount_hook)
++	beqz	t9, 1f
++	 nop
++	dsubu	sp, 64
++	sd	a0, 0(sp) 
++	sd	a1, 8(sp)
++	sd	a2, 16(sp)
++	sd	a3, 24(sp)
++	sd	a4, 32(sp)
++	sd	a5, 40(sp)
++	sd	a6, 48(sp)
++	sd	a7, 56(sp)
++	sd	ra, 64(sp)
++	sd	AT, 72(sp)
++	move	a1, ra		# mcount's parent (another gas bug -> ')
++	jalr	t9
++	 move	a0, AT		# mcount's parent's parent
++	ld	ra, 72(sp)
++	ld	AT, 64(sp)
++	ld	a7, 56(sp)
++	ld	a6, 48(sp)
++	ld	a5, 40(sp)
++	ld	a4, 32(sp)
++	ld	a3, 24(sp)
++	ld	a2, 16(sp)
++	ld	a1, 8(sp)
++	ld	a0, 0(sp)
++	jr	AT	
++	 daddu	sp, 80
++#endif
++1:	move	t0, AT
++	move	AT, ra
++	move	ra, t0
++	jr	AT
++	 daddu	sp, 16		# sp is adjusted by -16 when we are called
++	.set	pop
++.endm
++
++
++/*
++ * This is the main variant and is called by C code.  GCC's -pg option
++ * automatically instruments every C function with a call to this.
++ */
++FEXPORT(_mcount)
++	MCOUNT
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/mips64/sgi-ip27/ip27-timer.c linux-2.4.17-profile/arch/mips64/sgi-ip27/ip27-timer.c
+--- linux-2.4.17/arch/mips64/sgi-ip27/ip27-timer.c	Sun Sep  9 10:43:02 2001
++++ linux-2.4.17-profile/arch/mips64/sgi-ip27/ip27-timer.c	Wed Jan  2 15:01:35 2002
+@@ -11,6 +11,7 @@
+ #include <linux/param.h>
+ #include <linux/timex.h>
+ #include <linux/mm.h>		
++#include <linux/profile.h>
+ 
+ #include <asm/pgtable.h>
+ #include <asm/sgialib.h>
+@@ -37,11 +38,42 @@
+ #define CYCLES_PER_JIFFY	(CYCLES_PER_SEC/HZ)
+ 
+ static unsigned long ct_cur[NR_CPUS];	/* What counter should be at next timer irq */
+-static long last_rtc_update;		/* Last time the rtc clock got updated */
++static long last_rtc_update = 0;	/* Last time the rtc clock got updated */
+ 
+ extern rwlock_t xtime_lock;
+ extern volatile unsigned long wall_jiffies;
+ 
++#if defined(CONFIG_PROFILING)
++int prof_multiplier[NR_CPUS] = { [0 ... NR_CPUS - 1] = 1 };
++int prof_counter[NR_CPUS] = { [0 ... NR_CPUS - 1] = 1 };
++
++/*
++ * Change the frequency of the profiling timer.  The multiplier is specified
++ * by an appropriate ioctl() on /dev/profile.
++ */
++int setup_profiling_timer(unsigned int multiplier)
++{
++	int i;
++
++	/*
++	 * Sanity check.
++	 */
++	if ( (!multiplier) || (NSEC_PER_CYCLE/multiplier < 50))
++		return -EINVAL;
++
++	/* 
++	 * Set the new multiplier for each CPU. CPUs don't start using the
++	 * new values until the next timer interrupt in which they do process
++	 * accounting. At that time they also adjust their APIC timers
++	 * accordingly.
++	 */
++	for (i = 0; i < NR_CPUS; ++i)
++		prof_multiplier[i] = multiplier;
++
++	return 0;
++}
++#endif
++
+ 
+ static int set_rtc_mmss(unsigned long nowtime)
+ {
+@@ -97,7 +129,11 @@
+ 
+ again:
+ 	LOCAL_HUB_S(cpuA ? PI_RT_PEND_A : PI_RT_PEND_B, 0);	/* Ack  */
++#if defined(CONFIG_PROFILING)
++	ct_cur[cpu] += CYCLES_PER_JIFFY / prof_multiplier[cpu];
++#else
+ 	ct_cur[cpu] += CYCLES_PER_JIFFY;
++#endif
+ 	LOCAL_HUB_S(cpuA ? PI_RT_COMPARE_A : PI_RT_COMPARE_B, ct_cur[cpu]);
+ 
+ 	if (LOCAL_HUB_L(PI_RT_COUNT) >= ct_cur[cpu])
+@@ -105,6 +141,19 @@
+ 
+ 	kstat.irqs[cpu][irq]++;		/* kstat only for bootcpu? */
+ 
++#if defined(CONFIG_PROFILING)
++	if (prof_timer_hook)
++		prof_timer_hook(regs);
++
++	if (--prof_counter[cpu] > 0)
++	{
++		write_unlock(&xtime_lock);
++		return;
++	}
++
++	prof_counter[cpu] = prof_multiplier[cpu];
++#endif
++
+ 	if (cpu == 0)
+ 		do_timer(regs);
+ 
+@@ -153,7 +202,12 @@
+ unsigned long inline do_gettimeoffset(void)
+ {
+ 	unsigned long ct_cur1;
+-	ct_cur1 = REMOTE_HUB_L(cputonasid(0), PI_RT_COUNT) + CYCLES_PER_JIFFY;
++	ct_cur1 = REMOTE_HUB_L(cputonasid(0), PI_RT_COUNT)
++#if defined(CONFIG_PROFILING)
++			+ CYCLES_PER_JIFFY / prof_multiplier[0];
++#else
++			+ CYCLES_PER_JIFFY;
++#endif
+ 	return (ct_cur1 - ct_cur[0]) * NSEC_PER_CYCLE / 1000;
+ }
+ 
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/config.in linux-2.4.17-profile/arch/sparc64/config.in
+--- linux-2.4.17/arch/sparc64/config.in	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/sparc64/config.in	Wed Jan  2 15:02:50 2002
+@@ -304,5 +304,11 @@
+    bool '  Verbose BUG() reporting (adds 70K)' CONFIG_DEBUG_BUGVERBOSE
+    bool '  D-cache flush debugging' CONFIG_DEBUG_DCFLUSH
+ fi
++tristate 'Kernel Profiling Support' CONFIG_PROFILING
++bool 'Instrument kernel with calls to mcount()' CONFIG_MCOUNT
++if [ "$CONFIG_MCOUNT" != "n" ]; then
++    define_bool CONFIG_PROFILING y
++    bool '  Limit recursion in entry profiling' CONFIG_LIMIT_RECURS
++fi
+ 
+ endmenu
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/kernel/ioctl32.c linux-2.4.17-profile/arch/sparc64/kernel/ioctl32.c
+--- linux-2.4.17/arch/sparc64/kernel/ioctl32.c	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/sparc64/kernel/ioctl32.c	Wed Jan  2 15:01:35 2002
+@@ -50,6 +50,7 @@
+ #include <linux/elevator.h>
+ #include <linux/rtc.h>
+ #include <linux/pci.h>
++#include <linux/profile.h>
+ #if defined(CONFIG_BLK_DEV_LVM) || defined(CONFIG_BLK_DEV_LVM_MODULE)
+ #include <linux/lvm.h>
+ #endif /* LVM */
+@@ -4541,6 +4542,24 @@
+ COMPATIBLE_IOCTL(PCIIOC_MMAP_IS_IO)
+ COMPATIBLE_IOCTL(PCIIOC_MMAP_IS_MEM)
+ COMPATIBLE_IOCTL(PCIIOC_WRITE_COMBINE)
++/* kernprof */
++COMPATIBLE_IOCTL(PROF_START)
++COMPATIBLE_IOCTL(PROF_STOP)
++COMPATIBLE_IOCTL(PROF_RESET)
++COMPATIBLE_IOCTL(PROF_SET_SAMPLE_FREQ)
++COMPATIBLE_IOCTL(PROF_GET_SAMPLE_FREQ)
++COMPATIBLE_IOCTL(PROF_GET_PC_RES)
++COMPATIBLE_IOCTL(PROF_GET_ON_OFF_STATE)
++COMPATIBLE_IOCTL(PROF_SET_DOMAIN)
++COMPATIBLE_IOCTL(PROF_GET_DOMAIN)
++COMPATIBLE_IOCTL(PROF_SET_MODE)
++COMPATIBLE_IOCTL(PROF_GET_MODE)
++COMPATIBLE_IOCTL(PROF_SET_PERFCTR_EVENT)
++COMPATIBLE_IOCTL(PROF_GET_PERFCTR_EVENT)
++COMPATIBLE_IOCTL(PROF_SET_ENABLE_MAP)
++COMPATIBLE_IOCTL(PROF_GET_ENABLE_MAP)
++COMPATIBLE_IOCTL(PROF_SET_PID)
++COMPATIBLE_IOCTL(PROF_GET_PID)
+ /* USB */
+ COMPATIBLE_IOCTL(USBDEVFS_RESETEP)
+ COMPATIBLE_IOCTL(USBDEVFS_SETINTERFACE)
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/kernel/smp.c linux-2.4.17-profile/arch/sparc64/kernel/smp.c
+--- linux-2.4.17/arch/sparc64/kernel/smp.c	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/sparc64/kernel/smp.c	Wed Jan  2 15:04:12 2002
+@@ -18,6 +18,7 @@
+ #include <linux/fs.h>
+ #include <linux/seq_file.h>
+ #include <linux/cache.h>
++#include <linux/profile.h>
+ 
+ #include <asm/head.h>
+ #include <asm/ptrace.h>
+@@ -935,12 +936,12 @@
+ 		smp_cross_call(&xcall_promstop, 0, 0, 0);
+ }
+ 
+-extern void sparc64_do_profile(unsigned long pc, unsigned long o7);
+-
+ static unsigned long current_tick_offset;
+ 
++#if defined(CONFIG_PROFILING)
+ #define prof_multiplier(__cpu)		cpu_data[(__cpu)].multiplier
+ #define prof_counter(__cpu)		cpu_data[(__cpu)].counter
++#endif
+ 
+ void smp_percpu_timer_interrupt(struct pt_regs *regs)
+ {
+@@ -969,9 +970,14 @@
+ 	}
+ 
+ 	do {
+-		if (!user)
+-			sparc64_do_profile(regs->tpc, regs->u_regs[UREG_RETPC]);
++#if defined(CONFIG_PROFILING)
++		if (prof_timer_hook) {
++			flush_register_windows();
++			prof_timer_hook(regs);
++		}
++
+ 		if (!--prof_counter(cpu)) {
++#endif
+ 			if (cpu == boot_cpu_id) {
+ 				irq_enter(cpu, 0);
+ 
+@@ -983,8 +989,10 @@
+ 
+ 			update_process_times(user);
+ 
++#if defined(CONFIG_PROFILING)
+ 			prof_counter(cpu) = prof_multiplier(cpu);
+ 		}
++#endif
+ 
+ 		/* Guarentee that the following sequences execute
+ 		 * uninterrupted.
+@@ -1042,7 +1050,9 @@
+ 	int cpu = smp_processor_id();
+ 	unsigned long pstate;
+ 
++#if defined(CONFIG_PROFILING)
+ 	prof_counter(cpu) = prof_multiplier(cpu) = 1;
++#endif
+ 
+ 	/* Guarentee that the following sequences execute
+ 	 * uninterrupted.
+@@ -1105,7 +1115,9 @@
+ 	prom_cpu_nodes[boot_cpu_id] = linux_cpus[0].prom_node;
+ 	__cpu_logical_map[0] = boot_cpu_id;
+ 	current->processor = boot_cpu_id;
++#if defined(CONFIG_PROFILING)
+ 	prof_counter(boot_cpu_id) = prof_multiplier(boot_cpu_id) = 1;
++#endif
+ }
+ 
+ static inline unsigned long find_flush_base(unsigned long size)
+@@ -1131,6 +1143,7 @@
+ 	return base;
+ }
+ 
++#if defined(CONFIG_PROFILING)
+ /* /proc/profile writes can call this, don't __init it please. */
+ int setup_profiling_timer(unsigned int multiplier)
+ {
+@@ -1150,3 +1163,4 @@
+ 
+ 	return 0;
+ }
++#endif
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/kernel/sparc64_ksyms.c linux-2.4.17-profile/arch/sparc64/kernel/sparc64_ksyms.c
+--- linux-2.4.17/arch/sparc64/kernel/sparc64_ksyms.c	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/sparc64/kernel/sparc64_ksyms.c	Wed Jan  2 15:01:35 2002
+@@ -51,6 +51,7 @@
+ #include <asm/isa.h>
+ #endif
+ #include <asm/a.out.h>
++#include <asm/profile.h>
+ 
+ struct poll {
+ 	int fd;
+@@ -133,6 +134,14 @@
+ EXPORT_SYMBOL(__global_sti);
+ EXPORT_SYMBOL(__global_save_flags);
+ EXPORT_SYMBOL(__global_restore_flags);
++
++#if defined(CONFIG_PROFILING)
++EXPORT_SYMBOL(setup_profiling_timer);
++#if defined(CONFIG_MCOUNT)
++extern void mcount(void);
++EXPORT_SYMBOL(mcount);
++#endif
++#endif
+ 
+ /* Per-CPU information table */
+ EXPORT_SYMBOL(cpu_data);
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/kernel/time.c linux-2.4.17-profile/arch/sparc64/kernel/time.c
+--- linux-2.4.17/arch/sparc64/kernel/time.c	Fri Dec 21 09:41:53 2001
++++ linux-2.4.17-profile/arch/sparc64/kernel/time.c	Wed Jan  2 15:01:35 2002
+@@ -22,6 +22,7 @@
+ #include <linux/ioport.h>
+ #include <linux/mc146818rtc.h>
+ #include <linux/delay.h>
++#include <linux/profile.h>
+ 
+ #include <asm/oplib.h>
+ #include <asm/mostek.h>
+@@ -77,37 +78,6 @@
+ 	}
+ }
+ 
+-void sparc64_do_profile(unsigned long pc, unsigned long o7)
+-{
+-	if (prof_buffer && current->pid) {
+-		extern int _stext;
+-		extern int rwlock_impl_begin, rwlock_impl_end;
+-		extern int atomic_impl_begin, atomic_impl_end;
+-		extern int __memcpy_begin, __memcpy_end;
+-		extern int __bzero_begin, __bzero_end;
+-		extern int __bitops_begin, __bitops_end;
+-
+-		if ((pc >= (unsigned long) &atomic_impl_begin &&
+-		     pc < (unsigned long) &atomic_impl_end) ||
+-		    (pc >= (unsigned long) &rwlock_impl_begin &&
+-		     pc < (unsigned long) &rwlock_impl_end) ||
+-		    (pc >= (unsigned long) &__memcpy_begin &&
+-		     pc < (unsigned long) &__memcpy_end) ||
+-		    (pc >= (unsigned long) &__bzero_begin &&
+-		     pc < (unsigned long) &__bzero_end) ||
+-		    (pc >= (unsigned long) &__bitops_begin &&
+-		     pc < (unsigned long) &__bitops_end))
+-			pc = o7;
+-
+-		pc -= (unsigned long) &_stext;
+-		pc >>= prof_shift;
+-
+-		if(pc >= prof_len)
+-			pc = prof_len - 1;
+-		atomic_inc((atomic_t *)&prof_buffer[pc]);
+-	}
+-}
+-
+ static void timer_interrupt(int irq, void *dev_id, struct pt_regs * regs)
+ {
+ 	unsigned long ticks, pstate;
+@@ -115,10 +85,16 @@
+ 	write_lock(&xtime_lock);
+ 
+ 	do {
++
+ #ifndef CONFIG_SMP
+-		if ((regs->tstate & TSTATE_PRIV) != 0)
+-			sparc64_do_profile(regs->tpc, regs->u_regs[UREG_RETPC]);
++#if defined(CONFIG_PROFILING)
++		if (prof_timer_hook) {
++			flush_register_windows();
++			prof_timer_hook(regs);
++		}
++#endif	
+ #endif
++
+ 		do_timer(regs);
+ 
+ 		/* Guarentee that the following sequences execute
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/lib/Makefile linux-2.4.17-profile/arch/sparc64/lib/Makefile
+--- linux-2.4.17/arch/sparc64/lib/Makefile	Fri Dec 29 14:07:21 2000
++++ linux-2.4.17-profile/arch/sparc64/lib/Makefile	Wed Jan  2 15:01:35 2002
+@@ -18,4 +18,6 @@
+ 	 dec_and_lock.o U3memcpy.o U3copy_from_user.o U3copy_to_user.o \
+ 	 U3copy_in_user.o
+ 
++obj-$(CONFIG_MCOUNT) += mcount.o
++
+ include $(TOPDIR)/Rules.make
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/lib/mcount.S linux-2.4.17-profile/arch/sparc64/lib/mcount.S
+--- linux-2.4.17/arch/sparc64/lib/mcount.S	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/arch/sparc64/lib/mcount.S	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,27 @@
++/*
++ * Copyright (C) 2000 Anton Blanchard (anton@linuxcare.com)
++ *
++ * This file implements mcount(), which is used to collect profiling data.
++ * We provide several variants to accomodate different types of callers at
++ * the lowest possible overhead.
++ */
++
++#include <linux/config.h>
++#include <linux/linkage.h>
++/*
++ * This is the main variant and is called by C code.  GCC's -pg option
++ * automatically instruments every C function with a call to this.
++ */
++	.text
++	.align 32
++	.globl mcount
++mcount:
++	sethi	%hi(mcount_hook), %o2
++	or	%o2, %lo(mcount_hook), %o0
++	ldx	[%o0], %o2
++	brz	%o2, 1f
++	 mov	%i7, %o0
++	jmpl	%o2, %g0
++	 mov	%o7, %o1
++1:	retl
++	 nop
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/arch/sparc64/prom/Makefile linux-2.4.17-profile/arch/sparc64/prom/Makefile
+--- linux-2.4.17/arch/sparc64/prom/Makefile	Fri Dec 29 14:07:21 2000
++++ linux-2.4.17-profile/arch/sparc64/prom/Makefile	Wed Jan  2 15:01:35 2002
+@@ -19,3 +19,6 @@
+ 	$(CC) $(AFLAGS) -ansi -c $< -o $*.o
+ 
+ include $(TOPDIR)/Rules.make
++
++%.o: %.c
++	$(CC) $(subst -pg,,$(CFLAGS)) -c $<
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/drivers/char/Makefile linux-2.4.17-profile/drivers/char/Makefile
+--- linux-2.4.17/drivers/char/Makefile	Sun Nov 11 10:09:32 2001
++++ linux-2.4.17-profile/drivers/char/Makefile	Wed Jan  2 15:01:35 2002
+@@ -189,6 +189,7 @@
+ obj-$(CONFIG_PC110_PAD) += pc110pad.o
+ obj-$(CONFIG_RTC) += rtc.o
+ obj-$(CONFIG_EFI_RTC) += efirtc.o
++obj-$(CONFIG_PROFILING) += profile.o
+ ifeq ($(CONFIG_PPC),)
+   obj-$(CONFIG_NVRAM) += nvram.o
+ endif
+@@ -246,6 +247,11 @@
+ 
+ conmakehash: conmakehash.c
+ 	$(HOSTCC) $(HOSTCFLAGS) -o conmakehash conmakehash.c
++
++ifdef CONFIG_MCOUNT
++profile.o: profile.c
++	$(CC) $(subst -pg,,$(CFLAGS)) -c $<
++endif
+ 
+ consolemap_deftbl.c: $(FONTMAPFILE) conmakehash
+ 	./conmakehash $(FONTMAPFILE) > consolemap_deftbl.c
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/drivers/char/profile.c linux-2.4.17-profile/drivers/char/profile.c
+--- linux-2.4.17/drivers/char/profile.c	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/drivers/char/profile.c	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,1039 @@
++/*
++ * linux/drivers/char/profile.c
++ *
++ * Implementation of profiling devices.  We reserve minor number 255 for a 
++ * control interface.  ioctl()s on this device control various profiling
++ * settings. 
++ * 
++ * Copyright (C) SGI 1999, 2000, 2001
++ *
++ * Written by Dimitris Michailidis (dimitris@engr.sgi.com)
++ * Modified by John Hawkes (hawkes@engr.sgi.com)
++ * Contributions from Niels Christiansen (nchr@us.ibm.com)
++ */
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/profile.h>
++#include <linux/init.h>
++#include <linux/fs.h>
++#include <linux/major.h>
++#include <linux/proc_fs.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/smp.h>
++#include <linux/devfs_fs_kernel.h>
++#include <linux/module.h>
++
++#include <asm/uaccess.h>
++#include <asm/profile.h>
++
++#define PROF_CNTRL_MINOR 0
++
++int prof_enabled = 0; /* any profiling active */
++int prof_domain = PROF_DOMAIN_TIME, prof_mode = PROF_MODE_PC_SAMPLING;
++int prof_pid = 0;
++int perfctr_event = 0;
++unsigned int prof_shift, PC_resolution = DFL_PC_RES;
++unsigned int perfctr_freq = 1000;
++unsigned long unload_timeout = 0;
++
++prof_hook_p *prof_intr_hook = &prof_timer_hook;
++prof_hook_p prof_perfctr_aux_hook = NULL;
++
++/* This buffer holds PC samples */
++PC_sample_count_t *PC_sample_buf = NULL;
++size_t PC_buf_sz;
++
++/* Switch for /proc files created */
++int proc_created = 0;
++
++/*
++ * These variables deal with the call graph.  The call graph records arcs
++ * linking the location of each function call to the address of the called
++ * function.  It is maintained as a hash table indexed by a call site's
++ * location.  The bucket associated with each hash table entry records the
++ * targets of the calls.
++ */
++unsigned short *cg_from_base = NULL;
++struct cg_arc_dest *cg_to_base = NULL;
++size_t cg_from_sz, cg_to_sz;
++int cg_arc_overflow; /* set when no new arcs can be added to the call graph */
++int n_buckets = 0;
++
++size_t mem_needed;   /* space needed for the call graph and the PC samples */
++
++/* And these hold backtrace samples */
++struct trace_ring_buf {
++	unsigned long *data;
++	int start;
++	int end;
++	int active;
++};
++
++struct trace_ring_buf trace_bufs[NR_CPUS];
++
++prof_mem_map_t memory_map;
++
++unsigned long total_mcount = 0;
++unsigned long lost_ones = 0;
++#ifdef CONFIG_LIMIT_RECURS
++unsigned long count1 = 0;
++unsigned long count2 = 0;
++unsigned long count3 = 0;
++unsigned long count4 = 0;
++#endif /* CONFIG_LIMIT_RECURS */
++
++unsigned char cpu_prof_enabled[NR_CPUS];
++unsigned long cpu_prof_enable_map = ~0UL;
++
++MODULE_AUTHOR("Dimitris Michailidis");
++MODULE_DESCRIPTION("Kernel profile driver");
++
++MODULE_PARM(PC_resolution, "i");
++MODULE_PARM_DESC(PC_resolution, "resolution of PC samples "
++		                "(rounded down to a power of 2)");
++
++/* round x up to a multiple of n.  n must be a power of 2 */
++static inline size_t roundup(size_t x, int n)
++{
++	return (x + n - 1) & ~(n - 1);
++}
++
++/* The next few definitions deal with procfs */
++static ssize_t read_prof_buf(char *prof_buf, size_t prof_buf_sz,
++			     char *user_buf, size_t count, loff_t *ppos)
++{
++	if (!prof_buf)
++		return -EIO;
++	if (*ppos >= prof_buf_sz)
++		return 0;
++	if (count > prof_buf_sz - *ppos)
++		count = prof_buf_sz - *ppos;
++	copy_to_user(user_buf, prof_buf + *ppos, count);
++	*ppos += count;
++	return count;
++}
++
++static ssize_t read_PC_samples(struct file *file, char *user_buf,
++			       size_t count, loff_t *ppos)
++{
++	return read_prof_buf((char *)PC_sample_buf, PC_buf_sz, user_buf,
++			     count, ppos);
++}
++
++static struct file_operations proc_PC_sample_operations = {
++	read: read_PC_samples,
++};
++
++static ssize_t read_call_graph(struct file *file, char *user_buf,
++			       size_t count, loff_t *ppos)
++{
++	return read_prof_buf((char *)cg_from_base, (cg_from_sz + cg_to_sz) * smp_num_cpus,
++			     user_buf, count, ppos);
++}
++
++static struct file_operations proc_call_graph_operations = {
++	read: read_call_graph,
++};
++
++static void expand_enable_map(void)
++{
++	int i;
++
++	for (i = 0; i < NR_CPUS; ++i)
++		cpu_prof_enabled[i] = (cpu_prof_enable_map & (1L << i)) != 0;
++}
++
++static void prof_reset(void)
++{
++	if (PC_sample_buf)
++		memset(PC_sample_buf, 0, mem_needed);
++	cg_arc_overflow = 0;
++	lost_ones = total_mcount = 0L;
++	#ifdef CONFIG_LIMIT_RECURS
++	   count1 = count2 = count3 = count4 = 0L;
++	#endif /* CONFIG_LIMIT_RECURS */
++}
++
++/* Deallocate profiling buffers */
++static void prof_free_mem(void)
++{
++	int i;
++	
++	/* vfree() and kfree() handle NULL pointers */
++	vfree(PC_sample_buf);
++	PC_sample_buf = NULL;
++	for (i = 0; i < smp_num_cpus; ++i)
++		kfree(trace_bufs[cpu_logical_map(i)].data);
++}
++
++/*
++ * Allocate memory for the various profiling buffers. We are lazy and only do
++ * this if we really try to use the profiling facilities.
++ */
++static int prof_alloc_mem(void)
++{
++	char *p;
++	int i;
++
++	if ((p = vmalloc(mem_needed)) == NULL)
++		return -ENOMEM;
++	PC_sample_buf = (PC_sample_count_t *) p;
++	memory_map.nr_cpus = smp_num_cpus;
++	if (supports_call_graph)
++	{
++		cg_from_base = (unsigned short *) (p + PC_buf_sz);
++		cg_to_base = (struct cg_arc_dest *) (p + PC_buf_sz + cg_from_sz * smp_num_cpus);
++		memory_map.cg_from_size = cg_from_sz;
++		memory_map.cg_to_size = cg_to_sz;
++		memory_map.cg_to_offset = cg_from_sz * smp_num_cpus;
++	}
++	else
++	{
++		memory_map.cg_from_size = 0L;
++		memory_map.cg_to_size = 0L;
++		memory_map.cg_to_offset = 0L;
++	}
++	if (prof_have_frameptr)  /* allocate ring buffers for present CPUs */
++		for (i = 0; i < smp_num_cpus; ++i) {
++			int cpu = cpu_logical_map(i);
++
++			trace_bufs[cpu].data = (unsigned long *)kmalloc(
++				PROF_BACKTRACE_BUFSIZE * sizeof(unsigned long),
++				GFP_KERNEL);
++		}
++	prof_reset();
++	return 0;
++}
++
++/* Record a PC sample.  Called from interrupt handlers.  SMP safe. */
++static void PC_sample(struct pt_regs *regs)
++{
++	unsigned long pc;
++
++	if (!cpu_prof_enabled[smp_processor_id()]) return;
++	if (prof_pid && (!current || current->pid != prof_pid)) return;
++
++	pc = instruction_pointer(regs);
++	if (user_mode(regs))
++		pc = FUNCTIONPC(USER);
++	else if (in_firmware(regs))
++		pc = FUNCTIONPC(FIRMWARE);
++	else if (pc >= memory_map.module_start && pc < memory_map.module_end)
++		pc = FUNCTIONPC(MODULE);
++	else if (pc_out_of_range(pc))
++		pc = FUNCTIONPC(UNKNOWN_KERNEL);
++
++	pc -= (unsigned long) &_stext;
++	atomic_inc((atomic_t *) &PC_sample_buf[pc >> prof_shift]);
++}
++
++/* Record PC samples when woken up, called from schedule()
++ * blocked --> time spent sleeping on a wait queue
++ * stalled --> time spent runnable yet not running
++ */
++static void PC_wakeup_sample(unsigned long frompc, unsigned long blocked,
++			     unsigned long stalled)
++{
++	if (!cpu_prof_enabled[smp_processor_id()]) return;
++	if (prof_pid && (!current || current->pid != prof_pid)) return;
++	
++	if (blocked == 0)
++		goto stalled;
++
++	if (frompc >= memory_map.module_start && frompc < memory_map.module_end)
++		frompc = FUNCTIONPC(MODULE);
++	else if (pc_out_of_range(frompc))
++		frompc = FUNCTIONPC(UNKNOWN_KERNEL);
++
++	frompc -= (unsigned long) &_stext;
++	atomic_add(blocked * (get_prof_freq() / HZ),
++		   (atomic_t *) &PC_sample_buf[frompc >> prof_shift]);
++
++ stalled:
++	if (!stalled)
++		return;
++
++	frompc = FUNCTIONPC(STALLED) - (unsigned long) &_stext;
++	atomic_add(stalled * (get_prof_freq() / HZ),
++		   (atomic_t *) &PC_sample_buf[frompc >> prof_shift]);
++}
++
++/* Maintain function call counts. Called by mcount().  SMP safe. */
++void record_fn_call(unsigned long not_used, unsigned long pc)
++{
++	if (prof_pid && (!current || current->pid != prof_pid)) return;
++	if (pc_out_of_range(pc))
++	{
++		if (pc >= memory_map.module_start && pc < memory_map.module_end)
++			pc = FUNCTIONPC(MODULE);
++		else
++			pc = FUNCTIONPC(UNKNOWN_KERNEL);
++	}
++	pc -= (unsigned long) &_stext;
++	atomic_inc((atomic_t *) &PC_sample_buf[pc >> prof_shift]);
++}
++
++/* Record an arc traversal in the call graph.  Called by mcount().  SMP safe */
++void cg_record_arc(unsigned long frompc, unsigned long selfpc)
++{
++#ifndef __HAVE_ARCH_CMPXCHG16
++	static spinlock_t cg_record_lock = SPIN_LOCK_UNLOCKED;
++	unsigned long flags;
++#endif
++	int toindex;
++	int fromindex;
++	int cpu;
++	unsigned short *q;
++	struct cg_arc_dest *p;
++        unsigned short *cg_from;
++        struct cg_arc_dest *cg_to;
++	#ifdef CONFIG_LIMIT_RECURS
++           static uint amhere[NR_CPUS] = {0};
++           uint *ishere;
++	#endif /* CONFIG_LIMIT_RECURS */
++
++	cpu = smp_processor_id();
++        if (!cpu_prof_enabled[cpu])
++		return;
++	total_mcount++;
++	#ifdef CONFIG_LIMIT_RECURS
++           ishere = &amhere[cpu];
++           toindex = atomic_add_return(1, (atomic_t *)ishere);
++           if (toindex > 4)
++           {
++              atomic_dec((atomic_t *)ishere);
++              count4++;
++              return;
++           }
++           else if (toindex == 2)
++              count1++;
++           else if (toindex == 3)
++              count2++;
++           else if (toindex == 4)
++              count3++;
++	#endif /* CONFIG_LIMIT_RECURS */
++	cg_from = (u_short *)(((char *)cg_from_base) + cg_from_sz * cpu);
++	cg_to = &cg_to_base[CG_MAX_ARCS * cpu];
++	if (pc_out_of_range(frompc))
++	{
++	   if (frompc >= memory_map.module_start && frompc < memory_map.module_end)
++	      fromindex = (FUNCTIONPC(MODULE) - (unsigned long)&_stext) >> prof_shift;
++	   else
++	      fromindex = (FUNCTIONPC(UNKNOWN_KERNEL) - (unsigned long)&_stext) >> prof_shift;
++	}
++	else
++		fromindex = (frompc - (unsigned long) &_stext) >> prof_shift;
++	q = &cg_from[fromindex];
++	
++	/* Easy case: the arc is already in the call graph */
++	for (toindex = *q; toindex != 0; ) {
++		p = &cg_to[toindex];
++		if (p->address == selfpc) {
++			atomic_inc(&p->count);
++		        #ifdef CONFIG_LIMIT_RECURS
++			   atomic_dec((atomic_t *)ishere);
++		        #endif /* CONFIG_LIMIT_RECURS */
++			return;
++		}
++		toindex = p->link;
++	}
++
++	/*
++	 * No luck.  We need to add a new arc.  Since cg_to[0] is unused,
++	 * we use cg_to[0].count to keep track of the next available arc.
++	 */
++	if (cg_arc_overflow)
++	{
++		lost_ones++;
++		#ifdef CONFIG_LIMIT_RECURS
++		   atomic_dec((atomic_t *)ishere);
++		#endif /* CONFIG_LIMIT_RECURS */
++		return;
++	}
++	toindex = atomic_add_return(1, &cg_to->count);
++	if (toindex >= CG_MAX_ARCS) {
++		/*
++		 * We have run out of space for arcs.  We'll keep incrementing
++		 * the existing ones but we won't try to add any more.
++		 */
++		lost_ones++;
++		cg_arc_overflow = 1;
++		atomic_set(&cg_to->count, CG_MAX_ARCS - 1);
++		#ifdef CONFIG_LIMIT_RECURS
++		   atomic_dec((atomic_t *)ishere);
++		#endif /* CONFIG_LIMIT_RECURS */
++		return;
++	}
++
++	/*
++	 * We have a secured slot for a new arc and all we need to do is
++	 * initialize it and add it to a hash bucket.  We use compare&swap, if
++	 * possible, to avoid any spinlocks whatsoever.
++	 */
++	p = &cg_to[toindex];
++	p->address = selfpc;
++	atomic_set(&p->count, 1);
++#ifdef __HAVE_ARCH_CMPXCHG16
++	do {
++		p->link = *q;
++	} while (cmpxchg(q, p->link, toindex) != p->link);
++#else
++	spin_lock_irqsave(&cg_record_lock, flags);
++	p->link = *q;
++	*q = toindex;
++	spin_unlock_irqrestore(&cg_record_lock, flags);
++#endif
++	#ifdef CONFIG_LIMIT_RECURS
++	   atomic_dec((atomic_t *)ishere);
++	#endif /* CONFIG_LIMIT_RECURS */
++	return;
++}
++
++/*
++ * Record an arc traversal in the call graph, and walk up the stack to
++ * find and record all the call graph arcs.  Called by schedule() (and
++ * potentially others).  SMP safe.
++ */
++void backtrace_cg_record_arc(unsigned long frompc, unsigned long selfpc)
++{
++	int backtrace_count = PROF_BACKTRACE_MAX_LEN;	/* for safety */
++	frame_info_t frame;
++	unsigned long caller_pc, callee_pc;
++
++	if (prof_pid && (!current || current->pid != prof_pid))
++		return;
++
++	/* If can't build fake frame, then record what info we have and leave */
++	if (!build_fake_frame(&frame)) {
++#ifndef CONFIG_IA64
++		caller_pc = frompc;
++		callee_pc = (selfpc) ? selfpc
++				: (unsigned long)__builtin_return_address(0);
++		cg_record_arc(caller_pc, callee_pc);
++#endif
++		return;
++	}
++
++	/* Walk back to who called us */
++	if (!get_next_frame(&frame)) {
++		return;
++	}
++	callee_pc = frame_get_pc(&frame);
++	if (pc_out_of_range(callee_pc)) {
++#if 0
++		printk(" backtrace callee_pc 0x%lx out of range\n",
++			callee_pc & 0xffffffffL);
++		printk("  caller-supplied caller:0x%lx callee:0x%lx\n",
++			frompc & 0xffffffffL, selfpc & 0xffffffffL);
++#endif
++		return;
++	}
++
++	/* Now walk back to who called our caller, giving us the 1st cg arc */
++	if (!get_next_frame(&frame)) {
++#if 1
++		printk("  computed callee_pc:0x%lx\n", callee_pc & 0xffffffffL);
++		printk("  caller-supplied caller:0x%lx callee:0x%lx\n",
++			frompc & 0xffffffffL, selfpc & 0xffffffffL);
++#endif
++		BUG();	/* debug */
++		return;
++	}
++	caller_pc = frame_get_pc(&frame);
++	if (pc_out_of_range(caller_pc)) {
++#if 0
++		printk(" backtrace caller_pc 0x%x out of range\n",
++			caller_pc & 0xffffffff);
++		printk("  caller-supplied caller:0x%x callee:0x%x\n",
++			frompc & 0xffffffff, selfpc & 0xffffffff);
++#endif
++		return;
++	}
++	/* Now record this cg arc and keep walking back the stack for more */
++	while (backtrace_count--) {
++		cg_record_arc(caller_pc, callee_pc);
++		callee_pc = caller_pc;
++		if (!get_next_frame(&frame))
++			break;		/* quit! */
++		caller_pc = frame_get_pc(&frame);
++		if (pc_out_of_range(caller_pc))
++			break;		/* quit! */
++		backtrace_count--;
++	}
++}
++
++#define PROF_TRACE_MASK (PROF_BACKTRACE_BUFSIZE - 1)
++
++/* circularly increment i to point to the next entry in a trace ring buffer */
++#define CIRC_INC(i)     (((i) + 1) & PROF_TRACE_MASK)
++
++static void do_backtrace_sample(frame_info_t *frame, unsigned long alt_pc,
++				unsigned long count)
++{
++	int free_slots, j, n_entries;
++	struct trace_ring_buf *p;
++
++	p = &trace_bufs[smp_processor_id()];
++	if (!p->active ||
++	    ((free_slots = ((p->end - p->start) & PROF_TRACE_MASK)) < 3))
++		goto out;
++	j = CIRC_INC(p->start);
++	n_entries = 1;
++
++	if (!frame) {
++		p->data[j] = alt_pc;
++		goto end_trace;
++	}
++
++	/* We set aside one slot for the trace length */
++	if (--free_slots > PROF_BACKTRACE_MAX_LEN)
++		free_slots = PROF_BACKTRACE_MAX_LEN;
++
++	for (n_entries = 0;;) {
++		p->data[j] = frame_get_pc(frame);
++		if (pc_out_of_range(p->data[j])) {
++	   		if (p->data[j] >= memory_map.module_start &&
++			    p->data[j] < memory_map.module_end)
++				p->data[j] = FUNCTIONPC(MODULE);
++			else
++				p->data[j] = FUNCTIONPC(UNKNOWN_KERNEL);
++		}
++		if (++n_entries == free_slots || !get_next_frame(frame))
++			break;
++		j = CIRC_INC(j);
++	}
++end_trace:
++	/* count goes in upper half of data value. 0 is interpreted as a 1 */
++	p->data[p->start] = (count << ((sizeof count) * 4)) | n_entries;
++	p->start = CIRC_INC(j);
++out:    return;
++}
++
++/* Record a stack backtrace.  Called from interrupt handlers. No MP issues. */
++static void backtrace_sample(struct pt_regs *regs)
++{
++	frame_info_t frame;
++
++	if (!cpu_prof_enabled[smp_processor_id()])
++		return;
++	if (prof_pid && (!current || current->pid != prof_pid))
++		return;
++
++	/* Check for corner cases, otherwise generate frame from regs */
++
++	if (user_mode(regs))
++		do_backtrace_sample(NULL, FUNCTIONPC(USER), 0);
++	else if (in_firmware(regs))
++		do_backtrace_sample(NULL, FUNCTIONPC(FIRMWARE), 0);
++	else if (pc_out_of_range(instruction_pointer(regs))) {
++		if (instruction_pointer(regs) >= memory_map.module_start &&
++			instruction_pointer(regs) < memory_map.module_end)
++			do_backtrace_sample(NULL, FUNCTIONPC(MODULE), 0);
++		else
++			do_backtrace_sample(NULL, FUNCTIONPC(UNKNOWN_KERNEL), 0);
++	} else {
++		/* We have a pc value within the static kernel text area */
++		get_top_frame(regs, &frame);
++		do_backtrace_sample(&frame, 0, 0);
++	}
++}
++
++static void backtrace_wakeup_sample(unsigned long frompc, unsigned long blocked,
++				    unsigned long stalled)
++{
++	frame_info_t frame;
++
++	if (!cpu_prof_enabled[smp_processor_id()])
++		return;
++
++	if (prof_pid && (!current || current->pid != prof_pid))
++		return;
++
++	if (!build_fake_frame(&frame))
++		return;
++
++	if (!get_next_frame(&frame))
++		return;
++
++	if (blocked)
++		do_backtrace_sample(&frame, 0,
++				    blocked * (get_prof_freq() / HZ));
++
++	if (stalled)
++		do_backtrace_sample(NULL, FUNCTIONPC(STALLED),
++				    stalled * (get_prof_freq() / HZ));
++}
++
++static ssize_t trace_read(struct file *file, char *buf,
++			  size_t count, loff_t *ppos)
++{
++	struct trace_ring_buf *p;
++	size_t avail, entries_to_write;
++
++	p = &trace_bufs[MINOR(file->f_dentry->d_inode->i_rdev) - 1];
++	avail = (PROF_BACKTRACE_BUFSIZE - 1) + p->start - p->end;
++	avail &= PROF_TRACE_MASK;
++
++	entries_to_write = count / sizeof(*p->data);
++	if (entries_to_write > avail)
++		entries_to_write = avail;
++	if (entries_to_write == 0)
++		return 0;
++	count = entries_to_write * sizeof(*p->data);
++	if (p->end + entries_to_write < PROF_BACKTRACE_BUFSIZE) {
++		copy_to_user(buf, (void *)&p->data[p->end + 1], count);
++		p->end += entries_to_write;
++	} else {
++		size_t first_part;
++
++		avail = (PROF_BACKTRACE_BUFSIZE - 1) - p->end;
++		first_part = avail * sizeof(*p->data);
++
++		if (avail)
++			copy_to_user(buf, (void *)&p->data[p->end + 1],
++				     first_part);
++		copy_to_user(buf + first_part, (void *)&p->data[0],
++			     count - first_part);
++		p->end = entries_to_write - avail - 1;
++	}
++	return count;
++}
++
++static int trace_release(struct inode *inode, struct file *filp)
++{
++	trace_bufs[MINOR(inode->i_rdev) - 1].active = 0;
++        return 0;
++}
++
++static struct file_operations prof_trace_fops = {
++	owner: THIS_MODULE,
++	read: trace_read,
++	release: trace_release,
++};
++
++/*
++ * The perf counter interrupt handler calls this function which then calls the
++ * appropriate sampling function.  We do this because we may need to reload the
++ * perf counter after it overflows.
++ */
++void perfctr_aux_intr_handler(struct pt_regs *regs)
++{
++	prof_perfctr_aux_hook(regs);
++	perfctr_reload(perfctr_freq);
++}
++
++/* Start the performance monitoring counters */
++static void perfctr_commence(void *dummy)
++{
++	__perfctr_commence(perfctr_freq, perfctr_event);
++}
++
++/* Stop the performance monitoring counters */
++static void perfctr_stop(void *dummy)
++{
++	__perfctr_stop();
++}
++
++/* Open a profiling device */
++static int prof_open(struct inode *inode, struct file *filp)
++{
++	int minor = MINOR(inode->i_rdev);
++
++	if (minor != PROF_CNTRL_MINOR) {
++		--minor;
++		if (minor >= NR_CPUS || trace_bufs[minor].data == NULL)
++			return -ENODEV;
++
++		filp->f_op = &prof_trace_fops;
++		trace_bufs[minor].start = 0;
++		trace_bufs[minor].end = PROF_BACKTRACE_BUFSIZE - 1;
++		trace_bufs[minor].active = 1;
++	}
++
++	return 0;
++}
++
++static void prof_stop(void)
++{
++	if (prof_mode & PROF_MODE_CALL_GRAPH)
++	{
++		printk("Total mcount invocations: %7lu\n", total_mcount);
++		printk("Lost to table overflow:   %7lu\n", lost_ones);
++		#ifdef CONFIG_LIMIT_RECURS
++	  	   printk("Lost to recursive invoc:  %7lu\n", count4);
++		   printk("Recursion depth/counts: 1/%lu, 2/%lu, 3/%lu\n", count1, count2, count3);
++		#endif /* CONFIG_LIMIT_RECURS */
++	}
++	if (prof_perfctr_hook) {
++		smp_call_function(perfctr_stop, NULL, 1, 0);
++		perfctr_stop(NULL);
++	}
++	prof_timer_hook = prof_perfctr_hook = NULL;
++	mcount_hook = NULL;
++	prof_scheduler_hook = NULL;
++	prof_wakeup_hook = NULL;
++	if (prof_enabled) {
++		unload_timeout = jiffies + HZ;
++		prof_enabled = 0;
++		MOD_DEC_USE_COUNT;
++	}
++}
++
++extern struct module *module_list;
++extern struct module *static_module_list;
++
++int prof_get_module_map(prof_mem_map_t *map)
++{
++   struct module        *mod;
++   struct module_symbol *s;
++   char                 *t;
++   u_long                low = (u_long)-1L;
++   u_long                high = 0L;
++   u_long                end;
++   int                   i;
++
++   for (mod = module_list; mod != static_module_list; mod = mod->next)
++   {
++      if (mod->flags & MOD_RUNNING)
++      {
++         for (i = 0, s = mod->syms; i < mod->nsyms; i++, s++)
++         {
++            if ((t = strstr(s->name, "_S.text_L")))
++            {
++               if (s->value < low)
++                  low = s->value;
++               end = mod->size + s->value;
++               if (end > high)
++                  high = end;
++            }
++         }
++      }
++   }
++   if (high)
++   {
++      map->module_start = low;
++      map->module_end = high;
++      map->module_buckets = 0;
++      return(0);
++   }
++   return(-1);
++}
++
++int create_proc_files(void)
++{
++   struct proc_dir_entry *ent;
++   prof_mem_map_t m_map;
++
++   if (prof_get_module_map(&m_map))
++   {
++#if 0
++      printk("Unable to get module memory map - maybe there are no loaded modules?\n");
++#endif
++      m_map.module_start = m_map.module_end = 0L;
++      m_map.module_buckets = 0;
++   }
++   if (n_buckets != memory_map.kernel_buckets + m_map.module_buckets)
++   {
++      if (proc_created)
++      {
++         remove_proc_entry("profile/PC_samples", 0);
++         if (supports_call_graph)
++            remove_proc_entry("profile/call_graph", 0);
++         remove_proc_entry("profile", 0);
++         prof_free_mem();
++         proc_created = 0;
++      }
++      memory_map.module_buckets = 0;
++      memory_map.module_start = m_map.module_start;
++      memory_map.module_end = m_map.module_end;
++      n_buckets = memory_map.kernel_buckets;
++   }
++
++   if (proc_created)
++      return(0);
++
++   PC_buf_sz = n_buckets * sizeof(PC_sample_count_t);
++
++   if (!proc_mkdir("profile", 0))
++   {
++      printk(KERN_ERR "profile: unable to create /proc entries\n");
++      return -ENODEV;
++   }
++   if ((ent = create_proc_entry("profile/PC_samples", 0, 0)) != NULL)
++   {
++      ent->size = PC_buf_sz;
++      ent->proc_fops = &proc_PC_sample_operations;
++   }
++   else
++      printk("Unable to do create_proc_entry for PC_samples\n");
++
++   if (supports_call_graph)
++   {
++      /*
++       * Calculate size of call graph structures.  The round-ups
++       * ensure that pointers to these structures are properly
++       * aligned.
++       */
++      cg_from_sz = n_buckets * sizeof(short);
++      cg_to_sz = CG_MAX_ARCS * sizeof(struct cg_arc_dest);
++      
++      PC_buf_sz = roundup(PC_buf_sz, sizeof(unsigned long));
++      cg_from_sz = roundup(cg_from_sz, sizeof(unsigned long));
++      mem_needed = PC_buf_sz + cg_from_sz * smp_num_cpus + cg_to_sz * smp_num_cpus ;
++      
++      if ((ent = create_proc_entry("profile/call_graph", 0, 0)))
++      {
++         ent->size = cg_to_sz * smp_num_cpus  + cg_from_sz * smp_num_cpus;
++         ent->proc_fops = &proc_call_graph_operations;
++      }
++      else
++         printk("Unable to do create_proc_entry for call_graph\n");
++   }
++   else
++      mem_needed = PC_buf_sz;
++   return(0);
++}
++
++/*
++ * ioctl handler for the profile control device.
++ */
++int prof_ctl_ioctl(struct inode *inode, struct file *filp,
++		   unsigned int command, unsigned long arg)
++{
++	int err = 0;
++
++	switch (command) {
++	case PROF_START:
++		if (prof_enabled)
++			return 0;
++		if (create_proc_files())
++		{
++			err = -EINVAL;
++			return err;
++		}
++		if (PC_sample_buf == NULL && (err = prof_alloc_mem()))
++			return err;
++		MOD_INC_USE_COUNT;
++		prof_enabled = 1;
++		if (prof_mode & PROF_MODE_CALL_GRAPH)
++		{
++		   mcount_hook = cg_record_arc;
++		}
++		else if (prof_mode & PROF_MODE_CALL_COUNT)
++		{
++		   mcount_hook = record_fn_call;
++		}
++		else if (prof_mode & PROF_MODE_SCHEDULER_CALL_GRAPH)
++			prof_scheduler_hook = backtrace_cg_record_arc;
++		if (prof_mode & PROF_MODE_PC_SAMPLING) {
++			*prof_intr_hook = PC_sample;
++			if (prof_pid)
++				prof_wakeup_hook = PC_wakeup_sample;
++		} else if (prof_mode & PROF_MODE_BACKTRACE) {
++			*prof_intr_hook = backtrace_sample;
++			if (prof_pid)
++				prof_wakeup_hook = backtrace_wakeup_sample;
++		}
++		if (prof_domain == PROF_DOMAIN_PERFCTR) {
++			if (!(prof_mode & PROF_MODE_PC_SAMPLING) &&
++			    !(prof_mode & PROF_MODE_BACKTRACE))
++			{
++				err = -EINVAL;
++				return err;
++			}
++			prof_perfctr_hook = perfctr_aux_intr_handler;
++			smp_call_function(perfctr_commence, NULL, 1, 0);
++			perfctr_commence(NULL);
++		}
++		break;
++	case PROF_STOP:
++		prof_stop();
++		break;
++	case PROF_RESET:
++		prof_stop();         /* resetting also stops profiling */
++		prof_reset();
++		break;
++	case PROF_SET_SAMPLE_FREQ:
++		if (prof_domain == PROF_DOMAIN_TIME)
++			err = setup_profiling_timer(arg / HZ);
++		else if (prof_domain == PROF_DOMAIN_PERFCTR) {
++			if (valid_perfctr_freq(arg))
++				perfctr_freq = arg;
++			else
++				err = -EINVAL;
++		} else
++			err = EINVAL;
++		break;
++	case PROF_GET_SAMPLE_FREQ:
++		if (prof_domain == PROF_DOMAIN_TIME) {
++			unsigned int freq = get_prof_freq();
++			err = copy_to_user((void *)arg, &freq, sizeof freq) ?
++				-EFAULT : 0;
++		} else
++			err = copy_to_user((void *)arg, &perfctr_freq,
++					   sizeof perfctr_freq) ? -EFAULT : 0;
++		break;
++	case PROF_GET_PC_RES:
++		err = copy_to_user((void *)arg, &PC_resolution,
++				   sizeof PC_resolution) ? -EFAULT : 0;
++		break;
++	case PROF_GET_ON_OFF_STATE:
++		err = copy_to_user((void *)arg, &prof_enabled,
++				   sizeof prof_enabled) ? -EFAULT : 0;
++		break;
++	case PROF_SET_DOMAIN:
++		if (arg != prof_domain)  /* changing domains stops profiling */
++			prof_stop();
++		if (arg == PROF_DOMAIN_TIME) {
++			prof_domain = arg;
++			prof_intr_hook = &prof_timer_hook;
++		} else if (arg == PROF_DOMAIN_PERFCTR && have_perfctr()) {
++			prof_domain = arg;
++			prof_intr_hook = &prof_perfctr_aux_hook;
++		} else
++			err = -EINVAL;
++		break;
++	case PROF_GET_DOMAIN:
++		err = copy_to_user((void *)arg, &prof_domain,
++				   sizeof prof_domain) ? -EFAULT : 0;
++		break;
++	case PROF_SET_MODE:
++		if (arg != prof_mode) /* changing modes also stops profiling */
++			prof_stop();
++		if (arg == PROF_MODE_PC_SAMPLING)
++			prof_mode = arg;
++		else if (arg == PROF_MODE_BACKTRACE && prof_have_frameptr)
++			prof_mode = arg;
++		else if (arg == PROF_MODE_CALL_COUNT && prof_have_mcount)
++			prof_mode = arg;
++		else if (supports_call_graph &&
++			  (arg == PROF_MODE_SCHEDULER_CALL_GRAPH ||
++			   arg == PROF_MODE_CALL_GRAPH ||
++			   arg == (PROF_MODE_CALL_GRAPH|PROF_MODE_PC_SAMPLING)))
++			prof_mode = arg;
++		else
++			err = -EINVAL;
++		break;
++	case PROF_GET_MODE:
++		err = copy_to_user((void *)arg, &prof_mode, sizeof prof_mode) ?
++			-EFAULT : 0;
++		break;
++	case PROF_SET_PID:
++		if (prof_enabled) /* don't change PID while profiling */
++			err = -EINVAL;
++		else
++			prof_pid = arg;
++		break;
++	case PROF_GET_PID:
++		err = copy_to_user((void *)arg, &prof_pid, sizeof prof_pid) ?
++ 			-EFAULT : 0;
++ 		break;
++	case PROF_SET_PERFCTR_EVENT:
++		if (have_perfctr() && valid_perfctr_event(arg))
++			perfctr_event = arg;
++		else
++			err = -EINVAL;
++		break;
++	case PROF_GET_PERFCTR_EVENT:
++		if (have_perfctr())
++			err = copy_to_user((void *)arg, &perfctr_event,
++					   sizeof perfctr_event) ? -EFAULT : 0;
++		else
++			err = -EINVAL;
++		break;
++	case PROF_SET_ENABLE_MAP:
++		cpu_prof_enable_map = arg & cpu_online_map;
++		expand_enable_map();
++		break;
++	case PROF_GET_ENABLE_MAP:
++		err = copy_to_user((void *)arg, &cpu_prof_enable_map,
++				   sizeof cpu_prof_enable_map) ? -EFAULT : 0;
++		break;
++	case PROF_GET_MAPPING:
++		err = copy_to_user((void *)arg, &memory_map,
++				   sizeof memory_map) ? -EFAULT : 0;
++		break;
++	default:
++		err = -EINVAL;
++	}
++
++	return err;
++}
++
++static struct file_operations prof_ctl_fops = {
++	owner: THIS_MODULE,
++	ioctl: prof_ctl_ioctl,
++	open: prof_open,
++};
++
++#ifndef MODULE
++static int __init profile_setup(char *str)
++{
++	int res;
++
++	if (get_option(&str, &res)) PC_resolution = res;
++	return 1;
++}
++
++__setup("profile=", profile_setup);
++#else
++static int can_unload(void)
++{
++	int ret = atomic_read(&__this_module.uc.usecount);
++
++	/*
++	 * It is conceivable that we may try to delete this module just as 
++	 * an interrupt handler is trying to write into a profile buffer.
++	 * Since unloading the module frees the buffers that would be
++	 * unfortunate.  To avoid such races this module may not be unloaded 
++	 * within one second after profiling is turned off.
++	 */
++	if (time_before(jiffies, unload_timeout))
++		ret = 1;
++
++	return ret;
++}
++#endif
++
++int __init profile_init(void)
++{
++	size_t text_size = (unsigned long) &_etext - (unsigned long) &_stext;
++	
++	/* Round PC_resolution down to a power of 2 and compute its log */
++	if (PC_resolution == 0)
++		PC_resolution = DFL_PC_RES;
++	while ((PC_resolution & (PC_resolution - 1)) != 0)
++		PC_resolution &= PC_resolution - 1;
++	for (prof_shift = 0; (1 << prof_shift) < PC_resolution; prof_shift++);
++
++	/* Calculate size of PC-sample buffer. */
++	memory_map.kernel_buckets = n_buckets = text_size >> prof_shift;
++	memory_map.kernel_start = (u_long)&_stext;
++	memory_map.kernel_end = (u_long)&_etext;
++
++#ifdef MODULE
++	__this_module.can_unload = can_unload;
++#endif
++	memset(trace_bufs, 0, sizeof trace_bufs);
++
++	cpu_prof_enable_map = cpu_online_map;
++	expand_enable_map();
++
++	return devfs_register_chrdev(PROF_MAJOR, "profile", &prof_ctl_fops);
++}
++
++/* This must be static for some reason */
++static void __exit profile_exit(void)
++{
++	devfs_unregister_chrdev(PROF_MAJOR, "profile");
++	remove_proc_entry("profile/PC_samples", 0);
++	if (supports_call_graph)
++		remove_proc_entry("profile/call_graph", 0);
++	remove_proc_entry("profile", 0);
++	prof_free_mem();
++}
++
++module_init(profile_init);
++module_exit(profile_exit);
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/fs/exec.c linux-2.4.17-profile/fs/exec.c
+--- linux-2.4.17/fs/exec.c	Fri Dec 21 09:41:55 2001
++++ linux-2.4.17-profile/fs/exec.c	Wed Jan  2 15:01:35 2002
+@@ -904,9 +904,10 @@
+ 		goto out; 
+ 
+ 	retval = search_binary_handler(&bprm,regs);
+-	if (retval >= 0)
++	if (retval >= 0) {
+ 		/* execve success */
+ 		return retval;
++	}
+ 
+ out:
+ 	/* Something went wrong, return the inode and free the argument pages*/
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/fs/proc/proc_misc.c linux-2.4.17-profile/fs/proc/proc_misc.c
+--- linux-2.4.17/fs/proc/proc_misc.c	Tue Nov 20 21:29:09 2001
++++ linux-2.4.17-profile/fs/proc/proc_misc.c	Wed Jan  2 15:01:35 2002
+@@ -410,69 +410,6 @@
+ 	return proc_calc_metrics(page, start, off, count, eof, len);
+ }
+ 
+-/*
+- * This function accesses profiling information. The returned data is
+- * binary: the sampling step and the actual contents of the profile
+- * buffer. Use of the program readprofile is recommended in order to
+- * get meaningful info out of these data.
+- */
+-static ssize_t read_profile(struct file *file, char *buf,
+-			    size_t count, loff_t *ppos)
+-{
+-	unsigned long p = *ppos;
+-	ssize_t read;
+-	char * pnt;
+-	unsigned int sample_step = 1 << prof_shift;
+-
+-	if (p >= (prof_len+1)*sizeof(unsigned int))
+-		return 0;
+-	if (count > (prof_len+1)*sizeof(unsigned int) - p)
+-		count = (prof_len+1)*sizeof(unsigned int) - p;
+-	read = 0;
+-
+-	while (p < sizeof(unsigned int) && count > 0) {
+-		put_user(*((char *)(&sample_step)+p),buf);
+-		buf++; p++; count--; read++;
+-	}
+-	pnt = (char *)prof_buffer + p - sizeof(unsigned int);
+-	copy_to_user(buf,(void *)pnt,count);
+-	read += count;
+-	*ppos += read;
+-	return read;
+-}
+-
+-/*
+- * Writing to /proc/profile resets the counters
+- *
+- * Writing a 'profiling multiplier' value into it also re-sets the profiling
+- * interrupt frequency, on architectures that support this.
+- */
+-static ssize_t write_profile(struct file * file, const char * buf,
+-			     size_t count, loff_t *ppos)
+-{
+-#ifdef CONFIG_SMP
+-	extern int setup_profiling_timer (unsigned int multiplier);
+-
+-	if (count==sizeof(int)) {
+-		unsigned int multiplier;
+-
+-		if (copy_from_user(&multiplier, buf, sizeof(int)))
+-			return -EFAULT;
+-
+-		if (setup_profiling_timer(multiplier))
+-			return -EINVAL;
+-	}
+-#endif
+-
+-	memset(prof_buffer, 0, prof_len * sizeof(*prof_buffer));
+-	return count;
+-}
+-
+-static struct file_operations proc_profile_operations = {
+-	read:		read_profile,
+-	write:		write_profile,
+-};
+-
+ extern struct seq_operations mounts_op;
+ static int mounts_open(struct inode *inode, struct file *file)
+ {
+@@ -545,13 +482,6 @@
+ 		proc_root_kcore->proc_fops = &proc_kcore_operations;
+ 		proc_root_kcore->size =
+ 				(size_t)high_memory - PAGE_OFFSET + PAGE_SIZE;
+-	}
+-	if (prof_shift) {
+-		entry = create_proc_entry("profile", S_IWUSR | S_IRUGO, NULL);
+-		if (entry) {
+-			entry->proc_fops = &proc_profile_operations;
+-			entry->size = (1+prof_len) * sizeof(unsigned int);
+-		}
+ 	}
+ #ifdef CONFIG_PPC32
+ 	{
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-i386/apic.h linux-2.4.17-profile/include/asm-i386/apic.h
+--- linux-2.4.17/include/asm-i386/apic.h	Thu Nov 22 11:46:19 2001
++++ linux-2.4.17-profile/include/asm-i386/apic.h	Wed Jan  2 15:01:35 2002
+@@ -8,7 +8,9 @@
+ 
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 
++#ifndef CONFIG_MCOUNT
+ #define APIC_DEBUG 0
++#endif
+ 
+ #if APIC_DEBUG
+ #define Dprintk(x...) printk(x)
+@@ -76,6 +78,9 @@
+ extern void init_apic_mappings (void);
+ extern void smp_local_timer_interrupt (struct pt_regs * regs);
+ extern void setup_APIC_clocks (void);
++extern void setup_APIC_perfctr(void);
++extern int setup_profiling_timer(unsigned int);
++extern int prof_multiplier[];
+ extern void setup_apic_nmi_watchdog (void);
+ extern inline void nmi_watchdog_tick (struct pt_regs * regs);
+ extern int APIC_init_uniprocessor (void);
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-i386/atomic.h linux-2.4.17-profile/include/asm-i386/atomic.h
+--- linux-2.4.17/include/asm-i386/atomic.h	Thu Nov 22 11:46:18 2001
++++ linux-2.4.17-profile/include/asm-i386/atomic.h	Wed Jan  2 15:01:35 2002
+@@ -57,6 +57,19 @@
+ 		:"=m" (v->counter)
+ 		:"ir" (i), "m" (v->counter));
+ }
++ 
++#if CPU != 386
++/* Like the above but also returns the result */
++static __inline__ int atomic_add_return(int i, atomic_t *v)
++{
++	register int oldval;
++        __asm__ __volatile__(
++                LOCK "xaddl %2,%0"
++                :"=m" (v->counter), "=r" (oldval)
++                :"1" (i), "m" (v->counter) : "memory");
++	return oldval + i;
++}
++#endif
+ 
+ /**
+  * atomic_sub - subtract the atomic variable
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-i386/hw_irq.h linux-2.4.17-profile/include/asm-i386/hw_irq.h
+--- linux-2.4.17/include/asm-i386/hw_irq.h	Thu Nov 22 11:46:18 2001
++++ linux-2.4.17-profile/include/asm-i386/hw_irq.h	Wed Jan  2 15:01:35 2002
+@@ -49,6 +49,7 @@
+  * sources per level' errata.
+  */
+ #define LOCAL_TIMER_VECTOR	0xef
++#define PERFCTR_OVFL_VECTOR	0xee
+ 
+ /*
+  * First APIC vector available to drivers: (vectors 0x30-0xee)
+@@ -179,39 +180,6 @@
+ SYMBOL_NAME_STR(IRQ) #nr "_interrupt:\n\t" \
+ 	"pushl $"#nr"-256\n\t" \
+ 	"jmp common_interrupt");
+-
+-extern unsigned long prof_cpu_mask;
+-extern unsigned int * prof_buffer;
+-extern unsigned long prof_len;
+-extern unsigned long prof_shift;
+-
+-/*
+- * x86 profiling function, SMP safe. We might want to do this in
+- * assembly totally?
+- */
+-static inline void x86_do_profile (unsigned long eip)
+-{
+-	if (!prof_buffer)
+-		return;
+-
+-	/*
+-	 * Only measure the CPUs specified by /proc/irq/prof_cpu_mask.
+-	 * (default is all CPUs.)
+-	 */
+-	if (!((1<<smp_processor_id()) & prof_cpu_mask))
+-		return;
+-
+-	eip -= (unsigned long) &_stext;
+-	eip >>= prof_shift;
+-	/*
+-	 * Don't ignore out-of-bounds EIP values silently,
+-	 * put them into the last histogram slot, so if
+-	 * present, they will show up as a sharp peak.
+-	 */
+-	if (eip > prof_len-1)
+-		eip = prof_len-1;
+-	atomic_inc((atomic_t *)&prof_buffer[eip]);
+-}
+ 
+ #ifdef CONFIG_SMP /*more of this file should probably be ifdefed SMP */
+ static inline void hw_resend_irq(struct hw_interrupt_type *h, unsigned int i) {
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-i386/processor.h linux-2.4.17-profile/include/asm-i386/processor.h
+--- linux-2.4.17/include/asm-i386/processor.h	Thu Nov 22 11:46:19 2001
++++ linux-2.4.17-profile/include/asm-i386/processor.h	Wed Jan  2 15:01:35 2002
+@@ -89,6 +89,7 @@
+ #define cpu_has_fxsr	(test_bit(X86_FEATURE_FXSR, boot_cpu_data.x86_capability))
+ #define cpu_has_xmm	(test_bit(X86_FEATURE_XMM,  boot_cpu_data.x86_capability))
+ #define cpu_has_fpu	(test_bit(X86_FEATURE_FPU,  boot_cpu_data.x86_capability))
++#define cpu_has_msr     (test_bit(X86_FEATURE_MSR,  boot_cpu_data.x86_capability))
+ #define cpu_has_apic	(test_bit(X86_FEATURE_APIC, boot_cpu_data.x86_capability))
+ 
+ extern char ignore_irq13;
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-i386/profile.h linux-2.4.17-profile/include/asm-i386/profile.h
+--- linux-2.4.17/include/asm-i386/profile.h	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/include/asm-i386/profile.h	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,153 @@
++/*
++ * 
++ * Copyright (C) SGI 1999, 2000
++ *
++ * Written by Dimitris Michailidis (dimitris@engr.sgi.com)
++ */
++
++#ifndef _ASM_PROFILE_H
++#define _ASM_PROFILE_H
++
++#ifdef __KERNEL__
++
++#include <asm/system.h>
++#include <asm/ptrace.h>
++#include <asm/msr.h>
++#include <asm/processor.h>
++
++#define DFL_PC_RES 4		/* default PC resolution for this platform */
++
++/*
++ * When executing in the BIOS or PROM (happens with APM) we get kernel-mode
++ * addresses below &_stext.
++ */ 
++#define in_firmware(regs) ((regs)->eip < (unsigned long) &_stext)
++
++struct st_limits {              /* valid kernel stack is between bot & top */
++	unsigned long *top;
++	unsigned long *bot;
++};
++
++struct frame_info {
++	struct st_limits limits;
++	unsigned long *frame_ptr; /* saved ebp */
++	unsigned long pc;         /* saved eip */
++};
++
++typedef struct frame_info frame_info_t;
++
++#define frame_get_pc(p) ((p)->pc)
++
++static __inline__ void get_stack_limits(struct pt_regs *regs,
++					struct st_limits *p)
++{
++	p->top = &regs->esp;
++	p->bot = (unsigned long *)((unsigned long) current + THREAD_SIZE);
++}
++
++/*
++ * A function sets up its stack frame with the instructions
++ *
++ * 	pushl %ebp
++ *	movl %esp, %ebp
++ *
++ * The timer interrupt may arrive at any time including right at the moment
++ * that the new frame is being set up, so we need to distinguish a few cases.
++ */
++static __inline__ void get_top_frame(struct pt_regs *regs, frame_info_t *p)
++{
++	unsigned long pc = regs->eip;
++
++	get_stack_limits(regs, &p->limits);
++	if (*p->limits.top == regs->ebp) {         /* between pushl and movl */
++		p->frame_ptr = p->limits.top;
++		p->pc = pc;
++	} else {
++		p->frame_ptr = (unsigned long *) regs->ebp;
++		if (*(unsigned char *)pc == 0x55)  /* right at pushl %ebp */
++			p->pc = *p->limits.top;
++		else
++			p->pc = pc;
++	}
++}
++
++/* Fabricate a stack frame that is sufficient to begin walking up the stack */ 
++static __inline__ int build_fake_frame(frame_info_t *p)
++{
++	__asm__ __volatile__("movl %%esp,%0" : "=m" (p->limits.top));
++	p->limits.bot = (unsigned long *)((unsigned long)current + THREAD_SIZE);
++	__asm__ __volatile__("movl %%ebp,%0" : "=m" (p->frame_ptr));
++	p->pc = (unsigned long)current_text_addr();
++	return 1;
++}
++
++/* This macro determines whether there are more frames to go on the stack */
++#define last_frame(p) \
++	((p)->frame_ptr < (p)->limits.top || (p)->frame_ptr >= (p)->limits.bot)
++
++static __inline__ int get_next_frame(frame_info_t *p)
++{
++	if (last_frame(p))
++		return 0;
++	p->pc = p->frame_ptr[1];
++	p->frame_ptr = (unsigned long *) *p->frame_ptr;
++	return 1;
++}
++
++/* These are called by mcount() so we want them to be fast. */
++void cg_record_arc(unsigned long, unsigned long) __attribute__((regparm(2)));
++void record_fn_call(unsigned long, unsigned long) __attribute__((regparm(2)));
++
++#define supports_call_graph (prof_have_mcount && prof_have_frameptr)
++
++#if defined(CONFIG_MCOUNT)
++#define MCOUNT_STEXT_LOCK "call mcount_stext_lock"
++#define MCOUNT_ASM        "call mcount_asm"
++#else
++#define MCOUNT_STEXT_LOCK
++#define MCOUNT_ASM
++#endif
++
++/* We can do 16-bit compare&swap */
++#define __HAVE_ARCH_CMPXCHG16 1
++
++/*
++ * Performance counters are supported only on P6-family systems with local APIC
++ * since we rely on the overflow interrupts.
++ */
++#ifdef CONFIG_X86_LOCAL_APIC
++#define have_perfctr() (cpu_has_msr && boot_cpu_data.x86 == 6)
++
++#define valid_perfctr_event(e) ((unsigned long)(e) <= 0xFFFFF)
++#define valid_perfctr_freq(n)  ((long)(n) >= 0)
++
++#define get_prof_freq()		(HZ * prof_multiplier[0])
++
++#define EVENTSEL0_ENABLE_MASK  0x00500000
++
++#define MSR_INTEL_P6_EVNTSEL0  0x186
++#define MSR_INTEL_P6_EVNTSEL1  0x187
++
++#define perfctr_reload(n)	wrmsr(MSR_IA32_PERFCTR0, -(int)(n), 0)
++#define __perfctr_stop()	wrmsr(MSR_INTEL_P6_EVNTSEL0, 0, 0)
++
++static __inline__ void __perfctr_commence(unsigned int freq, int evt)
++{
++	perfctr_reload(freq);
++	wrmsr(MSR_INTEL_P6_EVNTSEL1, 0, 0);
++	wrmsr(MSR_INTEL_P6_EVNTSEL0, EVENTSEL0_ENABLE_MASK | (evt), 0);
++}
++#else
++#define have_perfctr()		0
++#define valid_perfctr_event(e)	0
++#define valid_perfctr_freq(n)	0
++#define perfctr_reload(x)
++#define __perfctr_stop()
++#define __perfctr_commence(x,y)
++#define get_prof_freq()		HZ
++#define setup_profiling_timer(x) (-EINVAL)
++#endif
++
++#endif /* __KERNEL__ */
++
++#endif /* !_ASM_PROFILE_H */
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-ia64/profile.h linux-2.4.17-profile/include/asm-ia64/profile.h
+--- linux-2.4.17/include/asm-ia64/profile.h	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/include/asm-ia64/profile.h	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,120 @@
++/*
++ * Copyright (C) SGI 2000
++ *
++ * Written by Dimitris Michailidis (dimitris@engr.sgi.com)
++ * Written by Goutham Rao <goutham.rao@intel.com>
++ */
++
++#ifndef _ASM_PROFILE_H
++#define _ASM_PROFILE_H
++#ifdef __KERNEL__
++
++#include <asm/unwind.h>
++#include <asm/system.h>
++#include <asm/ptrace.h>
++
++#ifdef FUNCTIONPC
++#undef FUNCTIONPC
++#endif
++#define FUNCTIONPC(func)	(*(unsigned long *)&(func))
++
++/* We can do 16-bit compare&swap */
++#define __HAVE_ARCH_CMPXCHG16 1
++
++typedef struct unw_frame_info frame_info_t;
++
++/* 
++ * default PC resolution for this platform 
++ */
++#define DFL_PC_RES 4
++
++#define supports_call_graph prof_have_mcount
++
++#define frame_get_pc(frame) ((frame)->ip)
++
++#define get_prof_freq() HZ
++
++extern void cg_record_arc(unsigned long, unsigned long);
++
++static void do_cg_record_arc(struct unw_frame_info *info, void *arg)
++{
++	unsigned long callee_ip, caller_ip;
++
++	/* First, get the frame for our backtrace_cg_record_arc() caller */
++	unw_get_ip(info, &caller_ip);
++	if (caller_ip == 0  ||  unw_unwind(info) < 0)
++		return;
++
++	/*
++	 * Next, get the frame for the next higher caller -- this is the
++	 * first interesting callee.
++	 */
++	unw_get_ip(info, &caller_ip);
++	if (caller_ip == 0  ||  unw_unwind(info) < 0)
++		return;
++
++	/* Now begin the iteration of walking further up the call graph */
++	do {
++		callee_ip = caller_ip;
++		unw_get_ip(info, &caller_ip);
++
++		if (caller_ip == 0)
++			break;
++
++		if (pc_out_of_range(caller_ip))
++			break;
++
++		cg_record_arc(caller_ip, callee_ip);
++
++	} while (unw_unwind(info) >= 0);
++}
++
++/* 
++ *  Record the call graph, which is normally done by backtrace_cg_record_arc(),
++ *  and return 1 to indicate success.  We expect that backtrace_cg_record_arc()
++ *  will next call get_next_frame() and that will *fail*, leaving us with the
++ *  backtrace that do_cg_record_arc() has recorded (above).
++ *  Yes, this is a real hack.
++ */
++static __inline__ int build_fake_frame(frame_info_t *frame)
++{
++	unw_init_running(do_cg_record_arc, 0);
++	return 1;
++}
++
++static __inline__ unsigned long instruction_pointer(struct pt_regs *regs)
++{
++	return regs->cr_iip + (ia64_psr(regs)->ri << 2);
++}
++
++static __inline__ int in_firmware(struct pt_regs *regs)
++{
++	return 0;
++}
++
++static __inline__ void get_top_frame(struct pt_regs *regs, frame_info_t *frame)
++{
++	struct switch_stack *sw = (struct switch_stack *) regs - 1;
++	unw_init_frame_info(frame, current, sw);
++	/* skip over interrupt frame */
++	unw_unwind(frame);
++}
++
++static __inline__ int get_next_frame(frame_info_t *frame)
++{
++	return 0;
++}
++
++/* 
++ * XXX No performance counters for the time being 
++ */
++#define have_perfctr() 0
++#define valid_perfctr_event(e) 0
++#define valid_perfctr_freq(n) 0
++#define perfctr_reload(x)
++#define __perfctr_stop()
++#define __perfctr_commence(x,y)
++#define setup_profiling_timer(x) (-EINVAL)
++
++#endif /* __KERNEL__ */
++#endif /* !_ASM_PROFILE_H */
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-mips64/profile.h linux-2.4.17-profile/include/asm-mips64/profile.h
+--- linux-2.4.17/include/asm-mips64/profile.h	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/include/asm-mips64/profile.h	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,183 @@
++/*
++ * Copyright (C) 2000 Silicon Graphics, Inc.
++ *
++ * Written by Ulf Carlsson (ulfc@engr.sgi.com)
++ */
++
++#ifndef _ASM_PROFILE_H
++#define _ASM_PROFILE_H
++
++#ifdef __KERNEL__
++
++#include <asm/system.h>
++#include <asm/ptrace.h>
++#include <asm/processor.h>
++
++#define DFL_PC_RES 4		/* default PC resolution for this platform */
++
++#define in_firmware(regs) 0	/* never in the PROM during normal execution */
++
++extern char stext;
++extern char _etext;
++extern int prof_multiplier[];
++
++extern int setup_profiling_timer(unsigned int);
++
++typedef struct frame_info frame_info_t;
++
++struct frame_info {
++	unsigned long ra;
++	unsigned long pc;
++	unsigned long sp;
++	unsigned long top;
++};
++
++#define frame_get_pc(p)		((p)->pc)
++
++/*
++ * A function tests up its stack frame with the instructions
++ *
++ *	daddiu	$sp,$sp,-stacksize
++ *	sd	$ra,stacksize-8($sp)
++ *
++ * The timer interrupt may arrive at any time including right at the moment
++ * that the new frame is being set up, so we need to distinguish a few cases.
++ */
++static __inline__ void get_top_frame(struct pt_regs *regs, frame_info_t *p)
++{
++	unsigned long pc = regs->cp0_epc;
++
++	pc = regs->cp0_epc;
++
++#ifndef CONFIG_SMP
++	{
++		extern unsigned long kernelsp;
++		p->top = kernelsp;
++	}
++#else
++	{
++		unsigned int lo, hi;
++		lo = read_32bit_cp0_register(CP0_WATCHLO);
++		hi = read_32bit_cp0_register(CP0_WATCHHI);
++		p->top = ((unsigned long) hi << 32) | lo;
++	}
++#endif
++
++	do {
++		unsigned int inst = *(unsigned int *)pc;
++		/* First we look for a ``daddiu $sp,$sp,...'' and then we look
++		   for a ``jr $ra'' in case this is a leaf function without
++		   stack frame.  */
++		if ((inst & 0xffff0000) == 0x67bd0000) {
++			p->sp = regs->regs[29] - (short) (inst & 0xffff);
++			p->ra = *((unsigned long *)p->sp - 1);
++			p->pc = regs->cp0_epc;
++			return;
++		} else if (inst == 0x03e00008) { 
++			/* N32 says that routines aren't restricted to a single
++			   exit block.  In that case we lose.  The thing is
++			   that the .mdebug format doesn't handle that either
++			   so we should be pretty safe.  */
++			p->sp = regs->regs[29];
++			p->ra = regs->regs[31];
++			p->pc = regs->cp0_epc;
++		}
++	} while (--pc > (unsigned long) &stext);
++
++	BUG();
++}
++
++static unsigned long this_pc(void)
++{
++	return (unsigned long)return_address();
++}
++
++/* Fabricate a stack frame that is sufficient to begin walking up the stack */
++static __inline__ int build_fake_frame(frame_info_t *p)
++{
++#ifndef CONFIG_SMP
++	{
++		extern unsigned long kernelsp;
++		p->top = kernelsp;
++	}
++#else
++	{
++		unsigned int lo, hi;
++		lo = read_32bit_cp0_register(CP0_WATCHLO);
++		hi = read_32bit_cp0_register(CP0_WATCHHI);
++		p->top = ((unsigned long) hi << 32) | lo;
++	}
++#endif
++	__asm__ __volatile__("sd\t$29,%0\t\n" : "=m" (p->sp));
++	p->pc = this_pc();
++	return 1;
++}
++
++static __inline__ int last_frame(frame_info_t *p)
++{
++	if (p->sp < (unsigned long) current + sizeof(*current))
++		BUG();
++	
++	return (p->sp < p->top);
++}
++
++static __inline__ int get_next_frame(frame_info_t *p)
++{
++	unsigned int *sp = (unsigned int *)p->sp;
++	unsigned int *pc = (unsigned int *)p->pc;
++
++	if (last_frame(p))
++		return 0;
++
++	/*
++	 * First, scan backwards to find the stack-decrement that signals the
++	 * beginning of this routine in which we're inlined.  That tells us
++	 * how to roll back the stack.
++	 */
++	do {
++		unsigned int inst = *pc;
++		/* Look for a ``daddiu $sp,$sp,...'' */
++		if ((inst & 0xffff0000) == 0x67bd0000) {
++			p->sp = (unsigned long)sp - (short) (inst & 0xffff);
++			break;
++		}
++	} while (--pc > (unsigned int *)&stext);
++
++	if (pc == (unsigned int *)&stext)
++		return 0;
++
++	/*
++	 * Now scan forwards to find the $ra-save, so we can decode the
++	 * instruction and retrieve the return address from the stack.
++	 */
++	pc++;
++	do {
++		unsigned int inst = *pc;
++		/* Look for a ``sd $ra,NN($sp)'' */
++		if ((inst & 0xffff0000) == 0xffbf0000) {
++			p->pc = *(unsigned long *)((unsigned long)sp + (short)(inst & 0xffff));
++			return 1;
++		}
++	} while (++pc <= (unsigned int *)&_etext);
++
++	return 0;
++}
++
++#define supports_call_graph prof_have_mcount
++
++#define cpu_online_map 0xffffffffffffffff
++
++#define get_prof_freq() (HZ * prof_multiplier[0])
++
++/* No performance counters for the time being */
++
++#define have_perfctr() 0
++#define valid_perfctr_event(e) 0
++#define valid_perfctr_freq(n) 0
++#define perfctr_reload(x)
++#define __perfctr_stop()
++#define __perfctr_commence(x,y)
++
++#endif /* __KERNEL__ */
++
++#endif /* !_ASM_PROFILE_H */
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-sparc64/atomic.h linux-2.4.17-profile/include/asm-sparc64/atomic.h
+--- linux-2.4.17/include/asm-sparc64/atomic.h	Thu Jul 19 18:11:13 2001
++++ linux-2.4.17-profile/include/asm-sparc64/atomic.h	Wed Jan  2 15:01:35 2002
+@@ -20,6 +20,9 @@
+ #define atomic_add(i, v) ((void)__atomic_add(i, v))
+ #define atomic_sub(i, v) ((void)__atomic_sub(i, v))
+ 
++#define atomic_add_return(i, v) __atomic_add(i, v)
++#define atomic_sub_return(i, v) __atomic_sub(i, v)
++
+ #define atomic_dec_return(v) __atomic_sub(1, v)
+ #define atomic_inc_return(v) __atomic_add(1, v)
+ 
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/asm-sparc64/profile.h linux-2.4.17-profile/include/asm-sparc64/profile.h
+--- linux-2.4.17/include/asm-sparc64/profile.h	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/include/asm-sparc64/profile.h	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,97 @@
++/*
++ * Copyright (C) 2000 Anton Blanchard (anton@linuxcare.com)
++ */
++
++#ifndef _ASM_PROFILE_H
++#define _ASM_PROFILE_H
++
++#ifdef __KERNEL__
++
++#include <asm/system.h>
++#include <asm/ptrace.h>
++
++#define DFL_PC_RES 4		/* default PC resolution for this platform */
++
++#define in_firmware(regs) 0	/* never in the PROM during normal execution */
++
++struct frame_info {
++	struct reg_window *rw;
++	unsigned long pc;
++};
++
++typedef struct frame_info frame_info_t;
++
++static __inline__ int build_fake_frame(frame_info_t *frame)
++{
++	flush_register_windows(); /* make sure reg windows have real data */
++
++	/* flush_register_windows() does not flush the current window's registers,
++	 * so we need this first frame to be "magic". rw is set to NULL.
++	 * get_next_frame() will special case this and look at %i6/%i7 to make
++	 * the next frame.
++	 */
++
++	frame->pc = (unsigned long)current_text_addr();
++	frame->rw = NULL;
++
++	return 1;
++}
++
++static __inline__ void get_top_frame(struct pt_regs *regs, frame_info_t *p)
++{
++	p->pc = instruction_pointer(regs);
++	p->rw = (struct reg_window *)(regs->u_regs[UREG_FP] + STACK_BIAS);
++}
++
++/* This macro determines whether there are more frames to go on the stack */
++#define last_frame(p) \
++	(((char *)(p)->rw) < ((char *)current) || \
++	((char *)(p)->rw) >= ((char *)current + (2 * PAGE_SIZE) - TRACEREG_SZ - REGWIN_SZ))
++
++static __inline__ int get_next_frame(frame_info_t *p)
++{
++	if (p->rw == NULL) {
++		unsigned long reg;
++
++		__asm__ __volatile__("mov %%i6, %0" : "=r" (reg));
++		p->rw = (struct reg_window *)(reg + STACK_BIAS);
++		__asm__ __volatile__("mov %%i7, %0" : "=r" (reg));
++		p->pc = reg;
++		return 1;
++	}
++
++	if (last_frame(p)) {
++		return 0;
++	}
++
++	p->pc = (p->rw)->ins[7];
++
++	p->rw = (struct reg_window *)((p->rw)->ins[6] + STACK_BIAS);
++
++	return 1;
++}
++
++#define frame_get_pc(p)	((p)->pc)
++
++#define supports_call_graph prof_have_mcount
++
++/* No performance counters for the time being */
++#define have_perfctr() 0
++#define valid_perfctr_event(e) 0
++#define valid_perfctr_freq(n) 0
++#define perfctr_reload(x)
++#define __perfctr_stop()
++#define __perfctr_commence(x,y)
++
++#ifdef CONFIG_SMP
++#define prof_multiplier(__cpu) cpu_data[(__cpu)].multiplier
++#define get_prof_freq() (HZ * prof_multiplier(0))
++extern int setup_profiling_timer(unsigned int);
++#else
++#define get_prof_freq() (HZ)
++#define setup_profiling_timer(x) (-EINVAL)
++#endif
++
++#endif /* __KERNEL__ */
++
++#endif /* !_ASM_PROFILE_H */
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/linux/major.h linux-2.4.17-profile/include/linux/major.h
+--- linux-2.4.17/include/linux/major.h	Mon Sep 17 23:23:40 2001
++++ linux-2.4.17-profile/include/linux/major.h	Wed Jan  2 15:01:35 2002
+@@ -147,6 +147,8 @@
+ #define USB_ACM_AUX_MAJOR	167
+ #define USB_CHAR_MAJOR		180
+ 
++#define PROF_MAJOR		192
++
+ #define UNIX98_PTY_MASTER_MAJOR	128
+ #define UNIX98_PTY_MAJOR_COUNT	8
+ #define UNIX98_PTY_SLAVE_MAJOR	(UNIX98_PTY_MASTER_MAJOR+UNIX98_PTY_MAJOR_COUNT)
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/linux/profile.h linux-2.4.17-profile/include/linux/profile.h
+--- linux-2.4.17/include/linux/profile.h	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/include/linux/profile.h	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,118 @@
++#ifndef _LINUX_PROFILE_H
++#define _LINUX_PROFILE_H
++
++#include <linux/ioctl.h>
++
++#define CG_MAX_ARCS (1 << (8 * sizeof(short)))
++
++#define PROF_BACKTRACE_BUFSIZE	4096  /* must be a power of 2 */
++#define PROF_BACKTRACE_MAX_LEN	24
++
++typedef unsigned int PC_sample_count_t;
++
++/* profiling ioctl requests */
++#define PROF_START		_IO(0xAF, 0)
++#define PROF_STOP		_IO(0xAF, 1)
++#define PROF_RESET		_IO(0xAF, 2)
++#define PROF_SET_SAMPLE_FREQ	_IOW(0xAF, 3, int)
++#define PROF_GET_SAMPLE_FREQ	_IOR(0xAF, 4, int)
++#define PROF_GET_PC_RES		_IOR(0xAF, 5, int)
++#define PROF_GET_ON_OFF_STATE	_IOR(0xAF, 6, int)
++#define PROF_SET_DOMAIN		_IOW(0xAF, 7, int)
++#define PROF_GET_DOMAIN		_IOR(0xAF, 8, int)
++#define PROF_SET_MODE		_IOW(0xAF, 9, int)
++#define PROF_GET_MODE		_IOR(0xAF, 10, int)
++#define PROF_SET_PERFCTR_EVENT	_IOW(0xAF, 11, int)
++#define PROF_GET_PERFCTR_EVENT	_IOR(0xAF, 12, int)
++/* PROF_*_ENABLE_MAP and PROF_GET_MAPPING ioctl requests are defined below */
++#define PROF_SET_PID		_IOW(0xAF, 16, int)
++#define PROF_GET_PID		_IOR(0xAF, 17, int)
++
++enum {
++	PROF_MODE_PC_SAMPLING = 1,
++	PROF_MODE_CALL_GRAPH = 2,
++	PROF_MODE_BACKTRACE = 4,
++	PROF_MODE_CALL_COUNT = 8,
++	PROF_MODE_SCHEDULER_CALL_GRAPH = 16
++};
++
++enum {
++	PROF_DOMAIN_TIME,
++	PROF_DOMAIN_PERFCTR
++};
++
++#if defined(CONFIG_PROFILING) || defined(CONFIG_MCOUNT)
++/*
++ * To allow for profiling of loaded modules, this structure
++ * describes the layout of the buckets used to collect samples.
++ */
++
++typedef struct prof_mem_map
++{
++   unsigned long     kernel_buckets;   /* number of kernel buckets */
++   unsigned long     module_buckets;   /* number of module buckets */
++   unsigned long     nr_cpus;          /* number of processors whether profiled or not */
++   unsigned long     cg_from_size;     /* size of one cg_from array */
++   unsigned long     cg_to_size;       /* size of one cg_to array */
++   unsigned long     cg_to_offset;     /* offset of cg_to array */
++   unsigned long     kernel_start;     /* lowest text address in kernel */
++   unsigned long     kernel_end;       /* highest text address in kernel */
++   unsigned long     module_start;     /* lowest text address in all modules */
++   unsigned long     module_end;       /* highest text address in all modules */
++} prof_mem_map_t;
++#endif /* CONFIG_PROFILING or CONFIG_MCOUNT */
++
++#ifdef __KERNEL__
++
++#include <asm/atomic.h>
++#include <asm/ptrace.h>
++
++/*
++ * We don't export this to user space because its pointers may be of different
++ * size.  If user space needs this it should define its own version making sure
++ * that individual fields are of the same size as in the kernel definition.
++ */
++struct cg_arc_dest {
++	unsigned long address;
++	atomic_t count;
++	unsigned short link;
++	unsigned short pad;
++};
++
++/*
++ * We do not export these ioctl requests to user space because it may have
++ * longs of different size.
++ */
++#define PROF_SET_ENABLE_MAP	_IOW(0xAF, 13, long)
++#define PROF_GET_ENABLE_MAP	_IOR(0xAF, 14, long)
++#define PROF_GET_MAPPING	_IOR(0xAF, 15, long)
++
++
++typedef void (*prof_hook_p)(struct pt_regs *);
++typedef void (*mcount_hook_p)(unsigned long, unsigned long);
++typedef void (*wakeup_hook_p)(unsigned long, unsigned long, unsigned long);
++
++extern char _stext, _etext;
++extern prof_hook_p prof_timer_hook;
++extern prof_hook_p prof_perfctr_hook;
++extern mcount_hook_p prof_scheduler_hook;
++extern wakeup_hook_p prof_wakeup_hook;
++extern mcount_hook_p mcount_hook;
++
++extern int prof_have_frameptr, prof_have_mcount;
++
++extern void USER(void);            /* these can not be in a module */
++extern void UNKNOWN_KERNEL(void);
++extern void FIRMWARE(void);
++extern void STALLED(void);
++extern void MODULE(void);
++
++#define pc_out_of_range(pc)	\
++	((pc) < (unsigned long) &_stext || (pc) >= (unsigned long) &_etext)
++
++/* might be overridden by arch-specific redefinition */
++#define FUNCTIONPC(func)	(unsigned long) &(func)
++
++#endif /* __KERNEL__ */
++
++#endif /* !_LINUX_PROFILE_H */
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/linux/sched.h linux-2.4.17-profile/include/linux/sched.h
+--- linux-2.4.17/include/linux/sched.h	Fri Dec 21 09:42:03 2001
++++ linux-2.4.17-profile/include/linux/sched.h	Wed Jan  2 15:01:35 2002
+@@ -315,7 +315,9 @@
+ 	unsigned long policy;
+ 	unsigned long cpus_allowed;
+ 	unsigned int time_slice;
+-
++#ifdef CONFIG_PROFILING
++	unsigned long stop_time, wakeup_time;
++#endif
+ 	task_t *next_task, *prev_task;
+ 
+ 	struct mm_struct *mm, *active_mm;
+@@ -567,10 +569,6 @@
+ extern struct timeval xtime;
+ extern void do_timer(struct pt_regs *);
+ 
+-extern unsigned int * prof_buffer;
+-extern unsigned long prof_len;
+-extern unsigned long prof_shift;
+-
+ #define CURRENT_TIME (xtime.tv_sec)
+ 
+ extern void FASTCALL(__wake_up(wait_queue_head_t *q, unsigned int mode, int nr));
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/include/linux/smp.h linux-2.4.17-profile/include/linux/smp.h
+--- linux-2.4.17/include/linux/smp.h	Thu Nov 22 11:46:19 2001
++++ linux-2.4.17-profile/include/linux/smp.h	Wed Jan  2 15:01:35 2002
+@@ -7,11 +7,11 @@
+  */
+ 
+ #include <linux/config.h>
++#include <asm/smp.h>
+ 
+ #ifdef CONFIG_SMP
+ 
+ #include <linux/kernel.h>
+-#include <asm/smp.h>
+ 
+ /*
+  * main cross-CPU interfaces, handles INIT, TLB flush, STOP, etc.
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/init/main.c linux-2.4.17-profile/init/main.c
+--- linux-2.4.17/init/main.c	Fri Dec 21 09:42:04 2001
++++ linux-2.4.17-profile/init/main.c	Wed Jan  2 15:01:35 2002
+@@ -79,7 +79,6 @@
+ #error Sorry, your GCC is too old. It builds incorrect kernels.
+ #endif
+ 
+-extern char _stext, _etext;
+ extern char *linux_banner;
+ 
+ static int init(void *);
+@@ -130,16 +129,6 @@
+ static char * argv_init[MAX_INIT_ARGS+2] = { "init", NULL, };
+ static char * envp_init[MAX_INIT_ENVS+2] = { "HOME=/", "TERM=linux", NULL, };
+ 
+-static int __init profile_setup(char *str)
+-{
+-    int par;
+-    if (get_option(&str,&par)) prof_shift = par;
+-	return 1;
+-}
+-
+-__setup("profile=", profile_setup);
+-
+-
+ static struct dev_name_struct {
+ 	const char *name;
+ 	const int num;
+@@ -568,16 +557,6 @@
+ #ifdef CONFIG_MODULES
+ 	init_modules();
+ #endif
+-	if (prof_shift) {
+-		unsigned int size;
+-		/* only text is profiled */
+-		prof_len = (unsigned long) &_etext - (unsigned long) &_stext;
+-		prof_len >>= prof_shift;
+-		
+-		size = prof_len * sizeof(unsigned int) + PAGE_SIZE-1;
+-		prof_buffer = (unsigned int *) alloc_bootmem(size);
+-	}
+-
+ 	kmem_cache_init();
+ 	sti();
+ 	calibrate_delay();
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/kernel/Makefile linux-2.4.17-profile/kernel/Makefile
+--- linux-2.4.17/kernel/Makefile	Sun Sep 16 21:22:40 2001
++++ linux-2.4.17-profile/kernel/Makefile	Wed Jan  2 15:01:35 2002
+@@ -10,7 +10,7 @@
+ O_TARGET := kernel.o
+ 
+ export-objs = signal.o sys.o kmod.o context.o ksyms.o pm.o exec_domain.o \
+-	      printk.o rcupdate.o statctr.o
++	      printk.o rcupdate.o statctr.o  profile.o
+ 
+ obj-y     = sched.o dma.o fork.o exec_domain.o panic.o printk.o \
+ 	    module.o exit.o itimer.o info.o time.o softirq.o resource.o \
+@@ -21,6 +21,8 @@
+ obj-$(CONFIG_MODULES) += ksyms.o
+ obj-$(CONFIG_PM) += pm.o
+ obj-$(CONFIG_SMP) += statctr.o
++obj-$(CONFIG_PROFILING) += profile.o
++
+ 
+ ifneq ($(CONFIG_IA64),y)
+ # According to Alan Modra <alan@linuxcare.com.au>, the -fno-omit-frame-pointer is
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/kernel/module.c linux-2.4.17-profile/kernel/module.c
+--- linux-2.4.17/kernel/module.c	Sun Nov 11 11:23:14 2001
++++ linux-2.4.17-profile/kernel/module.c	Wed Jan  2 15:01:35 2002
+@@ -55,6 +55,10 @@
+ 
+ struct module *module_list = &kernel_module;
+ 
++#if defined(CONFIG_PROFILING)
++struct module *static_module_list = &kernel_module;
++#endif /* CONFIG_PROFILING */
++
+ #endif	/* defined(CONFIG_MODULES) || defined(CONFIG_KALLSYMS) */
+ 
+ /* inter_module functions are always available, even when the kernel is
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/kernel/profile.c linux-2.4.17-profile/kernel/profile.c
+--- linux-2.4.17/kernel/profile.c	Wed Dec 31 16:00:00 1969
++++ linux-2.4.17-profile/kernel/profile.c	Wed Jan  2 15:01:35 2002
+@@ -0,0 +1,54 @@
++#include <linux/config.h>
++#include <linux/profile.h>
++#include <linux/module.h>
++
++/* profiling function to call in timer interrupt */
++prof_hook_p prof_timer_hook = 0;
++
++/* profiling function to call in perf counter interrupt */
++prof_hook_p prof_perfctr_hook = 0;
++
++/* profiling function to call in scheduler upon switch-out */
++mcount_hook_p prof_scheduler_hook = 0;
++
++/* profiling function to call in scheduler upon wake-up */
++wakeup_hook_p prof_wakeup_hook = 0;
++
++/* profiling function called by mcount() */
++mcount_hook_p mcount_hook = 0;
++
++#ifdef CONFIG_FRAME_POINTER
++int prof_have_frameptr = 1;
++#else
++int prof_have_frameptr = 0;
++#endif
++#ifdef CONFIG_MCOUNT
++int prof_have_mcount = 1;
++#else
++int prof_have_mcount = 0;
++#endif
++
++/*
++ * The following functions are defined so their names may appear in profiles.
++ * They are not intended to be called.
++ */
++void USER(void) {}
++void UNKNOWN_KERNEL(void) {}
++void FIRMWARE(void) {}
++void STALLED(void) {}
++void MODULE(void) {}
++
++EXPORT_SYMBOL_NOVERS(USER);
++EXPORT_SYMBOL_NOVERS(UNKNOWN_KERNEL);
++EXPORT_SYMBOL_NOVERS(FIRMWARE);
++EXPORT_SYMBOL_NOVERS(STALLED);
++EXPORT_SYMBOL_NOVERS(MODULE);
++EXPORT_SYMBOL(prof_timer_hook);
++EXPORT_SYMBOL(prof_perfctr_hook);
++EXPORT_SYMBOL(prof_scheduler_hook);
++EXPORT_SYMBOL(prof_wakeup_hook);
++EXPORT_SYMBOL(mcount_hook);
++EXPORT_SYMBOL_NOVERS(_stext);
++EXPORT_SYMBOL_NOVERS(_etext);
++EXPORT_SYMBOL(prof_have_frameptr);
++EXPORT_SYMBOL(prof_have_mcount);
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/kernel/sched.c linux-2.4.17-profile/kernel/sched.c
+--- linux-2.4.17/kernel/sched.c	Fri Dec 21 09:42:04 2001
++++ linux-2.4.17-profile/kernel/sched.c	Wed Jan  2 15:01:35 2002
+@@ -21,6 +21,9 @@
+ #include <linux/rcudata.h>
+ #include <asm/mmu_context.h>
+ #include <linux/kernel_stat.h>
++#include <linux/profile.h>
++#include <asm/profile.h>
++
+ 
+ /*
+  * Priority of a process goes from 0 to 139. The 0-99
+@@ -331,6 +334,9 @@
+ 	rq = lock_task_rq(p, &flags);
+ 	p->state = TASK_RUNNING;
+ 	if (!p->array) {
++#if defined(CONFIG_PROFILING)
++	p->wakeup_time = jiffies;
++#endif
+ 		activate_task(p, rq);
+ 		if ((rq->curr == rq->idle) || (p->prio < rq->curr->prio))
+ 			resched_task(rq->curr);
+@@ -427,7 +433,26 @@
+ 	 * but prev is set to (the just run) 'last' process by switch_to().
+ 	 * This might sound slightly confusing but makes tons of sense.
+ 	 */
++#if defined(CONFIG_PROFILING)
++	current->stop_time = jiffies;
++	current->wakeup_time = 0;
++#endif
++
+ 	switch_to(prev, next, prev);
++#if defined(CONFIG_PROFILING)
++	if (prof_wakeup_hook && current->stop_time) {
++		if (current->wakeup_time) {
++			prof_wakeup_hook((unsigned long)__builtin_return_address(0),
++					current->wakeup_time - current->stop_time,
++					jiffies - current->wakeup_time);
++			current->wakeup_time = 0;
++		} else
++			prof_wakeup_hook((unsigned long)__builtin_return_address(0),
++					0, jiffies - current->stop_time);
++		current->stop_time = 0;
++	}
++#endif
++
+ }
+ 
+ unsigned long nr_running(void)
+@@ -804,6 +829,12 @@
+ 	if (likely(prev != next)) {
+ 		rq->nr_switches++;
+ 		rq->curr = next;
++#if defined(CONFIG_PROFILING)
++	if (prof_scheduler_hook) {
++		prof_scheduler_hook((unsigned long)__builtin_return_address(0),0);
++	}
++#endif
++
+ 		context_switch(prev, next);
+ 		/*
+ 		 * The runqueue pointer might be from another CPU
+diff -X /build4/hawkes/Build/ignore.dirs -Naur linux-2.4.17/kernel/timer.c linux-2.4.17-profile/kernel/timer.c
+--- linux-2.4.17/kernel/timer.c	Mon Oct  8 10:41:41 2001
++++ linux-2.4.17-profile/kernel/timer.c	Wed Jan  2 15:01:35 2002
+@@ -74,10 +74,6 @@
+ 
+ unsigned long volatile jiffies;
+ 
+-unsigned int * prof_buffer;
+-unsigned long prof_len;
+-unsigned long prof_shift;
+-
+ tvec_base_t tvec_bases[NR_CPUS];
+ 
+ /* jiffies at the most recent update of wall time */

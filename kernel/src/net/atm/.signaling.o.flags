@@ -1,0 +1,3 @@
+ifeq (-I /home/chi/Linksys/projekt/code/kernel/src/include/asm/gcc -D__KERNEL__ -I/home/chi/Linksys/projekt/code/kernel/src/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common -G 0 -mno-abicalls -fno-pic -mcpu=r4600 -mips2 -Wa:--trap -pipe,$(strip $(subst $(comma),:,$(CFLAGS) $(EXTRA_CFLAGS) $(CFLAGS_signaling.o))))
+FILES_FLAGS_UP_TO_DATE += signaling.o
+endif

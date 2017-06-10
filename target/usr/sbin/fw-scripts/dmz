@@ -1,0 +1,19 @@
+#!/bin/sh
+
+IPTABLES=/usr/sbin/iptables
+
+
+SYSLOG "DMZing $DMZ"
+if [ "$EXTERNALIP" = "NONE" -o "$EXTERNALIP" = "none" ]; then
+    $IPTABLES -t nat -A PREROUTING -i $WANIF -p ! icmp -j DNAT --to  $DMZ
+else
+    $IPTABLES -t nat -A PREROUTING -i $WANIF -d $EXTERNALIP -p ! icmp -j DNAT --to  $DMZ
+fi
+
+if [ "$EXTERNALIP" != "NONE" -o "$EXTERNALIP" != "none" ]; then
+    $IPTABLES -t nat -A PREROUTING -i $LANIF -d $EXTERNALIP -p ! icmp -j DNAT --to  $DMZ
+    $IPTABLES -t nat -A POSTROUTING  -p ! icmp  -s $LOCALNET -d $DMZ  -j SNAT --to $EXTERNALIP
+    $IPTABLES -A FORWARD -i $LANIF -d  $DMZ -j ACCEPT
+fi
+
+$IPTABLES -A FORWARD -i $WANIF -d  $DMZ -j ACCEPT

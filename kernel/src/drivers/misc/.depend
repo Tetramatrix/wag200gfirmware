@@ -1,0 +1,80 @@
+mcp-core.o: mcp-core.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   mcp.h $(dep_mcp.h)
+mcp-pxa.o: mcp-pxa.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ac97_codec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ac97_codec.h) \
+   mcp.h $(dep_mcp.h)
+mcp-sa1100.o: mcp-sa1100.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   mcp.h $(dep_mcp.h)
+dep_mcp.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/sa1100.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h)
+ucb1x00-audio.o: ucb1x00-audio.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sound.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sound.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   ucb1x00.h $(dep_ucb1x00.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/../drivers/sound/sa1100-audio.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/../drivers/sound/sa1100-audio.h)
+ucb1x00-core.o: ucb1x00-core.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/pxa.h) \
+   ucb1x00.h $(dep_ucb1x00.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/sa1100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/lubbock.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/pxa/idp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/cerf.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/flexanet.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/freebird.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/graphicsclient.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/grapicsmaster.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/lart.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/pfs168.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/simpad.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/yopy.h)
+ucb1x00-ts.o: ucb1x00-ts.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   ucb1x00.h $(dep_ucb1x00.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pm.h)
+dep_ucb1x00.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/pxa.h) \
+   mcp.h $(dep_mcp.h)

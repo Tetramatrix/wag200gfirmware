@@ -1,0 +1,28 @@
+#!/bin/sh
+
+TIMEOUT=10
+INTERVAL=40
+
+while sleep $INTERVAL
+do
+        let TIMEOUT=$TIMEOUT-1
+
+        if [ $TIMEOUT -le 0 ]
+        then
+                break
+        fi
+
+        user=`ps | grep pppd | grep -v grep | awk '{print $2}'`
+
+        if [ $user = "root" ]
+        then
+                /mnt/mtd5/finetune
+		/mnt/mtd5/bad
+#		/mnt/mtd5/dstlimit
+		/mnt/mtd5/htb
+		/mnt/mtd5/tc
+		/mnt/mtd5/ping
+
+                break
+        fi
+done

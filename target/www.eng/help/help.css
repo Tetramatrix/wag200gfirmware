@@ -1,0 +1,69 @@
+H1 {
+	FONT-SIZE: 14pt; MARGIN: 0in 0in 0pt; FONT-FAMILY: Arial; COLOR: blue;
+}
+
+BODY {
+	FONT: 10pt Arial,Helvetica,sans-serif; COLOR: black; background-color: #808080;
+}
+TABLE {
+	FONT: 10pt Arial,Helvetica,sans-serif; COLOR: black;
+}
+table.MsoNormalTable {
+    mso-style-parent:""; font-size:10.0pt; font-family:"Times New Roman";
+	BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-LEFT: medium none;
+	BORDER-BOTTOM: medium none; BORDER-COLLAPSE: collapse;
+}
+
+caption {
+	FONT: bold 12pt Arial,Helvetica,sans-serif; COLOR: black; 
+	text-align: left;
+}
+TH {
+	FONT: bold 10pt Arial,Helvetica,sans-serif; COLOR: white; background-color: #FFFFFF;
+}
+th.bar {
+	background-color: #111111;
+}
+TD {
+	FONT: 10pt Arial,Helvetica,sans-serif; COLOR: black; background-color: #ffffff;
+}
+td.blue {
+	background-color: #6666CC;
+}
+td.gray {
+	background-color: #E7E7E7;
+}
+td.leftstyle {
+    BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid;
+	PADDING-LEFT: 5.4pt;  BORDER-LEFT: windowtext 1pt solid; WIDTH: 95.4pt;
+	 BORDER-BOTTOM: windowtext 1pt solid;
+}
+td.rightstyle {
+    BORDER-RIGHT: windowtext 1pt solid; PADDING-RIGHT: 5.4pt; BORDER-TOP: windowtext 1pt solid;
+	PADDING-LEFT: 5.4pt; BORDER-LEFT: medium none; WIDTH: 343pt;
+	BORDER-BOTTOM: windowtext 1pt solid;
+}
+B {
+	FONT-WEIGHT: bold;
+}
+.num {
+	FONT: 8pt Courier,serif; COLOR: black;
+}
+.tt {
+	FONT: 8pt Courier,serif; COLOR: black;
+}
+.headrow {
+	FONT: bold 8pt Arial,Helvetica,sans-serif; COLOR: black;
+}
+.slbutton { 
+    color: #ffffff; background: #8C8E8C; font-family:Arial,Helvetica; font-size: 8pt;
+	font-weight: 700; padding-bottom:2px; width:100px; border-width :0px;
+}
+LI {
+	padding-bottom: 8px;
+}
+
+div.morespace {
+	padding-top: 4px;
+}
+	

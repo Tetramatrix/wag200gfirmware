@@ -1,0 +1,17 @@
+***************
+*** 208,214 ****
+  
+  struct rt_hash_bucket {
+  	struct rtable	*chain;
+- 	rwlock_t	lock;
+  } __attribute__((__aligned__(8)));
+  
+  static struct rt_hash_bucket 	*rt_hash_table;
+--- 209,215 ----
+  
+  struct rt_hash_bucket {
+  	struct rtable	*chain;
++ 	spinlock_t	lock;
+  } __attribute__((__aligned__(8)));
+  
+  static struct rt_hash_bucket 	*rt_hash_table;

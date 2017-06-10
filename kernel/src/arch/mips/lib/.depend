@@ -1,0 +1,113 @@
+csum_partial.o: csum_partial.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h)
+csum_partial_copy.o: csum_partial_copy.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h)
+dump_tlb.o: dump_tlb.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/cachectl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/cachectl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/cpu.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/cpu.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h)
+floppy-no.o: floppy-no.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/floppy.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/floppy.h)
+floppy-std.o: floppy-std.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/linkage.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/linkage.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/cachectl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/cachectl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/floppy.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/floppy.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/keyboard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/keyboard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mc146818rtc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mc146818rtc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h)
+ide-no.o: ide-no.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/hdreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h)
+ide-std.o: ide-std.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/hdreg.h)
+kbd-no.o: kbd-no.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/keyboard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/keyboard.h)
+kbd-std.o: kbd-std.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pc_keyb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pc_keyb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/keyboard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/keyboard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/ite8172.h)
+memcpy.o: memcpy.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h)
+memset.o: memset.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h)
+r3k_dump_tlb.o: r3k_dump_tlb.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/cachectl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/cachectl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/cpu.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/cpu.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pgtable.h)
+rtc-no.o: rtc-no.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mc146818rtc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mc146818rtc.h)
+rtc-std.o: rtc-std.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mc146818rtc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mc146818rtc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+strlen_user.o: strlen_user.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/sgidefs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/sgidefs.h)
+strncpy_user.o: strncpy_user.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h)
+strnlen_user.o: strnlen_user.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/offset.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/sgidefs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/sgidefs.h)
+tinycon.o: tinycon.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bootinfo.h)
+watch.o: watch.S \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/asm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mipsregs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/regdef.h)

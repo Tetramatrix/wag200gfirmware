@@ -1,0 +1,2622 @@
+Binary files sangam_atm/aal5sar.o and sangam_atm.vincent/aal5sar.o differ
+diff -Nur sangam_atm/tn7api.h sangam_atm.vincent/tn7api.h
+--- sangam_atm/tn7api.h	2005-10-11 18:06:24.000000000 +0800
++++ sangam_atm.vincent/tn7api.h	2005-12-06 12:26:49.000000000 +0800
+@@ -3,16 +3,17 @@
+  *    by Zhicheng Tang, ztang@ti.com
+  *    2000 (c) Texas Instruments Inc.
+  *
+- *    08/15/05 AV      Added a function to get the capability of the chip, 
++ *    08/15/05 AV      Added a function to get the capability of the chip,
+  *                     tn7atm_read_can_support_adsl2.
+  *    09/06/05 AV      Adding support for VBR-rt and VBR-nrt modes.(CQ9808).
+  *    09/12/05 AV      Moved the invalidation of the cache to a central place.
+- *    09/21/05 AV      Renamed the overloaded memcmp and memcpy functions to 
+- *                     tn7atm_memcmp and tn7atm_memcpy respectively to allow support 
+- *                     for being compiled directly into the kernel. 
+- *    10/07/05  AV/CPH Changed dprintf to dgprintf and compile time 
++ *    09/21/05 AV      Renamed the overloaded memcmp and memcpy functions to
++ *                     tn7atm_memcmp and tn7atm_memcpy respectively to allow support
++ *                     for being compiled directly into the kernel.
++ *    10/07/05  AV/CPH Changed dprintf to dgprintf and compile time
+  *                     selection of dslhal_api_getQLNpsds() dslhal_api_getSNRpsds()
+  *                     and for code size reduction.
++ *    11/03/05  CPH    Add ClearEoc ACK.
+  ************************************************************************************/
+ 
+ #ifndef __SAPI_H
+@@ -87,7 +88,12 @@
+ int tn7dsl_generic_write( int offsetnum, int *offset, int data);
+ int tn7dsl_clear_eoc_setup(void);
+ int tn7dsl_clear_eoc_close(void);
+-int tn7dsl_clear_eoc_send(unsigned char *data, unsigned int len);
++int tn7dsl_clear_eoc_send(unsigned char *data, unsigned int len, int ackFlag);
++
++//Export to tn7atm.c for oam ping loss -- JZ 12/03/05
++void tn7dsl_write_memory(char *input_str);
++int tn7dsl_dump_memory(char *input_str);
++unsigned int tn7dsl_get_memory(unsigned int addr_in);
+ 
+ int os_atoi(const char *pStr);
+ int os_atoh(const char *pStr);
+diff -Nur sangam_atm/tn7atm.c sangam_atm.vincent/tn7atm.c
+--- sangam_atm/tn7atm.c	2005-12-07 12:34:03.000000000 +0800
++++ sangam_atm.vincent/tn7atm.c	2005-12-06 12:26:50.000000000 +0800
+@@ -31,8 +31,9 @@
+  *   9/22/05   AV     Adding support for the new LED driver in BasePSP 7.4. A new macro TN7DSL_LED_ACTION
+  *                    has been used to replace the direct calls to the old LED handler.
+  *   10/04/05 CPH     Added new (1.61v) 7100 support
+- *   10/07/05 AV/CPH  Changed compile time selection of dslhal_api_getQLNpsds() dslhal_api_getSNRpsds() 
++ *   10/07/05 AV/CPH  Changed compile time selection of dslhal_api_getQLNpsds() dslhal_api_getSNRpsds()
+  *                    and for code size reduction.
++ *   11/03/05 CPH     Added ClearEoc ACK.
+  **********************************************************************************************/
+ 
+ #include <linux/config.h>
+@@ -759,8 +760,8 @@
+   }
+   else
+       retval = -1;  /* no tx dma channels available */
+-  
+-  return retval;                   
++
++  return retval;
+ }
+ 
+ static void str2eaddr (char *pMac, char *pStr)
+@@ -783,7 +784,7 @@
+   char esi_addr[ESI_LEN] = { 0x00, 0x00, 0x11, 0x22, 0x33, 0x44 };
+   char *esiaddr_str = NULL;
+ 
+-  esiaddr_str = prom_getenv ("macb");
++  esiaddr_str = prom_getenv ("macc");
+ 
+   if (!esiaddr_str)
+   {
+@@ -973,7 +974,7 @@
+ 
+    //vcc->dev_data = (void *)&tn7atm_activate_vc_parm.priv->lut[tn7atm_activate_vc_parm.chan];
+    //set_bit(ATM_VF_READY, &vcc->flags);
+-   
++
+    //tn7atm_activate_vc_parm.priv->lut[tn7atm_activate_vc_parm.chan].ready = 1;
+ 
+    //spin_unlock_irqrestore(&chan_init_lock, flags);
+@@ -1027,7 +1028,7 @@
+ 
+   priv->lut[dmachan].bClosing = 1;
+   priv->lut[dmachan].ready = 0;
+-  
++
+   spin_unlock_irqrestore (&closeLock, closeFlag);
+ 
+   if (vcc->vpi == CLEAR_EOC_VPI && vcc->vci == CLEAR_EOC_VCI)
+@@ -1041,7 +1042,7 @@
+     {
+       printk ("failed to close channel %d.\n", dmachan);
+       //spin_unlock_irqrestore (&closeLock, closeFlag);
+-      //return;      
++      //return;
+     }
+     //printk("ChannelTeardown returned rc = %d for chan %d \n", rc, dmachan);
+   }
+@@ -1181,7 +1182,7 @@
+    */
+   if (vcc->vpi == CLEAR_EOC_VPI && vcc->vci == CLEAR_EOC_VCI)
+   {
+-    bret = tn7dsl_clear_eoc_send ((unsigned char *) skb->data, skb->len);
++    bret = tn7dsl_clear_eoc_send ((unsigned char *) skb->data, skb->len, 0);
+     if (vcc->pop)
+       vcc->pop (vcc, skb);
+     else
+@@ -2034,6 +2035,9 @@
+   extern unsigned int _dsl_Feature_0_defined;
+   extern unsigned int _dsl_Feature_1_defined;
+   char *ptr;
++  unsigned int  oamretry_time = 0;
++  char   oamretry[20];
++
+ 
+   dgprintf (4, "tn7atm_init()\n");
+   priv = (Tn7AtmPrivate *) dev->dev_data;
+@@ -2071,6 +2075,27 @@
+     return -ENODEV;
+   }
+ 
++  oamretry_time = 0x3fff;
++  ptr = prom_getenv("oamretry_time");
++  if(ptr)
++  {
++    if ((ptr[0] == '0') && (ptr[1] == 'x'))     // skip 0x before pass to
++      ptr += 2;
++    oamretry_time = os_atoh (ptr);
++  }
++  sprintf(oamretry, "a30085cc%0X", oamretry_time);
++  printk("DBG: oam retry = 0x%0X, str=%s\n", oamretry_time, oamretry);
++
++  printk("DBG: To read and write SAR oam retry counter: \n");
++  tn7dsl_dump_memory ("a30085cc00000002");
++  //tn7dsl_write_memory("a30085cc00003fff");
++  tn7dsl_write_memory(oamretry);
++  printk("\nDBG: SAR oam retry counter after setting: \n");
++  tn7dsl_dump_memory ("a30085cc00000002");
++
++  printk("DBG: Read the SAR OAM respnse drop counter: \n");
++  tn7dsl_dump_memory ("a30085c400000002");
++
+   // Inter-Op DSL phy Control
+   // Note the setting of _dsl_Feature_0 and _dsl_Feature_1 must before
+   // dslhal_api_dslStartup (in tn7dsl_init()).
+diff -Nur sangam_atm/tn7dsl.c sangam_atm.vincent/tn7dsl.c
+--- sangam_atm/tn7dsl.c	2005-10-11 18:06:36.000000000 +0800
++++ sangam_atm.vincent/tn7dsl.c	2005-12-06 12:26:49.000000000 +0800
+@@ -10,9 +10,9 @@
+  *  5/10/05 AV   Added tn7dsl_proc_train_mode_export(). (CQ9605).
+  *  5/24/05 AV   Fixing the incorrect parsing of the DSL_BIT_TMODE environment variable after the
+  *               the modulation environment variable.
+- *  6/02/05 AV   Changing the location of the tn7dsl_set_modulation function to overcome the 
++ *  6/02/05 AV   Changing the location of the tn7dsl_set_modulation function to overcome the
+  *               degradation in throughput. (MR-2464).
+- *  6/2/05  SANJAY Added a print in case of failue of DSL Init. Rearranged the code in case of 
++ *  6/2/05  SANJAY Added a print in case of failue of DSL Init. Rearranged the code in case of
+  *                 Failure so that cat on proc file doesnt give Seg. fault.
+  *  8/8/05  CPH  CQ9600 (partial) AnxBM support
+  *  8/10/05 CPH  CQ9776 (partial) TR69 support
+@@ -22,7 +22,7 @@
+  *               tn7atm_read_can_support_adsl2. Relocated structure dsl_modes for performance.
+  *  8/24/05 CPH  CQ9885: Added clearEoc support for ADSL2/2+
+  *  9/5/05  CPH  CQ9660 (partial TR69) SNRpsds, QLNpsds reporting updated.
+- *  9/13/05 AV   Replaced some of the shim calls with direct calls for performance. The shim 
++ *  9/13/05 AV   Replaced some of the shim calls with direct calls for performance. The shim
+  *               calls are left in comments for reference.
+  *  09/21/05 AV  Renamed the overloaded memcmp and memcpy functions to
+  *               tn7atm_memcmp and tn7atm_memcpy respectively to allow support
+@@ -33,6 +33,13 @@
+  *                 dslhal_api_getSNRpsds() and for code size reduction.
+  * 10/11/05  JZ   Fix for auto PVC oam ping lost case, changed the type value for 'S' - segment
+  *                oam ping to have correct oam cell type.
++ * 10/17/05  AV   Enabling the logic to use prom_setenv() and prom_unsetenv() in BasePSP 7.4, for
++ *                clearing the "modulation" env variable, when the user upgrades to the new
++ *                bit mode scheme.
++ * 10/19/05  AV   Removing the prototypes for prom_setenv() and prom_unsetenv(), as they conflict
++ *                with the ones in the asm/mips-boards/prom.h file.
++ *  11/3/05 CPH  Added ClerarEoc ACK (porting).
++ *  11/3/05  JZ  Added code to convert old mode to new bit mode in tn7dsl_set_modulation()
+  *********************************************************************************************/
+ #include <linux/config.h>
+ #include <linux/kernel.h>
+@@ -56,11 +63,7 @@
+ #include "tn7api.h"
+ #include "dsl_hal_api.h"
+ #include "dsl_hal_support.h"
+-/* New header for setting and un-setting environment variables. */
+-//#include "env.h"
+-//AV Temp hack
+-extern int sys_unsetenv(const char *);
+-extern int sys_setenv(const char *, const char *);
++
+ 
+ /* For the changes for trainning modes using bit fields.
+    Defaults are for backward compatibility.
+@@ -87,6 +90,12 @@
+ 
+ static unsigned int dslReg;
+ 
++#define CLEAREOC_ACK    0x80
++#define CEOC_RESP     0x02  // define clearEoc Ctrl as in G.992.3 sec7.8.2.4.1
++#define CEOC_CMD      0x00
++
++static int eocctrl_resp=0;
++static int eocctrl_cmd=0;
+ #define TC_SYNC          1
+ #define SYNC_TIME_DELAY  500000
+ 
+@@ -94,12 +103,12 @@
+ #if defined (CONFIG_MIPS_AVALANCHE_COLORED_LED) || defined (CONFIG_LED_MODULE)
+ static int led_on;
+ /* Definition of the handle for LED module. They will be NULL for old LED implementation. */
+-void *hnd_LED_0 = NULL; 
++void *hnd_LED_0 = NULL;
+ #endif
+ 
+ #if defined (CONFIG_LED_MODULE)
+ led_reg_t ledreg[2];
+-#endif 
++#endif
+ 
+ #if defined (CONFIG_MIPS_AVALANCHE_COLORED_LED)
+ /*since the structure has the same elements as led_reg_t, we are re-using the variable name. */
+@@ -198,8 +207,8 @@
+   T1413_MODE        = 2,
+   GDMT_MODE         = 3,
+   GLITE_MODE        = 4,
+-  ADSL2_MODE        = 8,      
+-  ADSL2_DELT        = 9,      
++  ADSL2_MODE        = 8,
++  ADSL2_DELT        = 9,
+   ADSL2_PLUS         = 0x10,
+   ADSL2_PLUS_DELT    = 0x11,
+   READSL_MODE        = 0x20,
+@@ -228,7 +237,7 @@
+ static volatile int bshutdown;
+ static char info[MAX_STR_SIZE];
+ /* Used for DSL Polling enable */
+-static DECLARE_MUTEX_LOCKED (adsl_sem_overlay); 
++static DECLARE_MUTEX_LOCKED (adsl_sem_overlay);
+ 
+ //kthread_t overlay_thread;
+ /* end of module wide declars */
+@@ -303,7 +312,7 @@
+       return -1;
+     }
+     if(s1[i] != s2[i])
+-    {  
++    {
+        return 1;
+     }
+     i++;
+@@ -312,7 +321,7 @@
+   {
+     return 1;
+   }
+-  
++
+   return 0;
+ }
+ 
+@@ -358,7 +367,7 @@
+ 
+   if (filp->f_op->read==NULL)
+           return -1;  /* File(system) doesn't allow reads */
+-       
++
+   /*
+    * Disable parameter checking
+    */
+@@ -557,7 +566,7 @@
+   /* Which bin to use */
+   switch (bin)
+     {
+-  case 0: 
++  case 0:
+       rxSnrPerBin = pIhw->AppData.rxSnrPerBin0;
+       break;
+ 
+@@ -1066,6 +1075,17 @@
+                F5count, F4count, oamFarLBCount[0] + oamFarLBCount[2],
+                   oamFarLBCount[1] + oamFarLBCount[3]);
+     }
++    
++  //Read OAM ping responses count:
++  
++  if(len<=limit)
++  {
++    len +=
++      sprintf (buf + len,
++               "\tSAR OAM Retry in 0x%X cycles, Drop Count=%d\n",
++               tn7dsl_get_memory(0xa30085cc), tn7dsl_get_memory(0xa30085c4));
++  }
++
+   return len;
+ }
+ 
+@@ -1183,18 +1203,31 @@
+ 
+  if (msgOriented_flag)
+   {
+-    // message oriented clear eoc
++// message oriented clear eoc
+     // used in ADSL2/2+
++    // CTRL:   LSB: 0 & 1 Alternate when send
++    //     2nd LSB: 0=command, 1=response.
+     data[0]= 0x01; // NORMAL_PRIORITY (addr)
+-    data[1]= 0x01; // (ctrl) (Toggle??)
+     data[2]= 0x08;  // clearEoc cmd
+-    data[3]= 0x01;
+-    data[4]= 0x81;
+-    data[5]= 0x4c;
++    if (msgOriented_flag & CLEAREOC_ACK)
++    {
++      data[1]= CEOC_RESP | eocctrl_resp; // CTRL: response
++      data[3]= 0x80;  // ACK Response
++      *len=4;
++      eocctrl_resp ^=0x01;   // Toggle resp LSB
++    }
++    else
++    {
++      data[1]= CEOC_CMD | eocctrl_cmd; // CTRL: response
++      data[3]= 0x01;    // clearEoc sub-command
++      data[4]= 0x81;
++      data[5]= 0x4c;
+ 
+-    tn7atm_memcpy(&data[6], msg, *len);
+     //shim_osMoveMemory(&data[6], msg, *len);
+-    *len+=6;
++      tn7atm_memcpy(&data[6], msg, *len);
++      *len+=6;
++      eocctrl_cmd ^= 0x01; // Toggle cmd LSB
++    }
+     return 0;
+   }
+ 
+@@ -1289,8 +1322,9 @@
+   }
+ 
+   msglen = *len;
+-
+   rxbyte = msg[0];
++ printk("hdlc rx v0.6 len %d msg %x,%x,%x,%x,%x,%x,%x\n",*len,msg[0],msg[1],msg[2],msg[3],msg[4],msg[5],msg[6]);
++
+   if (msgOriented_flag)
+   {
+     // message oriented clearEoc, used in ADSL2/2+
+@@ -1298,8 +1332,7 @@
+     if (rxbyte != 0x01) // Normal priority
+       return(ret);
+ 
+-    if (((msg[2]!= 0x08) && (msg[3]!= 0x01)) ||
+-      (msg[4]!= 0x81) || (msg[5]!= 0x4c))
++    if (msglen<6||((msg[2]!= 0x08) && (msg[3]!= 0x01)) || (msg[4]!= 0x81) || (msg[5]!= 0x4c))
+     {
+       ErrEocRxHdlcFraming++;
+       return(ret);   // not an expected clear EOC frame
+@@ -1610,7 +1643,7 @@
+   return(0);
+ }
+ 
+-int tn7dsl_clear_eoc_send(unsigned char *data, unsigned int len)
++int tn7dsl_clear_eoc_send(unsigned char *data, unsigned int len, int ackFlag)
+ {
+   unsigned int   indx;
+   unsigned int   index[2];
+@@ -1655,7 +1688,7 @@
+ 
+   // HDLC framing, calculate FCS and pad HDLC
+   ret = tn7dsl_hdlc_tx_process(pClrEOC->pTxBufDesc[indx]->data, data, &len,
+-          (pIhw->AppData.TrainedMode & (ADSL2_MODE|ADSL2_PLUS)) );
++          (pIhw->AppData.TrainedMode & (ADSL2_MODE|ADSL2_PLUS)) | ackFlag);
+ 
+   if (!ret)
+   {
+@@ -1740,6 +1773,14 @@
+     len = pClrEOC->pRxBufDesc[indx]->len;
+     len0 = len;
+ 
++    //Sending ClearEoc ACK(80)
++    // Check for length > 4 so we don't ACk the ACK packet from CO.
++    // ACK packet: 01 <01|03> 08 80 (4 bytes)
++    if (pClrEOC->pRxBufDesc[indx]->len>4)
++    {
++      char dummy[4];
++      tn7dsl_clear_eoc_send(dummy,4, CLEAREOC_ACK);
++    }
+     if (len > MAX_CLEAR_EOC_BUF_SIZE)
+     {
+      //printk("tn7dsl_clear_eoc_receive: buf size is exceeded\n");
+@@ -1873,7 +1914,7 @@
+             /* Higher Pacing rate is required for AnnexM 2+ mode. */
+             if(def_sar_inter_pace != ANNEX_M_2PLUS_PACEMAX_VAL)
+             {
+-              avalanche_request_intr_pacing(LNXINTNUM (ATM_SAR_INT), 
++              avalanche_request_intr_pacing(LNXINTNUM (ATM_SAR_INT),
+                   ATM_SAR_INT_PACING_BLOCK_NUM, ANNEX_M_2PLUS_PACEMAX_VAL);
+           }
+         }
+@@ -1964,8 +2005,6 @@
+                                 (unsigned int *) &offset,
+                                 (unsigned char *) &oamFeature, 4);
+ 
+-/* 10/11/2005 AV: Please un-comment this out after the functions are exported in the PSP. */
+-#if 0
+   /* Do only if we are in the new Base PSP 7.4.*/
+   #if ((PSP_VERSION_MAJOR == 7) && (PSP_VERSION_MINOR == 4))
+   /* Check to see if we are operating in the new bit mode. */
+@@ -1976,16 +2015,15 @@
+     ptr = prom_getenv("DSL_UPG_DONE");
+     if(!ptr)
+       {
+-         /* If it is the first time the user is upgrading, then make sure that 
++         /* If it is the first time the user is upgrading, then make sure that
+              we clear the modulation environment variable, as this could potentially
+              not have the same meaning in the new mode.
+           */
+-         sys_unsetenv("modulation");
+-         sys_setenv("DSL_UPG_DONE", "1");
++         prom_unsetenv("modulation");
++         prom_setenv("DSL_UPG_DONE", "1");
+       }
+   }
+   #endif
+-#endif
+ 
+   // modulation
+   ptr = prom_getenv("modulation");
+@@ -2213,7 +2251,8 @@
+   pIhw->AppData.usTxPower=0;
+   pIhw->AppData.dsTxPower=0;
+ 
+-  return 0;  
++// tn7dsl_clear_eoc_setup(); //cph clearEoc debug
++  return 0;
+ }
+ 
+ /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -2264,7 +2303,7 @@
+   {
+     tmp[j] = in_cmd[i];
+     //printk("tmp[%d]=%c, %d\n", j, tmp[j], tmp[j]);
+-    if (tmp[j] == 'p' || tmp[j] == 'P') 
++    if (tmp[j] == 'p' || tmp[j] == 'P')
+       break;
+     j++;
+     i++;
+@@ -2279,7 +2318,7 @@
+   {
+     tmp[j] = in_cmd[i];
+     //printk("tmp[%d]=%c, %d\n", j, tmp[j], tmp[j]);
+-    if (tmp[j] == 'c' || tmp[j] == 'C') 
++    if (tmp[j] == 'c' || tmp[j] == 'C')
+       break;
+ 
+     j++;
+@@ -2385,7 +2424,8 @@
+     Input format:   wAAAAAAAAVVVVVVVV
+     where AAAAAAAA is the address in hex and VVVVVVVV is the value to write.
+ */
+-static void tn7dsl_write_memory(char *input_str)
++//static void tn7dsl_write_memory(char *input_str)
++void tn7dsl_write_memory(char *input_str) //Export to tn7atm.c for oam ping loss
+ {
+     volatile int *pUi;
+     int i = 0;
+@@ -2399,19 +2439,20 @@
+         tmp[i] = input_str[i];
+ 
+     tmp[i] = '\0';
+-          
++
+     addr = os_atoh(tmp);
+ 
+     pUi = (volatile int *)addr;
+ 
+     /* Read the remaining characters as the value */
+     value = os_atoh(&input_str[8]);
+-    
++
+     /* Write the value into the memory location */
+-    printk("Writing %#08x to address = 0x%p\n", value, pUi);
++//    printk("Writing %#08x to address = 0x%p\n", value, pUi);
++    printk("Writing 0x%x to address = 0x%p\n", value, pUi);
+     tn7atm_data_writeback((int *)pUi, 1);
+     *pUi = value;
+-    
++
+     /* Read back the value that was written */
+     /*shim_osInvalidateCache((int *)pUi, 1);*/
+     tn7atm_data_invalidate((int *)pUi, 1);
+@@ -2423,11 +2464,12 @@
+ 
+ /*
+     Input format:   rAAAAAAAAVVVVVVVV
+-    where AAAAAAAA is the address in hex and VVVVVVVV is the number of words 
++    where AAAAAAAA is the address in hex and VVVVVVVV is the number of words
+     to read back.
+ */
+-static int tn7dsl_dump_memory(char *input_str)
+-  {
++//static int tn7dsl_dump_memory(char *input_str)
++int tn7dsl_dump_memory(char *input_str)
++{
+     volatile int *pUi;
+     int i = 0;
+     volatile int addr;
+@@ -2438,7 +2480,7 @@
+     for(i = 0; i < 8; i++)
+     {
+         /* For legacy reasons, the address can be terminated by a 'c' character. */
+-        if(toupper(input_str[i]) != 'C')
++        //XZ -- NO USE! if(toupper(input_str[i]) != 'C')
+             tmp[i] = input_str[i];
+   }
+ 
+@@ -2453,7 +2495,7 @@
+ 
+     /* Read back the values from the memory location */
+     printk("Reading %d words from address = 0x%p\n", wrd_to_read, pUi);
+-    
++
+     for(i = 0; i < wrd_to_read; i++, pUi++)
+     {
+       if(!(i % 4))
+@@ -2462,14 +2504,35 @@
+         /* Read back the value that was written */
+         /*shim_osInvalidateCache((int *)pUi, 1);*/
+         tn7atm_data_invalidate((int *)pUi, 1);
+-        printk("%#08x ", *pUi);
+-        
++        //printk("%#08x ", *pUi);
++        printk("0x%x ", *pUi);
++
+   }
+     printk("\n");
+ 
+     return(4 * i);
+ }
+ 
++unsigned int tn7dsl_get_memory(unsigned int addr_in)
++{
++    volatile int *pUi;
++    volatile int addr;
++    
++    unsigned int ret;
++    
++    addr = addr_in;
++
++    pUi = (volatile int *)addr;
++
++    /*shim_osInvalidateCache((int *)pUi, 1);*/
++    tn7atm_data_invalidate((int *)pUi, 1);
++    //printk("%#08x ", *pUi);
++    ret = *pUi;
++    printk("DBG (tn7dsl_get_memory): get 0x%X at Addr 0x%X\n", ret, addr_in);
++
++    return ret;
++}
++
+ 
+ 
+ static int dslmod_sysctl(ctl_table *ctl, int write, struct file * filp,
+@@ -2548,11 +2611,11 @@
+                 if( fst_byt == 'S') type = type | (1 << 1);
+                 ret = tn7sar_oam_generation (pIhw->pOsContext, chan, type, vpi, vci, timeout);
+                 break;
+-      
++
+        case 'F':
+                 chan = tn7dsl_process_txflush_string (&queue, mod_req);
+                 if (chan < 16)
+-                    tn7sar_tx_flush (pIhw->pOsContext, chan, queue, 0); 
++                    tn7sar_tx_flush (pIhw->pOsContext, chan, queue, 0);
+                 break;
+       case 'D':
+                 tn7dsl_dump_memory (&mod_req[1]);
+@@ -2561,7 +2624,7 @@
+                 tn7dsl_write_memory(&mod_req[1]);
+                 break;
+       default:
+-               tn7dsl_chng_modulation (info); 
++               tn7dsl_chng_modulation (info);
+       }
+       }
+     }
+@@ -2889,7 +2952,7 @@
+ {
+   unsigned char tmp1[64], tmp2[64], *p;
+   int k, m;
+- 
++
+   if(!strcmp(data, "trellison"))
+   {
+     //printk("set Trellis on\n");
+@@ -3187,6 +3250,12 @@
+ 
+     dgprintf(4,"tn7dsl_set_modulation\n");
+ 
++  if (pIhw->AppData.useBitField)
++  {
++  	mode_table[0].mode_num = NEW_TRAINING_VAL_T1413;
++  	mode_table[1].mode_num = NEW_TRAINING_VAL_GDMT;
++  	mode_table[3].mode_num = NEW_TRAINING_VAL_MMODE;
++  }
+   for (i = 0; i < NUM_ELEMS (mode_table); i++)
+   {
+     if (!strcmp (data, mode_table[i].mode_name))
+@@ -3202,7 +3271,7 @@
+      * Since we don't want to compare the nul terminator
+      */
+         size = strlen("tmode");
+-        
++
+         if(!strncmp(cp, "tmode", size))
+         {
+             cp += size;
+@@ -3234,10 +3303,10 @@
+               * For backward compatibility for modulation
+               */
+               train_mode = os_atoi(cp);
+-        
++
+             }
+         }
+-    }  
++    }
+ 
+     if(train_mode >= 0)
+     {
+@@ -3270,13 +3339,13 @@
+ {
+ #if defined (CONFIG_MIPS_AVALANCHE_COLORED_LED)
+     /* Register with the new LED module */
+-	hnd_LED_0 = led_manager_register_module("adsl",0); 
++    hnd_LED_0 = led_manager_register_module("adsl",0);
+ 
+-	if(!hnd_LED_0)
+-	{
+-		printk("ERROR DSL: Unable to register with LED module\n"); 
+-        return; 
+-	}
++    if(!hnd_LED_0)
++    {
++        printk("ERROR DSL: Unable to register with LED module\n");
++        return;
++    }
+ 
+ #if 0
+     // register LED0 with led module
+@@ -3285,11 +3354,11 @@
+     ledreg[0].led_on   = (void *)tn7dsl_led_on;
+     ledreg[0].led_off  = (void *)tn7dsl_led_off;
+ 
+-    
++
+     if( led_manager_install_callbacks(hnd_LED_0, LED_NUM_1, &ledreg[0]) < 0)
+     {
+         led_manager_unregister_module(hnd_LED_0);
+-		printk("ERROR DSL: Unable to register callbacks with LED module\n"); 
++        printk("ERROR DSL: Unable to register callbacks with LED module\n");
+         hnd_LED_0 = NULL;
+         return;
+     }
+@@ -3301,15 +3370,15 @@
+     ledreg[1].led_off  = (void *)tn7dsl_led_off;
+     ledreg[1].param = 1;
+ 
+-    
++
+     if( led_manager_install_callbacks(hnd_LED_0, LED_NUM_1, &ledreg[1]) < 0)
+     {
+-		printk("ERROR DSL: Unable to register with LED module\n"); ;
++        printk("ERROR DSL: Unable to register with LED module\n"); ;
+         led_manager_unregister_module(hnd_LED_0);
+         hnd_LED_0 = NULL;
+     }
+ #endif
+-#ifdef CONFIG_LED_MODULE   
++#ifdef CONFIG_LED_MODULE
+     // register LED0 with led module
+     ledreg[0].param = 2;
+     ledreg[0].init = (void *)tn7dsl_led_init;
+@@ -3325,7 +3394,7 @@
+     /* Register with the old LED module */
+     register_led_drv(LED_NUM_1, &ledreg[0]);
+     register_led_drv(LED_NUM_2, &ledreg[1]);
+-    
++
+     /* Indicate that the initialization has occurred. */
+     hnd_LED_0 = (int *) 1;
+ #endif
+@@ -3523,7 +3592,7 @@
+ 
+ 
+     if(len <= count)
+-    {    
++    {
+         for (i = ctr; ((i < num_entries)&& (len <= count)) ; i++)
+         {
+       /*
+@@ -3531,7 +3600,7 @@
+        */
+             if((strlen(dsl_modes[i].mode_name) + 6 + len) <= count)
+         {
+-                len += snprintf(cp+len, (count - len), "%s\t\t\t%#x\n", 
++                len += snprintf(cp+len, (count - len), "%s\t\t\t%#x\n",
+                                     dsl_modes[i].mode_name, dsl_modes[i].mode_value);
+             }
+             else
+@@ -3543,13 +3612,13 @@
+    * Data was completely written
+    */
+     if (i >= num_entries)
+-    {  
++    {
+     /*
+      * We are done with this
+      */
+         *eof = 1;
+-        ctr = 0;        
+-    }   
++        ctr = 0;
++    }
+     else
+     {
+     /*
+@@ -3557,12 +3626,12 @@
+      * terminate the buffer.
+         */
+         *(cp + len) = '\0';
+-        
++
+     /*
+      * Save the value of the counter for the next read for the rest of the
+      * data.
+         */
+-        ctr = i;        
++        ctr = i;
+     }
+ 
+     return len;
+diff -Nur sangam_atm/tn7dsl.diff sangam_atm.vincent/tn7dsl.diff
+--- sangam_atm/tn7dsl.diff	1970-01-01 08:00:00.000000000 +0800
++++ sangam_atm.vincent/tn7dsl.diff	2005-12-06 15:16:26.000000000 +0800
+@@ -0,0 +1,597 @@
++--- tn7dsl.c	2005-12-06 12:26:49.000000000 +0800
+++++ ../sangam_atm_5.00.04/tn7dsl.c	2005-10-11 18:06:36.000000000 +0800
++@@ -10,9 +10,9 @@
++  *  5/10/05 AV   Added tn7dsl_proc_train_mode_export(). (CQ9605).
++  *  5/24/05 AV   Fixing the incorrect parsing of the DSL_BIT_TMODE environment variable after the
++  *               the modulation environment variable.
++- *  6/02/05 AV   Changing the location of the tn7dsl_set_modulation function to overcome the
+++ *  6/02/05 AV   Changing the location of the tn7dsl_set_modulation function to overcome the 
++  *               degradation in throughput. (MR-2464).
++- *  6/2/05  SANJAY Added a print in case of failue of DSL Init. Rearranged the code in case of
+++ *  6/2/05  SANJAY Added a print in case of failue of DSL Init. Rearranged the code in case of 
++  *                 Failure so that cat on proc file doesnt give Seg. fault.
++  *  8/8/05  CPH  CQ9600 (partial) AnxBM support
++  *  8/10/05 CPH  CQ9776 (partial) TR69 support
++@@ -22,7 +22,7 @@
++  *               tn7atm_read_can_support_adsl2. Relocated structure dsl_modes for performance.
++  *  8/24/05 CPH  CQ9885: Added clearEoc support for ADSL2/2+
++  *  9/5/05  CPH  CQ9660 (partial TR69) SNRpsds, QLNpsds reporting updated.
++- *  9/13/05 AV   Replaced some of the shim calls with direct calls for performance. The shim
+++ *  9/13/05 AV   Replaced some of the shim calls with direct calls for performance. The shim 
++  *               calls are left in comments for reference.
++  *  09/21/05 AV  Renamed the overloaded memcmp and memcpy functions to
++  *               tn7atm_memcmp and tn7atm_memcpy respectively to allow support
++@@ -33,13 +33,6 @@
++  *                 dslhal_api_getSNRpsds() and for code size reduction.
++  * 10/11/05  JZ   Fix for auto PVC oam ping lost case, changed the type value for 'S' - segment
++  *                oam ping to have correct oam cell type.
++- * 10/17/05  AV   Enabling the logic to use prom_setenv() and prom_unsetenv() in BasePSP 7.4, for
++- *                clearing the "modulation" env variable, when the user upgrades to the new
++- *                bit mode scheme.
++- * 10/19/05  AV   Removing the prototypes for prom_setenv() and prom_unsetenv(), as they conflict
++- *                with the ones in the asm/mips-boards/prom.h file.
++- *  11/3/05 CPH  Added ClerarEoc ACK (porting).
++- *  11/3/05  JZ  Added code to convert old mode to new bit mode in tn7dsl_set_modulation()
++  *********************************************************************************************/
++ #include <linux/config.h>
++ #include <linux/kernel.h>
++@@ -63,7 +56,11 @@
++ #include "tn7api.h"
++ #include "dsl_hal_api.h"
++ #include "dsl_hal_support.h"
++-
+++/* New header for setting and un-setting environment variables. */
+++//#include "env.h"
+++//AV Temp hack
+++extern int sys_unsetenv(const char *);
+++extern int sys_setenv(const char *, const char *);
++ 
++ /* For the changes for trainning modes using bit fields.
++    Defaults are for backward compatibility.
++@@ -90,12 +87,6 @@
++ 
++ static unsigned int dslReg;
++ 
++-#define CLEAREOC_ACK    0x80
++-#define CEOC_RESP     0x02  // define clearEoc Ctrl as in G.992.3 sec7.8.2.4.1
++-#define CEOC_CMD      0x00
++-
++-static int eocctrl_resp=0;
++-static int eocctrl_cmd=0;
++ #define TC_SYNC          1
++ #define SYNC_TIME_DELAY  500000
++ 
++@@ -103,12 +94,12 @@
++ #if defined (CONFIG_MIPS_AVALANCHE_COLORED_LED) || defined (CONFIG_LED_MODULE)
++ static int led_on;
++ /* Definition of the handle for LED module. They will be NULL for old LED implementation. */
++-void *hnd_LED_0 = NULL;
+++void *hnd_LED_0 = NULL; 
++ #endif
++ 
++ #if defined (CONFIG_LED_MODULE)
++ led_reg_t ledreg[2];
++-#endif
+++#endif 
++ 
++ #if defined (CONFIG_MIPS_AVALANCHE_COLORED_LED)
++ /*since the structure has the same elements as led_reg_t, we are re-using the variable name. */
++@@ -207,8 +198,8 @@
++   T1413_MODE        = 2,
++   GDMT_MODE         = 3,
++   GLITE_MODE        = 4,
++-  ADSL2_MODE        = 8,
++-  ADSL2_DELT        = 9,
+++  ADSL2_MODE        = 8,      
+++  ADSL2_DELT        = 9,      
++   ADSL2_PLUS         = 0x10,
++   ADSL2_PLUS_DELT    = 0x11,
++   READSL_MODE        = 0x20,
++@@ -237,7 +228,7 @@
++ static volatile int bshutdown;
++ static char info[MAX_STR_SIZE];
++ /* Used for DSL Polling enable */
++-static DECLARE_MUTEX_LOCKED (adsl_sem_overlay);
+++static DECLARE_MUTEX_LOCKED (adsl_sem_overlay); 
++ 
++ //kthread_t overlay_thread;
++ /* end of module wide declars */
++@@ -312,7 +303,7 @@
++       return -1;
++     }
++     if(s1[i] != s2[i])
++-    {
+++    {  
++        return 1;
++     }
++     i++;
++@@ -321,7 +312,7 @@
++   {
++     return 1;
++   }
++-
+++  
++   return 0;
++ }
++ 
++@@ -367,7 +358,7 @@
++ 
++   if (filp->f_op->read==NULL)
++           return -1;  /* File(system) doesn't allow reads */
++-
+++       
++   /*
++    * Disable parameter checking
++    */
++@@ -566,7 +557,7 @@
++   /* Which bin to use */
++   switch (bin)
++     {
++-  case 0:
+++  case 0: 
++       rxSnrPerBin = pIhw->AppData.rxSnrPerBin0;
++       break;
++ 
++@@ -1075,17 +1066,6 @@
++                F5count, F4count, oamFarLBCount[0] + oamFarLBCount[2],
++                   oamFarLBCount[1] + oamFarLBCount[3]);
++     }
++-    
++-  //Read OAM ping responses count:
++-  
++-  if(len<=limit)
++-  {
++-    len +=
++-      sprintf (buf + len,
++-               "\tSAR OAM Retry in 0x%X cycles, Drop Count=%d\n",
++-               tn7dsl_get_memory(0xa30085cc), tn7dsl_get_memory(0xa30085c4));
++-  }
++-
++   return len;
++ }
++ 
++@@ -1203,31 +1183,18 @@
++ 
++  if (msgOriented_flag)
++   {
++-// message oriented clear eoc
+++    // message oriented clear eoc
++     // used in ADSL2/2+
++-    // CTRL:   LSB: 0 & 1 Alternate when send
++-    //     2nd LSB: 0=command, 1=response.
++     data[0]= 0x01; // NORMAL_PRIORITY (addr)
+++    data[1]= 0x01; // (ctrl) (Toggle??)
++     data[2]= 0x08;  // clearEoc cmd
++-    if (msgOriented_flag & CLEAREOC_ACK)
++-    {
++-      data[1]= CEOC_RESP | eocctrl_resp; // CTRL: response
++-      data[3]= 0x80;  // ACK Response
++-      *len=4;
++-      eocctrl_resp ^=0x01;   // Toggle resp LSB
++-    }
++-    else
++-    {
++-      data[1]= CEOC_CMD | eocctrl_cmd; // CTRL: response
++-      data[3]= 0x01;    // clearEoc sub-command
++-      data[4]= 0x81;
++-      data[5]= 0x4c;
+++    data[3]= 0x01;
+++    data[4]= 0x81;
+++    data[5]= 0x4c;
++ 
+++    tn7atm_memcpy(&data[6], msg, *len);
++     //shim_osMoveMemory(&data[6], msg, *len);
++-      tn7atm_memcpy(&data[6], msg, *len);
++-      *len+=6;
++-      eocctrl_cmd ^= 0x01; // Toggle cmd LSB
++-    }
+++    *len+=6;
++     return 0;
++   }
++ 
++@@ -1322,9 +1289,8 @@
++   }
++ 
++   msglen = *len;
++-  rxbyte = msg[0];
++- printk("hdlc rx v0.6 len %d msg %x,%x,%x,%x,%x,%x,%x\n",*len,msg[0],msg[1],msg[2],msg[3],msg[4],msg[5],msg[6]);
++ 
+++  rxbyte = msg[0];
++   if (msgOriented_flag)
++   {
++     // message oriented clearEoc, used in ADSL2/2+
++@@ -1332,7 +1298,8 @@
++     if (rxbyte != 0x01) // Normal priority
++       return(ret);
++ 
++-    if (msglen<6||((msg[2]!= 0x08) && (msg[3]!= 0x01)) || (msg[4]!= 0x81) || (msg[5]!= 0x4c))
+++    if (((msg[2]!= 0x08) && (msg[3]!= 0x01)) ||
+++      (msg[4]!= 0x81) || (msg[5]!= 0x4c))
++     {
++       ErrEocRxHdlcFraming++;
++       return(ret);   // not an expected clear EOC frame
++@@ -1643,7 +1610,7 @@
++   return(0);
++ }
++ 
++-int tn7dsl_clear_eoc_send(unsigned char *data, unsigned int len, int ackFlag)
+++int tn7dsl_clear_eoc_send(unsigned char *data, unsigned int len)
++ {
++   unsigned int   indx;
++   unsigned int   index[2];
++@@ -1688,7 +1655,7 @@
++ 
++   // HDLC framing, calculate FCS and pad HDLC
++   ret = tn7dsl_hdlc_tx_process(pClrEOC->pTxBufDesc[indx]->data, data, &len,
++-          (pIhw->AppData.TrainedMode & (ADSL2_MODE|ADSL2_PLUS)) | ackFlag);
+++          (pIhw->AppData.TrainedMode & (ADSL2_MODE|ADSL2_PLUS)) );
++ 
++   if (!ret)
++   {
++@@ -1773,14 +1740,6 @@
++     len = pClrEOC->pRxBufDesc[indx]->len;
++     len0 = len;
++ 
++-    //Sending ClearEoc ACK(80)
++-    // Check for length > 4 so we don't ACk the ACK packet from CO.
++-    // ACK packet: 01 <01|03> 08 80 (4 bytes)
++-    if (pClrEOC->pRxBufDesc[indx]->len>4)
++-    {
++-      char dummy[4];
++-      tn7dsl_clear_eoc_send(dummy,4, CLEAREOC_ACK);
++-    }
++     if (len > MAX_CLEAR_EOC_BUF_SIZE)
++     {
++      //printk("tn7dsl_clear_eoc_receive: buf size is exceeded\n");
++@@ -1914,7 +1873,7 @@
++             /* Higher Pacing rate is required for AnnexM 2+ mode. */
++             if(def_sar_inter_pace != ANNEX_M_2PLUS_PACEMAX_VAL)
++             {
++-              avalanche_request_intr_pacing(LNXINTNUM (ATM_SAR_INT),
+++              avalanche_request_intr_pacing(LNXINTNUM (ATM_SAR_INT), 
++                   ATM_SAR_INT_PACING_BLOCK_NUM, ANNEX_M_2PLUS_PACEMAX_VAL);
++           }
++         }
++@@ -2005,6 +1964,8 @@
++                                 (unsigned int *) &offset,
++                                 (unsigned char *) &oamFeature, 4);
++ 
+++/* 10/11/2005 AV: Please un-comment this out after the functions are exported in the PSP. */
+++#if 0
++   /* Do only if we are in the new Base PSP 7.4.*/
++   #if ((PSP_VERSION_MAJOR == 7) && (PSP_VERSION_MINOR == 4))
++   /* Check to see if we are operating in the new bit mode. */
++@@ -2015,15 +1976,16 @@
++     ptr = prom_getenv("DSL_UPG_DONE");
++     if(!ptr)
++       {
++-         /* If it is the first time the user is upgrading, then make sure that
+++         /* If it is the first time the user is upgrading, then make sure that 
++              we clear the modulation environment variable, as this could potentially
++              not have the same meaning in the new mode.
++           */
++-         prom_unsetenv("modulation");
++-         prom_setenv("DSL_UPG_DONE", "1");
+++         sys_unsetenv("modulation");
+++         sys_setenv("DSL_UPG_DONE", "1");
++       }
++   }
++   #endif
+++#endif
++ 
++   // modulation
++   ptr = prom_getenv("modulation");
++@@ -2251,8 +2213,7 @@
++   pIhw->AppData.usTxPower=0;
++   pIhw->AppData.dsTxPower=0;
++ 
++-// tn7dsl_clear_eoc_setup(); //cph clearEoc debug
++-  return 0;
+++  return 0;  
++ }
++ 
++ /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++@@ -2303,7 +2264,7 @@
++   {
++     tmp[j] = in_cmd[i];
++     //printk("tmp[%d]=%c, %d\n", j, tmp[j], tmp[j]);
++-    if (tmp[j] == 'p' || tmp[j] == 'P')
+++    if (tmp[j] == 'p' || tmp[j] == 'P') 
++       break;
++     j++;
++     i++;
++@@ -2318,7 +2279,7 @@
++   {
++     tmp[j] = in_cmd[i];
++     //printk("tmp[%d]=%c, %d\n", j, tmp[j], tmp[j]);
++-    if (tmp[j] == 'c' || tmp[j] == 'C')
+++    if (tmp[j] == 'c' || tmp[j] == 'C') 
++       break;
++ 
++     j++;
++@@ -2424,8 +2385,7 @@
++     Input format:   wAAAAAAAAVVVVVVVV
++     where AAAAAAAA is the address in hex and VVVVVVVV is the value to write.
++ */
++-//static void tn7dsl_write_memory(char *input_str)
++-void tn7dsl_write_memory(char *input_str) //Export to tn7atm.c for oam ping loss
+++static void tn7dsl_write_memory(char *input_str)
++ {
++     volatile int *pUi;
++     int i = 0;
++@@ -2439,20 +2399,19 @@
++         tmp[i] = input_str[i];
++ 
++     tmp[i] = '\0';
++-
+++          
++     addr = os_atoh(tmp);
++ 
++     pUi = (volatile int *)addr;
++ 
++     /* Read the remaining characters as the value */
++     value = os_atoh(&input_str[8]);
++-
+++    
++     /* Write the value into the memory location */
++-//    printk("Writing %#08x to address = 0x%p\n", value, pUi);
++-    printk("Writing 0x%x to address = 0x%p\n", value, pUi);
+++    printk("Writing %#08x to address = 0x%p\n", value, pUi);
++     tn7atm_data_writeback((int *)pUi, 1);
++     *pUi = value;
++-
+++    
++     /* Read back the value that was written */
++     /*shim_osInvalidateCache((int *)pUi, 1);*/
++     tn7atm_data_invalidate((int *)pUi, 1);
++@@ -2464,12 +2423,11 @@
++ 
++ /*
++     Input format:   rAAAAAAAAVVVVVVVV
++-    where AAAAAAAA is the address in hex and VVVVVVVV is the number of words
+++    where AAAAAAAA is the address in hex and VVVVVVVV is the number of words 
++     to read back.
++ */
++-//static int tn7dsl_dump_memory(char *input_str)
++-int tn7dsl_dump_memory(char *input_str)
++-{
+++static int tn7dsl_dump_memory(char *input_str)
+++  {
++     volatile int *pUi;
++     int i = 0;
++     volatile int addr;
++@@ -2480,7 +2438,7 @@
++     for(i = 0; i < 8; i++)
++     {
++         /* For legacy reasons, the address can be terminated by a 'c' character. */
++-        //XZ -- NO USE! if(toupper(input_str[i]) != 'C')
+++        if(toupper(input_str[i]) != 'C')
++             tmp[i] = input_str[i];
++   }
++ 
++@@ -2495,7 +2453,7 @@
++ 
++     /* Read back the values from the memory location */
++     printk("Reading %d words from address = 0x%p\n", wrd_to_read, pUi);
++-
+++    
++     for(i = 0; i < wrd_to_read; i++, pUi++)
++     {
++       if(!(i % 4))
++@@ -2504,35 +2462,14 @@
++         /* Read back the value that was written */
++         /*shim_osInvalidateCache((int *)pUi, 1);*/
++         tn7atm_data_invalidate((int *)pUi, 1);
++-        //printk("%#08x ", *pUi);
++-        printk("0x%x ", *pUi);
++-
+++        printk("%#08x ", *pUi);
+++        
++   }
++     printk("\n");
++ 
++     return(4 * i);
++ }
++ 
++-unsigned int tn7dsl_get_memory(unsigned int addr_in)
++-{
++-    volatile int *pUi;
++-    volatile int addr;
++-    
++-    unsigned int ret;
++-    
++-    addr = addr_in;
++-
++-    pUi = (volatile int *)addr;
++-
++-    /*shim_osInvalidateCache((int *)pUi, 1);*/
++-    tn7atm_data_invalidate((int *)pUi, 1);
++-    //printk("%#08x ", *pUi);
++-    ret = *pUi;
++-    printk("DBG (tn7dsl_get_memory): get 0x%X at Addr 0x%X\n", ret, addr_in);
++-
++-    return ret;
++-}
++-
++ 
++ 
++ static int dslmod_sysctl(ctl_table *ctl, int write, struct file * filp,
++@@ -2611,11 +2548,11 @@
++                 if( fst_byt == 'S') type = type | (1 << 1);
++                 ret = tn7sar_oam_generation (pIhw->pOsContext, chan, type, vpi, vci, timeout);
++                 break;
++-
+++      
++        case 'F':
++                 chan = tn7dsl_process_txflush_string (&queue, mod_req);
++                 if (chan < 16)
++-                    tn7sar_tx_flush (pIhw->pOsContext, chan, queue, 0);
+++                    tn7sar_tx_flush (pIhw->pOsContext, chan, queue, 0); 
++                 break;
++       case 'D':
++                 tn7dsl_dump_memory (&mod_req[1]);
++@@ -2624,7 +2561,7 @@
++                 tn7dsl_write_memory(&mod_req[1]);
++                 break;
++       default:
++-               tn7dsl_chng_modulation (info);
+++               tn7dsl_chng_modulation (info); 
++       }
++       }
++     }
++@@ -2952,7 +2889,7 @@
++ {
++   unsigned char tmp1[64], tmp2[64], *p;
++   int k, m;
++-
+++ 
++   if(!strcmp(data, "trellison"))
++   {
++     //printk("set Trellis on\n");
++@@ -3250,12 +3187,6 @@
++ 
++     dgprintf(4,"tn7dsl_set_modulation\n");
++ 
++-  if (pIhw->AppData.useBitField)
++-  {
++-  	mode_table[0].mode_num = NEW_TRAINING_VAL_T1413;
++-  	mode_table[1].mode_num = NEW_TRAINING_VAL_GDMT;
++-  	mode_table[3].mode_num = NEW_TRAINING_VAL_MMODE;
++-  }
++   for (i = 0; i < NUM_ELEMS (mode_table); i++)
++   {
++     if (!strcmp (data, mode_table[i].mode_name))
++@@ -3271,7 +3202,7 @@
++      * Since we don't want to compare the nul terminator
++      */
++         size = strlen("tmode");
++-
+++        
++         if(!strncmp(cp, "tmode", size))
++         {
++             cp += size;
++@@ -3303,10 +3234,10 @@
++               * For backward compatibility for modulation
++               */
++               train_mode = os_atoi(cp);
++-
+++        
++             }
++         }
++-    }
+++    }  
++ 
++     if(train_mode >= 0)
++     {
++@@ -3339,13 +3270,13 @@
++ {
++ #if defined (CONFIG_MIPS_AVALANCHE_COLORED_LED)
++     /* Register with the new LED module */
++-    hnd_LED_0 = led_manager_register_module("adsl",0);
+++	hnd_LED_0 = led_manager_register_module("adsl",0); 
++ 
++-    if(!hnd_LED_0)
++-    {
++-        printk("ERROR DSL: Unable to register with LED module\n");
++-        return;
++-    }
+++	if(!hnd_LED_0)
+++	{
+++		printk("ERROR DSL: Unable to register with LED module\n"); 
+++        return; 
+++	}
++ 
++ #if 0
++     // register LED0 with led module
++@@ -3354,11 +3285,11 @@
++     ledreg[0].led_on   = (void *)tn7dsl_led_on;
++     ledreg[0].led_off  = (void *)tn7dsl_led_off;
++ 
++-
+++    
++     if( led_manager_install_callbacks(hnd_LED_0, LED_NUM_1, &ledreg[0]) < 0)
++     {
++         led_manager_unregister_module(hnd_LED_0);
++-        printk("ERROR DSL: Unable to register callbacks with LED module\n");
+++		printk("ERROR DSL: Unable to register callbacks with LED module\n"); 
++         hnd_LED_0 = NULL;
++         return;
++     }
++@@ -3370,15 +3301,15 @@
++     ledreg[1].led_off  = (void *)tn7dsl_led_off;
++     ledreg[1].param = 1;
++ 
++-
+++    
++     if( led_manager_install_callbacks(hnd_LED_0, LED_NUM_1, &ledreg[1]) < 0)
++     {
++-        printk("ERROR DSL: Unable to register with LED module\n"); ;
+++		printk("ERROR DSL: Unable to register with LED module\n"); ;
++         led_manager_unregister_module(hnd_LED_0);
++         hnd_LED_0 = NULL;
++     }
++ #endif
++-#ifdef CONFIG_LED_MODULE
+++#ifdef CONFIG_LED_MODULE   
++     // register LED0 with led module
++     ledreg[0].param = 2;
++     ledreg[0].init = (void *)tn7dsl_led_init;
++@@ -3394,7 +3325,7 @@
++     /* Register with the old LED module */
++     register_led_drv(LED_NUM_1, &ledreg[0]);
++     register_led_drv(LED_NUM_2, &ledreg[1]);
++-
+++    
++     /* Indicate that the initialization has occurred. */
++     hnd_LED_0 = (int *) 1;
++ #endif
++@@ -3592,7 +3523,7 @@
++ 
++ 
++     if(len <= count)
++-    {
+++    {    
++         for (i = ctr; ((i < num_entries)&& (len <= count)) ; i++)
++         {
++       /*
++@@ -3600,7 +3531,7 @@
++        */
++             if((strlen(dsl_modes[i].mode_name) + 6 + len) <= count)
++         {
++-                len += snprintf(cp+len, (count - len), "%s\t\t\t%#x\n",
+++                len += snprintf(cp+len, (count - len), "%s\t\t\t%#x\n", 
++                                     dsl_modes[i].mode_name, dsl_modes[i].mode_value);
++             }
++             else
++@@ -3612,13 +3543,13 @@
++    * Data was completely written
++    */
++     if (i >= num_entries)
++-    {
+++    {  
++     /*
++      * We are done with this
++      */
++         *eof = 1;
++-        ctr = 0;
++-    }
+++        ctr = 0;        
+++    }   
++     else
++     {
++     /*
++@@ -3626,12 +3557,12 @@
++      * terminate the buffer.
++         */
++         *(cp + len) = '\0';
++-
+++        
++     /*
++      * Save the value of the counter for the next read for the rest of the
++      * data.
++         */
++-        ctr = i;
+++        ctr = i;        
++     }
++ 
++     return len;
+diff -Nur sangam_atm/tn7sar.c sangam_atm.vincent/tn7sar.c
+--- sangam_atm/tn7sar.c	2005-12-07 16:01:07.000000000 +0800
++++ sangam_atm.vincent/tn7sar.c	2005-12-06 14:44:30.000000000 +0800
+@@ -777,7 +777,7 @@
+   HAL_DEVICE    *pHalDev;
+   int chan=RESERVED_OAM_CHANNEL; //15;
+   char *pauto_pvc = NULL;
+-  int  auto_pvc = 1;
++  int  auto_pvc = 0;
+   
+   dgprintf(4, "tn7sar_setup_oam_channel\n");
+ 
+Binary files sangam_atm/tn7sar.o and sangam_atm.vincent/tn7sar.o differ
+diff -Nur sangam_atm/tnetd7300.diff sangam_atm.vincent/tnetd7300.diff
+--- sangam_atm/tnetd7300.diff	1970-01-01 08:00:00.000000000 +0800
++++ sangam_atm.vincent/tnetd7300.diff	2005-12-06 15:14:51.000000000 +0800
+@@ -0,0 +1,628 @@
++--- tnetd7300_sar_firm.h	2005-12-06 12:26:48.000000000 +0800
+++++ ../sangam_atm_5.00.04/tnetd7300_sar_firm.h	2005-05-17 14:39:22.000000000 +0800
++@@ -1,6 +1,8 @@
+++//SarPdspFirmware Revision:  52
+++
++ static int SarPdspFirmware[] = {
++-                             0x20d87f80,
++-                             0x000003fb,
+++                             0x23847114,
+++                             0x000003e4,
++                              0x00000000,
++                              0x00000004,
++                              0x00000000,
++@@ -8,7 +10,7 @@
++                              0x00000000,
++                              0x00000000,
++                              0x21000900,
++-                             0x24053d80,
+++                             0x24052080,
++                              0x24000080,
++                              0x240000c0,
++                              0x10e0e0e1,
++@@ -51,10 +53,7 @@
++                              0x811a0b80,
++                              0x2485c080,
++                              0x811c0b80,
++-                             0x83007e8b,
++-                             0x24000f80,
++-                             0x810c3e80,
++-                             0x24c100dd,
+++                             0x248100dd,
++                              0xa07d06fd,
++                              0x240400dd,
++                              0xa07d04fd,
++@@ -67,7 +66,7 @@
++                              0xd11eff05,
++                              0x97c06890,
++                              0x1d00e5e5,
++-                             0x23013e9e,
+++                             0x23012b9e,
++                              0x81bc2890,
++                              0xc908ff09,
++                              0xb10002e0,
++@@ -92,37 +91,33 @@
++                              0x1d00e5e5,
++                              0xd100e704,
++                              0xd114ff06,
++-                             0x2301339e,
+++                             0x2301209e,
++                              0x79000004,
++                              0xd70ffffd,
++                              0x91382486,
++-                             0x2301219e,
+++                             0x23010e9e,
++                              0xc903ff07,
++                              0xa06047e0,
++                              0xb10043e6,
++                              0xc910e602,
++                              0x81000106,
++                              0x24006025,
++-                             0x2300ef9e,
++-                             0xc907e704,
++-                             0xd111ff0c,
++-                             0x813c2580,
++-                             0x7900000a,
+++                             0x2300dc9e,
++                              0xd11dff09,
++                              0x1f00e5e5,
++                              0xc901e705,
++                              0xd111ff06,
++                              0x91382586,
++-                             0x2301219e,
+++                             0x23010e9e,
++                              0x79000003,
++                              0xd715fffc,
++-                             0x2301339e,
+++                             0x2301209e,
++                              0xc910e706,
++                              0x110f2760,
++                              0x240000c6,
++                              0x24000086,
++                              0x13106006,
++-                             0x7b000069,
+++                             0x7b00005d,
++                              0x11079f80,
++                              0x51008010,
++                              0xc912ff0f,
++@@ -135,52 +130,48 @@
++                              0xa06045e0,
++                              0xb10043e6,
++                              0x61150602,
++-                             0x2101e400,
+++                             0x2101d100,
++                              0xc910e602,
++                              0xa1001006,
++                              0x24000025,
++-                             0x2300ef9e,
+++                             0x2300dc9e,
++                              0xd11fff05,
++                              0x97c06a90,
++                              0x1f00e5e5,
++-                             0x23013e9e,
+++                             0x23012b9e,
++                              0x81bc2a90,
++-                             0xc907e704,
++-                             0xd10fff0c,
++-                             0x813c2480,
++-                             0x7900000a,
++                              0xd11cff09,
++                              0x1d00e5e5,
++                              0xc900e705,
++                              0xd10fff06,
++                              0x91382486,
++-                             0x2301219e,
+++                             0x23010e9e,
++                              0x79000003,
++                              0xd714fffc,
++-                             0x2301339e,
+++                             0x2301209e,
++                              0xc907ff07,
++                              0xa0604be0,
++                              0xb10043e6,
++                              0xc910e602,
++                              0x81000106,
++                              0x24006025,
++-                             0x2300ef9e,
+++                             0x2300dc9e,
++                              0xd111e70a,
++                              0xd11dff09,
++                              0x1f00e5e5,
++                              0xd101e704,
++                              0xd115ff06,
++-                             0x2301339e,
+++                             0x2301209e,
++                              0x79000004,
++                              0xd711fffd,
++                              0x91382586,
++-                             0x2301219e,
+++                             0x23010e9e,
++                              0xc911e706,
++                              0x0b042760,
++                              0x240000c6,
++                              0x24000086,
++                              0x13106006,
++-                             0x7b00002f,
+++                             0x7b000027,
++                              0x11709f80,
++                              0x5100800e,
++                              0xc913ff0d,
++@@ -195,49 +186,41 @@
++                              0xc910e602,
++                              0xa1001106,
++                              0x24000025,
++-                             0x2300ef9e,
+++                             0x2300dc9e,
++                              0xc90bff02,
++-                             0x79000013,
+++                             0x7900000b,
++                              0xc90aff02,
++-                             0x7900001a,
++-                             0xcf08ff78,
+++                             0x79000012,
+++                             0xcf08ff80,
++                              0xb10002e0,
++-                             0xc918e007,
++-                             0x790000c1,
+++                             0xcf18e07e,
+++                             0x790000b9,
++                              0x24000080,
++-                             0x243b00c0,
+++                             0x247b00c0,
++                              0xa06003e0,
++-                             0xcf08ff71,
++-                             0xb10002e0,
++-                             0xcf1ee06f,
++-                             0xb1000ee0,
++-                             0xc900e003,
++-                             0x1f07e7e7,
++-                             0x7f00006b,
++-                             0x1d07e7e7,
++-                             0x7f000069,
+++                             0x7f000079,
++                              0xb10024e6,
++                              0xb10025e0,
++                              0xa06628e6,
++                              0xa06029e0,
++                              0x248000c6,
++                              0xa06624e6,
++-                             0x671006e8,
+++                             0x671006f0,
++                              0x81082186,
++-                             0x7f0000e6,
+++                             0x7f0000ee,
++                              0xb10027e6,
++                              0x61100604,
++                              0xa0662be6,
++                              0x810c2186,
++                              0x79000006,
++-                             0xd70cffe2,
+++                             0xd70cffea,
++                              0xa0662be6,
++                              0x1f1be6e6,
++                              0x81382686,
++                              0x813c2680,
++                              0x248000c6,
++                              0xa06627e6,
++-                             0x7f0000db,
+++                             0x7f0000e3,
++                              0x110f0600,
++                              0x81100b00,
++                              0x01502545,
++@@ -296,14 +279,14 @@
++                              0x97406490,
++                              0x9108248d,
++                              0x813c2480,
++-                             0x2302d3de,
+++                             0x2302c0de,
++                              0x1d00e7e7,
++                              0x79000006,
++                              0x97406590,
++                              0x9108258d,
++                              0x813c2580,
++                              0x1d01e7e7,
++-                             0x2302d8de,
+++                             0x2302c5de,
++                              0x8164388d,
++                              0x209e0000,
++                              0x81040105,
++@@ -311,10 +294,10 @@
++                              0x97086290,
++                              0x81042280,
++                              0xd100e504,
++-                             0x2302d3de,
+++                             0x2302c0de,
++                              0x1f00e7e7,
++                              0x209e0000,
++-                             0x2302d8de,
+++                             0x2302c5de,
++                              0x1f01e7e7,
++                              0x209e0000,
++                              0xd109ff00,
++@@ -389,12 +372,12 @@
++                              0xd103e609,
++                              0x81807809,
++                              0xc908e807,
++-                             0x2103b700,
+++                             0x2103a000,
++                              0x81002386,
++                              0x87086390,
++                              0x81042380,
++                              0xc908e802,
++-                             0x2103b700,
+++                             0x2103a000,
++                              0x209e0000,
++                              0xb10008ef,
++                              0x110f0f00,
++@@ -406,25 +389,25 @@
++                              0x9045382e,
++                              0xc91def03,
++                              0x24000900,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc91cef03,
++                              0x24001900,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc91bef03,
++                              0x24000a00,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc91aef03,
++                              0x24001a00,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0x8045382e,
++                              0x01a82545,
++                              0x9045388e,
++                              0xc915ef03,
++                              0x24000000,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc914ef03,
++                              0x24001000,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0x8045388e,
++                              0x61100f02,
++                              0x24006025,
++@@ -432,25 +415,25 @@
++                              0x9045382e,
++                              0xc919ef03,
++                              0x24000900,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc918ef03,
++                              0x24001900,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc917ef03,
++                              0x24000a00,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc916ef03,
++                              0x24001a00,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0x8045382e,
++                              0x017c2545,
++                              0x9045388e,
++                              0xc913ef03,
++                              0x24000000,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0xc912ef03,
++                              0x24001000,
++-                             0x2301df9e,
+++                             0x2301cc9e,
++                              0x8045388e,
++                              0xd11eef19,
++                              0x11f02f00,
++@@ -477,7 +460,7 @@
++                              0xc90cef03,
++                              0x1f04e7e7,
++                              0x1f05e7e7,
++-                             0x2100cd00,
+++                             0x2100c200,
++                              0xd11eef03,
++                              0x1e00eeee,
++                              0x209e0000,
++@@ -519,7 +502,7 @@
++                              0x244000c0,
++                              0x24001580,
++                              0xa0605ce0,
++-                             0x21008d00,
+++                             0x21008600,
++                              0xcf02e7fc,
++                              0x1d02e7e7,
++                              0x1f03e7e7,
++@@ -530,18 +513,18 @@
++                              0xc905e705,
++                              0x01682545,
++                              0x9045588d,
++-                             0x2302a69e,
+++                             0x2302939e,
++                              0x79000004,
++                              0x01902545,
++                              0x9045588d,
++-                             0x2302a09e,
+++                             0x23028d9e,
++                              0x24001872,
++                              0x24000152,
++                              0xb10009e0,
++                              0x108080d3,
++                              0x10c0c092,
++                              0x2400102c,
++-                             0x2302e7de,
+++                             0x2302d4de,
++                              0x91021c97,
++                              0x91001cd8,
++                              0x91061c98,
++@@ -552,10 +535,10 @@
++                              0x910c1cdb,
++                              0x91261d9b,
++                              0x91287d9c,
++-                             0x2302acde,
+++                             0x230299de,
++                              0x1f02e7e7,
++                              0x1d03e7e7,
++-                             0x7d000061,
+++                             0x7d00006d,
++                              0x01902545,
++                              0x9045798d,
++                              0x79000003,
++@@ -568,13 +551,13 @@
++                              0x79000002,
++                              0xc910e009,
++                              0xd101e503,
++-                             0x2302a09e,
+++                             0x23028d9e,
++                              0x79000002,
++-                             0x2302a69e,
+++                             0x2302939e,
++                              0x91013d12,
++                              0x9504bd93,
++-                             0x2302acde,
++-                             0x7d00004e,
+++                             0x230299de,
+++                             0x7d00005a,
++                              0xd108ee03,
++                              0x1d10e7e7,
++                              0x7900009a,
++@@ -596,9 +579,9 @@
++                              0x0b01efe0,
++                              0x24001172,
++                              0x7f0000e0,
++-                             0x2302f0de,
+++                             0x2302ddde,
++                              0x79000002,
++-                             0x2302f5de,
+++                             0x2302e2de,
++                              0x000c2545,
++                              0x9045198f,
++                              0xd100ef07,
++@@ -618,9 +601,9 @@
++                              0x8045198f,
++                              0x69180673,
++                              0x01ac2545,
++-                             0x2302fade,
+++                             0x2302e7de,
++                              0xd100ef03,
++-                             0x23038f9e,
+++                             0x2303789e,
++                              0x7900006e,
++                              0xc800e40b,
++                              0x110f0020,
++@@ -636,9 +619,9 @@
++                              0x01010000,
++                              0x6f1300f4,
++                              0x79000060,
++-                             0x2302f0de,
+++                             0x2302ddde,
++                              0x79000002,
++-                             0x2302f5de,
+++                             0x2302e2de,
++                              0x000c2545,
++                              0x9045198f,
++                              0xc903ef05,
++@@ -655,7 +638,7 @@
++                              0x8045198f,
++                              0x691e064e,
++                              0x01ac2545,
++-                             0x2302fade,
+++                             0x2302e7de,
++                              0xc800e40c,
++                              0x110f0020,
++                              0x81100b20,
++@@ -698,7 +681,7 @@
++                              0x12002727,
++                              0x20de0000,
++                              0x1d10e7e7,
++-                             0x2302d3de,
+++                             0x2302c0de,
++                              0x511d0605,
++                              0x511c0602,
++                              0x7900001e,
++@@ -720,7 +703,7 @@
++                              0x12002727,
++                              0x20de0000,
++                              0x1d11e7e7,
++-                             0x2302d8de,
+++                             0x2302c5de,
++                              0x7f0000ea,
++                              0x81b82786,
++                              0x240000d1,
++@@ -732,7 +715,7 @@
++                              0x81bc2980,
++                              0x20de0000,
++                              0x91b43a88,
++-                             0x23011e9e,
+++                             0x23010b9e,
++                              0x51150608,
++                              0xc908e305,
++                              0x51120303,
++@@ -741,7 +724,7 @@
++                              0x24000003,
++                              0x01012323,
++                              0x81b01a83,
++-                             0x21008d00,
+++                             0x21008600,
++                              0x902cfc88,
++                              0x10c8c893,
++                              0x108888d4,
++@@ -773,39 +756,39 @@
++                              0xc91ce002,
++                              0x209e0000,
++                              0xb1002ee6,
++-                             0x6918727d,
+++                             0x69187279,
++                              0xd110f230,
++-                             0xc903e76d,
+++                             0xc903e769,
++                              0xc90be604,
++-                             0xc904e76b,
++-                             0xd105e76a,
+++                             0xc904e767,
+++                             0xd105e766,
++                              0x7900000c,
++                              0xc90ae604,
++-                             0xd104e767,
++-                             0xd105e766,
+++                             0xd104e763,
+++                             0xd105e762,
++                              0x79000008,
++                              0xc907e604,
++-                             0xc904e763,
++-                             0xc905e762,
++-                             0x79000004,
++-                             0xc906e660,
++-                             0xd104e75f,
+++                             0xc904e75f,
++                              0xc905e75e,
+++                             0x79000004,
+++                             0xc906e65c,
+++                             0xd104e75b,
+++                             0xc905e75a,
++                              0x91003c80,
++-                             0x6897c05c,
++-                             0x68d8805b,
+++                             0x6897c058,
+++                             0x68d88057,
++                              0x91043c80,
++-                             0x6898c059,
++-                             0x68d98058,
+++                             0x6898c055,
+++                             0x68d98054,
++                              0x91083c80,
++-                             0x6899c056,
++-                             0x68da8055,
+++                             0x6899c052,
+++                             0x68da8051,
++                              0x910c3c80,
++-                             0x689ac053,
++-                             0x68db8052,
+++                             0x689ac04f,
+++                             0x68db804e,
++                              0xb10009e0,
++-                             0x6892c050,
++-                             0x68d3804f,
+++                             0x6892c04c,
+++                             0x68d3804b,
++                              0x24000160,
++                              0xa1000a60,
++                              0x244000c0,
++@@ -845,28 +828,24 @@
++                              0x79000008,
++                              0x24000080,
++                              0x240000c0,
++-                             0x68809327,
++-                             0x68e0f426,
++-                             0x68e0f525,
++-                             0x68e0f624,
++-                             0x6880d723,
+++                             0x68809323,
+++                             0x68e0f422,
+++                             0x68e0f521,
+++                             0x68e0f620,
+++                             0x6880d71f,
++                              0x1d10f2f2,
++                              0x2400002c,
++-                             0x2302e7de,
++-                             0x910c3e80,
+++                             0x2302d4de,
+++                             0x24000f80,
+++                             0x240000c0,
++                              0x0101c0c0,
++-                             0xd100e509,
++-                             0xc91cff0b,
+++                             0xd100e504,
+++                             0xc91cff06,
++                              0x6e80c0fd,
++-                             0x81003e8d,
++-                             0x91043e8d,
++-                             0x01018d8d,
++-                             0x81043e8d,
++-                             0x91003e8d,
++-                             0x21018c00,
+++                             0x21017900,
++                              0xc91dff03,
++-                             0x6e80c0f5,
++-                             0x21018c00,
+++                             0x6e80c0fa,
+++                             0x21017900,
++                              0xd104e606,
++                              0xc909e608,
++                              0xb1000ce0,
++@@ -878,10 +857,10 @@
++                              0xa0600be0,
++                              0xb1002fe6,
++                              0xd100e504,
++-                             0x2302d3de,
+++                             0x2302c0de,
++                              0x24000022,
++                              0x209e0000,
++-                             0x2302d8de,
+++                             0x2302c5de,
++                              0x24000042,
++                              0x209e0000,
++                              0xd104e609,
++@@ -897,10 +876,10 @@
++                              0xb1002fe6,
++                              0x1f1fe6e6,
++                              0x10080806,
++-                             0x21017e00,
+++                             0x21016b00,
++                              0x6914721b,
++                              0x01782545,
++-                             0x2303ddde,
+++                             0x2303c6de,
++                              0x900c188f,
++                              0x1d02efef,
++                              0xc901ef05,
++@@ -909,7 +888,7 @@
++                              0x1d05efef,
++                              0x800c188f,
++                              0xc909e66e,
++-                             0x2303f3de,
+++                             0x2303dcde,
++                              0xc800e40c,
++                              0x110f0020,
++                              0x81100b20,
++@@ -927,7 +906,7 @@
++                              0x7900005e,
++                              0x6910725d,
++                              0x01782545,
++-                             0x2303ddde,
+++                             0x2303c6de,
++                              0x900c188f,
++                              0x1f03efef,
++                              0xd101ef03,
++@@ -935,7 +914,7 @@
++                              0x1f06efef,
++                              0x800c188f,
++                              0xc909e654,
++-                             0x2303f3de,
+++                             0x2303dcde,
++                              0xc800e40b,
++                              0x110f0020,
++                              0x81100b20,
+diff -Nur sangam_atm/tnetd7300_sar_firm.h sangam_atm.vincent/tnetd7300_sar_firm.h
+--- sangam_atm/tnetd7300_sar_firm.h	2005-05-17 14:39:22.000000000 +0800
++++ sangam_atm.vincent/tnetd7300_sar_firm.h	2005-12-06 12:26:48.000000000 +0800
+@@ -1,8 +1,6 @@
+-//SarPdspFirmware Revision:  52
+-
+ static int SarPdspFirmware[] = {
+-                             0x23847114,
+-                             0x000003e4,
++                             0x20d87f80,
++                             0x000003fb,
+                              0x00000000,
+                              0x00000004,
+                              0x00000000,
+@@ -10,7 +8,7 @@
+                              0x00000000,
+                              0x00000000,
+                              0x21000900,
+-                             0x24052080,
++                             0x24053d80,
+                              0x24000080,
+                              0x240000c0,
+                              0x10e0e0e1,
+@@ -53,7 +51,10 @@
+                              0x811a0b80,
+                              0x2485c080,
+                              0x811c0b80,
+-                             0x248100dd,
++                             0x83007e8b,
++                             0x24000f80,
++                             0x810c3e80,
++                             0x24c100dd,
+                              0xa07d06fd,
+                              0x240400dd,
+                              0xa07d04fd,
+@@ -66,7 +67,7 @@
+                              0xd11eff05,
+                              0x97c06890,
+                              0x1d00e5e5,
+-                             0x23012b9e,
++                             0x23013e9e,
+                              0x81bc2890,
+                              0xc908ff09,
+                              0xb10002e0,
+@@ -91,33 +92,37 @@
+                              0x1d00e5e5,
+                              0xd100e704,
+                              0xd114ff06,
+-                             0x2301209e,
++                             0x2301339e,
+                              0x79000004,
+                              0xd70ffffd,
+                              0x91382486,
+-                             0x23010e9e,
++                             0x2301219e,
+                              0xc903ff07,
+                              0xa06047e0,
+                              0xb10043e6,
+                              0xc910e602,
+                              0x81000106,
+                              0x24006025,
+-                             0x2300dc9e,
++                             0x2300ef9e,
++                             0xc907e704,
++                             0xd111ff0c,
++                             0x813c2580,
++                             0x7900000a,
+                              0xd11dff09,
+                              0x1f00e5e5,
+                              0xc901e705,
+                              0xd111ff06,
+                              0x91382586,
+-                             0x23010e9e,
++                             0x2301219e,
+                              0x79000003,
+                              0xd715fffc,
+-                             0x2301209e,
++                             0x2301339e,
+                              0xc910e706,
+                              0x110f2760,
+                              0x240000c6,
+                              0x24000086,
+                              0x13106006,
+-                             0x7b00005d,
++                             0x7b000069,
+                              0x11079f80,
+                              0x51008010,
+                              0xc912ff0f,
+@@ -130,48 +135,52 @@
+                              0xa06045e0,
+                              0xb10043e6,
+                              0x61150602,
+-                             0x2101d100,
++                             0x2101e400,
+                              0xc910e602,
+                              0xa1001006,
+                              0x24000025,
+-                             0x2300dc9e,
++                             0x2300ef9e,
+                              0xd11fff05,
+                              0x97c06a90,
+                              0x1f00e5e5,
+-                             0x23012b9e,
++                             0x23013e9e,
+                              0x81bc2a90,
++                             0xc907e704,
++                             0xd10fff0c,
++                             0x813c2480,
++                             0x7900000a,
+                              0xd11cff09,
+                              0x1d00e5e5,
+                              0xc900e705,
+                              0xd10fff06,
+                              0x91382486,
+-                             0x23010e9e,
++                             0x2301219e,
+                              0x79000003,
+                              0xd714fffc,
+-                             0x2301209e,
++                             0x2301339e,
+                              0xc907ff07,
+                              0xa0604be0,
+                              0xb10043e6,
+                              0xc910e602,
+                              0x81000106,
+                              0x24006025,
+-                             0x2300dc9e,
++                             0x2300ef9e,
+                              0xd111e70a,
+                              0xd11dff09,
+                              0x1f00e5e5,
+                              0xd101e704,
+                              0xd115ff06,
+-                             0x2301209e,
++                             0x2301339e,
+                              0x79000004,
+                              0xd711fffd,
+                              0x91382586,
+-                             0x23010e9e,
++                             0x2301219e,
+                              0xc911e706,
+                              0x0b042760,
+                              0x240000c6,
+                              0x24000086,
+                              0x13106006,
+-                             0x7b000027,
++                             0x7b00002f,
+                              0x11709f80,
+                              0x5100800e,
+                              0xc913ff0d,
+@@ -186,41 +195,49 @@
+                              0xc910e602,
+                              0xa1001106,
+                              0x24000025,
+-                             0x2300dc9e,
++                             0x2300ef9e,
+                              0xc90bff02,
+-                             0x7900000b,
++                             0x79000013,
+                              0xc90aff02,
+-                             0x79000012,
+-                             0xcf08ff80,
++                             0x7900001a,
++                             0xcf08ff78,
+                              0xb10002e0,
+-                             0xcf18e07e,
+-                             0x790000b9,
++                             0xc918e007,
++                             0x790000c1,
+                              0x24000080,
+-                             0x247b00c0,
++                             0x243b00c0,
+                              0xa06003e0,
+-                             0x7f000079,
++                             0xcf08ff71,
++                             0xb10002e0,
++                             0xcf1ee06f,
++                             0xb1000ee0,
++                             0xc900e003,
++                             0x1f07e7e7,
++                             0x7f00006b,
++                             0x1d07e7e7,
++                             0x7f000069,
+                              0xb10024e6,
+                              0xb10025e0,
+                              0xa06628e6,
+                              0xa06029e0,
+                              0x248000c6,
+                              0xa06624e6,
+-                             0x671006f0,
++                             0x671006e8,
+                              0x81082186,
+-                             0x7f0000ee,
++                             0x7f0000e6,
+                              0xb10027e6,
+                              0x61100604,
+                              0xa0662be6,
+                              0x810c2186,
+                              0x79000006,
+-                             0xd70cffea,
++                             0xd70cffe2,
+                              0xa0662be6,
+                              0x1f1be6e6,
+                              0x81382686,
+                              0x813c2680,
+                              0x248000c6,
+                              0xa06627e6,
+-                             0x7f0000e3,
++                             0x7f0000db,
+                              0x110f0600,
+                              0x81100b00,
+                              0x01502545,
+@@ -279,14 +296,14 @@
+                              0x97406490,
+                              0x9108248d,
+                              0x813c2480,
+-                             0x2302c0de,
++                             0x2302d3de,
+                              0x1d00e7e7,
+                              0x79000006,
+                              0x97406590,
+                              0x9108258d,
+                              0x813c2580,
+                              0x1d01e7e7,
+-                             0x2302c5de,
++                             0x2302d8de,
+                              0x8164388d,
+                              0x209e0000,
+                              0x81040105,
+@@ -294,10 +311,10 @@
+                              0x97086290,
+                              0x81042280,
+                              0xd100e504,
+-                             0x2302c0de,
++                             0x2302d3de,
+                              0x1f00e7e7,
+                              0x209e0000,
+-                             0x2302c5de,
++                             0x2302d8de,
+                              0x1f01e7e7,
+                              0x209e0000,
+                              0xd109ff00,
+@@ -372,12 +389,12 @@
+                              0xd103e609,
+                              0x81807809,
+                              0xc908e807,
+-                             0x2103a000,
++                             0x2103b700,
+                              0x81002386,
+                              0x87086390,
+                              0x81042380,
+                              0xc908e802,
+-                             0x2103a000,
++                             0x2103b700,
+                              0x209e0000,
+                              0xb10008ef,
+                              0x110f0f00,
+@@ -389,25 +406,25 @@
+                              0x9045382e,
+                              0xc91def03,
+                              0x24000900,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc91cef03,
+                              0x24001900,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc91bef03,
+                              0x24000a00,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc91aef03,
+                              0x24001a00,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0x8045382e,
+                              0x01a82545,
+                              0x9045388e,
+                              0xc915ef03,
+                              0x24000000,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc914ef03,
+                              0x24001000,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0x8045388e,
+                              0x61100f02,
+                              0x24006025,
+@@ -415,25 +432,25 @@
+                              0x9045382e,
+                              0xc919ef03,
+                              0x24000900,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc918ef03,
+                              0x24001900,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc917ef03,
+                              0x24000a00,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc916ef03,
+                              0x24001a00,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0x8045382e,
+                              0x017c2545,
+                              0x9045388e,
+                              0xc913ef03,
+                              0x24000000,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0xc912ef03,
+                              0x24001000,
+-                             0x2301cc9e,
++                             0x2301df9e,
+                              0x8045388e,
+                              0xd11eef19,
+                              0x11f02f00,
+@@ -460,7 +477,7 @@
+                              0xc90cef03,
+                              0x1f04e7e7,
+                              0x1f05e7e7,
+-                             0x2100c200,
++                             0x2100cd00,
+                              0xd11eef03,
+                              0x1e00eeee,
+                              0x209e0000,
+@@ -502,7 +519,7 @@
+                              0x244000c0,
+                              0x24001580,
+                              0xa0605ce0,
+-                             0x21008600,
++                             0x21008d00,
+                              0xcf02e7fc,
+                              0x1d02e7e7,
+                              0x1f03e7e7,
+@@ -513,18 +530,18 @@
+                              0xc905e705,
+                              0x01682545,
+                              0x9045588d,
+-                             0x2302939e,
++                             0x2302a69e,
+                              0x79000004,
+                              0x01902545,
+                              0x9045588d,
+-                             0x23028d9e,
++                             0x2302a09e,
+                              0x24001872,
+                              0x24000152,
+                              0xb10009e0,
+                              0x108080d3,
+                              0x10c0c092,
+                              0x2400102c,
+-                             0x2302d4de,
++                             0x2302e7de,
+                              0x91021c97,
+                              0x91001cd8,
+                              0x91061c98,
+@@ -535,10 +552,10 @@
+                              0x910c1cdb,
+                              0x91261d9b,
+                              0x91287d9c,
+-                             0x230299de,
++                             0x2302acde,
+                              0x1f02e7e7,
+                              0x1d03e7e7,
+-                             0x7d00006d,
++                             0x7d000061,
+                              0x01902545,
+                              0x9045798d,
+                              0x79000003,
+@@ -551,13 +568,13 @@
+                              0x79000002,
+                              0xc910e009,
+                              0xd101e503,
+-                             0x23028d9e,
++                             0x2302a09e,
+                              0x79000002,
+-                             0x2302939e,
++                             0x2302a69e,
+                              0x91013d12,
+                              0x9504bd93,
+-                             0x230299de,
+-                             0x7d00005a,
++                             0x2302acde,
++                             0x7d00004e,
+                              0xd108ee03,
+                              0x1d10e7e7,
+                              0x7900009a,
+@@ -579,9 +596,9 @@
+                              0x0b01efe0,
+                              0x24001172,
+                              0x7f0000e0,
+-                             0x2302ddde,
++                             0x2302f0de,
+                              0x79000002,
+-                             0x2302e2de,
++                             0x2302f5de,
+                              0x000c2545,
+                              0x9045198f,
+                              0xd100ef07,
+@@ -601,9 +618,9 @@
+                              0x8045198f,
+                              0x69180673,
+                              0x01ac2545,
+-                             0x2302e7de,
++                             0x2302fade,
+                              0xd100ef03,
+-                             0x2303789e,
++                             0x23038f9e,
+                              0x7900006e,
+                              0xc800e40b,
+                              0x110f0020,
+@@ -619,9 +636,9 @@
+                              0x01010000,
+                              0x6f1300f4,
+                              0x79000060,
+-                             0x2302ddde,
++                             0x2302f0de,
+                              0x79000002,
+-                             0x2302e2de,
++                             0x2302f5de,
+                              0x000c2545,
+                              0x9045198f,
+                              0xc903ef05,
+@@ -638,7 +655,7 @@
+                              0x8045198f,
+                              0x691e064e,
+                              0x01ac2545,
+-                             0x2302e7de,
++                             0x2302fade,
+                              0xc800e40c,
+                              0x110f0020,
+                              0x81100b20,
+@@ -681,7 +698,7 @@
+                              0x12002727,
+                              0x20de0000,
+                              0x1d10e7e7,
+-                             0x2302c0de,
++                             0x2302d3de,
+                              0x511d0605,
+                              0x511c0602,
+                              0x7900001e,
+@@ -703,7 +720,7 @@
+                              0x12002727,
+                              0x20de0000,
+                              0x1d11e7e7,
+-                             0x2302c5de,
++                             0x2302d8de,
+                              0x7f0000ea,
+                              0x81b82786,
+                              0x240000d1,
+@@ -715,7 +732,7 @@
+                              0x81bc2980,
+                              0x20de0000,
+                              0x91b43a88,
+-                             0x23010b9e,
++                             0x23011e9e,
+                              0x51150608,
+                              0xc908e305,
+                              0x51120303,
+@@ -724,7 +741,7 @@
+                              0x24000003,
+                              0x01012323,
+                              0x81b01a83,
+-                             0x21008600,
++                             0x21008d00,
+                              0x902cfc88,
+                              0x10c8c893,
+                              0x108888d4,
+@@ -756,39 +773,39 @@
+                              0xc91ce002,
+                              0x209e0000,
+                              0xb1002ee6,
+-                             0x69187279,
++                             0x6918727d,
+                              0xd110f230,
+-                             0xc903e769,
++                             0xc903e76d,
+                              0xc90be604,
+-                             0xc904e767,
+-                             0xd105e766,
++                             0xc904e76b,
++                             0xd105e76a,
+                              0x7900000c,
+                              0xc90ae604,
+-                             0xd104e763,
+-                             0xd105e762,
++                             0xd104e767,
++                             0xd105e766,
+                              0x79000008,
+                              0xc907e604,
+-                             0xc904e75f,
+-                             0xc905e75e,
++                             0xc904e763,
++                             0xc905e762,
+                              0x79000004,
+-                             0xc906e65c,
+-                             0xd104e75b,
+-                             0xc905e75a,
++                             0xc906e660,
++                             0xd104e75f,
++                             0xc905e75e,
+                              0x91003c80,
+-                             0x6897c058,
+-                             0x68d88057,
++                             0x6897c05c,
++                             0x68d8805b,
+                              0x91043c80,
+-                             0x6898c055,
+-                             0x68d98054,
++                             0x6898c059,
++                             0x68d98058,
+                              0x91083c80,
+-                             0x6899c052,
+-                             0x68da8051,
++                             0x6899c056,
++                             0x68da8055,
+                              0x910c3c80,
+-                             0x689ac04f,
+-                             0x68db804e,
++                             0x689ac053,
++                             0x68db8052,
+                              0xb10009e0,
+-                             0x6892c04c,
+-                             0x68d3804b,
++                             0x6892c050,
++                             0x68d3804f,
+                              0x24000160,
+                              0xa1000a60,
+                              0x244000c0,
+@@ -828,24 +845,28 @@
+                              0x79000008,
+                              0x24000080,
+                              0x240000c0,
+-                             0x68809323,
+-                             0x68e0f422,
+-                             0x68e0f521,
+-                             0x68e0f620,
+-                             0x6880d71f,
++                             0x68809327,
++                             0x68e0f426,
++                             0x68e0f525,
++                             0x68e0f624,
++                             0x6880d723,
+                              0x1d10f2f2,
+                              0x2400002c,
+-                             0x2302d4de,
+-                             0x24000f80,
+-                             0x240000c0,
++                             0x2302e7de,
++                             0x910c3e80,
+                              0x0101c0c0,
+-                             0xd100e504,
+-                             0xc91cff06,
++                             0xd100e509,
++                             0xc91cff0b,
+                              0x6e80c0fd,
+-                             0x21017900,
++                             0x81003e8d,
++                             0x91043e8d,
++                             0x01018d8d,
++                             0x81043e8d,
++                             0x91003e8d,
++                             0x21018c00,
+                              0xc91dff03,
+-                             0x6e80c0fa,
+-                             0x21017900,
++                             0x6e80c0f5,
++                             0x21018c00,
+                              0xd104e606,
+                              0xc909e608,
+                              0xb1000ce0,
+@@ -857,10 +878,10 @@
+                              0xa0600be0,
+                              0xb1002fe6,
+                              0xd100e504,
+-                             0x2302c0de,
++                             0x2302d3de,
+                              0x24000022,
+                              0x209e0000,
+-                             0x2302c5de,
++                             0x2302d8de,
+                              0x24000042,
+                              0x209e0000,
+                              0xd104e609,
+@@ -876,10 +897,10 @@
+                              0xb1002fe6,
+                              0x1f1fe6e6,
+                              0x10080806,
+-                             0x21016b00,
++                             0x21017e00,
+                              0x6914721b,
+                              0x01782545,
+-                             0x2303c6de,
++                             0x2303ddde,
+                              0x900c188f,
+                              0x1d02efef,
+                              0xc901ef05,
+@@ -888,7 +909,7 @@
+                              0x1d05efef,
+                              0x800c188f,
+                              0xc909e66e,
+-                             0x2303dcde,
++                             0x2303f3de,
+                              0xc800e40c,
+                              0x110f0020,
+                              0x81100b20,
+@@ -906,7 +927,7 @@
+                              0x7900005e,
+                              0x6910725d,
+                              0x01782545,
+-                             0x2303c6de,
++                             0x2303ddde,
+                              0x900c188f,
+                              0x1f03efef,
+                              0xd101ef03,
+@@ -914,7 +935,7 @@
+                              0x1f06efef,
+                              0x800c188f,
+                              0xc909e654,
+-                             0x2303dcde,
++                             0x2303f3de,
+                              0xc800e40b,
+                              0x110f0020,
+                              0x81100b20,

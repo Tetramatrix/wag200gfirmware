@@ -1,0 +1,117 @@
+#!/bin/sh
+
+SYSLOG "# --------- [ Hierachical token bucket ] -------------- #"
+
+I=/usr/sbin/iptables
+
+# Device
+DEV=eth0
+
+# Cleaning
+$I -t mangle -F PREROUTING
+$I -t mangle -F POSTROUTING
+
+TC=/usr/sbin/tc
+
+# rateup
+RATEUP=`/usr/sbin/nvram get rateup | awk 'BEGIN{FS="=";}{print $2;}'`
+QUANTUM=`/usr/sbin/nvram get quantum | awk 'BEGIN{FS="=";}{print $2;}'`
+PRICE=`/usr/sbin/nvram get price | awk 'BEGIN{FS="=";}{print $2;}'`
+
+# Rate
+#
+let FAIR1=60*$RATEUP/100
+let FAIR2=40*$RATEUP/100
+let FAIR3=60*$RATEUP/2/100
+let FAIR4=40*$RATEUP/2/100
+
+# Ceil
+#
+let CFAIR1=100*$RATEUP/100
+let CFAIR2=100*$RATEUP/100
+let CFAIR3=100*$RATEUP/100
+let CFAIR4=100*$RATEUP/100
+
+# Quantum
+#
+let QUANTUM1=60*$QUANTUM/100
+let QUANTUM2=40*$QUANTUM/100
+let QUANTUM3=60*$QUANTUM/2/100
+let QUANTUM4=40*$QUANTUM/2/100
+
+# Burst
+BURST1="8kbit"
+BURST2="8kbit"
+BURST3="8kbit"
+BURST4="8kbit"
+
+# cburst
+CBURST1="8kbit"
+CBURST2="8kbit"
+CBURST3="8kbit"
+CBURST4="8kbit"
+
+
+#                      1:   root qdisc
+#                      |
+#                     1:1
+#                   /    \
+#                  /      \
+#                 /        \
+#                /          \
+#              1:10        1:20
+#               |           |
+#              qdisc        |
+#                           |
+#                          20 qdisc
+#                         /   \
+#                        /     \
+#                      1:30   1:40
+#                       |       |
+#                     qdisc    qdisc
+#
+
+### del root qdisc
+$TC qdisc del dev ${DEV} root
+
+### root qdisc ###
+$TC qdisc add dev ${DEV} root handle 1: htb r2q 10 default 30
+
+## Wir aktivieren die Queueing DISCipline für eth0 Device, die
+## auf Klasse 1, Handle 10 (1:10) default-mäßig zeigt
+$TC class add dev ${DEV} parent 1: classid 1:1 htb rate ${RATEUP}kbit
+
+## Nun richten wir die Standart Klasse ein (der linken Ast) mit der höchsten Priorität (1) die hat aber nicht so viel Durchsatz
+$TC class add dev ${DEV} parent 1:1 classid 1:10 htb rate ${FAIR1}kbit ceil ${CFAIR1}kbit quantum $QUANTUM1 burst $BURST1 cburst $CBURST1 prio 1 mtu 1492
+
+## Die Warteschlange für den linken Ast bzw. neuer handle
+#$TC qdisc add dev eth0 parent 1:10 handle 10: sfq perturb 10
+$TC qdisc add dev ${DEV} parent 1:10 handle 10: pfifo limit 64
+
+## Nun richten wir den rechten Ast, keine prio, weil wieder ein root-ast!!!
+$TC class add dev ${DEV} parent 1:1 classid 1:20 htb rate ${FAIR2}kbit ceil ${CFAIR2}kbit quantum $QUANTUM2 burst $BURST2 cburst $CBURST2 mtu 1492
+
+## Die Warteschlange für den rechten Ast
+#$TC qdisc add dev eth0 parent 1:20 handle 20: sfq perturb 10
+$TC qdisc add dev ${DEV} parent 1:20 handle 20: pfifo limit 64
+
+## Nun richten wir das linke Blatt (von Ast 1:20) ein. Diesmal prio 2
+$TC class add dev eth0 parent 1:20 classid 1:30 htb rate ${FAIR3}kbit ceil ${CFAIR3}kbit quantum $QUANTUM3 burst $BURST3 cburst $CBURST3 prio 2 mtu 1492
+
+## Die Warteschlange für das linke Blatt
+#$TC qdisc add dev eth0 parent 1:30 handle 30: sfq perturb 10
+$TC qdisc add dev ${DEV} parent 1:30 handle 30: pfifo limit 64
+
+## Jetzt das rechte Blatt
+$TC class add dev ${DEV} parent 1:20 classid 1:40 htb rate ${FAIR4}kbit ceil ${CFAIR4}kbit quantum $QUANTUM4 burst $BURST4 cburst $CBURST4 prio 3 mtu 1492
+
+## Die Warteschlange für das rechte Blatt
+#$TC qdisc add dev eth0 parent 1:40 handle 40: sfq perturb 10
+$TC qdisc add dev ${DEV} parent 1:40 handle 40: pfifo limit 64
+
+## und die Filtereinstellung
+$TC filter add dev eth0 protocol ip parent 1:0 prio 1 handle 10 fw flowid 1:10
+$TC filter add dev eth0 protocol ip parent 1:0 prio 2 handle 20 fw flowid 1:20
+$TC filter add dev eth0 protocol ip parent 1:0 prio 3 handle 30 fw flowid 1:30
+$TC filter add dev eth0 protocol ip parent 1:0 prio 4 handle 40 fw flowid 1:40
+

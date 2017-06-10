@@ -1,0 +1,56 @@
+adler32.o: adler32.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib_fs.h)
+infblock.o: infblock.c \
+   zutil.h $(dep_zutil.h) \
+   infblock.h $(dep_infblock.h) \
+   inftrees.h $(dep_inftrees.h) \
+   infcodes.h $(dep_infcodes.h) \
+   infutil.h $(dep_infutil.h)
+infcodes.o: infcodes.c \
+   zutil.h $(dep_zutil.h) \
+   inftrees.h $(dep_inftrees.h) \
+   infblock.h $(dep_infblock.h) \
+   infcodes.h $(dep_infcodes.h) \
+   infutil.h $(dep_infutil.h) \
+   inffast.h $(dep_inffast.h)
+dep_infcodes.h += \
+   infblock.h $(dep_infblock.h)
+inffast.o: inffast.c \
+   zutil.h $(dep_zutil.h) \
+   inftrees.h $(dep_inftrees.h) \
+   infblock.h $(dep_infblock.h) \
+   infcodes.h $(dep_infcodes.h) \
+   infutil.h $(dep_infutil.h) \
+   inffast.h $(dep_inffast.h)
+inflate.o: inflate.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   zutil.h $(dep_zutil.h) \
+   infblock.h $(dep_infblock.h) \
+   infutil.h $(dep_infutil.h)
+inflate_syms.o: inflate_syms.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib_fs.h)
+inftrees.o: inftrees.c \
+   zutil.h $(dep_zutil.h) \
+   inftrees.h $(dep_inftrees.h) \
+   infutil.h $(dep_infutil.h) \
+   inffixed.h $(dep_inffixed.h)
+infutil.o: infutil.c \
+   zutil.h $(dep_zutil.h) \
+   infblock.h $(dep_infblock.h) \
+   inftrees.h $(dep_inftrees.h) \
+   infcodes.h $(dep_infcodes.h) \
+   infutil.h $(dep_infutil.h)
+dep_infutil.h += \
+   zconf.h $(dep_zconf.h) \
+   inftrees.h $(dep_inftrees.h) \
+   infcodes.h $(dep_infcodes.h)
+dep_zconf.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h)
+dep_zutil.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Transmission Appcast</title>
+    <link>http://www.transmissionbt.com/appcast.xml</link>
+    <description>Most recent version available.</description>
+    <language>en</language>
+    <pubDate>Fri, 28 Mar 2008 13:46:00 -0400</pubDate>
+    <lastBuildDate>Fri, 4 Apr 2008 14:54:00 -0400</lastBuildDate>
+
+	<item>
+      <title>Transmission 1.11 Released</title>
+      <description><![CDATA[
+<h4>Mac-specific Changes:</h4>
+<ul>
+ <li>Fix visual glitch with the tracker inspector tab when there is no scrape address</li>
+ <li>Only make the progress status string clickable on multi-file torrents</li>
+ <li>Traditional Chinese localization, updated Russian localization</li>
+</ul>
+
+Transmission 0.72 and earlier: Complete your downloads before upgrading or you will lose data!]]></description>
+      <pubDate>Fri, 4 Apr 2008 14:54:00 -0400</pubDate>
+      <enclosure sparkle:version="5504" sparkle:shortVersionString="1.11" url="http://mirrors.m0k.org/transmission/files/Transmission-1.11.dmg" length="2923743" type="application/octet-stream"/>
+    </item>
+    
+  </channel>
+</rss>

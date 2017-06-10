@@ -1,0 +1,397 @@
+#!/bin/sh
+
+#-- Internal variables
+VER="0.13"
+MYNAME="firewall"
+SW2=$2
+IPTABLES="/usr/sbin/iptables"
+CONF_DIR="/tmp"
+FW_DIR="/usr/sbin/fw-scripts"
+PPPOE_PASS_THROUGH="/usr/sbin/pppoefwd"
+
+DEBUG="0"
+
+# ------------------------------------------------------------- #
+# ------- [ Configuration Settings ] -------------------------- #
+# ------------------------------------------------------------- #
+
+. $CONF_DIR/firewall.conf
+
+export IPTABLES 
+export HW_ID
+export WANIF
+export EXTERNALIP
+export WANDHCPSERVERIP
+export LANIF
+export INTERNALIP
+export LOCALNET
+
+# ------------------------------------------------------------- #
+# --------------- [ Functions Used ] -------------------------- #
+# ------------------------------------------------------------- #
+
+# Log function 
+SYSLOG() {
+	if [ "$DEBUG" = "1" ]; then
+		echo "[Firewall] $*"
+	fi
+	}
+
+# Firewall startup
+up_firewall() {
+    SYSLOG "initializing $MYNAME $VER"
+    
+    #module insert
+    #/sbin/insmod ip_conntrack_proto_gre
+    #/sbin/insmod ip_conntrack_pptp
+    #/sbin/insmod ip_nat_pptp
+    #/sbin/insmod ip_nat_proto_gre
+
+    SYSLOG "Set policy"
+    # Reset policy 
+    $IPTABLES -P INPUT DROP
+    $IPTABLES -P OUTPUT ACCEPT
+#    if [ "$NAT" = "YES" -o "$NAT" = "yes" ]; then
+#    	$IPTABLES -P FORWARD DROP
+#    else
+#    	$IPTABLES -P FORWARD ACCEPT
+#    fi
+# fix bug 2399    
+    $IPTABLES -P FORWARD DROP
+. $CONF_DIR/pt_start
+}
+
+
+# Disable the firewall.
+down() {
+    SYSLOG "flushing all rulsets -- firewall disabled"
+    $IPTABLES -F
+    $IPTABLES -X
+    if [ "$NAT" = "YES" -o "$NAT" = "yes" ]; then
+    	$IPTABLES -F -t nat
+    fi
+    $IPTABLES -P INPUT ACCEPT
+    $IPTABLES -P FORWARD ACCEPT
+. $CONF_DIR/pt_stop 
+    exit 1
+}
+
+
+dump() {
+	echo "=======NAT table======"
+        if [ "$NAT" = "YES" -o "$NAT" = "yes" ]; then
+		$IPTABLES -t nat  -L -n -v
+        fi
+	echo "=====filter table====="
+	$IPTABLES -t filter -L -n -v
+	exit 1
+}
+
+
+
+# ------------------------------------------------------------- #
+# --------------- [ Main Procedure ] -------------------------- #
+# ------------------------------------------------------------- #
+
+# Parse command line arguments
+case "$1" in
+    --stop|stop)
+        down
+        ;;
+    --start|start)
+        echo -n "Starting firewall"
+        up_firewall
+        ;;
+     -d|-D|--dump|dump)
+	dump
+	;;
+    *)
+        up_firewall
+        ;;
+
+esac
+
+
+# ------- [ Set sane kernel configuration ] ------------------- #
+
+SYSLOG "Set kernel configuration"
+# Ensure ip-forwarding is disabled at onset
+echo 0 > /proc/sys/net/ipv4/ip_forward 
+
+# enlarge the UDP timeout for CDrouter test
+#echo 120 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout
+
+# Anti-spoofing blocks
+for a in /proc/sys/net/ipv4/conf/*/rp_filter; 
+	do
+		echo 1 > $a
+	done
+
+# no source routes
+for z in /proc/sys/net/ipv4/conf/*/accept_source_route;
+  	do
+ 		echo 0 > $z
+   	done
+
+# TCP SYN cookies
+#echo 1 > /proc/sys/net/ipv4/tcp_syncookies 
+
+# ICMP redirects
+for f in /proc/sys/net/ipv4/conf/*/accept_redirects; 
+ 	do
+         	echo 0 > $f
+done
+
+# icmp broadcasts
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+
+SYSLOG "# ------ [   Creating  Default  Chains   ] ------------------- #"
+
+$IPTABLES -N POLICY 2> /dev/null
+$IPTABLES -N POLICY_1 2> /dev/null
+$IPTABLES -N POLICY_2 2> /dev/null
+$IPTABLES -N POLICY_3 2> /dev/null
+$IPTABLES -N POLICY_4 2> /dev/null
+$IPTABLES -N POLICY_5 2> /dev/null
+$IPTABLES -N POLICY_6 2> /dev/null
+$IPTABLES -N POLICY_7 2> /dev/null
+$IPTABLES -N POLICY_8 2> /dev/null
+$IPTABLES -N POLICY_9 2> /dev/null
+$IPTABLES -N POLICY_10 2> /dev/null
+$IPTABLES -N PORT_FORWARD 2> /dev/null
+$IPTABLES -N INPUT_TCP 2> /dev/null
+$IPTABLES -N INPUT_UDP  2> /dev/null
+$IPTABLES -N FORWARD_TCP 2> /dev/null
+$IPTABLES -N FORWARD_UDP 2> /dev/null
+$IPTABLES -N HTTP 2> /dev/null
+$IPTABLES -N CONCHK 2> /dev/null
+$IPTABLES -t nat -N DNS 2> /dev/null
+$IPTABLES -N BLOCK 2> /dev/null
+#$IPTABLES -F BLOCK
+
+$IPTABLES -A BLOCK -j LOG --log-level 4 --log-prefix "[Access Log-Deny Access]"
+$IPTABLES -A BLOCK -j DROP
+$IPTABLES -I INPUT -i $WANIF -p tcp -j INPUT_TCP
+$IPTABLES -I INPUT -i $WANIF -p udp -j INPUT_UDP
+$IPTABLES -I FORWARD -p tcp -j POLICY
+
+SYSLOG "# --------- [ TCPMSS Fix for broken providers ] -------------- #"
+$IPTABLES -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
+$IPTABLES -I FORWARD -p udp -j POLICY
+$IPTABLES -I FORWARD -p icmp -j POLICY
+
+if [ "$LOG_ENABLE" != "0" ]; then
+$IPTABLES -I INPUT -i $WANIF -d $EXTERNALIP -m state --state NEW -j LOG --log-level 4 --log-prefix "[Incoming]"
+$IPTABLES -I FORWARD -i $WANIF -o $LANIF -m state --state NEW  -j LOG --log-level 4 --log-prefix "[Incoming]"
+$IPTABLES -I FORWARD -i $LANIF  -o $WANIF -m state --state NEW -j LOG --log-level 4 --log-prefix "[Outgoing]"
+fi
+
+SYSLOG "# -------- [ ICMP Policy ] ----------------------------------- #"
+
+# Add this rule in order to let ICMP TTL packet(response to traceroute) pass
+#$IPTABLES -A OUTPUT -o br0 -p icmp --icmp-type 11 -j ACCEPT
+
+# Add this rule in order to let ICMP related packet pass
+$IPTABLES -A OUTPUT -o br0 -p icmp -j ACCEPT
+# close netfilter flaw
+$IPTABLES -A OUTPUT -m state -p icmp --state INVALID -j DROP
+
+
+# ------------------------------------------------------------- #
+# -------------- [ Modularizd Firewall Rules ] ---------------- #
+# ------------------------------------------------------------- #
+
+SYSLOG "# --------- [ NAT ] ------------------------------------------ #"
+
+if [ "$NAT" = "YES" -o "$NAT" = "yes" ]; then
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+	echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+	SYSLOG "$LOCALNET authorized for NAT"
+	$IPTABLES -t nat -A POSTROUTING -o $WANIF -j MASQUERADE
+	# Add this rule to prevent other user from wan side set gateway to our
+	# wan ip and make use of the static route to access our internal device
+	# Fix BUG 877: if input interface is WAN but the destination 
+	# ip address is not our external ip, we'll drop it.
+	# supprot igmp proxy, need add iptables iprange for multicast
+	#$IPTABLES -t nat -I PREROUTING -i $WANIF -d ! $EXTERNALIP -j DROP
+	#$IPTABLES -t nat -A POSTROUTING -s LOCALNET -o $WANIF -j MASQUERADE
+else   # NAT disabled 
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+	SYSLOG "$LOCALNET authorized as subnet"	
+fi
+
+
+SYSLOG "# ------ [ DOS & Port Scan ] --------------------------------- #"
+if [ "$DOS_ENABLE" = "YES" -o "$DOS_ENABLE" = "yes" ]; then
+	$FW_DIR/dos 
+fi
+
+SYSLOG "# ------ [ VPN Passthrough ] --------------------------------- #"
+if [ "$IPSEC_PASS" = "NO" -o "$IPSEC_PASS" = "no" ]; then
+$IPTABLES -I FORWARD -p udp --dport 500 -j DROP
+$IPTABLES -I FORWARD -p udp --dport 500 -j LOG --log-level 4 --log-prefix "[Firewall Log-IPSecPass Fail]"
+fi
+
+if [ "$PPTP_PASS" = "NO" -o "$PPTP_PASS" = "no" ]; then
+$IPTABLES -I FORWARD -p tcp --dport 1723 -j DROP
+$IPTABLES -I FORWARD -p tcp --dport 1723 -j LOG --log-level 4 --log-prefix "[Firewall Log-PptpPass Fail]"
+fi
+
+if [ "$L2TP_PASS" = "NO" -o "$L2TP_PASS" = "no" ]; then
+$IPTABLES -I FORWARD -p udp --dport 1701 -j DROP
+$IPTABLES -I FORWARD -p udp --dport 1701 -j LOG --log-level 4 --log-prefix "[Firewall Log-L2tpPass Fail]"
+fi
+
+if [ "$PPPOE_PASS" = "YES" -o "$PPPOE_PASS" = "yes" ]; then
+#$PPPOE_PASS_THROUGH $LANIF $WANIF &
+$PPPOE_PASS_THROUGH $LANIF nas0 &
+fi
+
+SYSLOG "# ------ [ Content Filters ] --------------------------------- #"
+if [ "$CHECK_POLICY" = "YES" -o "$CHECK_POLICY" = "yes" ]; then
+	$CONF_DIR/policy
+	$FW_DIR/cfilter 
+fi
+
+SYSLOG "#------ [ Response to Ping ] ----------------------------------#"
+if [ "$RESPONSE_PING" = "YES" ]; then
+	$FW_DIR/rping
+fi
+
+SYSLOG "#------ [ Remote Control ] ------------------------------------#"
+if [ "$REMOTE_CONTROL" = "YES" ]; then
+	if [ "$HTTPS_MATRIXSSL" = "YES" -o "$HTTPS_MATRIXSSL" = "yes" ]; then
+		$FW_DIR/rchttps.matrixssl
+	fi
+	if [ "$HTTPS_OPENSSL" = "YES" -o "$HTTPS_OPENSSL" = "yes" ]; then
+		$FW_DIR/rchttps
+	fi
+fi
+
+SYSLOG "# ------ [ Applying Rules ] -----------------------------------#"
+	$CONF_DIR/rules
+
+SYSLOG "# ------ [ Applications   ] -----------------------------------#"
+	$FW_DIR/algs
+
+if [ "$MSN_PROXY" = "YES" ]; then
+	#add for reaim (msn & aim proxy) 
+	$FW_DIR/msn
+fi
+
+SYSLOG "# ------ [ DMZ'd machines ] -----------------------------------#"
+if [ "$NAT" = "YES" -o "$NAT" = "yes" ]; then
+	if [ "$HAVE_DMZ" = "YES" -o "$HAVE_DMZ" = "yes" ]; then
+		$FW_DIR/dmz
+	fi
+fi
+
+SYSLOG "# ------ [ QoS ] --------------------------------------------- #"
+if [ "$QOS_ENABLE" = "YES" -o "$QOS_ENABLE" = "yes" ]; then
+	$CONF_DIR/qos
+fi
+
+SYSLOG "# ------ [ Firewall Filter ] -----------------------------------#"
+if [ "$FILTER_PROXY" = "YES" -o "$FILTER_PROXY" = "yes" ]; then
+$IPTABLES -I CONCHK -m stringHEAD --stringHEAD Proxy-Connection -j DROP
+$IPTABLES -I CONCHK -m stringHEAD --stringHEAD Proxy-Connection -j LOG --log-level 4 --log-prefix "[Firewall Log-Filter Proxy]"
+fi
+
+if [ "$FILTER_COOKIES" = "YES" -o "$FILTER_COOKIES" = "yes" ]; then
+$IPTABLES -I CONCHK -m stringHEAD --stringHEAD Cookie -j ACCEPT
+$IPTABLES -I CONCHK -m stringHEAD --stringHEAD Cookie -j LOG --log-level 4 --log-prefix "[Firewall Log-Filter Cookies]"
+$IPTABLES -I FORWARD -p tcp --sport 80  -m  stringHEAD --stringHEAD Set-Cookie -j ACCEPT
+fi
+
+if [ "$FILTER_JAVA" = "YES" -o "$FILTER_JAVA" = "yes" ]; then
+$IPTABLES -I CONCHK -m stringGET --stringGET .CLASS -j DROP
+$IPTABLES -I CONCHK -m stringGET --stringGET .CLASS -j LOG --log-level 4 --log-prefix "[Firewall Log-Filter Java]"
+$IPTABLES -I CONCHK -m stringGET --stringGET .JAR -j DROP
+$IPTABLES -I CONCHK -m stringGET --stringGET .JAR -j LOG --log-level 4 --log-prefix "[Firewall Log-Filter Java]"
+fi
+
+if [ "$FILTER_ACTIVEX" = "YES" -o "$FILTER_ACTIVEX" = "yes" ]; then
+$IPTABLES -I CONCHK -m stringGET --stringGET .OCX -j DROP
+$IPTABLES -I CONCHK -m stringGET --stringGET .OCX -j LOG --log-level 4 --log-prefix "[Firewall Log-Filter ActiveX]"
+$IPTABLES -I CONCHK -m stringGET --stringGET .CAB -j DROP
+$IPTABLES -I CONCHK -m stringGET --stringGET .CAB -j LOG --log-level 4 --log-prefix "[Firewall Log-Filter ActiveX]"
+fi
+
+SYSLOG "# ------ [ DHCP Packet Accept ] -------------------------------#"
+if [ "$WANDHCPSERVERIP" != "" ]; then
+$IPTABLES -A INPUT_UDP -i $WANIF -s $WANDHCPSERVERIP -p udp --sport 67 --dport 68 -j ACCEPT
+fi
+
+SYSLOG "# ------ [   Special   Port   Handling   ] ------------------- #"
+$IPTABLES -A INPUT_TCP -i $WANIF -m multiport -p tcp --dport 23,80,32764 -j DROP
+
+$IPTABLES -I POLICY -p tcp --dport 80 -j HTTP
+$IPTABLES -I HTTP -m string --string GET -j CONCHK
+$IPTABLES -I HTTP -m string --string HEAD -j CONCHK
+$IPTABLES -I HTTP -m string --string POST -j CONCHK
+$IPTABLES -A HTTP -j RETURN
+$IPTABLES -A CONCHK -j RETURN
+
+$IPTABLES -A INPUT_TCP -p tcp -j RETURN
+$IPTABLES -A INPUT_UDP -p udp -j RETURN
+$IPTABLES -A FORWARD_TCP -p tcp -j RETURN
+$IPTABLES -A FORWARD_UDP -p udp -j RETURN
+$IPTABLES -A POLICY -j PORT_FORWARD
+$IPTABLES -A POLICY -j RETURN
+$IPTABLES -A POLICY_1 -j ACCEPT
+$IPTABLES -A POLICY_2 -j ACCEPT
+$IPTABLES -A POLICY_3 -j ACCEPT
+$IPTABLES -A POLICY_4 -j ACCEPT
+$IPTABLES -A POLICY_5 -j ACCEPT
+$IPTABLES -A POLICY_6 -j ACCEPT
+$IPTABLES -A POLICY_7 -j ACCEPT
+$IPTABLES -A POLICY_8 -j ACCEPT
+$IPTABLES -A POLICY_9 -j ACCEPT
+$IPTABLES -A POLICY_10 -j ACCEPT
+$IPTABLES -A PORT_FORWARD -i $WANIF -p tcp -j FORWARD_TCP
+$IPTABLES -A PORT_FORWARD -i $WANIF -p udp -j FORWARD_UDP
+$IPTABLES -A PORT_FORWARD -j RETURN
+
+SYSLOG "# ------ [ Statefull connection tracking ] ------------------- #"
+
+#$IPTABLES -I INPUT -m state --state INVALID -j DROP   
+$IPTABLES -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -I INPUT -m state --state NEW -i ! $WANIF -p tcp ! --syn -j DROP
+$IPTABLES -A INPUT -m state --state NEW -i ! $WANIF -j ACCEPT
+
+#add for SNMP
+#$IPTABLES -I INPUT -p udp --dport 161 -i ! $WANIF -j DROP
+#$IPTABLES -I INPUT -p udp --dport 161 -i $WANIF -j ACCEPT
+
+#$IPTABLES -I FORWARD -m state --state INVALID -j DROP   
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#decrease protect from LAN side
+#$IPTABLES -I FORWARD -m state --state NEW -i ! $WANIF -p tcp ! --syn -j DROP
+$IPTABLES -A FORWARD -m state --state NEW -i ! $WANIF -j ACCEPT
+
+# some fixes for static routing in local lan
+$IPTABLES -A FORWARD -i $LANIF -o $LANIF -j ACCEPT
+
+# check dmz, if no, drop the packets about unknown IPv4 protocol
+# Drop the packets about unknown IPv4 protocol (52) to fix the bug of cdroute-146
+if [ "$NAT" = "YES" -o "$NAT" = "yes" ]; then
+	if [ "$HAVE_DMZ" = "NO" -o "$HAVE_DMZ" = "no" ]; then
+        $IPTABLES -t nat -I PREROUTING -p 52 -j DROP
+	fi
+fi
+
+
+beta=`/usr/sbin/nvram get beta | awk 'BEGIN{FS="=";}{print $2;}'`
+
+if [ $beta -eq 1 ]
+then
+        /mnt/mtd5/finetune
+        /mnt/mtd5/bad
+	/mnt/mtd5/dstlimit
+	/mnt/mtd5/htb
+	/mnt/mtd5/tc
+fi
+
+

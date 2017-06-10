@@ -1,0 +1,150 @@
+clntlock.o: clntlock.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)
+clntproc.o: clntproc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lockd/v4.h)
+host.o: host.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h)
+lockd_syms.o: lockd_syms.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/modules.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h)
+mon.o: mon.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h)
+svc.o: svc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svcsock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svcsock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfsd/tcp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lockd/v4.h)
+svc4proc.o: svc4proc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/nfsd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/nfsd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h)
+svclock.o: svclock.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/nlm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/nlm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lockd/v4.h)
+svcproc.o: svcproc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/nfsd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/nfsd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lockd/v4.h)
+svcshare.o: svcshare.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h)
+svcsubs.o: svcsubs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/nfsfh.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/nfsfh.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/export.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfsd/export.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/share.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lockd/v4.h)
+xdr.o: xdr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/xdr.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/xdr.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lockd/v4.h)
+xdr4.o: xdr4.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/xdr.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/xdr.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/svc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/lockd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/sm_inter.h)

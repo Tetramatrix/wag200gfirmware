@@ -1,0 +1,13 @@
+An echo server. It prints out whetever the client writes.
+
+example:
+    ./echod 1111
+
+    telnet host 1111
+    hi
+    hello
+
+    quit
+
+-- 
+muquit

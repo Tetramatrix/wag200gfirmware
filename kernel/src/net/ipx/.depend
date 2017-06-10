@@ -1,0 +1,48 @@
+af_ipx.o: af_ipx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sockios.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sockios.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ipx.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ipx.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/termios.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/termios.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/p8022.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/p8022.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/psnap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/psnap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sysctl.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipx/intern.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+af_spx.o: af_spx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ipx.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ipx.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/spx.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/spx.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)
+sysctl_net_ipx.o: sysctl_net_ipx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sysctl.h)

@@ -1,0 +1,96 @@
+balloc.o: balloc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/jbd/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/check.h)
+bitmap.o: bitmap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h)
+dir.o: dir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h)
+file.o: file.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)
+fsync.o: fsync.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)
+ialloc.o: ialloc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/check.h)
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/highuid.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/highuid.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/quota.h)
+ioctl.o: ioctl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/jbd/debug.h)
+namei.o: namei.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/quotaops.h)
+super.o: super.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/jbd/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ext3/check.h)
+symlink.o: symlink.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jbd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ext3_fs.h)

@@ -1,0 +1,28 @@
+#!/bin/bash
+INTERVAL=15
+
+while sleep $INTERVAL
+do
+        /usr/sbin/tc -s -d class show dev ppp0
+
+        uptime
+        more /proc/meminfo | grep MemFree | grep -v grep
+
+        echo cache-name num-active-objs total-objs obj-size
+
+        DSTLIMIT=`more /proc/slabinfo | grep ipt_dstlimit | grep -v grep | awk '{print $2} {print $3} {print $4}'`
+        DSTCACHE=`more /proc/slabinfo | grep ip_dst_cache | grep -v grep | awk '{print $2} {print $3} {print $4}'`
+        CONNTRACK=`more /proc/slabinfo | grep ip_conntrack | grep -v grep | awk '{print $2} {print $3} {print $4}'`
+        SKBUFF=`more /proc/slabinfo | grep skbuff | grep -v grep | awk '{print $2} {print $3} {print $4}'`
+
+        echo skbuff_head_cache: $SKBUFF
+        echo ip_dst_cache: $DSTCACHE
+        echo ip_conntrack: $CONNTRACK
+        echo ipt_dstlimit: $DSTLIMIT
+
+        if [ "$DST" -ge "6000" ]
+        then
+                echo 1 > /proc/sys/net/ipv4/route/flush
+        fi
+done
+

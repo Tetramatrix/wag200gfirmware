@@ -1,0 +1,11 @@
+--- ans.c~	2001-09-03 20:41:05.000000000 +0200
++++ ans.c	2008-04-16 05:19:23.000000000 +0200
+@@ -47,7 +47,7 @@
+     int questions,answers;
+ 
+     found_len = 0; /* gcc wants it */
+-    if ((answer_len = res_search(text,C_IN,wanted,answer,MAX_ANSWER)) < 0)
++    if ((answer_len = res_query(text,C_IN,wanted,answer,MAX_ANSWER)) < 0)
+ 	return TRY_OTHER;
+     /*
+      * Response header: id, flags, #queries, #answers, #authority,

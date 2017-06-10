@@ -1,0 +1,174 @@
+dep_8010.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h)
+audio.o: audio.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wrapper.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   cardwo.h $(dep_cardwo.h) \
+   cardwi.h $(dep_cardwi.h) \
+   recmgr.h $(dep_recmgr.h) \
+   irqmgr.h $(dep_irqmgr.h) \
+   audio.h $(dep_audio.h) \
+   8010.h $(dep_8010.h)
+cardmi.o: cardmi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   cardmi.h $(dep_cardmi.h) \
+   irqmgr.h $(dep_irqmgr.h)
+dep_cardmi.h += \
+   icardmid.h $(dep_icardmid.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+cardmo.o: cardmo.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   cardmo.h $(dep_cardmo.h) \
+   irqmgr.h $(dep_irqmgr.h)
+dep_cardmo.h += \
+   icardmid.h $(dep_icardmid.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+cardwi.o: cardwi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   timer.h $(dep_timer.h) \
+   recmgr.h $(dep_recmgr.h) \
+   audio.h $(dep_audio.h) \
+   cardwi.h $(dep_cardwi.h)
+dep_cardwi.h += \
+   icardwav.h $(dep_icardwav.h) \
+   audio.h $(dep_audio.h) \
+   timer.h $(dep_timer.h)
+cardwo.o: cardwo.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   voicemgr.h $(dep_voicemgr.h) \
+   cardwo.h $(dep_cardwo.h) \
+   audio.h $(dep_audio.h)
+dep_cardwo.h += \
+   icardwav.h $(dep_icardwav.h) \
+   audio.h $(dep_audio.h) \
+   voicemgr.h $(dep_voicemgr.h) \
+   timer.h $(dep_timer.h)
+ecard.o: ecard.c \
+   ecard.h $(dep_ecard.h) \
+   hwaccess.h $(dep_hwaccess.h)
+dep_ecard.h += \
+   8010.h $(dep_8010.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h)
+efxmgr.o: efxmgr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   efxmgr.h $(dep_efxmgr.h)
+emuadxmg.o: emuadxmg.c \
+   hwaccess.h $(dep_hwaccess.h)
+hwaccess.o: hwaccess.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   icardmid.h $(dep_icardmid.h)
+dep_hwaccess.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sound.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sound.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/soundcard.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ac97_codec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ac97_codec.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   efxmgr.h $(dep_efxmgr.h) \
+   passthrough.h $(dep_passthrough.h) \
+   midi.h $(dep_midi.h)
+irqmgr.o: irqmgr.c \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   cardmi.h $(dep_cardmi.h) \
+   cardmo.h $(dep_cardmo.h) \
+   irqmgr.h $(dep_irqmgr.h)
+main.o: main.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   efxmgr.h $(dep_efxmgr.h) \
+   cardwo.h $(dep_cardwo.h) \
+   cardwi.h $(dep_cardwi.h) \
+   cardmo.h $(dep_cardmo.h) \
+   cardmi.h $(dep_cardmi.h) \
+   recmgr.h $(dep_recmgr.h) \
+   ecard.h $(dep_ecard.h) \
+   ../sound_config.h $(dep_../sound_config.h) \
+   ../midi_synth.h $(dep_../midi_synth.h)
+midi.o: midi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   cardmo.h $(dep_cardmo.h) \
+   cardmi.h $(dep_cardmi.h) \
+   midi.h $(dep_midi.h) \
+   ../sound_config.h $(dep_../sound_config.h)
+mixer.o: mixer.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   recmgr.h $(dep_recmgr.h)
+passthrough.o: passthrough.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wrapper.h) \
+   hwaccess.h $(dep_hwaccess.h) \
+   cardwo.h $(dep_cardwo.h) \
+   cardwi.h $(dep_cardwi.h) \
+   recmgr.h $(dep_recmgr.h) \
+   irqmgr.h $(dep_irqmgr.h) \
+   audio.h $(dep_audio.h) \
+   8010.h $(dep_8010.h)
+dep_passthrough.h += \
+   audio.h $(dep_audio.h)
+recmgr.o: recmgr.c \
+   8010.h $(dep_8010.h) \
+   recmgr.h $(dep_recmgr.h)
+dep_recmgr.h += \
+   hwaccess.h $(dep_hwaccess.h) \
+   cardwi.h $(dep_cardwi.h)
+timer.o: timer.c \
+   hwaccess.h $(dep_hwaccess.h) \
+   8010.h $(dep_8010.h) \
+   irqmgr.h $(dep_irqmgr.h) \
+   timer.h $(dep_timer.h)
+dep_timer.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   hwaccess.h $(dep_hwaccess.h)
+voicemgr.o: voicemgr.c \
+   voicemgr.h $(dep_voicemgr.h) \
+   8010.h $(dep_8010.h)
+dep_voicemgr.h += \
+   hwaccess.h $(dep_hwaccess.h)

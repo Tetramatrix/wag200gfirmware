@@ -1,0 +1,116 @@
+diff -up --recursive 2.6.12.3.clean/include/linux/gfp.h 2.6.12.3/include/linux/gfp.h
+--- 2.6.12.3.clean/include/linux/gfp.h	2005-07-15 17:18:57.000000000 -0400
++++ 2.6.12.3/include/linux/gfp.h	2005-08-05 21:53:09.000000000 -0400
+@@ -39,6 +39,7 @@ struct vm_area_struct;
+ #define __GFP_COMP	0x4000u	/* Add compound page metadata */
+ #define __GFP_ZERO	0x8000u	/* Return zeroed page on success */
+ #define __GFP_NOMEMALLOC 0x10000u /* Don't use emergency reserves */
++#define __GFP_MEMALLOC  0x20000u /* Use emergency reserves */
+ 
+ #define __GFP_BITS_SHIFT 20	/* Room for 20 __GFP_FOO bits */
+ #define __GFP_BITS_MASK ((1 << __GFP_BITS_SHIFT) - 1)
+diff -up --recursive 2.6.12.3.clean/include/linux/netdevice.h 2.6.12.3/include/linux/netdevice.h
+--- 2.6.12.3.clean/include/linux/netdevice.h	2005-07-15 17:18:57.000000000 -0400
++++ 2.6.12.3/include/linux/netdevice.h	2005-08-06 01:06:18.000000000 -0400
+@@ -371,6 +371,8 @@ struct net_device
+ 	struct Qdisc		*qdisc_ingress;
+ 	struct list_head	qdisc_list;
+ 	unsigned long		tx_queue_len;	/* Max frames per queue allowed */
++	int			rx_reserve;
++	int			rx_reserve_used;
+ 
+ 	/* ingress path synchronizer */
+ 	spinlock_t		ingress_lock;
+@@ -929,6 +931,28 @@ extern void		net_disable_timestamp(void)
+ extern char *net_sysctl_strdup(const char *s);
+ #endif
+ 
++static inline struct sk_buff *__dev_memalloc_skb(struct net_device *dev,
++	unsigned length, int gfp_mask)
++{
++	struct sk_buff *skb = __dev_alloc_skb(length, gfp_mask);
++	if (skb)
++		goto done;
++	if (dev->rx_reserve_used >= dev->rx_reserve)
++		return NULL;
++	if (!__dev_alloc_skb(length, gfp_mask|__GFP_MEMALLOC))
++		return NULL;;
++	dev->rx_reserve_used++;
++done:
++	skb->dev = dev;
++	return skb;
++}
++
++static inline struct sk_buff *dev_alloc_skb_reserve(struct net_device *dev,
++	unsigned length)
++{
++	return __dev_memalloc_skb(dev, length, GFP_ATOMIC);
++}
++
+ #endif /* __KERNEL__ */
+ 
+ #endif	/* _LINUX_DEV_H */
+diff -up --recursive 2.6.12.3.clean/include/net/sock.h 2.6.12.3/include/net/sock.h
+--- 2.6.12.3.clean/include/net/sock.h	2005-07-15 17:18:57.000000000 -0400
++++ 2.6.12.3/include/net/sock.h	2005-08-05 21:53:09.000000000 -0400
+@@ -382,6 +382,7 @@ enum sock_flags {
+ 	SOCK_NO_LARGESEND, /* whether to sent large segments or not */
+ 	SOCK_LOCALROUTE, /* route locally only, %SO_DONTROUTE setting */
+ 	SOCK_QUEUE_SHRUNK, /* write queue has been shrunk recently */
++	SOCK_MEMALLOC, /* protocol can use memalloc reserve */
+ };
+ 
+ static inline void sock_set_flag(struct sock *sk, enum sock_flags flag)
+@@ -399,6 +400,11 @@ static inline int sock_flag(struct sock 
+ 	return test_bit(flag, &sk->sk_flags);
+ }
+ 
++static inline int is_memalloc_sock(struct sock *sk)
++{
++	return sock_flag(sk, SOCK_MEMALLOC);
++}
++
+ static inline void sk_acceptq_removed(struct sock *sk)
+ {
+ 	sk->sk_ack_backlog--;
+diff -up --recursive 2.6.12.3.clean/mm/page_alloc.c 2.6.12.3/mm/page_alloc.c
+--- 2.6.12.3.clean/mm/page_alloc.c	2005-07-15 17:18:57.000000000 -0400
++++ 2.6.12.3/mm/page_alloc.c	2005-08-05 21:53:09.000000000 -0400
+@@ -802,8 +802,8 @@ __alloc_pages(unsigned int __nocast gfp_
+ 
+ 	/* This allocation should allow future memory freeing. */
+ 
+-	if (((p->flags & PF_MEMALLOC) || unlikely(test_thread_flag(TIF_MEMDIE)))
+-			&& !in_interrupt()) {
++	if ((((p->flags & PF_MEMALLOC) || unlikely(test_thread_flag(TIF_MEMDIE)))
++			&& !in_interrupt()) || (gfp_mask & __GFP_MEMALLOC)) {
+ 		if (!(gfp_mask & __GFP_NOMEMALLOC)) {
+ 			/* go through the zonelist yet again, ignoring mins */
+ 			for (i = 0; (z = zones[i]) != NULL; i++) {
+diff -up --recursive 2.6.12.3.clean/net/ethernet/eth.c 2.6.12.3/net/ethernet/eth.c
+--- 2.6.12.3.clean/net/ethernet/eth.c	2005-07-15 17:18:57.000000000 -0400
++++ 2.6.12.3/net/ethernet/eth.c	2005-08-06 02:32:02.000000000 -0400
+@@ -281,6 +281,7 @@ void ether_setup(struct net_device *dev)
+ 	dev->mtu		= 1500; /* eth_mtu */
+ 	dev->addr_len		= ETH_ALEN;
+ 	dev->tx_queue_len	= 1000;	/* Ethernet wants good queues */	
++	dev->rx_reserve		= 50;
+ 	dev->flags		= IFF_BROADCAST|IFF_MULTICAST;
+ 	
+ 	memset(dev->broadcast,0xFF, ETH_ALEN);
+diff -up --recursive 2.6.12.3.clean/net/ipv4/tcp_ipv4.c 2.6.12.3/net/ipv4/tcp_ipv4.c
+--- 2.6.12.3.clean/net/ipv4/tcp_ipv4.c	2005-07-15 17:18:57.000000000 -0400
++++ 2.6.12.3/net/ipv4/tcp_ipv4.c	2005-08-06 00:45:07.000000000 -0400
+@@ -1766,6 +1766,12 @@ int tcp_v4_rcv(struct sk_buff *skb)
+ 	if (!sk)
+ 		goto no_tcp_socket;
+ 
++	if (skb->dev->rx_reserve_used) {
++		skb->dev->rx_reserve_used--; // racy
++		if (!is_memalloc_sock(sk))
++			goto discard_and_relse;
++	}
++
+ process:
+ 	if (sk->sk_state == TCP_TIME_WAIT)
+ 		goto do_time_wait;

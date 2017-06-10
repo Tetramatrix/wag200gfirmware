@@ -1,0 +1,71 @@
+dep_card.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h) \
+   message.h $(dep_message.h)
+command.o: command.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h) \
+   scioc.h $(dep_scioc.h)
+debug.o: debug.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h)
+event.o: event.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h)
+dep_hardware.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h)
+dep_includes.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h) \
+   debug.h $(dep_debug.h)
+init.o: init.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   card.h $(dep_card.h)
+interrupt.o: interrupt.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h)
+ioctl.o: ioctl.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h) \
+   scioc.h $(dep_scioc.h)
+message.o: message.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h)
+packet.o: packet.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h)
+shmem.o: shmem.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   card.h $(dep_card.h)
+timer.o: timer.c \
+   includes.h $(dep_includes.h) \
+   hardware.h $(dep_hardware.h) \
+   message.h $(dep_message.h) \
+   card.h $(dep_card.h)

@@ -1,0 +1,29 @@
+# This is a BitKeeper generated patch for the following project:
+# Project Name: Linux kernel tree
+# This patch format is intended for GNU patch command version 2.5 or higher.
+# This patch includes the following deltas:
+#	           ChangeSet	1.1248  -> 1.1249 
+#	drivers/net/ppp_generic.c	1.19    -> 1.20   
+#
+# The following is the BitKeeper ChangeSet Log
+# --------------------------------------------
+# 03/06/01	kaber@trash.net	1.1249
+# [PPP] fix memory leak in ioctl error path
+# --------------------------------------------
+#
+diff -Nru a/drivers/net/ppp_generic.c b/drivers/net/ppp_generic.c
+--- a/drivers/net/ppp_generic.c	Sun Jun  1 03:58:58 2003
++++ b/drivers/net/ppp_generic.c	Sun Jun  1 03:58:58 2003
+@@ -666,8 +666,10 @@
+ 			if (code == 0)
+ 				break;
+ 			err = -EFAULT;
+-			if (copy_from_user(code, uprog.filter, len))
++			if (copy_from_user(code, uprog.filter, len)) {
++				kfree(code);
+ 				break;
++			}
+ 			err = sk_chk_filter(code, uprog.len);
+ 			if (err) {
+ 				kfree(code);
+

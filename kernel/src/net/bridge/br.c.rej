@@ -1,0 +1,18 @@
+***************
+*** 333,338 ****
+  
+  static void __exit br_deinit(void)
+  {
+  	unregister_netdevice_notifier(&br_device_notifier);
+  	br_call_ioctl_atomic(__br_clear_ioctl_hook);
+  	net_call_rx_atomic(__br_clear_frame_hook);
+--- 338,346 ----
+  
+  static void __exit br_deinit(void)
+  {
++ #ifdef CONFIG_BRIDGE_NF
++ 	br_netfilter_fini();
++ #endif
+  	unregister_netdevice_notifier(&br_device_notifier);
+  	br_call_ioctl_atomic(__br_clear_ioctl_hook);
+  	net_call_rx_atomic(__br_clear_frame_hook);

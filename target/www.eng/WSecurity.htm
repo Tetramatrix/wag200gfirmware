@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Wireless Security</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1028">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+
+<!-- hide script from old browsers
+var secMethods = ["disabled","wep","psk0","psk2","psk2_mixed"];
+var secMethod = "";
+
+var keylength = 26;
+//var keylength1 = 13;
+var hexkey = true;
+
+function setKeyType(isKeep)
+{
+	cf = document.forms[0];
+	keylength = (cf.keysize.selectedIndex==1)? 26 : 10;
+	cf.wep_key1.size = cf.wep_key2.size = cf.wep_key3.size = cf.wep_key4.size = keylength;
+	cf.wep_key1.maxLength = cf.wep_key2.maxLength = cf.wep_key3.maxLength = cf.wep_key4.maxLength = keylength;
+
+	if(!isKeep)
+	      clearKeys();
+	cf.passphrase.value = "";
+}
+
+function clearKeys()
+{
+    var cf = document.forms[0];
+    cf.wep_key1.value = cf.wep_key2.value = cf.wep_key3.value = cf.wep_key4.value = "";
+}
+
+function init()
+{
+	dataToVisible(document.forms[0]);
+	setDivs();
+	setKeyType(true);
+}
+function keyGen()
+{
+	var min_size = 1;  // passphrase
+    var cf = document.forms[0];
+
+	if(cf.passphrase.value.length < min_size)
+	{
+		alert(msg_wep_pass);
+		return false;
+	}
+	cf.todo.value = "generate";
+	dataToHidden(cf);
+	cf.submit();
+}
+
+function setDivs()
+{
+ 	var cf = document.forms[0];
+	secMethod = secMethods[cf.security_mode.selectedIndex];
+
+	show_hide("psk0DIV1", (secMethod == "psk0"));
+	show_hide("psk0DIV2", (secMethod == "psk0"));
+
+	show_hide("psk2DIV1",(secMethod == "psk2"));
+	show_hide("psk2DIV2",(secMethod == "psk2"));
+
+
+	show_hide("psk2_mixedDIV1",(secMethod == "psk2_mixed"));
+	show_hide("psk2_mixedDIV2",(secMethod == "psk2_mixed"));
+
+	show_hide("wepDIV1", (secMethod == "wep"));
+	show_hide("wepDIV2", (secMethod == "wep"));
+
+}
+
+function isHex(str) {
+    var i;
+    for(i = 0; i<str.length; i++) {
+                var c = str.substring(i, i+1);
+
+        if(("0" <= c && c <= "9") || ("a" <= c && c <= "f") || ("A" <= c && c <= "F")) {
+            continue;
+        }
+        return false;
+    }
+    return true;
+}
+function checkData()
+{
+	var cf = document.forms[0];
+	var msg = "";
+	var blankFlag = false;
+	var sizeOK = false;
+	var i,j; 
+	var secMethod = secMethods[cf.security_mode.selectedIndex];
+	var key_index = getRadioCheckedValue(cf.wl_key);
+
+
+	if(secMethod == "wep")
+    	{
+    		for(j = 1 ; j < 5 ; j++)	
+		{
+			if(eval("cf.wep_key" + j + ".value.length")>0 || j == key_index)
+			{
+				msg = "";
+				sizeOK =  (eval("(cf.wep_key" + j + ".value.length == keylength)"));
+				if (!sizeOK)
+				{
+					msg = (hexkey) ? msg_hexkey : msg_asciikey;
+					alert(msg);
+					return false;
+				}
+				if (hexkey)
+				{
+					if(eval("isHex(cf.wep_key" + j + ".value)"))
+					;
+					else
+					{
+						alert(msg_hexkey);
+						return false;
+					}
+				}
+			}
+
+		}
+	}
+	else if (secMethod == "psk0")
+	{
+		var tmp=cf.psk0_lifetime.value;
+		if(cf.wl_wpa_psk.value.length < 8 || cf.wl_wpa_psk.value.length > 63 )
+		{
+
+			msg+= msg_psk_keysize;
+		}
+
+		if( isInteger(tmp, 1, 99999, false)==false)
+		{
+			alert(msg_key_renew_ivd);
+			return false;
+		}
+	}
+	else if (secMethod == "psk2")
+	{
+		var tmp=cf.psk2_lifetime.value;
+		if(cf.wl_wpa_psk_p.value.length < 8 || cf.wl_wpa_psk_p.value.length > 63 )
+		{
+
+			msg+= msg_psk_keysize;
+		}
+
+		if( isInteger(tmp, 1, 99999, false)==false)
+		{
+			alert(msg_key_renew_ivd);
+			return false;
+		}
+	}
+	else if (secMethod == "psk2_mixed")
+	{
+		var tmp=cf.psk2mixed_lifetime.value;
+		if(cf.wl_wpa_psk2mixed.value.length < 8 || cf.wl_wpa_psk2mixed.value.length > 63 )
+		{
+
+			msg+= msg_psk_keysize;
+		}
+
+		if( isInteger(tmp, 1, 99999, false)==false)
+		{
+			alert(msg_key_renew_ivd);
+			return false;
+		}
+	}
+	else
+	{
+
+	}
+
+	if(msg.length > 1)
+	{
+		alert(msg);
+		return false;
+	}
+    	dataToHidden(cf);
+
+	return true;
+}
+
+
+var lastkeypressed;
+var keyTooBig = false;
+var mustbeHEX = false;
+var keysize = 63;
+var lastObj;
+
+//if (document.layers) document.captureEvents(Event.KEYPRESS);
+//document.onkeypress = checkKey;
+
+var textSelected = false;
+
+function checkKey(evt)
+{
+  evt = (evt) ? evt : ((window.event) ? window.event : null)
+  if (evt)
+	    lastkeypressed = (evt.keyCode) ? evt.keyCode : (evt.which ) ? evt.which : null;
+//  window.status = lastkeypressed;
+  if ( (lastkeypressed != 13) && (lastkeypressed != 8) && (lastkeypressed != 27) &&( keyTooBig ))
+  {
+  	keyTooBig = false;
+    alert(msg_maxpass + keysize + ".");
+	chkSize(lastObj); // for NS 6/7
+  	return false;
+  }
+  else if (mustbeHEX)  // not used here, don't know which input is being used
+  {
+    mustbeHEX = false;
+  	if ( ((lastkeypressed > 47) && (lastkeypressed < 58 ))
+	  || ((lastkeypressed > 96) && (lastkeypressed < 103))
+	  || ((lastkeypressed > 64) && (lastkeypressed < 71 ))
+	  || (lastkeypressed ==  8)
+	  || (lastkeypressed == 13) )
+		 return true;   // OK
+  	else return false;
+  }
+  else if(textSelected == true)
+  {
+	textSelected = false;
+	return true;
+  }
+  return true;
+}
+
+function chkSize(fobj)
+{
+	if(fobj.value.length > keysize)
+		fobj.value = fobj.value.substr(0,keysize);
+}
+
+function keyCheck(fobj)
+{
+  lastObj = fobj;
+  if(textSelected == true)
+  	keyTooBig = false;
+  else
+  keyTooBig = (fobj.value.length >= keysize ) ? true : false;
+//  mustbeHEX = true;
+}
+
+//-->
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onLoad="init();">
+<form name="wsecurity" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Wireless</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+
+</TR>
+
+<!-- main menu-->
+<TR>
+<TD height="42" colspan="2" width="646">
+<table border="0" cellspacing="0" width="646" height="100%">
+
+<tr>
+   <td height="10" background="UI_06.gif"></TD>
+   <td height="10" background="UI_07.gif"></TD>
+   <td height="10" colspan="5" background="UI_06.gif"></TD>
+
+</TR>
+
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="thistab" width="83">Wireless</TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+
+</TR>
+  </table>
+ </TD>
+
+</TR>
+
+<!-- sub menu-->
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Wireless.htm">Basic Wireless Settings</a><b class="separator">|</b>&nbsp;&nbsp;
+  <span class="current">Wireless Security</span>&nbsp;&nbsp;<b class="separator">|</b>
+  <a class="submenu" href="setup.cgi?next_file=WMACFilter.htm">Wireless Access</a><b class="separator">|</b>
+  <a class="submenu" href="setup.cgi?next_file=AdvancedWSettings.htm">Advanced Wireless Settings</a>
+ </TD>
+
+</TR>
+</table>
+
+
+<!-- data table-->
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" height="300" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgcolor="#E7E7E7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Wireless Security</TD>
+  <td width="454">&nbsp;  </TD>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+      >&nbsp;&nbsp; <A href="help/h_WSecurity.htm" class="submenu" target="_blank">Help...</a></span></TD>
+
+</TR>
+
+<tr>
+ <td width="156" height="30" bgcolor="#E7E7E7" valign="top" class="boldhead">&nbsp;  </td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+ <table class="std">
+<tr>
+ <td  width="130" nowrap>Security Mode:</td>
+ <td nowrap><select size="1" name="security_mode" onchange="setDivs()">
+    <option value="disabled">Disabled</option>
+    <option value="wep">WEP</option>
+    <option value="psk0">WPA-Personal</option>
+    <option value="psk2">WPA2-Personal</option>
+    <option value="psk2_mixed">WPA2-Mixed</option>
+   </select></td>
+</tr>
+ </table>
+ </td>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></td>
+</tr>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top" class="boldhead">
+  <div ID="wepDIV1" style="display:none; padding-top:15px;">WEP</div></td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top"><div ID="wepDIV2" style="display:none">
+ <hr class="std">
+ <table class="std">
+ <tr>
+  <td nowrap>Default Transmit  Key:</td>
+  <td nowrap>
+  	<B>&nbsp;<INPUT type=radio value="1" name=wl_key> 1&nbsp;
+		 <INPUT type=radio value="2" name=wl_key> 2&nbsp; 
+		 <INPUT type=radio value="3" name=wl_key> 3&nbsp; 
+		 <INPUT type=radio value="4" name=wl_key> 4&nbsp; </B>
+  </td>
+ </tr>
+
+ <tr>
+  <td nowrap width="130">WEP Encryption:</td>
+  <td nowrap><SELECT size="1" name="keysize" onchange = "setKeyType(false);"> 
+    <option value="64">64 bits 10 hex digits</option>
+    <option value="128">128 bits 26 hex digits</option>
+    </select></TD>
+
+</TR>
+ <tr>
+  <td nowrap>Passphrase:</TD>
+  <td nowrap><input type="text" class="num" maxLength="31" size="20" name="passphrase" value="@passphrase#"> &nbsp;  &nbsp; 
+  <input type="submit" name="keygen" value="Generate" onClick="return keyGen()"></td>
+ </TR>
+ <tr>
+  <td nowrap>Key 1:</TD>
+  <td nowrap><input type="text" name="wep_key1" value="@wep_key1#" class="num" maxLength="26" size="26"></TD>
+
+ </TR>
+ <tr>
+  <td nowrap>Key 2:</TD>
+  <td nowrap><input type="text" name="wep_key2" value="@wep_key2#" class="num" maxLength="26" size="26"></TD>
+
+</TR>
+ <tr>
+  <td nowrap>Key 3:</TD>
+  <td nowrap><input type="text" name="wep_key3" value="@wep_key3#" class="num" maxLength="26" size="26"></TD>
+
+</TR>
+ <tr>
+  <td nowrap>Key 4:</TD>
+  <td nowrap><input type="text" name="wep_key4" value="@wep_key4#" class="num" maxLength="26" size="26"></TD>
+
+</TR>
+
+
+ </table>
+ </div>
+ </TD>
+
+</TR>
+
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top" class="boldhead">
+ <div ID="psk0DIV1" style="display:none; padding-top:15px;">WPA-Personal</div></td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top"> <div ID="psk0DIV2" style="display:none">
+ <hr class="std">
+ <table class="std">
+ <tr>
+  <td nowrap width="130">Encryption:</td>
+  <td nowrap height="20">TKIP</td>
+ </tr>
+ <tr>
+  <td nowrap width="130">Passphrase:</td>
+  <td nowrap>
+  	<INPUT size="32" name="wl_wpa_psk" value="@wl_wpa_psk#" maxlength=64>
+    </td>
+ </tr>
+ <tr>
+  <td nowrap>Group Key Renewal:</TD>
+  <td nowrap><input type="text" class="num" size="5" maxlength="5" name="psk0_lifetime" value="@psk0_lifetime#"> seconds</TD>
+
+</TR>
+ </table>
+ </div>
+ </TD>
+
+</TR>
+
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top" class="boldhead">
+ <div ID="psk2DIV1" style="display:none; padding-top:15px;">WPA2-Personal</div></td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+ 	<div ID="psk2DIV2" style="display:none">
+ <hr class="std">
+ <table class="std">
+ <tr>
+  <td nowrap width="130">Encryption:</td>
+  <td nowrap height="20">AES</td>
+ </tr>
+ <tr>
+  <td nowrap width="130">Passphrase:</td>
+  <td nowrap>
+  	<INPUT size="32" name="wl_wpa_psk_p" value="@wl_wpa_psk_p#" maxlength=64>
+    </td>
+ </tr>
+ <tr>
+  <td nowrap>Group Key Renewal:</TD>
+  <td nowrap><input type="text" class="num" size="5" maxlength="5" name="psk2_lifetime" value="@psk2_lifetime#"> seconds</TD>
+
+</TR>
+ </table>
+ </div>
+ </TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7" valign="top" class="boldhead">
+ <div ID="psk2_mixedDIV1" style="display:none; padding-top:15px;">WPA2-MIXED</div></td>
+ <td width="8" background="UI_04.gif"> </td>
+ <td valign="top">
+ 	<div ID="psk2_mixedDIV2" style="display:none">
+ <hr class="std">
+ <table class="std">
+  <tr>
+  <td nowrap width="130">Encryption:</td>
+  <td nowrap height="20">TKIP + AES</td>
+ </tr>
+
+ <tr>
+  <td nowrap width="130">Passphrase:</td>
+  <td nowrap>
+  	<INPUT size="32" name="wl_wpa_psk2mixed" value="@wl_wpa_psk2mixed#" maxlength=64>
+    </td>
+ </tr>
+ <tr>
+  <td nowrap>Group Key Renewal:</TD>
+  <td nowrap><input type="text" class="num" size="5" maxlength="5" name="psk2mixed_lifetime" value="@psk2mixed_lifetime#"> seconds</TD>
+
+</TR>
+ </table>
+ </div>
+ </TD>
+
+</TR>
+
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="SUBMIT" class="stdbutton" name="save" value="Save Settings" onClick="return checkData();">
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=WSecurity.htm'"> &nbsp;  &nbsp; </TD>
+
+</TR>
+
+
+</table>
+
+</div>
+
+
+<input type="hidden" name="h_security_mode" value="@h_security_mode#">
+<input type="hidden" name="h_wl_key" value="@h_wl_key#">
+<input type="hidden" name="h_keysize" value="@h_keysize#">
+<input type="hidden" name="h_wpapsk_enc" value="@h_wpapsk_enc#">
+<!--
+<input type="hidden" name="h_wpa2psk_enc" value="@h_wpa2psk_enc#">
+-->
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="WSecurity.htm">
+<input type="hidden" name="next_file" value="WSecurity.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+
+</form>
+</body>
+
+</html>

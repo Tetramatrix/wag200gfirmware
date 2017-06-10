@@ -1,0 +1,25 @@
+diff -Naur -p linux-2.4.29-original/include/linux/pkt_sched.h linux-2.4.29-overhead/include/linux/pkt_sched.h
+--- linux-2.4.29-original/include/linux/pkt_sched.h	Wed Nov 17 12:54:22 2004
++++ linux-2.4.29-overhead/include/linux/pkt_sched.h	Sat Mar 12 16:47:57 2005
+@@ -81,7 +81,7 @@ struct tc_ratespec
+ 	unsigned char	cell_log;
+ 	unsigned char	__reserved;
+ 	unsigned short	feature;
+-	short		addend;
++	unsigned short	overhead;
+ 	unsigned short	mpu;
+ 	__u32		rate;
+ };
+diff -Naur -p linux-2.4.29-original/net/sched/sch_htb.c linux-2.4.29-overhead/net/sched/sch_htb.c
+--- linux-2.4.29-original/net/sched/sch_htb.c	Wed Nov 17 12:54:22 2004
++++ linux-2.4.29-overhead/net/sched/sch_htb.c	Sat Mar 12 16:48:57 2005
+@@ -205,7 +205,8 @@ struct htb_class
+ static __inline__ long L2T(struct htb_class *cl,struct qdisc_rate_table *rate,
+ 	int size)
+ { 
+-    int slot = size >> rate->rate.cell_log;
++    int overhead = rate->rate.overhead;
++    int slot = (size-1+overhead) >> rate->rate.cell_log;
+     if (slot > 255) {
+ 	cl->xstats.giants++;
+ 	slot = 255;

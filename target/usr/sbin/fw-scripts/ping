@@ -1,0 +1,47 @@
+#!/bin/sh
+
+INTERVAL=180
+
+while sleep $INTERVAL
+do
+   user=user:`ps -aux | grep pppd | grep -v grep | awk '{print $2}'`
+
+   if [ $user != "user:root" ]
+   then
+        break
+   fi
+done
+
+
+while sleep $INTERVAL
+do
+
+ # Replace "file" with the file name that has the list of IPs
+ iplist=/mnt/mtd5/whitelist
+ upcount=0
+ downhosts=""
+
+ for i in $(cat ${iplist})
+ do
+        ping -c 1 $i > /dev/null 2>&1
+
+        if [[ $? -eq 0 ]]
+        then
+                let upcount+=1
+        else
+                downhosts="${downhosts} ${i}"
+        fi
+ done
+
+ echo "pinging: ${upcount} switches are up"
+ echo "The following switches are down: ${downhosts}"
+
+ if [ $upcount -eq 0 ]
+ then
+     reboot
+ else
+     /mnt/mtd5/pinging&
+     break
+ fi
+
+done

@@ -1,0 +1,694 @@
+alchemy-flash.o: alchemy-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/pb1000.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/pb1500.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/pb1100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/pb1550.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/pb1200.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/db1000.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/db1500.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/db1100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/db1550.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/db1200.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/hydrogen3.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/bosporus.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/mirage.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/mirage/why.h)
+amd76xrom.o: amd76xrom.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/flashchip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/flashchip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci_ids.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci_ids.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h)
+arctic-mtd.o: arctic-mtd.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+autcpu12-nvram.o: autcpu12-nvram.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+avalanche-flash.o: avalanche-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/avalanche/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/avalanche/len.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/avalanche/buswidth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/mips-boards/prom.h)
+bast-flash.o: bast-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/bast/maxsize.h)
+beech-mtd.o: beech-mtd.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+cdb89712.o: cdb89712.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+ceiva.o: ceiva.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/ceiva/staticmap.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/ceiva.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/concat.h)
+cfi_flagadm.o: cfi_flagadm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+cstm_mips_ixx.o: cstm_mips_ixx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/ite8172.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/ivr.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/cstm/mips/ixx/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/cstm/mips/ixx/len.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/cstm/mips/ixx/buswidth.h)
+dbox2-flash.o: dbox2-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h)
+dc21285.o: dc21285.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/netwinder.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+dilnetpc.o: dilnetpc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/dilnetpc/bootsize.h)
+dmv182.o: dmv182.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h)
+ebony.o: ebony.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+edb7312.o: edb7312.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+epxa10db-flash.o: epxa10db-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/epxa10db.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+fortunet.o: fortunet.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+h720x-flash.o: h720x-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+ichxrom.o: ichxrom.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/flashchip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/flashchip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci_ids.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci_ids.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h)
+impa7.o: impa7.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+integrator-flash.o: integrator-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/integrator.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/p720t.h)
+ipaq-flash.o: ipaq-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/concat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipaq/handheld.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/jornada56x.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/jornada720.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/lab.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/sa1100.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/h5400.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/h1900.h)
+iq80310.o: iq80310.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+ixp2000.o: ixp2000.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h)
+ixp4xx.o: ixp4xx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h)
+l440gx.o: l440gx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h)
+lasat.o: lasat.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+lubbock-flash.o: lubbock-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+map_funcs.o: map_funcs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h)
+mbx860.o: mbx860.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+mpc1211.o: mpc1211.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+mphysmap.o: mphysmap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/1/width.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/1/name.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/1/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/1/len.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/2/width.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/2/name.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/2/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/2/len.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/3/width.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/3/name.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/3/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/3/len.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/4/width.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/4/name.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/4/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/multi/physmap/4/len.h)
+netsc520.o: netsc520.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+nettel.o: nettel.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/cfi/intelext.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/blk/dev/initrd.h)
+ocelot.o: ocelot.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+ocotea.o: ocotea.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+octagon-5066.o: octagon-5066.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h)
+omap-toto-flash.o: omap-toto-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/omap.h)
+pci.o: pci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+pcmciamtd.o: pcmciamtd.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs_types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs_types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cistpl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cistpl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/ds.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/ds.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/debug/verbose.h)
+physmap.o: physmap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/physmap/start.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/physmap/len.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/physmap/bankwidth.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+plat-ram.o: plat-ram.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/plat-ram.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/plat-ram.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+pnc2000.o: pnc2000.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+redwood.o: redwood.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/redwood/6.h)
+rpxlite.o: rpxlite.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h)
+sa1100-flash.o: sa1100-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/concat.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pm.h)
+sbc8240.o: sbc8240.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+sbc_gxx.o: sbc_gxx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+sc520cdp.o: sc520cdp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/concat.h)
+scb2_flash.o: scb2_flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/cfi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci_ids.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci_ids.h)
+scx200_docflash.o: scx200_docflash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+sharpsl-flash.o: sharpsl-flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+solutionengine.o: solutionengine.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/superh/reserve.h)
+sun_uflash.o: sun_uflash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h)
+tqm8xxl.o: tqm8xxl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h)
+ts5500_flash.o: ts5500_flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h)
+tsunami_flash.o: tsunami_flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h)
+uclinux.o: uclinux.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+vmax301.o: vmax301.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h)
+walnut.o: walnut.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+wr_sbc82xx_flash.o: wr_sbc82xx_flash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/map.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/partitions.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sbc8560.h)

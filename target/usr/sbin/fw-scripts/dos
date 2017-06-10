@@ -1,0 +1,47 @@
+#!/bin/sh
+
+SYSLOG "DOS enabled"
+
+# ------ [ Create logging chains ] --------------------------- #
+
+SYSLOG "Create SCAN chain" 
+$IPTABLES -N SCAN 2> /dev/null
+#$IPTABLES -F SCAN
+$IPTABLES -I SCAN -m limit --limit 10/s -j LOG --log-level 4 --log-prefix "[Firewall Log-PORT SCAN]"
+
+SYSLOG "Create DOS attack chain"
+$IPTABLES -N DOS 2> /dev/null
+
+
+SYSLOG "Enable Port Scan and DOS Attack"
+
+# Use PSD module to detect Port Scan.
+$IPTABLES -I INPUT_TCP -i $WANIF -m psd -j SCAN
+$IPTABLES -I INPUT_UDP -i $WANIF -m psd -j SCAN
+
+if [ "$NAT" = "NO" -o "$NAT" = "no" ]; then
+$IPTABLES -I FORWARD_TCP -i $WANIF -m psd -j SCAN
+$IPTABLES -I FORWARD_UDP -i $WANIF -m psd -j SCAN
+fi
+
+SYSLOG "UDP-flood protection"
+$IPTABLES -A FORWARD_UDP -i $WANIF -p udp -j DOS
+$IPTABLES -A INPUT_UDP  -i $WANIF -p udp -j DOS
+$IPTABLES -I DOS -p udp -m limit --limit 150/s --limit-burst 300 -j RETURN
+
+SYSLOG "Syn-flood protection"
+$IPTABLES -A FORWARD_TCP -i $WANIF -p tcp --syn  -m state --state ! ESTABLISHED,RELATED -j DOS
+$IPTABLES -A INPUT_TCP -i $WANIF -p tcp --syn -m state --state ! ESTABLISHED,RELATED -j DOS
+$IPTABLES -I DOS -p tcp --syn -m limit --limit 150/s --limit-burst 300 -j RETURN 
+
+SYSLOG "Ping of death"
+#Drop icmp packet breaks the rate of 1/s
+$IPTABLES -A PORT_FORWARD -i $WANIF -p icmp --icmp-type echo-request -j DOS
+$IPTABLES -A INPUT -i $WANIF -p icmp --icmp-type echo-request -j DOS
+$IPTABLES -A DOS -p icmp --icmp-type echo-request -m limit --limit 150/s --limit-burst 300 -j RETURN
+
+
+# set default policy
+$IPTABLES -A DOS -m limit --limit 10/s -j LOG --log-level 4 --log-prefix "[Firewall Log-DOS] "
+$IPTABLES -A SCAN -j DROP
+$IPTABLES -A DOS -j DROP

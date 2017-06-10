@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<title>Single Port Forwarding</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1028">
+
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- Start Script
+
+function checkData()
+	{
+	var cf = document.forms[0];
+	var msg = "";
+    var i = 0;
+
+    for(i =0; i < 15; i++)
+    {
+    	if ( eval("cf.s_enabled" + i).checked)
+	 	{
+	 		msg+= checkBlank(eval("cf.s_name" + i), addstr(msg_s_name, i+1));
+	 		msg+= checkInt(eval("cf.ext_port" + i), addstr(msg_ext_port, i+1), 1, 65535, true);
+	 		msg+= checkInt(eval("cf.int_port" + i), addstr(msg_int_port, i+1), 1, 65535, true);
+	 		msg+= checkInt(eval("cf.s_ip" + i), addstr(msg_sf_ip, i+1), 1, 254, true);
+	 	}
+	 	else
+	 	{
+	 	    msg+= checkInt(eval("cf.ext_port" + i), addstr(msg_ext_port, i+1), 1, 65535, false);
+	 		msg+= checkInt(eval("cf.int_port" + i), addstr(msg_int_port, i+1), 1, 65535, false);
+	 		msg+= checkInt(eval("cf.s_ip" + i), addstr(msg_sf_ip, i+1), 0, 254, false);
+	 	}
+
+	 	if(msg.length > 0 )
+	 	{
+	 		alert(msg);
+	 		return false;
+	 	}
+    }
+
+	dataToHidden(cf);
+	return checkMsg(msg);
+}
+
+// End Script -->
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="dataToVisible(document.forms[0])">
+    <form name="forwardUpnp" method="POST" action="setup.cgi">
+<div align="center">
+
+ <table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD><td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Applications &amp; Gaming</TD><td width="556" align="right" height="33" class="pname">@product_descrip#</TD><td width="90" height="12" align="center" class="mname">@product_name#</TD>
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <td colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+</TR>
+
+<!-- main menu-->
+		<tr>
+		    <td height="42" colspan="2" width="646">
+			<table border="0" cellspacing="0" width="646" height="100%">
+			    <tr>
+				<td height="10" colspan="4" background="UI_06.gif"></TD><td height="10" background="UI_07.gif"></TD><td height="10" colspan="2" background="UI_06.gif"></TD>
+</TR>
+			    <tr>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD><td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD><td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD><td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<br>Restrictions</a></TD><td class="thistab" width="103">Applications &amp;<br>Gaming</TD><td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD><td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+</TR>
+			</table></TD>
+</TR>
+
+		<!-- sub menu-->
+		<tr>
+		    <td height="21" colspan="2" width="646"> &nbsp; &nbsp;
+			<span class="current">Single Port Forwarding</span><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=AppGaming.htm">Port Range Forwarding</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=PortRangeTriggering.htm">Port Range Triggering</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=DMZ.htm">DMZ</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=QoS.htm">QoS</a>&nbsp;&nbsp;
+		    </TD>
+</TR>
+</table><!-- data table-->
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+  <tr>
+  <td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+  <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+</TR>
+  <tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Single Port Forwarding</TD>
+  <td width="454">&nbsp;  </TD>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif">
+  <SPAN>&nbsp;&nbsp; <A href="help/h_SPForwarding.htm" class="submenu" target="_blank">Help...</a></span>
+  </TD>
+
+</TR>
+<tr>
+
+
+  <td width="156" valign="top" bgColor="#e7e7e7" class="boldhead">&nbsp;</TD>
+  <td width="8" background="UI_04.gif"> </TD>
+  <td valign="top">
+
+
+ </TD>
+
+
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+
+</TR>
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+<TABLE align="center" style="BORDER-COLLAPSE: collapse" borderColor=white height=24 cellSpacing=0 cellPadding=0 width=421 border=1>
+              <TR>
+		<TD class=headrow align="center" width=76 height=30 bgcolor="#cccccc"><B>Application</b></TD>
+		<TD class=headrow align="center" width=52 height=30 bgcolor="#cccccc"><B>External Port</b></TD>
+		<TD class=headrow align="center" width=52 height=30 bgcolor="#cccccc"><B>Internal Port</b></TD>
+		<TD class=headrow align="center" width=75 height=30 bgcolor="#cccccc"><B>Protocol</b></TD>
+		<TD class=headrow align="center" width=100 height=30 bgcolor="#cccccc"><B>IP Address</b></TD>
+		<TD class=headrow align="center" width=61 height=30 bgcolor="#cccccc"><B>Enabled</b></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name0#" name="s_name0"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port0#" name="ext_port0"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port0#" name="int_port0"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol0>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select>
+		</TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip0#" name="s_ip0"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled0" name="s_enabled0"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name1#" name="s_name1"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port1#" name="ext_port1"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port1#" name="int_port1"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol1>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip1#" name="s_ip1"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled1" name="s_enabled1"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name2#" name="s_name2"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port2#" name="ext_port2"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port2#" name="int_port2"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol2>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip2#" name="s_ip2"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled2" name="s_enabled2"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name3#" name="s_name3"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port3#" name="ext_port3"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port3#" name="int_port3"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol3>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip3#" name="s_ip3"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled3" name="s_enabled3"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name4#" name="s_name4"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port4#" name="ext_port4"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port4#" name="int_port4"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol4>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip4#" name="s_ip4"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled4" name="s_enabled4"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name5#" name="s_name5"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port5#" name="ext_port5"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port5#" name="int_port5"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol5>
+		<OPTION value=tcp>TCP</option>
+		<OPTION value=udp>UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip5#" name="s_ip5"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled5" name="s_enabled5"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name6#" name="s_name6"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port6#" name="ext_port6"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port6#" name="int_port6"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol6>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip6#" name="s_ip6"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled6" name="s_enabled6"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name7#" name="s_name7"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port7#" name="ext_port7"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port7#" name="int_port7"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol7>
+		<OPTION value=tcp>TCP</option>
+		<OPTION value=udp>UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip7#" name="s_ip7"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled7" name="s_enabled7"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name8#" name="s_name8"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port8#" name="ext_port8"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port8#" name="int_port8"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol8>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip8#" name="s_ip8"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled8" name="s_enabled8"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name9#" name="s_name9"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port9#" name="ext_port9"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port9#" name="int_port9"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol9>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip9#" name="s_ip9"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled9" name="s_enabled9"></TD>
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name10#" name="s_name10"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port10#" name="ext_port10"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port10#" name="int_port10"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol10>
+		<OPTION value=tcp>TCP</option>
+		<OPTION value=udp>UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip10#" name="s_ip10"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled10" name="s_enabled10"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name11#" name="s_name11"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port11#" name="ext_port11"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port11#" name="int_port11"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol11>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip11#" name="s_ip11"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled11" name="s_enabled11"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name12#" name="s_name12"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port12#" name="ext_port12"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port12#" name="int_port12"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol12>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip12#" name="s_ip12"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled12" name="s_enabled12"></TD>
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name13#" name="s_name13"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port13#" name="ext_port13"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port13#" name="int_port13"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol13>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip13#" name="s_ip13"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled13" name="s_enabled13"></TD>
+
+</TR>
+		<TR align="center" style="height:30px">
+		<td nowrap><INPUT type="text" maxlength="12" size="8" value="@s_name14#" name="s_name14"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@ext_port14#" name="ext_port14"></TD>
+		<td nowrap><INPUT type="text" class="num" maxlength="5" size="5" value="@int_port14#" name="int_port14"></TD>
+		<td nowrap>
+		<SELECT size="1" name=protocol14>
+		<OPTION value="tcp">TCP</option>
+		<OPTION value="udp">UDP</option></select> </TD>
+		<td nowrap>
+		@ip_prefix#<INPUT type="text" class="ipnum" maxlength="3" size="3" value="@s_ip14#" name="s_ip14"></TD>
+		<td nowrap><INPUT type="checkbox" value="s_enabled14" name="s_enabled14"></TD>
+
+</TR>
+		</table><br>&nbsp;
+		</TD>
+</TR>
+
+  <tr>
+<td colspan="2" bgcolor="#000000">&nbsp;  </TD><td class="footer" bgcolor="#6666cc" height="33" align="right">
+   <input type="SUBMIT" class="stdbutton" name="save" value="Save Settings" onClick="return checkData();">
+<input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=SingleForwarding.htm'"> &nbsp;  &nbsp; </TD>
+</TR>
+
+
+</table></div>
+
+
+<input type="hidden" name="h_protocol0" value="@h_protocol0#">
+<input type="hidden" name="h_protocol1" value="@h_protocol1#">
+<input type="hidden" name="h_protocol2" value="@h_protocol2#">
+<input type="hidden" name="h_protocol3" value="@h_protocol3#">
+<input type="hidden" name="h_protocol4" value="@h_protocol4#">
+<input type="hidden" name="h_protocol5" value="@h_protocol5#">
+<input type="hidden" name="h_protocol6" value="@h_protocol6#">
+<input type="hidden" name="h_protocol7" value="@h_protocol7#">
+<input type="hidden" name="h_protocol8" value="@h_protocol8#">
+<input type="hidden" name="h_protocol9" value="@h_protocol9#">
+<input type="hidden" name="h_protocol10" value="@h_protocol10#">
+<input type="hidden" name="h_protocol11" value="@h_protocol11#">
+<input type="hidden" name="h_protocol12" value="@h_protocol12#">
+<input type="hidden" name="h_protocol13" value="@h_protocol13#">
+<input type="hidden" name="h_protocol14" value="@h_protocol14#">
+<input type="hidden" name="h_s_enabled0" value="@h_s_enabled0#">
+<input type="hidden" name="h_s_enabled1" value="@h_s_enabled1#">
+<input type="hidden" name="h_s_enabled2" value="@h_s_enabled2#">
+<input type="hidden" name="h_s_enabled3" value="@h_s_enabled3#">
+<input type="hidden" name="h_s_enabled4" value="@h_s_enabled4#">
+<input type="hidden" name="h_s_enabled5" value="@h_s_enabled5#">
+<input type="hidden" name="h_s_enabled6" value="@h_s_enabled6#">
+<input type="hidden" name="h_s_enabled7" value="@h_s_enabled7#">
+<input type="hidden" name="h_s_enabled8" value="@h_s_enabled8#">
+<input type="hidden" name="h_s_enabled9" value="@h_s_enabled9#">
+<input type="hidden" name="h_s_enabled10" value="@h_s_enabled10#">
+<input type="hidden" name="h_s_enabled11" value="@h_s_enabled11#">
+<input type="hidden" name="h_s_enabled12" value="@h_s_enabled12#">
+<input type="hidden" name="h_s_enabled13" value="@h_s_enabled13#">
+<input type="hidden" name="h_s_enabled14" value="@h_s_enabled14#">
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="SingleForwarding.htm">
+<input type="hidden" name="next_file" value="SingleForwarding.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+</html>

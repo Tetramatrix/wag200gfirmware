@@ -1,0 +1,168 @@
+background.o: background.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h) \
+   nodelist.h $(dep_nodelist.h)
+build.o: build.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   nodelist.h $(dep_nodelist.h)
+compr.o: compr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h)
+compr_rtime.o: compr_rtime.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h)
+compr_rubin.o: compr_rubin.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   compr_rubin.h $(dep_compr_rubin.h) \
+   histo_mips.h $(dep_histo_mips.h)
+dep_compr_rubin.h += \
+   pushpull.h $(dep_pushpull.h)
+compr_zlib.o: compr_zlib.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   nodelist.h $(dep_nodelist.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/zlib.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/zlib.h) \
+   zlib.h $(dep_zlib.h)
+comprtest.o: comprtest.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/types.h)
+crc32.o: crc32.c \
+   crc32.h $(dep_crc32.h)
+dep_crc32.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h)
+dir.o: dir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_i.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_i.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_sb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_sb.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+erase.o: erase.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+file.o: file.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+gc.o: gc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+ioctl.o: ioctl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h)
+malloc.o: malloc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   nodelist.h $(dep_nodelist.h)
+nodelist.o: nodelist.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   nodelist.h $(dep_nodelist.h)
+dep_nodelist.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/compatmac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_sb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_sb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_i.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2_fs_i.h) \
+   os-linux.h $(dep_os-linux.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/jffs2/fs/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/d.h)
+nodemgmt.o: nodemgmt.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   nodelist.h $(dep_nodelist.h)
+pushpull.o: pushpull.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   pushpull.h $(dep_pushpull.h)
+read.o: read.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+readinode.o: readinode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+scan.o: scan.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+super.o: super.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jffs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   nodelist.h $(dep_nodelist.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/jffs2/fs/debug.h)
+symlink.o: symlink.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   nodelist.h $(dep_nodelist.h)
+write.o: write.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mtd/mtd.h) \
+   nodelist.h $(dep_nodelist.h) \
+   crc32.h $(dep_crc32.h)
+zlib.o: zlib.c \
+   zlib.h $(dep_zlib.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h)

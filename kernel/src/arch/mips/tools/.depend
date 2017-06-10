@@ -1,0 +1,6 @@
+offset.o: offset.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/processor.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/processor.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/cpu/lx45xxx.h)

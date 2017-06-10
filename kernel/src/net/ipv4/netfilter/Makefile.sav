@@ -1,0 +1,129 @@
+#
+# Makefile for the netfilter modules on top of IPv4.
+#
+# Note! Dependencies are done automagically by 'make dep', which also
+# removes any old dependencies. DON'T put your own dependencies here
+# unless it's something special (ie not a .c file).
+#
+# Note 2! The CFLAGS definition is now in the main makefile...
+
+O_TARGET := netfilter.o
+
+export-objs = ip_conntrack_standalone.o ip_fw_compat.o ip_nat_standalone.o ip_tables.o ipt_dstlimit.o ipt_tos.o ipt_TOS.o ipt_length.o ip_conntrack_rtsp.o ip_nat_rtsp.o ipt_psd.o ipt_random.o ipt_recent.o ipt_TRIGGER.o ip_conntrack_tftp.o ip_nat_tftp.o ip_conntrack_irc.o ip_nat_irc.o ip_conntrack_ftp.o ip_conntrack_pptp.o ip_nat_ftp.o ip_nat_pptp.o
+
+# Multipart objects.
+list-multi		:= ip_conntrack.o iptable_nat.o ipfwadm.o ipchains.o
+
+# objects for the conntrack and NAT core (used by standalone and backw. compat)
+ip_nf_conntrack-objs	:= ip_conntrack_core.o ip_conntrack_proto_generic.o ip_conntrack_proto_tcp.o ip_conntrack_proto_udp.o ip_conntrack_proto_icmp.o ip_conntrack_proto_esp.o
+ip_nf_nat-objs		:= ip_nat_core.o ip_nat_proto_unknown.o ip_nat_proto_tcp.o ip_nat_proto_udp.o ip_nat_proto_icmp.o ip_nat_proto_esp.o
+
+# objects for the standalone - connection tracking / NAT
+ip_conntrack-objs	:= ip_conntrack_standalone.o $(ip_nf_conntrack-objs)
+iptable_nat-objs	:= ip_nat_standalone.o ip_nat_rule.o ip_nat_helper.o $(ip_nf_nat-objs)
+
+# objects for backwards compatibility mode
+ip_nf_compat-objs	:= ip_fw_compat.o ip_fw_compat_redir.o ip_fw_compat_masq.o $(ip_nf_conntrack-objs) $(ip_nf_nat-objs)
+
+ipfwadm-objs		:= $(ip_nf_compat-objs) ipfwadm_core.o
+ipchains-objs		:= $(ip_nf_compat-objs) ipchains_core.o
+
+# connection tracking
+obj-$(CONFIG_IP_NF_CONNTRACK) += ip_conntrack.o
+
+# talk protocol support
+obj-$(CONFIG_IP_NF_TALK) += ip_conntrack_talk.o
+obj-$(CONFIG_IP_NF_NAT_TALK) += ip_nat_talk.o
+ 
+# H.323 support
+obj-$(CONFIG_IP_NF_H323) += ip_conntrack_h323.o
+obj-$(CONFIG_IP_NF_NAT_H323) += ip_nat_h323.o
+
+# IRC support
+obj-$(CONFIG_IP_NF_IRC) += ip_conntrack_irc.o
+obj-$(CONFIG_IP_NF_NAT_IRC) += ip_nat_irc.o
+
+# RTSP ALG SUPPORT
+obj-$(CONFIG_IP_NF_RTSP) += ip_conntrack_rtsp.o
+obj-$(CONFIG_IP_NF_NAT_RTSP) += ip_nat_rtsp.o
+
+# TFTP support
+obj-$(CONFIG_IP_NF_TFTP) += ip_conntrack_tftp.o
+obj-$(CONFIG_IP_NF_NAT_TFTP) += ip_nat_tftp.o
+
+# connection tracking helpers
+obj-$(CONFIG_IP_NF_FTP) += ip_conntrack_ftp.o
+obj-$(CONFIG_IP_NF_PPTP) += ip_conntrack_pptp.o
+
+# NAT helpers 
+obj-$(CONFIG_IP_NF_NAT_FTP) += ip_nat_ftp.o
+obj-$(CONFIG_IP_NF_PPTP) += ip_nat_pptp.o
+
+# generic IP tables 
+obj-$(CONFIG_IP_NF_IPTABLES) += ip_tables.o
+
+# the three instances of ip_tables
+obj-$(CONFIG_IP_NF_FILTER) += iptable_filter.o
+obj-$(CONFIG_IP_NF_MANGLE) += iptable_mangle.o
+obj-$(CONFIG_IP_NF_NAT) += iptable_nat.o
+
+# matches
+obj-$(CONFIG_IP_NF_MATCH_LIMIT) += ipt_limit.o
+obj-$(CONFIG_IP_NF_MATCH_IPRANGE) += ipt_iprange.o
+obj-$(CONFIG_IP_NF_MATCH_MARK) += ipt_mark.o
+obj-$(CONFIG_IP_NF_MATCH_MAC) += ipt_mac.o
+obj-$(CONFIG_IP_NF_MATCH_MULTIPORT) += ipt_multiport.o
+obj-$(CONFIG_IP_NF_MATCH_OWNER) += ipt_owner.o
+obj-$(CONFIG_IP_NF_MATCH_TOS) += ipt_tos.o
+obj-$(CONFIG_IP_NF_MATCH_PSD) += ipt_psd.o
+
+obj-$(CONFIG_IP_NF_MATCH_LENGTH) += ipt_length.o
+
+obj-$(CONFIG_IP_NF_MATCH_TTL) += ipt_ttl.o
+obj-$(CONFIG_IP_NF_MATCH_STATE) += ipt_state.o
+obj-$(CONFIG_IP_NF_MATCH_UNCLEAN) += ipt_unclean.o
+obj-$(CONFIG_IP_NF_MATCH_TCPMSS) += ipt_tcpmss.o
+obj-$(CONFIG_IP_NF_MATCH_LAYER7) += ipt_layer7.o
+
+# targets
+obj-$(CONFIG_IP_NF_TARGET_REJECT) += ipt_REJECT.o
+obj-$(CONFIG_IP_NF_TARGET_MIRROR) += ipt_MIRROR.o
+obj-$(CONFIG_IP_NF_TARGET_TOS) += ipt_TOS.o
+obj-$(CONFIG_IP_NF_TARGET_FTOS) += ipt_FTOS.o
+obj-$(CONFIG_IP_NF_TARGET_MARK) += ipt_MARK.o
+obj-$(CONFIG_IP_NF_TARGET_MASQUERADE) += ipt_MASQUERADE.o
+obj-$(CONFIG_IP_NF_TARGET_REDIRECT) += ipt_REDIRECT.o
+obj-$(CONFIG_IP_NF_NAT_SNMP_BASIC) += ip_nat_snmp_basic.o
+obj-$(CONFIG_IP_NF_TARGET_LOG) += ipt_LOG.o
+obj-$(CONFIG_IP_NF_TARGET_TCPMSS) += ipt_TCPMSS.o
+obj-$(CONFIG_IP_NF_MATCH_UNCLEAN) += ipt_unclean.o
+obj-$(CONFIG_IP_NF_MATCH_STRING) += ipt_string.o
+obj-$(CONFIG_IP_NF_MATCH_STRINGGET) += ipt_stringGET.o
+obj-$(CONFIG_IP_NF_MATCH_STRINGHEAD) += ipt_stringHEAD.o
+obj-$(CONFIG_IP_NF_MATCH_RANDOM) += ipt_random.o
+obj-$(CONFIG_IP_NF_MATCH_STRINGHOST) += ipt_stringHOST.o
+obj-$(CONFIG_IP_NF_MATCH_DSTLIMIT) += ipt_dstlimit.o
+obj-$(CONFIG_IP_NF_MATCH_CONNLIMIT) += ipt_connlimit.o
+obj-$(CONFIG_IP_NF_MATCH_RECENT) += ipt_recent.o
+obj-$(CONFIG_IP_NF_TARGET_TRIGGER) += ipt_TRIGGER.o
+
+# backwards compatibility 
+obj-$(CONFIG_IP_NF_COMPAT_IPCHAINS) += ipchains.o
+obj-$(CONFIG_IP_NF_COMPAT_IPFWADM) += ipfwadm.o
+
+obj-$(CONFIG_IP_NF_QUEUE) += ip_queue.o
+
+include $(TOPDIR)/Rules.make
+
+ip_conntrack.o: $(ip_conntrack-objs)
+	$(LD) -r -o $@ $(ip_conntrack-objs)
+
+iptable_nat.o: $(iptable_nat-objs)
+	$(LD) -r -o $@ $(iptable_nat-objs)
+
+ipfwadm.o: $(ipfwadm-objs)
+	$(LD) -r -o $@ $(ipfwadm-objs)
+
+ipchains.o: $(ipchains-objs)
+	$(LD) -r -o $@ $(ipchains-objs)
+

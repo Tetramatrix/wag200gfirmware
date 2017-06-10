@@ -1,0 +1,22 @@
+#BusyBox v1.2.2 (2006.12.07-14:28+0000) multi-call binary
+#
+#Usage: syslogd [OPTION]...
+#
+#Linux system and kernel logging utility.
+#Note that this version of syslogd ignores /etc/syslog.conf.
+#
+#Options:
+#	-m MIN		Minutes between MARK lines (default=20, 0=off)
+#	-n		Run as a foreground process
+#	-O FILE		Use an alternate log file (default=/var/log/messages)
+#	-S		Make logging output smaller.
+#	-s SIZE		Max size (KB) before rotate (default=200KB, 0=off)
+#	-b NUM		Number of rotated logs to keep (default=1, max=99, 0=purge)
+#	-R HOST[:PORT]	Log to IP or hostname on PORT (default PORT=514/UDP)
+#	-L		Log locally and via network logging (default is network only)
+#	-C [size(KiB)]	Log to a circular buffer (read the buffer using logread)
+
+
+# Use this script syslog.pl on your host ...
+
+/sbin/syslogd&

@@ -1,0 +1,19 @@
+hwacpi.o: hwacpi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h)
+hwgpe.o: hwgpe.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acevents.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acevents.h)
+hwregs.o: hwregs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h)
+hwsleep.o: hwsleep.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h)
+hwtimer.o: hwtimer.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h)

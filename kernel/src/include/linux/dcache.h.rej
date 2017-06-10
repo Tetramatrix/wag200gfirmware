@@ -1,0 +1,58 @@
+***************
+*** 123,161 ****
+  					 * s_nfsd_free_path semaphore will be down
+  					 */
+  #define DCACHE_REFERENCED	0x0008  /* Recently used, don't discard. */
+  
+  extern spinlock_t dcache_lock;
+  
+- /**
+-  * d_drop - drop a dentry
+-  * @dentry: dentry to drop
+-  *
+-  * d_drop() unhashes the entry from the parent
+-  * dentry hashes, so that it won't be found through
+-  * a VFS lookup any more. Note that this is different
+-  * from deleting the dentry - d_delete will try to
+-  * mark the dentry negative if possible, giving a
+-  * successful _negative_ lookup, while d_drop will
+-  * just make the cache lookup fail.
+-  *
+-  * d_drop() is used mainly for stuff that wants
+-  * to invalidate a dentry for some reason (NFS
+-  * timeouts or autofs deletes).
+-  */
+- 
+- static __inline__ void d_drop(struct dentry * dentry)
+- {
+- 	spin_lock(&dcache_lock);
+- 	list_del(&dentry->d_hash);
+- 	INIT_LIST_HEAD(&dentry->d_hash);
+- 	spin_unlock(&dcache_lock);
+- }
+- 
+  static __inline__ int dname_external(struct dentry *d)
+  {
+  	return d->d_name.name != d->d_iname; 
+  }
+  
+  /*
+   * These are the low-level FS interfaces to the dcache..
+   */
+--- 128,143 ----
+  					 * s_nfsd_free_path semaphore will be down
+  					 */
+  #define DCACHE_REFERENCED	0x0008  /* Recently used, don't discard. */
++ #define DCACHE_UNLINKED	0x0010	/* Marked for deferred freeing */
+  
+  extern spinlock_t dcache_lock;
+  
+  static __inline__ int dname_external(struct dentry *d)
+  {
+  	return d->d_name.name != d->d_iname; 
+  }
+  
++ 
+  /*
+   * These are the low-level FS interfaces to the dcache..
+   */

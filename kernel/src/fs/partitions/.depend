@@ -1,0 +1,176 @@
+acorn.o: acorn.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kdev_t.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kdev_t.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/adfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/adfs_fs.h) \
+   check.h $(dep_check.h) \
+   acorn.h $(dep_acorn.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/blk/dev/mfm.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/riscix.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/cumana.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/adfs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/ics.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/powertec.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/eesox.h)
+amiga.o: amiga.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/affs_hardblocks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/affs_hardblocks.h) \
+   check.h $(dep_check.h) \
+   amiga.h $(dep_amiga.h)
+atari.o: atari.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   check.h $(dep_check.h) \
+   atari.h $(dep_atari.h)
+check.o: check.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/raid/md.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/raid/md.h) \
+   check.h $(dep_check.h) \
+   acorn.h $(dep_acorn.h) \
+   amiga.h $(dep_amiga.h) \
+   atari.h $(dep_atari.h) \
+   ldm.h $(dep_ldm.h) \
+   mac.h $(dep_mac.h) \
+   msdos.h $(dep_msdos.h) \
+   osf.h $(dep_osf.h) \
+   sgi.h $(dep_sgi.h) \
+   sun.h $(dep_sun.h) \
+   ibm.h $(dep_ibm.h) \
+   ultrix.h $(dep_ultrix.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/ics.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/powertec.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/eesox.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/cumana.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/acorn/partition/adfs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ldm/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/msdos/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/osf/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sun/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/amiga/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atari/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mac/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sgi/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ultrix/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ibm/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/s390.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/devfs/fs.h)
+ibm.o: ibm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   ibm.h $(dep_ibm.h) \
+   check.h $(dep_check.h)
+ldm.o: ldm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   check.h $(dep_check.h) \
+   ldm.h $(dep_ldm.h) \
+   msdos.h $(dep_msdos.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ldm/debug.h)
+dep_ldm.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h)
+mac.o: mac.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   check.h $(dep_check.h) \
+   mac.h $(dep_mac.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/all/ppc.h)
+msdos.o: msdos.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/blk/dev/ide.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   check.h $(dep_check.h) \
+   msdos.h $(dep_msdos.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/blk/dev/md.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/unaligned.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/devfs/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/solaris/x86/partition.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bsd/disklabel.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/unixware/disklabel.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/minix/subpartition.h)
+osf.o: osf.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   check.h $(dep_check.h) \
+   osf.h $(dep_osf.h)
+sgi.o: sgi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   check.h $(dep_check.h) \
+   sgi.h $(dep_sgi.h)
+sun.o: sun.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   check.h $(dep_check.h) \
+   sun.h $(dep_sun.h)
+ultrix.o: ultrix.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/genhd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   check.h $(dep_check.h)

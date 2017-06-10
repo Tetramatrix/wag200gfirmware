@@ -1,0 +1,55 @@
+BODY, P, TABLE, TD, UL, OL, LI, DD, INPUT, SELECT
+         { color:black; font: normal 8pt Arial,Helvetica,sans-serif; }
+.bighead { background: black; color:white; font: bold 15pt Arial,Helvetica,sans-serif; text-align:center; }
+.fwv     { color:white; font: normal 7pt Arial,Helvetica,sans-serif; text-align:right; padding-right:8px; }
+.pname   { color:white; font: bold  10pt Arial,Helvetica,sans-serif; text-align:right; padding-right:15px; }
+.mname   { background: black; color:white; font: bold   8pt Arial,Helvetica,sans-serif; text-align:center; }
+.stdbold { color:black; font: bold 8pt Arial,Helvetica,sans-serif;}
+
+
+.thistab  { color: white; font: bold 8pt Arial,Helvetica,sans-serif; text-align:center; padding-bottom:4px;  }
+.menucell { background: black; text-align:center; padding-bottom:4px;}
+
+A.mainmenu         { color: white; font: bold 8pt Arial,Helvetica,sans-serif; text-decoration: none; }
+A.mainmenu:hover   { color: #00FFFF;  }
+A.mainmenu:visited { color: white;    }
+
+A.submenu          {
+	color: white;
+	font: normal 8pt Arial,Helvetica,sans-serif;
+	text-decoration: none;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+A.submenu:hover    { color: #00FFFF; }
+A.submenu.visited  { color: white; }
+b.separator        { color: white; font: bold 10pt Courier; }
+.current          { color: #00FFFF; font: normal 8pt Arial,Helvetica,sans-serif; }
+
+.bwhead   { background: black; color:white; font: bold 9pt Arial,Helvetica,sans-serif; text-align:right; padding-right:8px; }
+.boldhead { font: bold 8pt Arial,Helvetica,sans-serif; text-align:right; padding-top:4px; padding-right:0px; }
+
+
+table.std   { margin-left: 28px; }
+.indent8   { margin-left: 8px; }
+table.leftclose  { margin-left: 24px; }
+hr.std     { text-indent: 12px; color: #cccccc; text-align: center; height:1px; width: 92%;}
+hr.notin   { color: #cccccc; text-align: center; height:1px; width: 100%;}
+.stdbutton { color: #ffffff; background: #42498C; font-style:Arial,Helvetica; font-size: 8pt; font-weight: 700; padding-bottom:2px; width:120px; border-width :0px}
+.slbutton { color: #ffffff; background: #8C8E8C; font-style:Arial,Helvetica; font-size: 8pt; font-weight: 700; padding-bottom:2px;  width:100px; border-width :0px}
+
+
+.num {color: black; font: normal 9pt "Courier New",Courier,serif;}	
+.bignum   { color: blue;  font: bold 12pt Courier,serif; }
+.smallnum      { color: black;  font: 8pt Courier New,Courier,serif; }
+.ipnum  {color: black; font: normal 9pt "Courier New",Courier,serif; width:35px;}	
+.hint     { color: blue;   font: bold x-small    Arial,Helvetica,sans-serif; }
+
+th.sub { COLOR: black; font: bold 8pt Arial,Helvetica,sans-serif; border-style: solid; border-width:1px; border-color:#6666cc; }
+td.sub { COLOR: black; font: normal 8pt Arial,Helvetica,sans-serif; border-style: solid; border-width:1px; border-color:#6666cc; text-align:center; }
+td.inputsub { COLOR: black; font: normal 8pt Arial,Helvetica,sans-serif; border-style: solid; border-width:1px; border-color:#6666cc; text-align:left; }
+td.sumcell  { COLOR: black; font: normal 8pt Arial,Helvetica,sans-serif; border-style: solid; border-width:1px; border-color:#6666cc; text-align:left; }
+
+b.sub { color:#0000ff; font: bold 12pt Arial,Helvetica,sans-serif; }
+.blue { color: #00FFFF; }
+.red { color: #FF0000; }

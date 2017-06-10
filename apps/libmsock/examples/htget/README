@@ -1,0 +1,8 @@
+Download a page from a web server. compile without -DDEBUG=1 in the Makefile
+if you don't want to see the http header information at the beginning of
+each http page.
+
+example: ./htget http://www.fccc.edu/index.html
+
+-- 
+muquit

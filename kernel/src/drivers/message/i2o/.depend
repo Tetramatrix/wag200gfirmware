@@ -1,0 +1,144 @@
+i2o_block.o: i2o_block.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blkpg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blkpg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/notifier.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/notifier.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h)
+i2o_config.o: i2o_config.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/miscdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+i2o_core.o: i2o_core.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/reboot.h) \
+   i2o_lan.h $(dep_i2o_lan.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/i2o/pci/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/i2o/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/i2o/block.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/i2o/lan.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/i2o/proc.h)
+i2o_lan.o: i2o_lan.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fddidevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fddidevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/trdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/trdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   i2o_lan.h $(dep_i2o_lan.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/net/fc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/tr.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fddi.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/anylan.h)
+dep_i2o_lan.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fddidevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fddidevice.h)
+i2o_pci.o: i2o_pci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtrr.h)
+i2o_proc.o: i2o_proc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   i2o_lan.h $(dep_i2o_lan.h)
+i2o_scsi.o: i2o_scsi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/prefetch.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/prefetch.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/i2o.h) \
+   ../../scsi/scsi.h $(dep_../../scsi/scsi.h) \
+   ../../scsi/hosts.h $(dep_../../scsi/hosts.h) \
+   ../../scsi/sd.h $(dep_../../scsi/sd.h) \
+   i2o_scsi.h $(dep_i2o_scsi.h) \
+   ../../scsi/scsi_module.c $(dep_../../scsi/scsi_module.c)
+dep_i2o_scsi.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kdev_t.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kdev_t.h)

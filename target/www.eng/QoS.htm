@@ -1,0 +1,421 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>QoS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1015">
+
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript">
+<!--
+
+function checkData(F)
+	{
+		dataToHidden(F);
+	    return Check_value(F);
+}
+
+function QoS_grey(F)
+{	
+	if(F.qossw[1].checked)
+	{
+			F.qos_ftp[0].disabled = true;
+			F.qos_ftp[1].disabled = true;		
+			F.qos_ftp[2].disabled = true;		
+			F.qos_http[0].disabled = true;		
+			F.qos_http[1].disabled = true;		
+			F.qos_http[2].disabled = true;		
+			F.qos_telnet[0].disabled = true;		
+			F.qos_telnet[1].disabled = true;		
+			F.qos_telnet[2].disabled = true;		
+			F.qos_smtp[0].disabled = true;		
+			F.qos_smtp[1].disabled = true;		
+			F.qos_smtp[2].disabled = true;		
+			F.qos_pop3[0].disabled = true;		
+			F.qos_pop3[1].disabled = true;		
+			F.qos_pop3[2].disabled = true;		
+			F.qos_spec0[0].disabled = true;		
+			F.qos_spec0[1].disabled = true;		
+			F.qos_spec0[2].disabled = true;		
+			F.qos_spec1[0].disabled = true;		
+			F.qos_spec1[1].disabled = true;		
+			F.qos_spec1[2].disabled = true;		
+			F.qos_spec2[0].disabled = true;		
+			F.qos_spec2[1].disabled = true;		
+			F.qos_spec2[2].disabled = true;		
+
+			F.qos_spec_port0.disabled = true;
+			F.qos_spec_port1.disabled = true;		
+			F.qos_spec_port2.disabled = true;		
+	}	
+	else
+	{		
+			F.qos_ftp[0].disabled = false;
+			F.qos_ftp[1].disabled = false;		
+			F.qos_ftp[2].disabled = false;		
+			F.qos_http[0].disabled = false;		
+			F.qos_http[1].disabled = false;		
+			F.qos_http[2].disabled = false;		
+			F.qos_telnet[0].disabled = false;		
+			F.qos_telnet[1].disabled = false;		
+			F.qos_telnet[2].disabled = false;		
+			F.qos_smtp[0].disabled = false;		
+			F.qos_smtp[1].disabled = false;		
+			F.qos_smtp[2].disabled = false;		
+			F.qos_pop3[0].disabled = false;		
+			F.qos_pop3[1].disabled = false;		
+			F.qos_pop3[2].disabled = false;		
+			F.qos_spec0[0].disabled = false;		
+			F.qos_spec0[1].disabled = false;		
+			F.qos_spec0[2].disabled = false;		
+			F.qos_spec1[0].disabled = false;		
+			F.qos_spec1[1].disabled = false;		
+			F.qos_spec1[2].disabled = false;		
+			F.qos_spec2[0].disabled = false;		
+			F.qos_spec2[1].disabled = false;		
+			F.qos_spec2[2].disabled = false;	
+
+			F.qos_spec_port0.disabled = false;
+			F.qos_spec_port1.disabled = false;	
+			F.qos_spec_port2.disabled = false;	
+	}
+}
+
+
+function portcheck(I)
+{
+	if (isInteger(I.value, 0, 65534, true))
+		return true;
+	else
+	{
+		alert(msg_invalid_qos_portnumber);
+		I.value = I.defaultValue;
+		return false;
+	}
+}
+
+function CheckSamePort(F,N)
+{
+	var p = new Array(3);
+	for(i = 0;i < 3;i++)
+	{
+		p[i] = eval(N + i).value;
+		if(p[i] == '20' || p[i] == '80' || p[i] == '21' || p[i] =='25' || p[i] == '110')
+		{
+			return false;
+		}
+	}
+
+	if(p[0] != '0')
+	{
+		if(p[0] == p[1] || p[0] == p[2])
+			return false;
+	}
+	if(p[1] != '0')
+	{
+		if(p[1] == p[2])
+			return false;
+	}
+	return true;
+}
+
+function Check_value(F)
+{
+	if(F.qossw[0].checked)
+	{
+		if(!portcheck(F.qos_spec_port0))
+		{
+			F.qos_spec_port0.focus();
+			return false;	
+		}
+		if(!portcheck(F.qos_spec_port1))
+		{
+			F.qos_spec_port1.focus();
+			return false;	
+		}
+		if(!portcheck(F.qos_spec_port2))
+		{
+			F.qos_spec_port2.focus();
+			return false;	
+		}
+		if(!CheckSamePort(F,"F.qos_spec_port"))
+		{
+			alert(msg_standard_portnum);
+			return false;	
+		}	
+	}
+	return true;
+}
+
+function init() 
+{               
+ 	var cf = document.forms[0];
+	dataToVisible(document.forms[0]);
+	QoS_grey(cf);
+}
+
+
+//-->
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="init();QoS_grey(document.forms[0])">
+<form name="qos" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+     <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+
+
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Applications &amp; Gaming</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+
+</TR>
+
+<!-- main menu-->
+		<tr>
+		    <td height="42" colspan="2" width="646">
+			<table border="0" cellspacing="0" width="646" height="100%">
+			    <tr>
+				<td height="10" colspan="4" background="UI_06.gif"></TD>
+				<td height="10" background="UI_07.gif"></TD>
+				<td height="10" colspan="2" background="UI_06.gif"></TD>
+			    
+</TR>
+			    <tr>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+				<td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<br>Restrictions</a></TD>
+				<td class="thistab" width="103">Applications &amp;<br>Gaming</TD>
+				<td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD>
+				<td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+			    
+</TR>
+			</table>
+		    </TD>
+		
+</TR>
+		
+		<!-- sub menu--> 
+		<tr>
+		    <td height="21" colspan="2" width="646"> &nbsp; &nbsp;
+			<a class="submenu" href="setup.cgi?next_file=SingleForwarding.htm">Single Port Forwarding</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=AppGaming.htm">Port Range Forwarding</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=PortRangeTriggering.htm">Port Range Triggering</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=DMZ.htm">DMZ</a><b class="separator">|</b>&nbsp;&nbsp;
+			<span class="current">QoS</span>&nbsp;&nbsp;
+		    </TD>
+	    
+</TR>
+</table>
+
+<!-- data table--> 
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+<tr>
+ <td width="164" bgColor="#e7e7e7"  height="15" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">QoS</TD>
+  <td width="454">&nbsp;  </TD>
+    <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif">
+<SPAN>&nbsp;&nbsp; <A href="help/h_qos.htm" class="submenu" target="_blank">Help...</a></span></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+<table class="std">
+<tr> 
+<TD width=131 height=25>&nbsp; </TD>
+<TD width=258 height=25>
+ <INPUT onclick=QoS_grey(this.form) type=radio value="enable" name="qossw"> <B>Enable</b>&nbsp; &nbsp; &nbsp; &nbsp; 
+ <INPUT onclick=QoS_grey(this.form) type=radio value="disable" name="qossw"> <B>Disable</b></TD>
+</TR>
+</table>
+ </TD>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Application-based QoS</TD>
+  <td width="454">&nbsp;  </TD>
+</tr>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+<table class="std">
+ <tr>
+  <TD width=101 height=25>&nbsp;&nbsp;</TD>
+  <TD width=296 height=25>
+ <TABLE>
+ <TR>
+  <TD align="center" width=80><B>High priority</B></TD>
+  <TD align="center" width=90><B>Medium priority</B></TD>
+  <TD align="center" width=80><B>Low priority</B></TD></TR>
+ </TABLE>
+ </TD>
+</tr>
+ <tr>
+	<TD width=101 height=25><B>FTP</B>&nbsp;&nbsp; </TD>
+	<TD width=296 height=25>
+	<TABLE valign="top">
+	<TBODY>
+	<TR>
+	<TD align="center" width=80><INPUT type=radio value="2" name="qos_ftp">&nbsp;&nbsp;</TD>
+	<TD align="center" width=80><INPUT type=radio value="1" name="qos_ftp">&nbsp;&nbsp;</TD>
+	<TD align="center" width=80><INPUT type=radio value="0" name="qos_ftp">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+	<TD width=101 height=25><B>HTTP</B>&nbsp;&nbsp; </TD>
+	<TD width=296 height=25>
+	<TABLE valign="top">
+	<TBODY>
+	<TR>
+	<TD align="center" width=80><INPUT type=radio value="2" name="qos_http">&nbsp;&nbsp;</TD>
+	<TD align="center" width=80><INPUT type=radio value="1" name="qos_http">&nbsp;&nbsp;</TD>
+	<TD align="center" width=80><INPUT type=radio value="0" name="qos_http">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+<TD width=101 height=25><B>Telnet</B>&nbsp;&nbsp; </TD>
+          <TD width=296 height=25>
+            <TABLE valign="top">
+              <TBODY>
+              <TR>
+                <TD align="center" width=80><INPUT type=radio value="2" name="qos_telnet">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="1" name="qos_telnet">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="0" name="qos_telnet">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+<TD width=101 height=25><B>SMTP</B>&nbsp;&nbsp; </TD>
+          <TD width=296 height=25>
+            <TABLE valign="top">
+              <TBODY>
+              <TR>
+                <TD align="center" width=80><INPUT type=radio value="2" name="qos_smtp">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="1" name="qos_smtp">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="0" name="qos_smtp">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+<TD width=101 height=25><B>POP3</B>&nbsp;&nbsp; </TD>
+          <TD width=296 height=25>
+            <TABLE valign="top">
+              <TBODY>
+              <TR>
+                <TD align="center" width=80><INPUT type=radio value="2" name="qos_pop3">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="1" name="qos_pop3">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="0" name="qos_pop3">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+<TD width=101 height=25><B>Specific Port#</B>
+<INPUT type="text" class="num" maxLength="5" size="6" name="qos_spec_port0" value="@qos_spec_port0#">
+&nbsp;&nbsp; </TD>
+          <TD width=296 height=25>
+            <TABLE valign="top">
+              <TBODY>
+              <TR>
+                <TD align="center" width=80><INPUT type=radio value="2" name="qos_spec0">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="1" name="qos_spec0">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="0" name="qos_spec0">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+<TD width=101 height=25><B>Specific Port#</B>
+<INPUT type="text" class="num" maxLength="5" size="6" name="qos_spec_port1" value="@qos_spec_port1#">
+ &nbsp;&nbsp; </TD>
+          <TD width=296 height=25>
+            <TABLE valign="top">
+              <TBODY>
+              <TR>
+                <TD align="center" width=80><INPUT type=radio value="2" name="qos_spec1">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="1" name="qos_spec1">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="0" name="qos_spec1">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr>
+ <tr>
+<TD width=101 height=25><B>Specific Port#</B>
+<INPUT type="text" class="num" maxLength="5" size="6" name="qos_spec_port2" value="@qos_spec_port2#">
+&nbsp;&nbsp; </TD>
+          <TD width=296 height=25>
+            <TABLE valign="top">
+              <TBODY>
+              <TR>
+                <TD align="center" width=80><INPUT type=radio value="2" name="qos_spec2">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="1" name="qos_spec2">&nbsp;&nbsp;</TD>
+                <TD align="center" width=80><INPUT type=radio value="0" name="qos_spec2">&nbsp;&nbsp;</TD></TR></TBODY></TABLE></TD>
+ </tr> 
+</table><br>&nbsp;
+ </TD>
+</tr>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </td>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="submit" class="stdbutton" name="save" value="Save Settings" onClick="return checkData(document.qos);">
+  <input type="button" class="stdbutton" name="cancel" value="Cancel Changes" onClick="location.href='setup.cgi?next_file=QoS.htm'"> &nbsp;  &nbsp; </TD>
+</tr>
+
+
+</table>
+
+</div>
+
+<input type="hidden" name="h_qossw" value="@h_qossw#">
+<input type="hidden" name="h_qos_ftp" value="@h_qos_ftp#">
+<input type="hidden" name="h_qos_http" value="@h_qos_http#">
+<input type="hidden" name="h_qos_telnet" value="@h_qos_telnet#">
+<input type="hidden" name="h_qos_smtp" value="@h_qos_smtp#">
+<input type="hidden" name="h_qos_pop3" value="@h_qos_pop3#">
+<input type="hidden" name="h_qos_spec0" value="@h_qos_spec0#">
+<input type="hidden" name="h_qos_spec1" value="@h_qos_spec1#">
+<input type="hidden" name="h_qos_spec2" value="@h_qos_spec2#">
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="QoS.htm">
+<input type="hidden" name="next_file" value="QoS.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>     
+</body>
+
+</html>

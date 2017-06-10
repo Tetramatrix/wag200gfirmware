@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Information</title> 
+<meta name="description" content="LINKSYS WAG300N 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+function refresh()
+{
+    dataToVisible(document.forms[0]);
+    window.setTimeout("window.location.href='setup.cgi?next_file=adsl_driver.htm'",10000);
+}
+//-->	
+</script>
+</head>
+<body bgColor="#808080" onload="refresh();">
+<form name="info" action="setup.cgi">
+<div align="center">
+<table border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+<tr>
+ <td bgcolor="#6666cc">
+  <br>
+  <hr size="1" color="#ffffff">
+  <img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+ </TD>
+</TR>
+
+<tr>
+ <td height="15" bgcolor="#E7E7E7"></TD>
+</TR>
+
+<tr>
+ <td>
+   <table border="0" cellspacing="0" cellpadding="4">
+   <tr>
+    <td height="7" bgcolor="#E7E7E7" width="165"></TD>
+    <td height="7" width="533" colspan="2"></TD>
+   </TR>
+   <tr>
+    <td width="164" height="24" align="right" class="bwhead" valign="top" nowrap>Information</TD>
+    <td>&nbsp;</TD>
+   </TR>
+   <tr>
+    <td bgColor="#e7e7e7" class="boldhead" valign="top"></TD>
+    <td colspan="2" align="center" class="num">
+     <textarea name="info" class="text" cols="62" rows="22" wrap="off" readonly>
+--- System Information ---
+@sysinfo#
+
+--- DSL Information ---
+@dsl_ver#
+DSL VPI/VCI: @pvc_vpi#/@pvc_vci#
+
+--- Wireless Information ---
+Wireless Driver Version: @wifi_drv_ver#
+Wireless Status: @wireless_mode#
+Wireless Wide Channel: channel 1 - 13
+Wireless Standard Channel: @wl_channel#
+Wireless SSID: @wl_ssid_new#
+
+--- Dynamic Information ---
+Wireless Mac Address: @wl_mac#
+LAN Mac Address: @wl_mac#
+WAN Mac Address: @device_mac#
+Device Serial No: @serial_no#
+Hareward Version: @hw_version#
+Fast Mode Downstream Rate: @dsl_downrate# Kbps
+Fast Mode Upstream Rate: @dsl_uprate# Kbps
+
+     </textarea>
+    </TD>
+   </TR>
+   <tr>
+    <td bgColor="#e7e7e7" class="boldhead" valign="top"></TD>
+              <td>&nbsp; &nbsp; &nbsp; <br> &nbsp; 
+    </TD>
+   </TR>
+  </table>
+ </TD>
+</TR>
+
+</table>
+</div>
+
+<input type="hidden" name="this_file" value="adsl_driver.htm">
+<input type="hidden" name="next_file" value="adsl_driver.htm">
+<input type="hidden" name="message" value="@msg_text#">
+    </form>
+</body>
+</html>

@@ -1,0 +1,3 @@
+ifeq (ti_generic/ti_generic.o ti_sangam/ti_sangam.o ti_adam2/ti_adam2.o,$(strip $(subst $(comma),:,$(EXTRA_LDFLAGS) $(obj-y))))
+FILES_FLAGS_UP_TO_DATE += ti_avalanche.o
+endif

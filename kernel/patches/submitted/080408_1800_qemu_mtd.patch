@@ -1,0 +1,51 @@
+--- wag200g_v1.01.06_eu/code/kernel/src/include/linux/mtd/mtd.h	2006-01-16 09:12:46.000000000 +0100
++++ wag200g-gpl-woytekm-0.6.2-dist/code/kernel/src/include/linux/mtd/mtd.h	2007-06-13 09:43:55.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* 
+- * $Id: mtd.h,v 1.1.1.1 2006-01-16 08:12:46 jeff Exp $
++ * $Id: mtd.h,v 1.1.1.1 2006/01/16 08:12:46 jeff Exp $
+  *
+  * Copyright (C) 1999-2003 David Woodhouse <dwmw2@infradead.org> et al.
+  *
+@@ -208,6 +208,41 @@
+ }
+ #endif
+ 
++
++/**
++ * __ffs - find first bit in word.
++ * @word: The word to search
++ *
++ * Returns 0..BITS_PER_LONG-1
++ * Undefined if no bit exists, so code should check against 0 first.
++ */
++static inline unsigned long __ffs(unsigned long word)
++{
++        int b = 0, s;
++
++#if BITS_PER_LONG == 32
++        s = 16; if (word << 16 != 0) s = 0; b += s; word >>= s;
++        s =  8; if (word << 24 != 0) s = 0; b += s; word >>= s;
++        s =  4; if (word << 28 != 0) s = 0; b += s; word >>= s;
++        s =  2; if (word << 30 != 0) s = 0; b += s; word >>= s;
++        s =  1; if (word << 31 != 0) s = 0; b += s;
++
++        return b;
++#elif BITS_PER_LONG == 64
++        s = 32; if (word << 32 != 0) s = 0; b += s; word >>= s;
++        s = 16; if (word << 48 != 0) s = 0; b += s; word >>= s;
++        s =  8; if (word << 56 != 0) s = 0; b += s; word >>= s;
++        s =  4; if (word << 60 != 0) s = 0; b += s; word >>= s;
++        s =  2; if (word << 62 != 0) s = 0; b += s; word >>= s;
++        s =  1; if (word << 63 != 0) s = 0; b += s;
++
++        return b;
++#else
++#error BITS_PER_LONG not defined
++#endif
++}
++
++
+ /*
+  * Debugging macro and defines
+  */

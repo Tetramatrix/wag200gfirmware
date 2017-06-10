@@ -1,0 +1,123 @@
+#################################################################
+#  Copyright notice
+#
+#  (c) 2008 Chi Hoang 
+#
+#  This software is not intended for any serious or commercial use.
+#
+##################################################################
+
+
+Linksys WAG200G - Byterape Version - Annex B Version
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[1] Introduction
+
+This firmware is a big hack to crack the torrent limit of just 2 torrents at the same time in the original firmware v1.01.06 by using the dstlimit modul from iptables to limit incomming traffic. I have also done some speed improvement and kernel patches. See changlog for more. I have tested it a long time and it work fairly good for me.
+
+[2] Installing
+
+[+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+]
+[+]Be aware that flashing the device could turn it into a brick! Do it at your own risk!!![+]
+[+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+][+]
+
+[2][1] Remember your router credentials and flash the device with the upgrade page.
+
+[2][2] Login with ssh and first run make_mtd5 to create a filespace then run install.sh and reboot.
+
+Hint: all necessary files were copy to /mnt/mtd5. Note: If you have edit some files, for example whitelist, you should umount /mnt/mtd5 and re-mount to persistent save the files (mount -t minix /dev/mtd/5 /mnt/mtd5).
+
+[3] Hidden values
+
+I have found some hidden values in the Linksys firmware. Staticbuffer is the amount statically allocated cache size for the skbuff struct. Default value was 128. I added it to 512. StaticMode let you choose between static mode or hybrid mod
+e. In hybrid mode the network subsystem tries to dynamically allocate new skbuff structures if needed. Default value was I changed this to 1. Probably it is best to leave that, because there are some heavy problems in skbuff.
+
+[3][1] Example
+
+/usr/sbin/nvram set StaticBuffer=512
+/usr/sbin/nvram commit
+
+/usr/sbin/nvram set StaticMode=1
+/usr/sbin/nvram commit
+
+[4] Setting upload rate
+
+First you must manually set the uplink rate by setting the nvram value rateup to your maximum provider uplink rate. It is recommended to use only 80% or lesser to avoid a bottleneck for example with fileshareing clients. 
+
+To set the rateup value you have to type 3 commands:
+
+1. /usr/sbin/nvram set rateup=816000
+2. /usr/sbin/nvram commit
+3. reboot
+
+816000 means 816000/1000 = 816 kb/s uplink rate which is good for a 1 Mbit/s uplink rate.
+
+[5] Shares
+
+The device is able to mount shares like this:
+mount -t cifs //192.168.1.10/Downloads /mnt/mtd5/public -o user=XXX,pass=XXX,dom=XXX
+This was intended to run ctorrent-dnh3.3, but unfortunately this doesn't work.
+
+[6] Problems
+
+If everything goes well, you should have your internet connection established. You can control it in your browser, or if you are logged in as root, you can ping an internet address for example "ping www.XXX.de". You can control the firewall by starting the monitor script. If you do heavy filesharing you can see for example the backlog variable, which means, that there a bottlenecks. Don't worry, this is normal as filesharing creates a lot of traffic. In normal use you wan't see this.
+
+If you are still faceing problems, you can try to manually connect to the cable modem by running:
+
+/usr/sbin/pppd-2.4.4 plugin /lib/rp-pppoe.so ppp0 user $user password $pwd nodetach defaultroute usepeerdns ipcp-accept-remote ipcp-accept-local lcp-echo-interval 15 lcp-echo-failure 3 mru 1492 mtu 1492& > /dev/null
+
+Replace $user and $pwd with your provider credentials.
+
+You should see something like this:
+
+RP-PPPoE plugin version 3.3 compiled against pppd 2.4.4
+Using interface ppp1
+Connect: ppp1 <--> eth0
+PAP authentication succeeded
+peer from calling number 00:0A:42:6D:90:A8 authorized
+not replacing existing default route through ppp0
+local  IP address 81.XXX.128.124
+remote IP address 195.XX.247.89
+primary   DNS address 194.X.194.60
+secondary DNS address 213.XXX.112.60
+
+You can also try to run the remote syslog by copying the syslog.pl script to your local computer and starting syslogd in the webwizard. There you will receive all activites from the firewall.
+
+[7] Additional Information
+
+Every script is well documentated. If you want to learn more, it is probably best to start here and google.
+
+
+[8] Donations
+
+If you found this firmware useful please consider to donate. Here is the Paypal-Link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=421332.
+
+Have Fun!
+
+Chi Hoang
+
+web:www.chihoang.de
+
+
+Files:
+======
+
+[-] 	/usr/sbin:
+	README
+	changelog
+	install.sh
+	webwizard
+
+[-]	/usr/sbin/fw-script:
+	finetune (finetune network subsystem)
+	bad (block incoming bad traffic)
+	htb (hierachical token buffer)
+	tc (traffic shapping)
+	dstlimit (limit incoming traffic)
+	ping (redial if disconnect)
+	whitelist (list of host to observer)
+	syslog.pl (a perl script to receive syslogd message from the router, does basically the same thing as many commercial products)
+	monitor (monitor htb)
+	remote (remote control)
+	shares (mount cifs shares)
+	trigger (ipt_trigger)

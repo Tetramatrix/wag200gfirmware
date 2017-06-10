@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Wireless Client List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+function checkData()
+{
+    var cf = document.forms[0];
+    var i,j; 
+    var addspace=0;
+    
+    j=parseInt(cf.mac_wl_num.value);
+    
+
+    for(i = 0; i < j; i++)
+    {
+	    if( addspace != 0)
+ 	        cf.mac_wl_filter.value += " "
+ 	    if ( eval("cf.macenable" + i).checked)
+ 	        cf.mac_wl_filter.value += "A:"
+ 	    else
+ 	        cf.mac_wl_filter.value += "D:"
+ 	    cf.mac_wl_filter.value += eval("cf.mac" + i).value;
+ 	    addspace = 1;
+    }
+}
+
+function macfilter_enable()
+{
+    var cf = document.forms[0];
+    var i,j; 
+    
+    j=parseInt(cf.mac_wl_num.value);
+    for(i = 0; i < j; i++)
+    {
+    	if ( eval("cf.macenable" + i).value=="enable")
+	 	{
+	 	    eval("cf.macenable" + i).checked=true;
+	 	}
+    
+    }
+}
+//
+//-->	
+</script>
+</head>
+<body bgColor="#808080" onLoad="dataToVisible(document.forms[0]);macfilter_enable();">
+<form method="POST" action="setup.cgi">
+<div align="center">
+<table border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+ <tr>
+  <td bgcolor="#6666cc">
+  <br><hr size="1" color="#ffffff"><img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+  </TD>
+
+</TR>
+<tr>
+<td>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+ <td height="7" bgcolor="#E7E7E7" width="165"></TD>
+ <td height="7" width="533" colspan="2"></TD>
+
+</TR>			
+<tr>
+ <td width="164" height="24" align="right" class="bwhead" valign="top">Wireless Client List</TD>
+ <td>&nbsp;</TD>
+
+</TR>
+
+<tr>
+ <td bgColor="#e7e7e7">&nbsp; </TD>
+ <td>
+ <div class="indent8">
+ <table border="0" cellpadding=4 bgcolor="#ffffff">
+<tr>
+<td nowrap><b class="sub">Wireless Client MAC List</b>
+</TD>
+<td nowrap>
+<input type="button" name="refresh" value="Refresh" class="slbutton" onClick="location.href='setup.cgi?next_file=WClientMACList.htm'">
+</TD>
+
+</TR>
+
+<tr bgColor="#b3b3b3">
+<th nowrap>MAC Address</th>
+<th nowrap>Enable MAC Filter</th>
+</TR>
+@wireless_client_table#
+
+<tr>
+<td nowrap align="right"><input type="SUBMIT" name="action" value="Update Filter List" class="slbutton"  onClick="return checkData()"></TD>
+<td nowrap>
+<input type="button" name="close" value="Close" class="slbutton" onClick="self.close()"></TD>
+
+</TR>
+</table>
+   <br> &nbsp;
+
+</div>
+</TD>
+</TR></table>
+</TD>
+</TR></table>
+
+</div>
+
+<input type="hidden" name="todo" value="update_filter">
+<input type="hidden" name="this_file" value="WClientMACList.htm">
+<input type="hidden" name="next_file" value="WL_FilterTable.htm">
+<input type="hidden" name="message" value="@msg_text#">
+<input type="hidden" name="mac_wl_num" value="@mac_wl_num#">
+<input type="hidden" name="mac_wl_filter" value="">
+
+</form>
+</body>
+</html>

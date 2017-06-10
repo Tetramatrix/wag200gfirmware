@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Firewall</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1015">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+
+function checkData()
+{
+	var cf = document.forms[0];
+	var msg = "";
+    if(cf.block_wan.checked == true)
+	{cf.block_wan.value = 1;}
+	else
+	{cf.block_wan.value = 0;}
+
+	if(cf.block_java.checked == true)
+	{cf.block_java.value = 1;}
+	else
+	{cf.block_java.value = 0;}
+	if(cf.block_activex.checked == true)
+	{cf.block_activex.value = 1;}
+	else
+	{cf.block_activex.value = 0;}
+	if(cf.block_cookie.checked == true)
+	{cf.block_cookie.value = 1;}
+	else
+	{cf.block_cookie.value = 0;}
+
+	if(cf.block_proxy.checked == true)
+	{cf.block_proxy.value = 1;}
+	else
+	{cf.block_proxy.value = 0;}
+
+	dataToHidden(cf);
+	return checkMsg(msg);
+}
+
+function init()
+{
+	var cf = document.forms[0];
+
+	dataToVisible(cf);
+}
+
+
+function ViewLogIn()
+{
+	self.open('setup.cgi?next_file=log_data.htm','firewall_log','alwaysRaised,resizable,scrollbars,width=580,height=600').focus();
+}
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onLoad="init();">
+<form name="security" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Security</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+<table border="0" cellspacing="0" width="646" height="100%">
+<tr>
+   <td height="10" colspan="2" background="UI_06.gif"></TD>
+   <td height="10" background="UI_07.gif"></TD>
+   <td height="10" colspan="4" background="UI_06.gif"></TD>
+
+</TR>
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+	 <td class="thistab" width="83">Security</TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+
+</TR>
+  </table>
+ </TD>
+
+</TR>
+
+<!-- sub menu-->
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <span class="current">Firewall</span><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=VPNPassthrough.htm">VPN Passthrough</a>
+ </TD>
+
+</TR>
+</table>
+
+<!-- data table-->
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" height="300" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Firewall</TD>
+  <td width="454">&nbsp;  </TD>
+   <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+      >&nbsp;&nbsp; <A href="help/h_Firewall.htm" class="submenu" target="_blank">Help...</a></span></TD>
+
+</TR>
+
+<tr>
+ <td width="156" valign="top" bgColor="#e7e7e7">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td>
+ <table class="std">
+ <tr>
+  <td nowrap>Firewall Protection:</TD>
+  <td nowrap><INPUT type="radio" name="filter" value="enable"></TD>
+  <td nowrap><B>Enable</b></TD>
+  <td nowrap><INPUT type="radio" name="filter" value="disable"></TD>
+  <td nowrap><B>Disable</b></TD>
+
+</TR>
+ </table>
+ </TD>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+
+</TR>
+
+<tr>
+ <td width="156" valign="top" bgColor="#e7e7e7">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" class="boldhead" valign="top">Additional Filters</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+ <table class="std">
+ <tr>
+  <td nowrap>
+<TABLE id=AutoNumber12 cellSpacing=0 cellPadding=0 width=300
+ border=0>
+   <TBODY>
+   <TR>
+     <TD width=27 height=25><INPUT type="checkbox" name="block_proxy" value="block_proxy"></TD>
+     <TD width=110 height=25>Filter Proxy&nbsp; </TD>
+     <TD width=27 height=25><INPUT type="checkbox" name="block_cookie" value="block_cookie"></TD>
+     <TD width=90 height=25>Filter Cookies&nbsp; </TD>
+
+</TR>
+	 </tbody>
+	 </table>
+  </TD>
+
+</TR>
+ <tr>
+  <td nowrap>
+<TABLE cellSpacing=0 cellPadding=0 width=300
+border=0>
+  <TBODY>
+  <TR>
+    <TD width=27 height=25><INPUT type="checkbox" name="block_java" value="block_java"></TD>
+    <TD width=110 height=25>Filter Java Applets&nbsp; </TD>
+    <TD width=27 height=25><INPUT type="checkbox" name="block_activex" value="block_activex"></TD>
+    <TD width=90 height=25>Filter ActiveX&nbsp; </TD>
+
+</TR>
+	</tbody>
+	</table>
+	</TD>
+
+</TR>
+ </table>
+ </TD>
+
+</TR>
+
+<tr>
+ <td width="156" valign="top" bgColor="#e7e7e7">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" class="boldhead" valign="top">Block WAN Requests</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+ <table class="std">
+ <tr>
+  <TD width=27 height=25><INPUT type="checkbox" value="block_wan" name="block_wan"></TD>
+  <TD width=240 height=25>Block Anonymous Internet Requests&nbsp; </TD>
+
+</TR>
+ </table><br>&nbsp;
+ </TD>
+
+</TR>
+
+<tr>
+ <td width="156" valign="top" bgColor="#e7e7e7">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" class="boldhead" valign="top"></TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+ <table width="310" class="std">
+ <tr>
+  <TD width="289" align=center><input type=button value='View Logs' onClick='ViewLogIn()'></TD>
+</TR>
+ </table><br>&nbsp;
+ </TD>
+
+</TR>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="SUBMIT" name="save" value="Save Settings" class="stdbutton" onClick="return checkData();">
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=Security.htm'"> &nbsp;  &nbsp; </TD>
+
+</TR>
+</table>
+
+</div>
+
+
+
+
+<input type="hidden" name="h_filter" value="@h_filter#">
+<input type="hidden" name="h_block_proxy" value="@h_block_proxy#">
+<input type="hidden" name="h_block_cookie" value="@h_block_cookie#">
+<input type="hidden" name="h_block_java" value="@h_block_java#">
+<input type="hidden" name="h_block_activex" value="@h_block_activex#">
+<input type="hidden" name="h_block_wan" value="@h_block_wan#">
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="Security.htm">
+<input type="hidden" name="next_file" value="Security.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+
+</html>

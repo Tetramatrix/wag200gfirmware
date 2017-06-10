@@ -1,0 +1,23 @@
+--- linux-2.4.34.orig/kernel/kmod.c
++++ linux-2.4.34/kernel/kmod.c
+@@ -134,6 +134,20 @@ int exec_usermodehelper(char *program_pa
+ 	/* Allow execve args to be in kernel space. */
+ 	set_fs(KERNEL_DS);
+ 
++	/* just in case... */
++	printk(KERN_DEBUG "kmod: trying to execute user mode helper"
++	    " '%s' with args", program_path);
++	i = 0;
++	while (argv[i]) {
++		printk(" %d='%s'", i, argv[i]);
++		++i;
++	}
++	printk(" and env");
++	i = 0;
++	while (envp[i])
++		printk(" '%s'", envp[i++]);
++	printk("\n");
++
+ 	/* Go, go, go... */
+ 	if (execve(program_path, argv, envp) < 0)
+ 		return -errno;

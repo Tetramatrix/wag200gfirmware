@@ -1,0 +1,21 @@
+ec_osl.o: ec_osl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/bm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h)
+ecgpe.o: ecgpe.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h)
+ecmain.o: ecmain.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h)
+ecspace.o: ecspace.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h)
+ectransx.o: ectransx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/ospm/include/ec.h)

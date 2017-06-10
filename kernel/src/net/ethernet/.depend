@@ -1,0 +1,33 @@
+eth.o: eth.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ipv6.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ipv6.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/checksum.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/inet.h)
+pe2.o: pe2.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/datalink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/datalink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h)
+sysctl_net_ether.o: sysctl_net_ether.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h)

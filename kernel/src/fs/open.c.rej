@@ -1,0 +1,45 @@
+***************
+*** 831,850 ****
+  	struct file * filp;
+  	struct files_struct *files = current->files;
+  
+- 	write_lock(&files->file_lock);
+  	if (fd >= files->max_fds)
+  		goto out_unlock;
+  	filp = files->fd[fd];
+  	if (!filp)
+  		goto out_unlock;
+- 	files->fd[fd] = NULL;
+  	FD_CLR(fd, files->close_on_exec);
+  	__put_unused_fd(files, fd);
+- 	write_unlock(&files->file_lock);
+  	return filp_close(filp, files);
+  
+  out_unlock:
+- 	write_unlock(&files->file_lock);
+  	return -EBADF;
+  }
+  
+--- 831,852 ----
+  	struct file * filp;
+  	struct files_struct *files = current->files;
+  
++ 	spin_lock(&files->file_lock);
+  	if (fd >= files->max_fds)
+  		goto out_unlock;
+  	filp = files->fd[fd];
+  	if (!filp)
+  		goto out_unlock;
++ 	files->fd[fd] = NULL;	
++ 	/* Need to make it conistent with open_fds in __put_unused_fd() */
++ 	wmb();
+  	FD_CLR(fd, files->close_on_exec);
+  	__put_unused_fd(files, fd);
++ 	spin_unlock(&files->file_lock);
+  	return filp_close(filp, files);
+  
+  out_unlock:
++ 	spin_unlock(&files->file_lock);
+  	return -EBADF;
+  }
+  

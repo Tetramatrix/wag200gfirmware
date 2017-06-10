@@ -1,0 +1,8 @@
+#!/bin/sh
+/bin/cp /proc/uptime /tmp/wan_uptime
+/usr/sbin/rc dhcpd create
+/usr/sbin/rc service restart
+/bin/cp /usr/etc/ppp/ip-down /etc/ppp/
+#/bin/echo "/usr/bin/killall -9 atm_monitor;/usr/sbin/atm_monitor" >>/etc/ppp/ip-down
+#/bin/echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_clean
+/usr/bin/killall -SIGUSR2 udhcpd

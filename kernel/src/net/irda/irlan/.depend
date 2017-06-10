@@ -1,0 +1,108 @@
+irlan_client.o: irlan_client.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irias_object.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irias_object.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h)
+irlan_client_event.o: irlan_client_event.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h)
+irlan_common.o: irlan_common.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_filter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_filter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/irlan/send/gratuitous/arp.h)
+irlan_eth.o: irlan_eth.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/inet.h)
+irlan_event.o: irlan_event.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h)
+irlan_filter.o: irlan_filter.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h)
+irlan_provider.o: irlan_provider.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irias_object.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irias_object.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_common.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_eth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_filter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_filter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_client.h)
+irlan_provider_event.o: irlan_provider_event.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/iriap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irttp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_provider.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlan_event.h)

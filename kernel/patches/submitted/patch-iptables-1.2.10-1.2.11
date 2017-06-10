@@ -1,0 +1,57 @@
+diff -urN iptables-1.2.10/Makefile iptables-1.2.11/Makefile
+--- iptables-1.2.10/Makefile	2004-06-15 00:02:15.000000000 +0200
++++ iptables-1.2.11/Makefile	2004-06-17 13:21:07.000000000 +0200
+@@ -14,8 +14,8 @@
+ ifndef KERNEL_DIR
+ KERNEL_DIR=/usr/src/linux
+ endif
+-IPTABLES_VERSION:=1.2.10
+-OLD_IPTABLES_VERSION:=1.2.9
++IPTABLES_VERSION:=1.2.11
++OLD_IPTABLES_VERSION:=1.2.10
+ 
+ PREFIX:=/usr/local
+ LIBDIR:=$(PREFIX)/lib
+diff -urN iptables-1.2.10/extensions/Makefile iptables-1.2.11/extensions/Makefile
+--- iptables-1.2.10/extensions/Makefile	2004-04-15 11:16:18.000000000 +0200
++++ iptables-1.2.11/extensions/Makefile	2004-06-17 12:22:54.000000000 +0200
+@@ -109,7 +109,8 @@
+ 	    cat extensions/libipt_$$ext.man ;\
+ 	done >extensions/libipt_targets.man
+ 	@if [ -n "$(PF_EXT_MAN_EXTRA_TARGETS)" ]; then \
+-	    for ext in $(PF_EXT_MAN_EXTRA_TARGETS); do \
++	    extra=$(PF_EXT_MAN_EXTRA_TARGETS) ;\
++	    for ext in $${extra:-""}; do \
+ 		echo ".SS $$ext (not supported, see Patch-O-Matic)" ;\
+ 		cat extensions/libipt_$$ext.man ;\
+ 	    done ;\
+@@ -122,7 +123,8 @@
+ 	    cat extensions/libipt_$$ext.man ;\
+ 	done >extensions/libipt_matches.man
+ 	@if [ -n "$(PF_EXT_MAN_EXTRA_MATCHES)" ]; then \
+-	    for ext in $(PF_EXT_MAN_EXTRA_MATCHES); do \
++	    extra=$(PF_EXT_MAN_EXTRA_MATCHES) ;\
++	    for ext in $${extra:-""}; do \
+ 		echo ".SS $$ext (not supported, see Patch-O-Matic)" ;\
+ 		cat extensions/libipt_$$ext.man ;\
+ 	    done ;\
+@@ -135,7 +137,8 @@
+ 	    cat extensions/libip6t_$$ext.man ;\
+ 	done >extensions/libip6t_targets.man
+ 	@if [ -n "$(PF6_EXT_MAN_EXTRA_TARGETS)" ]; then \
+-	    for ext in $(PF6_EXT_MAN_EXTRA_TARGETS); do \
++	    extra=$(PF6_EXT_MAN_EXTRA_TARGETS) ;\
++	    for ext in $${extra:-""}; do \
+ 		echo ".SS $$ext (not supported, see Patch-O-Matic)" ;\
+ 		cat extensions/libip6t_$$ext.man ;\
+ 	    done ;\
+@@ -148,7 +151,8 @@
+ 	    cat extensions/libip6t_$$ext.man ;\
+ 	done >extensions/libip6t_matches.man
+ 	@if [ -n "$(PF6_EXT_MAN_EXTRA_MATCHES)" ]; then \
+-	    for ext in $(PF6_EXT_MAN_EXTRA_MATCHES); do \
++	    extra=$(PF6_EXT_MAN_EXTRA_MATCHES) ;\
++	    for ext in $${extra:-""}; do \
+ 		echo ".SS $$ext (not supported, see Patch-O-Matic)" ;\
+ 		cat extensions/libip6t_$$ext.man ;\
+ 	    done ;\

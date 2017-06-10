@@ -1,0 +1,41 @@
+***************
+*** 340,367 ****
+  
+  static void __exit fini(void)
+  {
+- 	ulog_buff_t *ub;
+- 	int i;
+- 
+  	DEBUGP("ipt_ULOG: cleanup_module\n");
+  
+  	ipt_unregister_target(&ipt_ulog_reg);
+  	sock_release(nflognl->socket);
+- 
+- 	/* remove pending timers and free allocated skb's */
+- 	for (i = 0; i < ULOG_MAXNLGROUPS; i++) {
+- 		ub = &ulog_buffers[i];
+- 		if (timer_pending(&ub->timer)) {
+- 			DEBUGP("timer was pending, deleting\n");
+- 			del_timer(&ub->timer);
+- 		}
+- 
+- 		if (ub->skb) {
+- 			kfree_skb(ub->skb);
+- 			ub->skb = NULL;
+- 		}
+- 	}
+- 
+  }
+  
+  module_init(init);
+--- 340,349 ----
+  
+  static void __exit fini(void)
+  {
+  	DEBUGP("ipt_ULOG: cleanup_module\n");
+  
+  	ipt_unregister_target(&ipt_ulog_reg);
+  	sock_release(nflognl->socket);
+  }
+  
+  module_init(init);

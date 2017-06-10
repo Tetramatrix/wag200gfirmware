@@ -1,0 +1,27 @@
+***************
+*** 91,102 ****
+  	int mdatalen = 0;
+  	unsigned int ivalid;
+  	__u32 phys_ofs, alloclen;
+- 	int ret;
+  	D1(printk(KERN_DEBUG "jffs2_setattr(): ino #%lu\n", inode->i_ino));
+  	ret = inode_change_ok(inode, iattr);
+  	if (ret) 
+- 		return ret;
+- 
+  	/* Special cases - we don't want more than one data node
+  	   for these types on the medium at any time. So setattr
+  	   must read the original data associated with the node
+--- 92,103 ----
+  	int mdatalen = 0;
+  	unsigned int ivalid;
+  	__u32 phys_ofs, alloclen;
++ 	int ret = 0;
++ 	lock_kernel();
+  	D1(printk(KERN_DEBUG "jffs2_setattr(): ino #%lu\n", inode->i_ino));
+  	ret = inode_change_ok(inode, iattr);
+  	if (ret) 
++ 		goto out;
+  	/* Special cases - we don't want more than one data node
+  	   for these types on the medium at any time. So setattr
+  	   must read the original data associated with the node

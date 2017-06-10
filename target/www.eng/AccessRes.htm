@@ -1,0 +1,809 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Internet Access</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1015">
+
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- Start Script
+
+function checkData()
+{
+    var cf = document.forms[0];
+	var msg = "";
+	var required = true;
+    var starthour = cf.starthour.selectedIndex;
+    var startminute = cf.startminute.selectedIndex;
+    var endhour = cf.endhour.selectedIndex;
+    var endminute = cf.endminute.selectedIndex;
+
+	msg+= checkBlank(cf.policy_name, msg_policyname );
+	if (getRadioCheckedValue(cf.f_status1) == "disable")
+	{
+	    dataToHidden(cf);
+		return checkMsg(msg);
+    }
+
+    if( (starthour > endhour)||(starthour == endhour && startminute > endminute) )
+		msg+= msg_endtime_less;
+	msg+= IsValidURL();
+	msg+= IsValidKeyword();
+	required = (getSelected(cf.blocked_service0) == "userdef");
+	if (getSelected(cf.svc_type0) == "icmp")
+		msg+= checkInt(cf.port0_start, msg_blockedsv0_startport, 0, 255, required);
+	else
+		msg+= checkInt(cf.port0_start, msg_blockedsv0_startport, 1, 65535, required);
+	required = (getSelected(cf.blocked_service1) == "userdef");
+	if (getSelected(cf.svc_type1) == "icmp")
+		msg+= checkInt(cf.port1_start, msg_blockedsv1_startport, 0, 255, required );
+	else
+		msg+= checkInt(cf.port1_start, msg_blockedsv1_startport, 1, 65535, required );
+	if (msg.length > 1)
+	{
+		alert(msg);
+		return false;
+	}
+	required = (getSelected(cf.blocked_service0) == "userdef");
+	if (getSelected(cf.svc_type0) == "icmp")
+		msg = checkInt(cf.port0_end, msg_blockedsv0_endport, parseInt(cf.port0_start.value), 255, required);
+	else
+		msg = checkInt(cf.port0_end, msg_blockedsv0_endport, parseInt(cf.port0_start.value), 65535, required);
+	required = (getSelected(cf.blocked_service1) == "userdef");
+	if (getSelected(cf.svc_type1) == "icmp")
+		msg+= checkInt(cf.port1_end, msg_blockedsv1_endport, parseInt(cf.port1_start.value), 255, required);
+	else
+		msg+= checkInt(cf.port1_end, msg_blockedsv1_endport, parseInt(cf.port1_start.value), 65535, required);
+   	dataToHidden(cf);
+   	return checkMsg(msg);
+}
+
+
+
+function IsValidKeyword()
+{
+    var cf = document.forms[0];
+    var keyword =   new Array(  cf.keyword5.value,cf.keyword6.value,
+                            cf.keyword7.value,cf.keyword8.value,
+                            cf.keyword9.value,cf.keyword10.value);
+
+    for(var i=0;i<6;i++)
+    {
+        if( keyword[i] !="" )
+        {
+            for(var j=0; j<keyword[i].length;j++)
+            {
+                var c = keyword[i].substring(j, j+1);
+                if(c==":")
+                    return msg_invalid_keyword;
+            }
+        }
+    }
+    return "";
+}
+
+function IsValidURL()
+{
+    var cf = document.forms[0];
+    var url =   new Array(  cf.keyword1.value,cf.keyword2.value,
+                            cf.keyword3.value,cf.keyword4.value );
+    var includeDot = 0;
+    var includeColon = 0;
+    for(var i=0;i<4;i++)
+    {
+        if( url[i] !="" )
+        {
+            includeDot = 0;
+            url[i] = url[i].replace("http://","");
+            for(var j=0; j<url[i].length;j++)
+            {
+                var c = url[i].substring(j, j+1);
+                if(("0"<=c && c<="9") || ("a"<=c && c<="z") || ("A"<=c && c<="Z") || c=="." || c==":")
+                {
+                    if(c==".")
+                        includeDot = 1;
+                    if(c==":")
+                        includeColon = 1;
+                    continue;
+                }
+                else
+                {
+                    return msg_wrong_URLformat;
+
+                }
+            }
+	    /*
+	    if( !includeDot )
+            {
+                alert(msg_wrong_URLformat);
+                return false;
+            }
+  	    */
+  	    if(includeColon)
+            {
+                return msg_wrong_URLformat;
+
+            }
+
+        }
+    }
+
+    return "";
+}
+
+
+
+function BlockAllClickCheck(allON)
+{
+    var cf = document.forms[0];
+	if (allON)
+	{
+		cf.sun.checked = cf.mon.checked = cf.tue.checked = cf.wed.checked = cf.thurs.checked = cf.fri.checked = cf.sat.checked = true;
+		cf.sun.disabled = cf.mon.disabled = cf.tue.disabled = cf.wed.disabled = cf.thurs.disabled = cf.fri.disabled = cf.sat.disabled = true;
+    }
+    else
+		cf.sun.disabled = cf.mon.disabled = cf.tue.disabled = cf.wed.disabled = cf.thurs.disabled = cf.fri.disabled = cf.sat.disabled = false;
+}
+
+function setTimeDisable()
+{
+    var cf = document.forms[0];
+    if( cf.time[0].checked )
+        setDisabled(true,cf.starthour,cf.startminute,cf.endhour,cf.endminute);
+    else
+        setDisabled(false,cf.starthour,cf.startminute,cf.endhour,cf.endminute);
+}
+
+function setAll()  // set disabled for all fields
+{
+	var cf = document.forms[0];
+	var dflag = (getRadioCheckedValue(cf.f_status1) == "disable"); // global switch
+	var start = 6; var finish = 41;
+	if( dflag)
+	{
+		setservice(cf.blocked_service0, cf.port0_start, cf.port0_end, cf.svc_type0, false);
+		setservice(cf.blocked_service1, cf.port1_start, cf.port1_end, cf.svc_type1, false);
+		BlockAllClickCheck(cf.alldays.checked);
+		for (var i = start; i < finish; i++)
+			cf.elements[i].disabled = dflag;
+	}
+	else
+	{
+		for (var i = start; i < finish; i++)
+			cf.elements[i].disabled = dflag;
+		setservice(cf.blocked_service0, cf.port0_start, cf.port0_end, cf.svc_type0, false);
+		setservice(cf.blocked_service1, cf.port1_start, cf.port1_end, cf.svc_type1, false);
+		BlockAllClickCheck(cf.alldays.checked);
+		setTimeDisable();
+	}
+
+    if(getRadioCheckedValue(cf.f_status2) == "deny")
+        setBLOCK();
+}
+
+function setBLOCK()  // set disabled for blocked url/keyword/services fields
+{
+    var cf = document.forms[0];
+    if(getRadioCheckedValue(cf.f_status2) == "deny")
+    {
+        setDisabled(true,cf.keyword1,cf.keyword2,cf.keyword3,cf.keyword4,cf.keyword5
+        ,cf.keyword6,cf.keyword7,cf.keyword8,cf.keyword9,cf.keyword10
+        ,cf.blocked_service0, cf.port0_start, cf.port0_end, cf.svc_type0
+        ,cf.blocked_service1, cf.port1_start, cf.port1_end, cf.svc_type1);
+    }
+    else
+    {
+        setDisabled(false,cf.keyword1,cf.keyword2,cf.keyword3,cf.keyword4,cf.keyword5
+        ,cf.keyword6,cf.keyword7,cf.keyword8,cf.keyword9,cf.keyword10
+        ,cf.blocked_service0, cf.port0_start, cf.port0_end, cf.svc_type0
+        ,cf.blocked_service1, cf.port1_start, cf.port1_end, cf.svc_type1);
+		setservice(cf.blocked_service0, cf.port0_start, cf.port0_end, cf.svc_type0, false);
+		setservice(cf.blocked_service1, cf.port1_start, cf.port1_end, cf.svc_type1, false);
+    }
+}
+
+// constructor for service object
+function service(name, port_start, port_end, protocol){
+	this.name = name;
+	this.start = port_start;
+	this.end = port_end;
+	this.protocol = protocol;
+}
+services = new Array();  // array of service objects
+services_length = 0;
+//  Match select list
+//  Protocol: 0==icmp 1==TCP 2==UDP  3==both
+services[0]=new service("None", "", "", 1);
+@service_list#
+services_length=services.length;
+
+function exchange_protocol()
+{
+	var i;
+	for(i=0;i<services_length;i++){
+		switch(services[i].protocol){
+			case 1:
+			case "1":
+				services[i].protocol=0;
+				break;
+			case 6:
+			case "6":
+				services[i].protocol=1;
+				break;
+			case 17:
+			case "17":
+				services[i].protocol=2;
+				break;
+			case 23:
+			case "23":
+				services[i].protocol=3;
+				break;
+				}
+			}
+		return true;
+}
+
+function setservice(selObj, startportObj, endportObj, protocolObj, newUserDef)
+{
+    var cf = document.forms[0];
+	var index = selObj.selectedIndex;
+	var service = selObj.options[index].value;
+	if (service == "userdef")
+	{
+		startportObj.disabled = endportObj.disabled = protocolObj.disabled = false;
+		if (newUserDef)  // changed select list
+		{
+			startportObj.value = endportObj.value = "";
+			protocolObj.selectedIndex = getSelIndex(protocolObj, "tcp");
+		}
+	}
+	else
+	{
+		startportObj.disabled = endportObj.disabled = protocolObj.disabled = true;
+		startportObj.value = services[index].start;
+		endportObj.value = services[index].end;
+		protocolObj.selectedIndex = services[index].protocol;
+	}
+}
+
+function init()
+{
+	var cf = document.forms[0];
+	exchange_protocol();
+	dataToVisible(cf);
+	setAll();
+	setBLOCK();
+}
+
+function ChangePolicy()
+{
+	var cf = document.forms[0];
+	closeWin(datSubWinVar);
+	cf.todo.value="change_policy";
+	dataToHidden(cf);
+	cf.submit();
+}
+// End Script -->
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="init();">
+<form name="filters" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD><td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Access Restrictions</TD><td width="556" align="right" height="33" class="pname">@product_descrip#</TD><td width="90" height="12" align="center" class="mname">@product_name#</TD>
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+  <table border="0" cellspacing="0" width="646" height="100%">
+<tr>
+  <td height="10" colspan="3" background="UI_06.gif"></TD>
+  <td height="10" background="UI_07.gif"></TD><td height="10" colspan="3" background="UI_06.gif"></TD>
+</TR>
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+	 <td class="thistab" width="103">Access<BR>Restrictions</TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+</TR>
+  </table></TD>
+</TR>
+
+<!-- sub menu-->
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <span class="current">Internet Access</span>
+ </TD>
+</TR>
+</table><!-- data table-->
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+<tr>
+ <td width="164" bgColor="#e7e7e7" height="15" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Internet Access</TD>
+  <td width="454">&nbsp;  </TD>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif">
+  <SPAN>&nbsp;&nbsp; <A href="help/h_AccessRes.htm" class="submenu" target="_blank">Help...</a></span></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead"></TD><td width="8" background="UI_04.gif"> </TD><td valign="top">
+ <table class="std">
+  <tr>
+  <td nowrap>Internet Access Policy: </TD>
+  <td nowrap>
+	<SELECT name="access_policy" size="1" onchange="ChangePolicy();">
+	<option value="1">1 (@p1name#)</option>
+	<option value="2">2 (@p2name#)</option>
+	<option value="3">3 (@p3name#)</option>
+	<option value="4">4 (@p4name#)</option>
+	<option value="5">5 (@p5name#)</option>
+	<option value="6">6 (@p6name#)</option>
+	<option value="7">7 (@p7name#)</option>
+	<option value="8">8 (@p8name#)</option>
+	<option value="9">9 (@p9name#)</option>
+	<option value="10">10 (@p10name#)</option>
+	</select>
+  </TD>
+  </TR>
+  <tr>
+  <td nowrap>&nbsp;</TD>
+  <td nowrap>
+    <INPUT type="button" name="del_policy" value="Delete" onclick="stdAction(this.form, 'delete')">
+	<INPUT type="button" name="summary" value="Summary" onClick="openDataSubWin('setup.cgi?next_file=Summary.htm',bigsub);">
+	</TD>
+  </TR>
+  </table>
+  </TD>
+  <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead"></TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+ <table class="std">
+ <tr>
+  <td nowrap>Status:</TD><td nowrap>
+  <INPUT type="radio" name="f_status1" value="enable" onclick="setAll()"><B>Enable</b>&nbsp;
+  <INPUT type="radio" name="f_status1" value="disable" onclick="setAll()"><B>Disable</b>
+  </TD>
+</TR>
+ <tr>
+  <td nowrap>Enter Policy Name:</TD>
+  <td nowrap>
+    <INPUT type="text" name="policy_name" value="@policy_name#" maxlength="12" size="22">
+  </TD>
+</TR>
+
+ <tr>
+ <td nowrap>PCs:</TD>
+ <td>
+   <INPUT type="button" name="editpclist" value="Edit List of PCs" onClick="openDataSubWin('setup.cgi?next_file=EditList.htm',bigsub);">
+ </TD>
+</TR>
+ </table>
+ </TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">Access Restriction</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+	<table class="std">
+	<tr>
+	  <td nowrap><INPUT type="radio" value="deny" name="f_status2" onclick="setBLOCK()"></TD>
+	  <td nowrap>Deny</TD>
+	  <td rowspan="2" nowrap>Internet access during selected days and hours.</TD>
+	</TR>
+	<tr>
+	   <td nowrap><INPUT type="radio" value="allow" name="f_status2" onclick="setBLOCK()"></TD>
+	   <td nowrap>Allow</TD>
+	</TR>
+	<tr>
+	   <td nowrap> </TD>
+	<td nowrap> </TD>
+	</TR>
+	</table>
+
+</TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">Schedule</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+ <table class="std">
+ <tr>
+  <td nowrap><b>Days:</b>&nbsp; </TD><td nowrap>&nbsp; </TD>
+</TR>
+ <tr>
+  <td nowrap>&nbsp; &nbsp; 
+    <INPUT  type="checkbox" name="alldays" value="alldays" onclick="BlockAllClickCheck(this.checked)"> Everyday </TD>
+	<td nowrap>&nbsp; &nbsp;
+    <INPUT  type="checkbox" name="sun" value="sun"> Su
+	<INPUT  type="checkbox" name="mon" value="mon"> M
+	<INPUT  type="checkbox" name="tue" value="tue"> T
+	<INPUT  type="checkbox" name="wed" value="wed"> W 
+  </TD>
+</TR>
+  <tr>
+  <td nowrap>&nbsp; </TD><td nowrap>&nbsp; &nbsp; 
+	<INPUT  type="checkbox" name="thurs" value="thurs"> Th
+	<INPUT  type="checkbox" name="fri" value="fri"> F 
+	<INPUT  type="checkbox" name="sat" value="sat"> Sa 
+	</TD>
+</TR>
+</table>
+
+ <table class="std">
+ <tr>
+  <td nowrap><b>Times:</b> &nbsp; </TD>
+  <td nowrap colspan="3">&nbsp; </TD>
+</TR>
+<tr>
+  <td nowrap>&nbsp; &nbsp; 
+  <INPUT type="radio" name="time" value="24hrs" onclick="setTimeDisable();">24 Hours</TD>
+  <td nowrap>&nbsp; &nbsp; &nbsp; <INPUT type="radio" name="time" value="settimes" onclick="setTimeDisable();"></TD>
+  <td nowrap>&nbsp; From: </TD>
+  <td nowrap align="right">
+
+        <B>
+        <SELECT name="starthour">
+        <option value=0>00</option>
+        <OPTION value=1>01</option>
+        <OPTION value=2>02</option>
+        <OPTION value=3>03</option>
+        <OPTION value=4>04</option>
+        <OPTION value=5>05</option>
+        <OPTION value=6>06</option>
+        <OPTION value=7>07</option>
+        <OPTION value=8>08</option>
+        <OPTION value=9>09</option>
+        <OPTION value=10>10</option>
+        <OPTION value=11>11</option>
+        <OPTION value=12>12</option>
+        <option value=13>13</option>
+        <option value=14>14</option>
+        <option value=15>15</option>
+        <option value=16>16</option>
+        <option value=17>17</option>
+        <option value=18>18</option>
+        <option value=19>19</option>
+        <option value=20>20</option>
+        <option value=21>21</option>
+        <option value=22>22</option>
+        <option value=23>23</option>
+        </select></b>
+        :
+        <B>
+        <SELECT name="startminute">
+        <OPTION value=0>00</option>
+        <OPTION value=5>05</option>
+		<OPTION value=10>10</option>
+		<OPTION value=15>15</option>
+		<OPTION value=20>20</option>
+		<OPTION value=25>25</option>
+		<OPTION value=30>30</option>
+		<OPTION value=35>35</option>
+		<OPTION value=40>40</option>
+		<OPTION value=45>45</option>
+		<OPTION value=50>50</option>
+		<OPTION value=55>55</option>
+		</select>
+
+		</b>
+  </TD>
+</TR>
+  <tr>
+  <td nowrap>&nbsp; </TD><td nowrap></TD>
+  <td nowrap>&nbsp; To: </TD>
+  <td nowrap align="right">
+        <B>
+        <SELECT name="endhour">
+        <option value=0>00</option>
+        <OPTION value=1>01</option>
+		<OPTION value=2>02</option>
+        <OPTION value=3>03</option>
+		<OPTION value=4>04</option>
+        <OPTION value=5>05</option>
+		<OPTION value=6>06</option>
+        <OPTION value=7>07</option>
+		<OPTION value=8>08</option>
+        <OPTION value=9>09</option>
+		<OPTION value=10>10</option>
+        <OPTION value=11>11</option>
+		<OPTION value=12>12</option>
+        <option value=13>13</option>
+        <option value=14>14</option>
+        <option value=15>15</option>
+        <option value=16>16</option>
+        <option value=17>17</option>
+        <option value=18>18</option>
+        <option value=19>19</option>
+        <option value=20>20</option>
+        <option value=21>21</option>
+        <option value=22>22</option>
+        <option value=23>23</option>
+        </select>  </b> :<B>
+
+        <SELECT name="endminute">
+        <OPTION value=0>00</option>
+        <OPTION value=5>05</option>
+		<OPTION value=10>10</option>
+		<OPTION value=15>15</option>
+		<OPTION value=20>20</option>
+		<OPTION value=25>25</option>
+		<OPTION value=30>30</option>
+		<OPTION value=35>35</option>
+		<OPTION value=40>40</option>
+		<OPTION value=45>45</option>
+		<OPTION value=50>50</option>
+		<OPTION value=55>55</option>
+		</select>  </b>  </TD>
+</TR>
+ <tr>
+  <td nowrap> </TD><td nowrap> </TD>
+</TR>
+ </table></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">Website Blocking by URL Address </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+ <table class="std">
+ <tr>
+  <td nowrap><INPUT type="text" name="keyword1" value="@keyword1#" maxlength="64" size="30"></TD>
+  <td nowrap><INPUT TYPE="text" name="keyword3" VALUE="@keyword3#" MAXLENGTH="64" SIZE="30"></TD>
+</TR>
+ <tr>
+  <td nowrap><INPUT type="text" name="keyword2" value="@keyword2#" maxlength="64" size="30"></TD>
+  <td nowrap><INPUT type="text" name="keyword4" value="@keyword4#" maxlength="64" size="30"></TD>
+</TR>
+ </table></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD><td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156"  bgColor="#e7e7e7" valign="top" class="boldhead">Website Blocking by Keyword</TD>
+ <td width="8" background="UI_04.gif"> </TD><td valign="top">
+
+ <table class="std">
+ <tr>
+  <td nowrap><INPUT type="text" name="keyword5" value="@keyword5#" maxlength="64" size="18"></TD>
+  <td nowrap><INPUT type="text" name="keyword6" value="@keyword6#" maxlength="64" size="18"></TD>
+  <td nowrap><INPUT type="text" name="keyword7" value="@keyword7#" maxlength="64" size="18"></TD>
+</TR>
+ <tr>
+  <td nowrap><INPUT type="text" name="keyword8" value="@keyword8#" maxlength="64" size="18"></TD>
+  <td nowrap><INPUT type="text" name="keyword9" value="@keyword9#" maxlength="64" size="18"></TD>
+  <td nowrap><INPUT type="text" name="keyword10" value="@keyword10#" maxlength="64" size="18"></TD>
+</TR>
+ </table></TD>
+</TR>
+<tr>
+  <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+  <td width="8" background="UI_04.gif"> </TD>
+  <td><hr class="std"></TD>
+</TR>
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">Blocked Services</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td nowrap>
+
+ <table class="std" border="0">
+ <tr>
+  <td nowrap>
+<SELECT size="1" name="blocked_service0" onchange="setservice(this, this.form.port0_start, this.form.port0_end, this.form.svc_type0, true)">
+<!--
+<OPTION value="None">None</OPTION>
+<OPTION value="DNS">DNS</OPTION>
+<OPTION value="PING">Ping</OPTION>
+<OPTION value="HTTP">HTTP</OPTION>
+<OPTION value="HTTPS">HTTPS</OPTION>
+<OPTION value="FTP">FTP</OPTION>
+<OPTION value="POP3">POP3</OPTION>
+<OPTION value="IMAP">IMAP</OPTION>
+<OPTION value="SMTP">SMTP</OPTION>
+<OPTION value="NNTP">NNTP</OPTION>
+<OPTION value="TELNET">Telnet</OPTION>
+<OPTION value="SNMP">SNMP</OPTION>
+<OPTION value="TFTP">TFTP</OPTION>
+<OPTION value="IKE">IKE</OPTION>
+<OPTION value="userdef">User-Defined</OPTION>
+-->
+<SCRIPT language="javascript">
+      var i=0;
+	for(;i<services_length;i++)
+      		document.write("<option value=\""+services[i].name+"\">"+services[i].name+ " [ "+
+			services[i].start+" ~ "+
+			services[i].end + " ]" + "</option>");
+      </SCRIPT>
+</select>&nbsp; </TD>
+  <td nowrap><INPUT class="num" maxlength="5" size="6" name="port0_start" value="@port0_start#"></TD>
+  <td nowrap> ~ </TD>
+  <td nowrap><INPUT class="num" maxlength="5" size="6" name="port0_end" value="@port0_end#"> &nbsp;</TD>
+  <td nowrap><select name="svc_type0" size="1">
+	 <option value="icmp">ICMP</option>
+	 <option value="tcp">TCP</option>
+	 <option value="udp">UDP</option>
+	 <option value="both">TCP &amp; UDP</option>
+	 </select></td>
+
+</TR>
+ <tr>
+  <td nowrap>
+  <SELECT size="1" name="blocked_service1" onchange="setservice(this, this.form.port1_start, this.form.port1_end, this.form.svc_type1, true)">
+<!--
+<OPTION value="None">None</OPTION>
+<OPTION value="DNS">DNS</OPTION>
+<OPTION value="PING">Ping</OPTION>
+<OPTION value="HTTP">HTTP</OPTION>
+<OPTION value="HTTPS">HTTPS</OPTION>
+<OPTION value="FTP">FTP</OPTION>
+<OPTION value="POP3">POP3</OPTION>
+<OPTION value="IMAP">IMAP</OPTION>
+<OPTION value="SMTP">SMTP</OPTION>
+<OPTION value="NNTP">NNTP</OPTION>
+<OPTION value="TELNET">Telnet</OPTION>
+<OPTION value="SNMP">SNMP</OPTION>
+<OPTION value="TFTP">TFTP</OPTION>
+<OPTION value="IKE">IKE</OPTION>
+<OPTION value="userdef">User-Defined</OPTION>
+--><SCRIPT language="javascript">
+      var i=0;
+	for(;i<services_length;i++)
+      		document.write("<option value=\""+services[i].name+"\">"+services[i].name+ " [ "+
+			services[i].start+" ~ "+
+			services[i].end + " ]" + "</option>");
+      </SCRIPT>
+  </select>&nbsp; </TD>
+  <td nowrap><INPUT class="num" maxlength="5" size="6" name="port1_start" value="@port1_start#"></TD>
+  <td nowrap> ~ </TD>
+  <td nowrap><INPUT class="num" maxlength="5" size="6" name="port1_end" value="@port1_end#"> &nbsp;</TD>
+  <td nowrap><select name="svc_type1" size="1">
+	 <option value="icmp">ICMP</option>
+	 <option value="tcp">TCP</option>
+	 <option value="udp">UDP</option>
+	 <option value="both">TCP &amp; UDP</option>
+	 </select></td>
+</TR>
+
+</TR>
+ <tr>
+  <td nowrap>
+   <INPUT type="button" name="editportservice" value="Add/Edit Service" onClick="openDataSubWin('setup.cgi?next_file=Port_Services.htm',bigsub);">
+  </TD>
+  <td nowrap></TD>
+  <td nowrap></TD>
+  <td nowrap></TD>
+  <td nowrap>
+  	</td>
+</TR>
+<!--
+<tr>
+ <td nowrap colspan="5"><INPUT type="button" name="editpclist" value="Edit List of PCs" onClick="openDataSubWin('setup.cgi?next_file=EditList.htm',bigsub);"></td>
+</tr>
+</table>
+</TD>
+</TR>
+-->
+<tr>
+ <td nowrap colspan="5"><br></td>
+</tr>
+</table>
+</TD>
+</TR>
+
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="SUBMIT" name="save" value="Save Settings" class="stdbutton" onClick="return checkData();">
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=AccessRes.htm'"> &nbsp;  &nbsp; </TD>
+</TR>
+
+
+</table></div>
+
+
+
+<input type="hidden" name="h_access_policy" value="@h_access_policy#">
+<input type="hidden" name="h_f_status1" value="@h_f_status1#">
+<input type="hidden" name="h_f_status2" value="@h_f_status2#">
+<input type="hidden" name="h_alldays" value="@h_alldays#">
+<input type="hidden" name="h_sun" value="@h_sun#">
+<input type="hidden" name="h_mon" value="@h_mon#">
+<input type="hidden" name="h_tue" value="@h_tue#">
+<input type="hidden" name="h_wed" value="@h_wed#">
+<input type="hidden" name="h_thurs" value="@h_thurs#">
+<input type="hidden" name="h_fri" value="@h_fri#">
+<input type="hidden" name="h_sat" value="@h_sat#">
+<input type="hidden" name="h_time" value="@h_time#">
+<input type="hidden" name="h_starthour" value="@h_starthour#">
+<input type="hidden" name="h_startminute" value="@h_startminute#">
+<input type="hidden" name="h_endhour" value="@h_endhour#">
+<input type="hidden" name="h_endminute" value="@h_endminute#">
+<input type="hidden" name="h_blocked_service0" value="@h_blocked_service0#">
+<input type="hidden" name="h_blocked_service1" value="@h_blocked_service1#">
+<input type="hidden" name="h_svc_type0" value="@h_svc_type0#">
+<input type="hidden" name="h_svc_type1" value="@h_svc_type1#">
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="AccessRes.htm">
+<input type="hidden" name="next_file" value="AccessRes.htm">
+<input type="hidden" name="message" value="@msg_text#">
+</form>
+</body>
+
+</html>

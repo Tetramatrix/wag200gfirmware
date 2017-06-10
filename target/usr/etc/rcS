@@ -1,0 +1,198 @@
+#!/bin/sh
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/sbin/scripts
+
+UTC=yes
+
+mount -n -t proc proc /proc
+mount -n -t ramfs ramfs /tmp
+
+# build var directories 
+/bin/mkdir -m 0777 /tmp/var
+/bin/mkdir -m 0777 /var/lock
+/bin/mkdir -m 0777 /var/log
+/bin/mkdir -m 0777 /var/run
+/bin/mkdir -m 0777 /var/tmp
+/bin/mkdir -m 0777 /tmp/etc
+/bin/mkdir -m 0755 /etc/dnrd
+/bin/mkdir -m 0777 /var/lib
+/bin/mkdir -m 0777 /var/lib/dhcp-fwd
+
+/bin/cp -a /usr/etc/* /etc
+/bin/mknod -m 0777 /dev/ptyp0 c 2 0
+/bin/mknod -m 0777 /dev/ptyp1 c 2 1
+/bin/mknod -m 0777 /dev/ptyp2 c 2 2
+/bin/mknod -m 0777 /dev/ptyp3 c 2 3
+/bin/mknod -m 0777 /dev/ptyp4 c 2 4
+/bin/mknod -m 0777 /dev/ptyp5 c 2 5
+/bin/mknod -m 0777 /dev/ptyp6 c 2 6
+/bin/mknod -m 0777 /dev/ptyp7 c 2 7
+/bin/mknod -m 0777 /dev/ptyp8 c 2 8
+/bin/mknod -m 0777 /dev/ptyp9 c 2 9
+/bin/mknod -m 0777 /dev/ptypa c 2 10
+/bin/mknod -m 0777 /dev/ptypb c 2 11
+/bin/mknod -m 0777 /dev/ptypc c 2 12
+/bin/mknod -m 0777 /dev/ptypd c 2 13
+/bin/mknod -m 0777 /dev/ptype c 2 14
+/bin/mknod -m 0777 /dev/ptypf c 2 15
+
+/bin/mknod -m 0777 /dev/ttyp0 c 3 0
+/bin/mknod -m 0777 /dev/ttyp1 c 3 1
+/bin/mknod -m 0777 /dev/ttyp2 c 3 2
+/bin/mknod -m 0777 /dev/ttyp3 c 3 3
+/bin/mknod -m 0777 /dev/ttyp4 c 3 4
+/bin/mknod -m 0777 /dev/ttyp5 c 3 5
+/bin/mknod -m 0777 /dev/ttyp6 c 3 6
+/bin/mknod -m 0777 /dev/ttyp7 c 3 7
+/bin/mknod -m 0777 /dev/ttyp8 c 3 8
+/bin/mknod -m 0777 /dev/ttyp9 c 3 9
+/bin/mknod -m 0777 /dev/ttypa c 3 10
+/bin/mknod -m 0777 /dev/ttypb c 3 11
+/bin/mknod -m 0777 /dev/ttypc c 3 12
+/bin/mknod -m 0777 /dev/ttypd c 3 13
+/bin/mknod -m 0777 /dev/ttype c 3 14
+/bin/mknod -m 0777 /dev/ttypf c 3 15
+
+# insert modules
+/sbin/insmod /lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/drivers/atm/tiatm.o
+/sbin/insmod /lib/modules/push_button.o
+/sbin/insmod /lib/modules/led.o
+/bin/echo b50>/proc/led
+
+#enable sercomm flash utility
+/usr/sbin/download
+
+# start services
+/usr/sbin/brctl addbr br0
+/usr/sbin/brctl stp br0 no
+/sbin/ifconfig eth0 up
+/usr/sbin/brctl addif br0 eth0
+
+# stamp lan start time
+/bin/cp /proc/uptime /tmp/lan_uptime
+/bin/cp /usr/sbin/upgrade_flash.cgi /tmp/upgrade_flash.cgi
+
+# increase lan interface waiting queue length
+/sbin/ifconfig br0 txqueuelen 1000
+
+ifconfig lo 127.0.0.1
+route add -net 127.0.0.0 netmask 255.255.0.0 lo
+
+#
+/sbin/klogd&
+#
+#/usr/sbin/rc start
+#
+/usr/sbin/rc printk start
+#
+/usr/sbin/rc lan start
+#
+#/usr/sbin/rc wlan create
+#
+/usr/sbin/rc wlan start
+#
+#/usr/sbin/rc syslogd start
+#
+/sbin/syslogd&
+#
+# start webinterface
+/usr/sbin/rc httpd start
+#
+# set nvram for webinterace ???
+/usr/sbin/cmd_agent_ap
+#
+# get nvram for webinterface ???
+/usr/sbin/pb_ap&
+#
+/usr/sbin/rc dhcpd start
+#
+/usr/sbin/rc ntp start
+#
+/usr/sbin/rc route start
+#
+/usr/sbin/rc ripd start
+#
+# Simple Network Management Protocol 
+/usr/sbin/rc snmp start
+#
+/usr/sbin/crond&
+#
+# cfgmgr Command 
+/usr/sbin/scfgmgr
+#
+# monitor pppd ???
+/usr/sbin/atm_monitor
+#
+# wizard media server ??? 
+/usr/sbin/wizd&
+#
+/usr/sbin/rc upnp start
+#
+#add for upnpd
+route add -net 239.0.0.0 netmask 255.0.0.0 br0
+#
+# tune vm
+echo "0 0" > /proc/sys/vm/pagetable_cache
+# router
+echo 1 > /proc/sys/net/ipv4/ip_forward
+# pppox
+echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+# add more conntrack
+echo 3072 > /proc/sys/net/ipv4/ip_conntrack_max
+# ignore_all not yet used: this should be satisfactory
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+# drop spoofed addr: turn this off when rip is on ?
+echo 1 > /proc/sys/net/ipv4/conf/default/rp_filter
+echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
+# do not honor source route flags
+echo 0 > /proc/sys/net/ipv4/conf/default/accept_source_route
+echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+# this needs proper sampling on av_blog to determine optimal value
+# for now just observe softnet_stats to see # time was throttled
+# historical value was 300
+echo 100 > /proc/sys/net/core/netdev_max_backlog
+
+# start ssh daemon
+#
+/usr/sbin/dropbear
+
+#
+# Set the password for sshd
+#
+WEBPASSWD=`nvram get http_password | awk 'BEGIN{FS="=";}{print $2;}'`
+/usr/bin/passwd -p $WEBPASSWD root
+
+#
+# Automount of mtd5 minix filesystem
+# Need at least a shell to configure
+# (run /usr/sbin/make_mtd5)
+#
+# check nvram usemtd5 and mount mtd5
+#
+
+USE_MTD5=`/usr/sbin/nvram get usemtd5`
+
+if [ "$USE_MTD5" = "name=ON" ]
+        then
+        MTD5SIZE=`cat /proc/partitions | grep mtdblockf | grep -v grep | awk '{print $3}'`
+        if [ "$MTD5SIZE" -eq 256 ]
+        then
+                IS_MTD5_OK=`fsck.minix -fs /dev/mtdblock/5 | grep "256 blocks" | grep -v grep | awk '{print $1}'`
+                if [ "$IS_MTD5_OK" -eq 256 ]
+                        then
+                        /bin/mount /dev/mtdblock/5 /mnt/mtd5
+                fi
+        fi
+fi
+
+sleep 5
+
+#
+# Hook
+# execute local script rc.local if present
+#
+
+if [ -x /mnt/mtd5/rc.local ]
+ then
+    /mnt/mtd5/rc.local&
+fi
+

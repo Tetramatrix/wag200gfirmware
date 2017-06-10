@@ -1,0 +1,4 @@
+* Ultix 4.3 (castor) cc didn't like stat.h without types.h. ultrix cc is
+  does not support prototypes properly, using gcc instead.
+  (17-Nov-1996)
+* wrote examples, jul-10-1999, mm

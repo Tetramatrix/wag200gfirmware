@@ -1,0 +1,1116 @@
+arp_tables.o: arp_tables.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_arp/arp_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_arp/arp_tables.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netfilter/debug.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/kmod.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+arptable_filter.o: arptable_filter.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_arp/arp_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_arp/arp_tables.h)
+ip_conntrack_core.o: ip_conntrack_core.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stddef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stddef.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sercomm/code.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/match/layer7.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/match/layer7/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netfilter/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sysctl.h)
+ip_conntrack_ftp.o: ip_conntrack_ftp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_ftp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_ftp.h)
+ip_conntrack_h323.o: ip_conntrack_h323.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tuple.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tuple.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_h323.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_h323.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/nat/needed.h)
+ip_conntrack_irc.o: ip_conntrack_irc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_irc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_irc.h)
+ip_conntrack_pptp.o: ip_conntrack_pptp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_pptp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_pptp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/pptp/debug.h)
+ip_conntrack_proto_esp.o: ip_conntrack_proto_esp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_esp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_esp.h)
+ip_conntrack_proto_generic.o: ip_conntrack_proto_generic.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h)
+ip_conntrack_proto_icmp.o: ip_conntrack_proto_icmp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h)
+ip_conntrack_proto_tcp.o: ip_conntrack_proto_tcp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sercomm/code.h)
+ip_conntrack_proto_udp.o: ip_conntrack_proto_udp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h)
+ip_conntrack_rtsp.o: ip_conntrack_rtsp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rtsp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rtsp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_helpers.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_helpers.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_mime.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_mime.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/nat/needed.h)
+ip_conntrack_standalone.o: ip_conntrack_standalone.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sercomm/code.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/match/layer7.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/match/layer7/module.h)
+ip_conntrack_talk.o: ip_conntrack_talk.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_talk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_talk.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/nat/needed.h)
+ip_conntrack_tftp.o: ip_conntrack_tftp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tftp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tftp.h)
+ip_fw_compat.o: ip_fw_compat.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/compat_firewall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/compat_firewall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h)
+ip_fw_compat_masq.o: ip_fw_compat_masq.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h)
+ip_fw_compat_redir.o: ip_fw_compat_redir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netfilter/debug.h)
+ip_nat_core.o: ip_nat_core.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h)
+ip_nat_ftp.o: ip_nat_ftp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_ftp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_ftp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h)
+ip_nat_h323.o: ip_nat_h323.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tuple.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tuple.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_h323.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_h323.h)
+ip_nat_helper.o: ip_nat_helper.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h)
+ip_nat_irc.o: ip_nat_irc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_irc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_irc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h)
+ip_nat_pptp.o: ip_nat_pptp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_pptp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_pptp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_pptp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_pptp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h)
+ip_nat_proto_esp.o: ip_nat_proto_esp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h)
+ip_nat_proto_icmp.o: ip_nat_proto_icmp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h)
+ip_nat_proto_tcp.o: ip_nat_proto_tcp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h)
+ip_nat_proto_udp.o: ip_nat_proto_udp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h)
+ip_nat_proto_unknown.o: ip_nat_proto_unknown.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h)
+ip_nat_rtsp.o: ip_nat_rtsp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rtsp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rtsp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_helpers.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_helpers.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_mime.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_mime.h)
+ip_nat_rule.o: ip_nat_rule.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h)
+ip_nat_snmp_basic.o: ip_nat_snmp_basic.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/checksum.h)
+ip_nat_standalone.o: ip_nat_standalone.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/brlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h)
+ip_nat_talk.o: ip_nat_talk.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_talk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_talk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h)
+ip_nat_tftp.o: ip_nat_tftp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tftp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tftp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h)
+ip_queue.o: ip_queue.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/notifier.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/notifier.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sysctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_queue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_queue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/route/fwmark.h)
+ip_set.o: ip_set.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jhash.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jhash.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/set/max.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/set/hashsize.h)
+ip_set_iphash.o: ip_set_iphash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_iphash.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_iphash.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_jhash.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_jhash.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_prime.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_prime.h)
+ip_set_ipmap.o: ip_set_ipmap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_ipmap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_ipmap.h)
+ip_set_iptree.o: ip_set_iptree.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_iptree.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_iptree.h)
+ip_set_macipmap.o: ip_set_macipmap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_macipmap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_macipmap.h)
+ip_set_nethash.o: ip_set_nethash.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_nethash.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_nethash.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_jhash.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_jhash.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_prime.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_prime.h)
+ip_set_portmap.o: ip_set_portmap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/softirq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_portmap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set_portmap.h)
+ip_tables.o: ip_tables.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/semaphore.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netfilter/debug.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/kmod.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+ipchains_core.o: ipchains_core.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sockios.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sockios.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/compat_firewall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/compat_firewall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipchains_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipchains_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netlink/dev.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netlink/dev/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h)
+ipfwadm_core.o: ipfwadm_core.c \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netlink/dev.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netlink/dev/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sockios.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sockios.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipfwadm_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipfwadm_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/compat_firewall.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/compat_firewall.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/acct.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/firewall.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/firewall/netlink.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/firewall/verbose.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/transparent/proxy.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/masquerade.h)
+ipt_DSCP.o: ipt_DSCP.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_DSCP.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_DSCP.h)
+ipt_ECN.o: ipt_ECN.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ECN.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ECN.h)
+ipt_FTOS.o: ipt_FTOS.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_FTOS.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_FTOS.h)
+ipt_IPV4OPTSSTRIP.o: ipt_IPV4OPTSSTRIP.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_LOG.o: ipt_LOG.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_LOG.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_LOG.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_logging.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_logging.h)
+ipt_MARK.o: ipt_MARK.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_MARK.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_MARK.h)
+ipt_MASQUERADE.o: ipt_MASQUERADE.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/route/fwmark.h)
+ipt_MIRROR.o: ipt_MIRROR.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h)
+ipt_NETLINK.o: ipt_NETLINK.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_NETLINK.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_NETLINK.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h)
+ipt_REDIRECT.o: ipt_REDIRECT.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h)
+ipt_REJECT.o: ipt_REJECT.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_REJECT.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_REJECT.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netfilter/debug.h)
+ipt_SAME.o: ipt_SAME.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_SAME.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_SAME.h)
+ipt_SET.o: ipt_SET.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_set.h)
+ipt_TCPMSS.o: ipt_TCPMSS.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TCPMSS.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TCPMSS.h)
+ipt_TOS.o: ipt_TOS.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TOS.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TOS.h)
+ipt_TRIGGER.o: ipt_TRIGGER.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/protocol.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tuple.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tuple.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_autofw.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_autofw.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_nat_rule.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TRIGGER.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TRIGGER.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h)
+ipt_TTL.o: ipt_TTL.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TTL.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_TTL.h)
+ipt_ULOG.o: ipt_ULOG.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_logging.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_logging.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ULOG.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ULOG.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h)
+ipt_ah.o: ipt_ah.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ah.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ah.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_connlimit.o: ipt_connlimit.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_core.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_connlimit.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_connlimit.h)
+ipt_conntrack.o: ipt_conntrack.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_conntrack.h)
+ipt_dscp.o: ipt_dscp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_dscp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_dscp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_dstlimit.o: ipt_dstlimit.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/jhash.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/jhash.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/listhelp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_dstlimit.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_dstlimit.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h)
+ipt_ecn.o: ipt_ecn.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ecn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ecn.h)
+ipt_esp.o: ipt_esp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_esp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_esp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_helper.o: ipt_helper.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack_helper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_helper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_helper.h)
+ipt_iprange.o: ipt_iprange.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_iprange.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_iprange.h)
+ipt_layer7.o: ipt_layer7.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/lockhelp.h) \
+   regexp/regexp.c $(dep_regexp/regexp.c) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_layer7.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_layer7.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/match/layer7/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/nf/match/layer7/maxdatalen.h)
+ipt_length.o: ipt_length.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_length.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_length.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_limit.o: ipt_limit.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_limit.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_limit.h)
+ipt_mac.o: ipt_mac.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_mac.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_mac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_mark.o: ipt_mark.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_mark.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_mark.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_multiport.o: ipt_multiport.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_multiport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_multiport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_owner.o: ipt_owner.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_owner.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_owner.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smp.h)
+ipt_pkttype.o: ipt_pkttype.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_packet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_packet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_pkttype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_pkttype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_psd.o: ipt_psd.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_psd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_psd.h)
+ipt_random.o: ipt_random.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_random.h)
+ipt_recent.o: ipt_recent.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_recent.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_recent.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+ipt_set.o: ipt_set.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_set.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_set.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_set.h)
+ipt_state.o: ipt_state.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_conntrack.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_state.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_state.h)
+ipt_string.o: ipt_string.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_string.h)
+ipt_stringGET.o: ipt_stringGET.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_stringGET.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_stringGET.h)
+ipt_stringHEAD.o: ipt_stringHEAD.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_stringHEAD.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_stringHEAD.h)
+ipt_stringHOST.o: ipt_stringHOST.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_stringHOST.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_stringHOST.h)
+ipt_tcpmss.o: ipt_tcpmss.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_tcpmss.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_tcpmss.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_tos.o: ipt_tos.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_tos.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_tos.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_ttl.o: ipt_ttl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ttl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ipt_ttl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+ipt_unclean.o: ipt_unclean.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+iptable_filter.o: iptable_filter.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h)
+iptable_mangle.o: iptable_mangle.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4/ip_tables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netfilter_ipv4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ip/route/fwmark.h)

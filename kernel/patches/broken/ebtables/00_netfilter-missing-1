@@ -1,0 +1,1663 @@
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/include/linux/netfilter_ipv4/ipt_ULOG.h linux/include/linux/netfilter_ipv4/ipt_ULOG.h
+--- ../vanilla/2.4/linux/include/linux/netfilter_ipv4/ipt_ULOG.h	Wed Dec 31 16:00:00 1969
++++ linux/include/linux/netfilter_ipv4/ipt_ULOG.h	Wed Jan 23 05:04:35 2002
+@@ -0,0 +1,46 @@
++/* Header file for IP tables userspace logging, Version 1.8
++ *
++ * (C) 2000-2002 by Harald Welte <laforge@gnumonks.org>
++ * 
++ * Distributed under the terms of GNU GPL */
++
++#ifndef _IPT_ULOG_H
++#define _IPT_ULOG_H
++
++#ifndef NETLINK_NFLOG
++#define NETLINK_NFLOG 	5
++#endif
++
++#define ULOG_MAC_LEN	80
++#define ULOG_PREFIX_LEN	32
++
++#define ULOG_MAX_QLEN	50
++/* Why 50? Well... there is a limit imposed by the slab cache 131000
++ * bytes. So the multipart netlink-message has to be < 131000 bytes.
++ * Assuming a standard ethernet-mtu of 1500, we could define this up
++ * to 80... but even 50 seems to be big enough. */
++
++/* private data structure for each rule with a ULOG target */
++struct ipt_ulog_info {
++	unsigned int nl_group;
++	size_t copy_range;
++	size_t qthreshold;
++	char prefix[ULOG_PREFIX_LEN];
++};
++
++/* Format of the ULOG packets passed through netlink */
++typedef struct ulog_packet_msg {
++	unsigned long mark;
++	long timestamp_sec;
++	long timestamp_usec;
++	unsigned int hook;
++	char indev_name[IFNAMSIZ];
++	char outdev_name[IFNAMSIZ];
++	size_t data_len;
++	char prefix[ULOG_PREFIX_LEN];
++	unsigned char mac_len;
++	unsigned char mac[ULOG_MAC_LEN];
++	unsigned char payload[0];
++} ulog_packet_msg_t;
++
++#endif /*_IPT_ULOG_H*/
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/include/linux/netfilter_ipv4/ipt_ah.h linux/include/linux/netfilter_ipv4/ipt_ah.h
+--- ../vanilla/2.4/linux/include/linux/netfilter_ipv4/ipt_ah.h	Wed Dec 31 16:00:00 1969
++++ linux/include/linux/netfilter_ipv4/ipt_ah.h	Wed Jan 23 05:04:38 2002
+@@ -0,0 +1,16 @@
++#ifndef _IPT_AH_H
++#define _IPT_AH_H
++
++struct ipt_ah
++{
++	u_int32_t spis[2];			/* Security Parameter Index */
++	u_int8_t  invflags;			/* Inverse flags */
++};
++
++
++
++/* Values for "invflags" field in struct ipt_ah. */
++#define IPT_AH_INV_SPI		0x01	/* Invert the sense of spi. */
++#define IPT_AH_INV_MASK	0x01	/* All possible flags. */
++
++#endif /*_IPT_AH_H*/
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/include/linux/netfilter_ipv4/ipt_esp.h linux/include/linux/netfilter_ipv4/ipt_esp.h
+--- ../vanilla/2.4/linux/include/linux/netfilter_ipv4/ipt_esp.h	Wed Dec 31 16:00:00 1969
++++ linux/include/linux/netfilter_ipv4/ipt_esp.h	Wed Jan 23 05:04:38 2002
+@@ -0,0 +1,16 @@
++#ifndef _IPT_ESP_H
++#define _IPT_ESP_H
++
++struct ipt_esp
++{
++	u_int32_t spis[2];			/* Security Parameter Index */
++	u_int8_t  invflags;			/* Inverse flags */
++};
++
++
++
++/* Values for "invflags" field in struct ipt_esp. */
++#define IPT_ESP_INV_SPI		0x01	/* Invert the sense of spi. */
++#define IPT_ESP_INV_MASK	0x01	/* All possible flags. */
++
++#endif /*_IPT_ESP_H*/
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/include/linux/netfilter_ipv4.h linux/include/linux/netfilter_ipv4.h
+--- ../vanilla/2.4/linux/include/linux/netfilter_ipv4.h	Thu Nov 22 11:48:57 2001
++++ linux/include/linux/netfilter_ipv4.h	Wed Jan 23 16:31:58 2002
+@@ -73,4 +73,81 @@
+ /* 2.4 firewalling went 64 through 67. */
+ #define SO_ORIGINAL_DST 80
+ 
++
++/* route_me_harder function, used by iptable_nat, iptable_mangle + ip_queue 
++ *
++ * Ideally this would be ins some netfilter_utility module, but creating this
++ * module for just one function doesn't make sense. -HW */
++
++#include <linux/netdevice.h>
++#include <linux/inetdevice.h>
++#include <linux/skbuff.h>
++#include <net/sock.h>
++#include <net/route.h>
++#include <linux/ip.h>
++
++static inline int route_me_harder(struct sk_buff **pskb)
++{
++	struct iphdr *iph = (*pskb)->nh.iph;
++	struct rtable *rt;
++	struct rt_key key = { dst:iph->daddr,
++			      src:iph->saddr,
++			      oif:(*pskb)->sk ? (*pskb)->sk->bound_dev_if : 0,
++			      tos:RT_TOS(iph->tos)|RTO_CONN,
++#ifdef CONFIG_IP_ROUTE_FWMARK
++			      fwmark:(*pskb)->nfmark
++#endif
++			    };
++	struct net_device *dev_src = NULL;
++	int err;
++
++	/* accomodate ip_route_output_slow(), which expects the key src to be
++	   0 or a local address; however some non-standard hacks like
++	   ipt_REJECT.c:send_reset() can cause packets with foreign
++           saddr to be appear on the NF_IP_LOCAL_OUT hook -MB */
++	if(key.src && !(dev_src = ip_dev_find(key.src)))
++		key.src = 0;
++
++	if ((err=ip_route_output_key(&rt, &key)) != 0) {
++		printk("route_me_harder: ip_route_output_key(dst=%u.%u.%u.%u, src=%u.%u.%u.%u, oif=%d, tos=0x%x, fwmark=0x%lx) error %d\n",
++			NIPQUAD(iph->daddr), NIPQUAD(iph->saddr),
++			(*pskb)->sk ? (*pskb)->sk->bound_dev_if : 0,
++			RT_TOS(iph->tos)|RTO_CONN,
++#ifdef CONFIG_IP_ROUTE_FWMARK
++			(*pskb)->nfmark,
++#else
++			0UL,
++#endif
++			err);
++		goto out;
++	}
++
++	/* Drop old route. */
++	dst_release((*pskb)->dst);
++
++	(*pskb)->dst = &rt->u.dst;
++
++	/* Change in oif may mean change in hh_len. */
++	if (skb_headroom(*pskb) < (*pskb)->dst->dev->hard_header_len) {
++		struct sk_buff *nskb;
++
++		nskb = skb_realloc_headroom(*pskb,
++					    (*pskb)->dst->dev->hard_header_len);
++		if (!nskb) {
++			err = -ENOMEM;
++			goto out;
++		}
++		if ((*pskb)->sk)
++			skb_set_owner_w(nskb, (*pskb)->sk);
++		kfree_skb(*pskb);
++		*pskb = nskb;
++	}
++
++out:
++	if (dev_src)
++		dev_put(dev_src);
++
++	return err;
++}
++
+ #endif /*__LINUX_IP_NETFILTER_H*/
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/ip_nat_standalone.c linux/net/ipv4/netfilter/ip_nat_standalone.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/ip_nat_standalone.c	Thu Jan 24 08:09:38 2002
++++ linux/net/ipv4/netfilter/ip_nat_standalone.c	Wed Jan 23 11:34:58 2002
+@@ -166,46 +166,6 @@
+ 	return ip_nat_fn(hooknum, pskb, in, out, okfn);
+ }
+ 
+-static int route_me_harder(struct sk_buff **pskb)
+-{
+-	struct iphdr *iph = (*pskb)->nh.iph;
+-	struct rtable *rt;
+-	struct rt_key key = { dst:iph->daddr,
+-			      src:iph->saddr,
+-			      oif:(*pskb)->sk ? (*pskb)->sk->bound_dev_if : 0,
+-			      tos:RT_TOS(iph->tos)|RTO_CONN,
+-#ifdef CONFIG_IP_ROUTE_FWMARK
+-			      fwmark:(*pskb)->nfmark
+-#endif
+-			    };
+-
+-	if (ip_route_output_key(&rt, &key) != 0) {
+-		printk("route_me_harder: No more route.\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Drop old route. */
+-	dst_release((*pskb)->dst);
+-
+-	(*pskb)->dst = &rt->u.dst;
+-
+-	/* Change in oif may mean change in hh_len. */
+-	if (skb_headroom(*pskb) < (*pskb)->dst->dev->hard_header_len) {
+-		struct sk_buff *nskb;
+-
+-		nskb = skb_realloc_headroom(*pskb,
+-					    (*pskb)->dst->dev
+-					    ->hard_header_len);
+-		if (!nskb)
+-			return -ENOMEM;
+-		if ((*pskb)->sk)
+-			skb_set_owner_w(nskb, (*pskb)->sk);
+-		kfree_skb(*pskb);
+-		*pskb = nskb;
+-	}
+-	return 0;
+-}
+-
+ static unsigned int
+ ip_nat_local_fn(unsigned int hooknum,
+ 		struct sk_buff **pskb,
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/ip_queue.c linux/net/ipv4/netfilter/ip_queue.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/ip_queue.c	Sun Sep 30 12:26:08 2001
++++ linux/net/ipv4/netfilter/ip_queue.c	Wed Jan 23 11:34:58 2002
+@@ -216,32 +216,6 @@
+ 	kfree(q);
+ }
+ 
+-/* With a chainsaw... */
+-static int route_me_harder(struct sk_buff *skb)
+-{
+-	struct iphdr *iph = skb->nh.iph;
+-	struct rtable *rt;
+-
+-	struct rt_key key = {
+-				dst:iph->daddr, src:iph->saddr,
+-				oif:skb->sk ? skb->sk->bound_dev_if : 0,
+-				tos:RT_TOS(iph->tos)|RTO_CONN,
+-#ifdef CONFIG_IP_ROUTE_FWMARK
+-				fwmark:skb->nfmark
+-#endif
+-			};
+-
+-	if (ip_route_output_key(&rt, &key) != 0) {
+-		printk("route_me_harder: No more route.\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Drop old route. */
+-	dst_release(skb->dst);
+-	skb->dst = &rt->u.dst;
+-	return 0;
+-}
+-
+ static int ipq_mangle_ipv4(ipq_verdict_msg_t *v, ipq_queue_element_t *e)
+ {
+ 	int diff;
+@@ -287,7 +261,7 @@
+ 		if (!(iph->tos == e->rt_info.tos
+ 		      && iph->daddr == e->rt_info.daddr
+ 		      && iph->saddr == e->rt_info.saddr))
+-			return route_me_harder(e->skb);
++			return route_me_harder(&e->skb);
+ 	}
+ 	return 0;
+ }
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/ipfwadm_core.c linux/net/ipv4/netfilter/ipfwadm_core.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/ipfwadm_core.c	Thu Jan 24 08:09:39 2002
++++ linux/net/ipv4/netfilter/ipfwadm_core.c	Thu Jan 24 07:50:42 2002
+@@ -20,7 +20,7 @@
+  *	license in recognition of the original copyright.
+  *				-- Alan Cox.
+  *
+- *	$Id: ipfwadm_core.c,v 1.9.2.1 2002/01/23 13:18:19 davem Exp $
++ *	$Id: ipfwadm_core.c,v 1.9.2.2 2002/01/24 15:50:42 davem Exp $
+  *
+  *	Ported from BSD to Linux,
+  *		Alan Cox 22/Nov/1994.
+@@ -688,7 +688,7 @@
+ 		ftmp = *chainptr;
+ 		*chainptr = ftmp->fw_next;
+ 		kfree(ftmp);
+-		MOD_DEC_USE_COUNT();
++		MOD_DEC_USE_COUNT;
+ 	}
+ 	restore_flags(flags);
+ }
+@@ -732,7 +732,7 @@
+ 	ftmp->fw_next = *chainptr;
+        	*chainptr=ftmp;
+ 	restore_flags(flags);
+-	MOD_INC_USE_COUNT();
++	MOD_INC_USE_COUNT;
+ 	return(0);
+ }
+ 
+@@ -783,7 +783,7 @@
+ 	else
+         	*chainptr=ftmp;
+ 	restore_flags(flags);
+-	MOD_INC_USE_COUNT();
++	MOD_INC_USE_COUNT;
+ 	return(0);
+ }
+ 
+@@ -858,7 +858,7 @@
+ 	}
+ 	restore_flags(flags);
+ 	if (was_found) {
+-		MOD_DEC_USE_COUNT();
++		MOD_DEC_USE_COUNT;
+ 		return 0;
+ 	} else
+ 		return(EINVAL);
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/ipt_ULOG.c linux/net/ipv4/netfilter/ipt_ULOG.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/ipt_ULOG.c	Wed Dec 31 16:00:00 1969
++++ linux/net/ipv4/netfilter/ipt_ULOG.c	Wed Jan 23 05:04:35 2002
+@@ -0,0 +1,349 @@
++/*
++ * netfilter module for userspace packet logging daemons
++ *
++ * (C) 2000-2002 by Harald Welte <laforge@gnumonks.org>
++ *
++ * 2000/09/22 ulog-cprange feature added
++ * 2001/01/04 in-kernel queue as proposed by Sebastian Zander 
++ * 						<zander@fokus.gmd.de>
++ * 2001/01/30 per-rule nlgroup conflicts with global queue. 
++ *            nlgroup now global (sysctl)
++ * 2001/04/19 ulog-queue reworked, now fixed buffer size specified at
++ * 	      module loadtime -HW
++ *
++ * Released under the terms of the GPL
++ *
++ * This module accepts two parameters: 
++ * 
++ * nlbufsiz:
++ *   The parameter specifies how big the buffer for each netlink multicast
++ * group is. e.g. If you say nlbufsiz=8192, up to eight kb of packets will
++ * get accumulated in the kernel until they are sent to userspace. It is
++ * NOT possible to allocate more than 128kB, and it is strongly discouraged,
++ * because atomically allocating 128kB inside the network rx softirq is not
++ * reliable. Please also keep in mind that this buffer size is allocated for
++ * each nlgroup you are using, so the total kernel memory usage increases
++ * by that factor.
++ *
++ * flushtimeout:
++ *   Specify, after how many clock ticks (intel: 100 per second) the queue
++ * should be flushed even if it is not full yet.
++ *
++ * ipt_ULOG.c,v 1.15 2002/01/18 21:33:19 laforge Exp
++ */
++
++#include <linux/module.h>
++#include <linux/version.h>
++#include <linux/config.h>
++#include <linux/spinlock.h>
++#include <linux/socket.h>
++#include <linux/skbuff.h>
++#include <linux/kernel.h>
++#include <linux/timer.h>
++#include <linux/netlink.h>
++#include <linux/netdevice.h>
++#include <linux/mm.h>
++#include <linux/socket.h>
++#include <linux/netfilter_ipv4/ip_tables.h>
++#include <linux/netfilter_ipv4/ipt_ULOG.h>
++#include <linux/netfilter_ipv4/lockhelp.h>
++#include <net/sock.h>
++
++MODULE_LICENSE("GPL");
++
++#define ULOG_NL_EVENT		111		/* Harald's favorite number */
++#define ULOG_MAXNLGROUPS	32		/* numer of nlgroups */
++
++#if 0
++#define DEBUGP(format, args...)	printk(__FILE__ ":" __FUNCTION__ ":" \
++				       format, ## args)
++#else
++#define DEBUGP(format, args...)
++#endif
++
++#define PRINTR(format, args...) do { if (net_ratelimit()) printk(format, ## args); } while (0);
++
++MODULE_AUTHOR("Harald Welte <laforge@gnumonks.org>");
++MODULE_DESCRIPTION("IP tables userspace logging module");
++
++
++static unsigned int nlbufsiz = 4096;
++MODULE_PARM(nlbufsiz, "i");
++MODULE_PARM_DESC(nlbufsiz, "netlink buffer size");
++
++static unsigned int flushtimeout = 10 * HZ;
++MODULE_PARM(flushtimeout, "i");
++MODULE_PARM_DESC(flushtimeout, "buffer flush timeout");
++
++/* global data structures */
++
++typedef struct {
++	unsigned int qlen;		/* number of nlmsgs' in the skb */
++	struct nlmsghdr *lastnlh;	/* netlink header of last msg in skb */
++	struct sk_buff *skb;		/* the pre-allocated skb */
++	struct timer_list timer;	/* the timer function */
++} ulog_buff_t;
++
++static ulog_buff_t ulog_buffers[ULOG_MAXNLGROUPS];	/* array of buffers */
++
++static struct sock *nflognl;	/* our socket */
++static size_t qlen;		/* current length of multipart-nlmsg */
++DECLARE_LOCK(ulog_lock);	/* spinlock */
++
++/* send one ulog_buff_t to userspace */
++static void ulog_send(unsigned int nlgroup)
++{
++	ulog_buff_t *ub = &ulog_buffers[nlgroup];
++
++	if (timer_pending(&ub->timer)) {
++		DEBUGP("ipt_ULOG: ulog_send: timer was pending, deleting\n");
++		del_timer(&ub->timer);
++	}
++
++	/* last nlmsg needs NLMSG_DONE */
++	if (ub->qlen > 1)
++		ub->lastnlh->nlmsg_type = NLMSG_DONE;
++
++	NETLINK_CB(ub->skb).dst_groups = nlgroup;
++	DEBUGP("ipt_ULOG: throwing %d packets to netlink mask %u\n",
++		ub->qlen, nlgroup);
++	netlink_broadcast(nflognl, ub->skb, 0, nlgroup, GFP_ATOMIC);
++
++	ub->qlen = 0;
++	ub->skb = NULL;
++	ub->lastnlh = NULL;
++
++}
++
++
++/* timer function to flush queue in ULOG_FLUSH_INTERVAL time */
++static void ulog_timer(unsigned long data)
++{
++	DEBUGP("ipt_ULOG: timer function called, calling ulog_send\n");
++
++	/* lock to protect against somebody modifying our structure
++	 * from ipt_ulog_target at the same time */
++	LOCK_BH(&ulog_lock);
++	ulog_send(data);
++	UNLOCK_BH(&ulog_lock);
++}
++
++static void nflog_rcv(struct sock *sk, int len)
++{
++	printk("ipt_ULOG:nflog_rcv() did receive netlink message ?!?\n");
++}
++
++struct sk_buff *ulog_alloc_skb(unsigned int size)
++{
++	struct sk_buff *skb;
++
++	/* alloc skb which should be big enough for a whole
++	 * multipart message. WARNING: has to be <= 131000
++	 * due to slab allocator restrictions */
++
++	skb = alloc_skb(nlbufsiz, GFP_ATOMIC);
++	if (!skb) {
++		PRINTR("ipt_ULOG: can't alloc whole buffer %ub!\n",
++			nlbufsiz);
++
++		/* try to allocate only as much as we need for 
++		 * current packet */
++
++		skb = alloc_skb(size, GFP_ATOMIC);
++		if (!skb)
++			PRINTR("ipt_ULOG: can't even allocate %ub\n", size);
++	}
++
++	return skb;
++}
++
++static unsigned int ipt_ulog_target(struct sk_buff **pskb,
++				    unsigned int hooknum,
++				    const struct net_device *in,
++				    const struct net_device *out,
++				    const void *targinfo, void *userinfo)
++{
++	ulog_buff_t *ub;
++	ulog_packet_msg_t *pm;
++	size_t size, copy_len;
++	struct nlmsghdr *nlh;
++	struct ipt_ulog_info *loginfo = (struct ipt_ulog_info *) targinfo;
++
++	/* calculate the size of the skb needed */
++	if ((loginfo->copy_range == 0) ||
++	    (loginfo->copy_range > (*pskb)->len)) {
++		copy_len = (*pskb)->len;
++	} else {
++		copy_len = loginfo->copy_range;
++	}
++
++	size = NLMSG_SPACE(sizeof(*pm) + copy_len);
++
++	ub = &ulog_buffers[loginfo->nl_group];
++	
++	LOCK_BH(&ulog_lock);
++
++	if (!ub->skb) {
++		if (!(ub->skb = ulog_alloc_skb(size)))
++			goto alloc_failure;
++	} else if (ub->qlen >= loginfo->qthreshold ||
++		   size > skb_tailroom(ub->skb)) {
++		/* either the queue len is too high or we don't have 
++		 * enough room in nlskb left. send it to userspace. */
++
++		ulog_send(loginfo->nl_group);
++
++		if (!(ub->skb = ulog_alloc_skb(size)))
++			goto alloc_failure;
++	}
++
++	DEBUGP("ipt_ULOG: qlen %d, qthreshold %d\n", ub->qlen, 
++		loginfo->qthreshold);
++
++	/* NLMSG_PUT contains a hidden goto nlmsg_failure !!! */
++	nlh = NLMSG_PUT(ub->skb, 0, ub->qlen, ULOG_NL_EVENT, 
++			size - sizeof(*nlh));
++	ub->qlen++;
++
++	pm = NLMSG_DATA(nlh);
++
++	/* copy hook, prefix, timestamp, payload, etc. */
++	pm->data_len = copy_len;
++	pm->timestamp_sec = (*pskb)->stamp.tv_sec;
++	pm->timestamp_usec = (*pskb)->stamp.tv_usec;
++	pm->mark = (*pskb)->nfmark;
++	pm->hook = hooknum;
++	if (loginfo->prefix[0] != '\0')
++		strncpy(pm->prefix, loginfo->prefix, sizeof(pm->prefix));
++	else
++		*(pm->prefix) = '\0';
++
++	if (in && in->hard_header_len > 0
++	    && (*pskb)->mac.raw != (void *) (*pskb)->nh.iph
++	    && in->hard_header_len <= ULOG_MAC_LEN) {
++		memcpy(pm->mac, (*pskb)->mac.raw, in->hard_header_len);
++		pm->mac_len = in->hard_header_len;
++	}
++
++	if (in)
++		strncpy(pm->indev_name, in->name, sizeof(pm->indev_name));
++	else
++		pm->indev_name[0] = '\0';
++
++	if (out)
++		strncpy(pm->outdev_name, out->name, sizeof(pm->outdev_name));
++	else
++		pm->outdev_name[0] = '\0';
++
++	if (copy_len)
++		memcpy(pm->payload, (*pskb)->data, copy_len);
++	
++	/* check if we are building multi-part messages */
++	if (ub->qlen > 1) {
++		ub->lastnlh->nlmsg_flags |= NLM_F_MULTI;
++	}
++
++	/* if threshold is reached, send message to userspace */
++	if (qlen >= loginfo->qthreshold) {
++		if (loginfo->qthreshold > 1)
++			nlh->nlmsg_type = NLMSG_DONE;
++	}
++
++	ub->lastnlh = nlh;
++
++	/* if timer isn't already running, start it */
++	if (!timer_pending(&ub->timer)) {
++		ub->timer.expires = jiffies + flushtimeout;
++		add_timer(&ub->timer);
++	}
++
++	UNLOCK_BH(&ulog_lock);
++
++	return IPT_CONTINUE;
++
++
++nlmsg_failure:
++	PRINTR("ipt_ULOG: error during NLMSG_PUT\n");
++
++alloc_failure:
++	PRINTR("ipt_ULOG: Error building netlink message\n");
++
++	UNLOCK_BH(&ulog_lock);
++
++	return IPT_CONTINUE;
++}
++
++static int ipt_ulog_checkentry(const char *tablename,
++			       const struct ipt_entry *e,
++			       void *targinfo,
++			       unsigned int targinfosize,
++			       unsigned int hookmask)
++{
++	struct ipt_ulog_info *loginfo = (struct ipt_ulog_info *) targinfo;
++
++	if (targinfosize != IPT_ALIGN(sizeof(struct ipt_ulog_info))) {
++		DEBUGP("ipt_ULOG: targinfosize %u != 0\n", targinfosize);
++		return 0;
++	}
++
++	if (loginfo->prefix[sizeof(loginfo->prefix) - 1] != '\0') {
++		DEBUGP("ipt_ULOG: prefix term %i\n",
++		       loginfo->prefix[sizeof(loginfo->prefix) - 1]);
++		return 0;
++	}
++
++	if (loginfo->qthreshold > ULOG_MAX_QLEN) {
++		DEBUGP("ipt_ULOG: queue threshold %i > MAX_QLEN\n",
++			loginfo->qthreshold);
++		return 0;
++	}
++
++	return 1;
++}
++
++static struct ipt_target ipt_ulog_reg =
++    { {NULL, NULL}, "ULOG", ipt_ulog_target, ipt_ulog_checkentry, NULL,
++THIS_MODULE
++};
++
++static int __init init(void)
++{
++	int i;
++
++	DEBUGP("ipt_ULOG: init module\n");
++
++	if (nlbufsiz >= 128*1024) {
++		printk("Netlink buffer has to be <= 128kB\n");
++		return -EINVAL;
++	}
++
++	/* initialize ulog_buffers */
++	for (i = 0; i < ULOG_MAXNLGROUPS; i++) {
++		memset(&ulog_buffers[i], 0, sizeof(ulog_buff_t));
++		init_timer(&ulog_buffers[i].timer);
++		ulog_buffers[i].timer.function = ulog_timer;
++		ulog_buffers[i].timer.data = i;
++	}
++
++	nflognl = netlink_kernel_create(NETLINK_NFLOG, nflog_rcv);
++	if (!nflognl)
++		return -ENOMEM;
++
++	if (ipt_register_target(&ipt_ulog_reg) != 0) {
++		sock_release(nflognl->socket);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void __exit fini(void)
++{
++	DEBUGP("ipt_ULOG: cleanup_module\n");
++
++	ipt_unregister_target(&ipt_ulog_reg);
++	sock_release(nflognl->socket);
++}
++
++module_init(init);
++module_exit(fini);
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/ipt_ah.c linux/net/ipv4/netfilter/ipt_ah.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/ipt_ah.c	Wed Dec 31 16:00:00 1969
++++ linux/net/ipv4/netfilter/ipt_ah.c	Wed Jan 23 05:04:39 2002
+@@ -0,0 +1,105 @@
++/* Kernel module to match AH parameters. */
++#include <linux/module.h>
++#include <linux/skbuff.h>
++
++#include <linux/netfilter_ipv4/ipt_ah.h>
++#include <linux/netfilter_ipv4/ip_tables.h>
++
++EXPORT_NO_SYMBOLS;
++MODULE_LICENSE("GPL");
++
++#ifdef DEBUG_CONNTRACK
++#define duprintf(format, args...) printk(format , ## args)
++#else
++#define duprintf(format, args...)
++#endif
++
++struct ahhdr {
++	__u32   spi;
++};
++
++/* Returns 1 if the spi is matched by the range, 0 otherwise */
++static inline int
++spi_match(u_int32_t min, u_int32_t max, u_int32_t spi, int invert)
++{
++	int r=0;
++        duprintf("ah spi_match:%c 0x%x <= 0x%x <= 0x%x",invert? '!':' ',
++        	min,spi,max);
++	r=(spi >= min && spi <= max) ^ invert;
++	duprintf(" result %s\n",r? "PASS" : "FAILED");
++	return r;
++}
++
++static int
++match(const struct sk_buff *skb,
++      const struct net_device *in,
++      const struct net_device *out,
++      const void *matchinfo,
++      int offset,
++      const void *hdr,
++      u_int16_t datalen,
++      int *hotdrop)
++{
++	const struct ahhdr *ah = hdr;
++	const struct ipt_ah *ahinfo = matchinfo;
++
++	if (offset == 0 && datalen < sizeof(struct ahhdr)) {
++		/* We've been asked to examine this packet, and we
++		   can't.  Hence, no choice but to drop. */
++		duprintf("Dropping evil AH tinygram.\n");
++		*hotdrop = 1;
++		return 0;
++	}
++
++	/* Must not be a fragment. */
++	return !offset
++		&& spi_match(ahinfo->spis[0], ahinfo->spis[1],
++			      ntohl(ah->spi),
++			      !!(ahinfo->invflags & IPT_AH_INV_SPI));
++}
++
++/* Called when user tries to insert an entry of this type. */
++static int
++checkentry(const char *tablename,
++	   const struct ipt_ip *ip,
++	   void *matchinfo,
++	   unsigned int matchinfosize,
++	   unsigned int hook_mask)
++{
++	const struct ipt_ah *ahinfo = matchinfo;
++
++	/* Must specify proto == AH, and no unknown invflags */
++	if (ip->proto != IPPROTO_AH || (ip->invflags & IPT_INV_PROTO)) {
++		duprintf("ipt_ah: Protocol %u != %u\n", ip->proto,
++			 IPPROTO_AH);
++		return 0;
++	}
++	if (matchinfosize != IPT_ALIGN(sizeof(struct ipt_ah))) {
++		duprintf("ipt_ah: matchsize %u != %u\n",
++			 matchinfosize, IPT_ALIGN(sizeof(struct ipt_ah)));
++		return 0;
++	}
++	if (ahinfo->invflags & ~IPT_AH_INV_MASK) {
++		duprintf("ipt_ah: unknown flags %X\n",
++			 ahinfo->invflags);
++		return 0;
++	}
++
++	return 1;
++}
++
++static struct ipt_match ah_match
++= { { NULL, NULL }, "ah", &match, &checkentry, NULL, THIS_MODULE };
++
++int __init init(void)
++{
++	return ipt_register_match(&ah_match);
++}
++
++void __exit cleanup(void)
++{
++	ipt_unregister_match(&ah_match);
++}
++
++module_init(init);
++module_exit(cleanup);
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/ipt_esp.c linux/net/ipv4/netfilter/ipt_esp.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/ipt_esp.c	Wed Dec 31 16:00:00 1969
++++ linux/net/ipv4/netfilter/ipt_esp.c	Wed Jan 23 05:04:39 2002
+@@ -0,0 +1,105 @@
++/* Kernel module to match ESP parameters. */
++#include <linux/module.h>
++#include <linux/skbuff.h>
++
++#include <linux/netfilter_ipv4/ipt_esp.h>
++#include <linux/netfilter_ipv4/ip_tables.h>
++
++EXPORT_NO_SYMBOLS;
++MODULE_LICENSE("GPL");
++
++#ifdef DEBUG_CONNTRACK
++#define duprintf(format, args...) printk(format , ## args)
++#else
++#define duprintf(format, args...)
++#endif
++
++struct esphdr {
++	__u32   spi;
++};
++
++/* Returns 1 if the spi is matched by the range, 0 otherwise */
++static inline int
++spi_match(u_int32_t min, u_int32_t max, u_int32_t spi, int invert)
++{
++	int r=0;
++        duprintf("esp spi_match:%c 0x%x <= 0x%x <= 0x%x",invert? '!':' ',
++        	min,spi,max);
++	r=(spi >= min && spi <= max) ^ invert;
++	duprintf(" result %s\n",r? "PASS" : "FAILED");
++	return r;
++}
++
++static int
++match(const struct sk_buff *skb,
++      const struct net_device *in,
++      const struct net_device *out,
++      const void *matchinfo,
++      int offset,
++      const void *hdr,
++      u_int16_t datalen,
++      int *hotdrop)
++{
++	const struct esphdr *esp = hdr;
++	const struct ipt_esp *espinfo = matchinfo;
++
++	if (offset == 0 && datalen < sizeof(struct esphdr)) {
++		/* We've been asked to examine this packet, and we
++		   can't.  Hence, no choice but to drop. */
++		duprintf("Dropping evil ESP tinygram.\n");
++		*hotdrop = 1;
++		return 0;
++	}
++
++	/* Must not be a fragment. */
++	return !offset
++		&& spi_match(espinfo->spis[0], espinfo->spis[1],
++			      ntohl(esp->spi),
++			      !!(espinfo->invflags & IPT_ESP_INV_SPI));
++}
++
++/* Called when user tries to insert an entry of this type. */
++static int
++checkentry(const char *tablename,
++	   const struct ipt_ip *ip,
++	   void *matchinfo,
++	   unsigned int matchinfosize,
++	   unsigned int hook_mask)
++{
++	const struct ipt_esp *espinfo = matchinfo;
++
++	/* Must specify proto == ESP, and no unknown invflags */
++	if (ip->proto != IPPROTO_ESP || (ip->invflags & IPT_INV_PROTO)) {
++		duprintf("ipt_esp: Protocol %u != %u\n", ip->proto,
++			 IPPROTO_ESP);
++		return 0;
++	}
++	if (matchinfosize != IPT_ALIGN(sizeof(struct ipt_esp))) {
++		duprintf("ipt_esp: matchsize %u != %u\n",
++			 matchinfosize, IPT_ALIGN(sizeof(struct ipt_esp)));
++		return 0;
++	}
++	if (espinfo->invflags & ~IPT_ESP_INV_MASK) {
++		duprintf("ipt_esp: unknown flags %X\n",
++			 espinfo->invflags);
++		return 0;
++	}
++
++	return 1;
++}
++
++static struct ipt_match esp_match
++= { { NULL, NULL }, "esp", &match, &checkentry, NULL, THIS_MODULE };
++
++static int __init init(void)
++{
++	return ipt_register_match(&esp_match);
++}
++
++static void __exit cleanup(void)
++{
++	ipt_unregister_match(&esp_match);
++}
++
++module_init(init);
++module_exit(cleanup);
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv4/netfilter/iptable_mangle.c linux/net/ipv4/netfilter/iptable_mangle.c
+--- ../vanilla/2.4/linux/net/ipv4/netfilter/iptable_mangle.c	Thu Jan 24 08:09:39 2002
++++ linux/net/ipv4/netfilter/iptable_mangle.c	Wed Jan 23 11:34:59 2002
+@@ -129,34 +129,6 @@
+ 	return ipt_do_table(pskb, hook, in, out, &packet_mangler, NULL);
+ }
+ 
+-/* FIXME: change in oif may mean change in hh_len.  Check and realloc
+-   --RR */
+-static int
+-route_me_harder(struct sk_buff *skb)
+-{
+-	struct iphdr *iph = skb->nh.iph;
+-	struct rtable *rt;
+-	struct rt_key key = { dst:iph->daddr,
+-			      src:iph->saddr,
+-			      oif:skb->sk ? skb->sk->bound_dev_if : 0,
+-			      tos:RT_TOS(iph->tos)|RTO_CONN,
+-#ifdef CONFIG_IP_ROUTE_FWMARK
+-			      fwmark:skb->nfmark
+-#endif
+-			    };
+-
+-	if (ip_route_output_key(&rt, &key) != 0) {
+-		printk("route_me_harder: No more route.\n");
+-		return -EINVAL;
+-	}
+-
+-	/* Drop old route. */
+-	dst_release(skb->dst);
+-
+-	skb->dst = &rt->u.dst;
+-	return 0;
+-}
+-
+ static unsigned int
+ ipt_local_hook(unsigned int hook,
+ 		   struct sk_buff **pskb,
+@@ -190,7 +162,7 @@
+ 		|| (*pskb)->nh.iph->daddr != daddr
+ 		|| (*pskb)->nfmark != nfmark
+ 		|| (*pskb)->nh.iph->tos != tos))
+-		return route_me_harder(*pskb) == 0 ? ret : NF_DROP;
++		return route_me_harder(pskb) == 0 ? ret : NF_DROP;
+ 
+ 	return ret;
+ }
+diff -u --recursive --new-file --exclude=CVS --exclude=.cvsignore ../vanilla/2.4/linux/net/ipv6/netfilter/ip6_queue.c linux/net/ipv6/netfilter/ip6_queue.c
+--- ../vanilla/2.4/linux/net/ipv6/netfilter/ip6_queue.c	Wed Dec 31 16:00:00 1969
++++ linux/net/ipv6/netfilter/ip6_queue.c	Wed Jan 23 05:04:35 2002
+@@ -0,0 +1,721 @@
++/*
++ * This is a module which is used for queueing IPv6 packets and
++ * communicating with userspace via netlink.
++ *
++ * (C) 2001 Fernando Anton, this code is GPL.
++ *     IPv64 Project - Work based in IPv64 draft by Arturo Azcorra.
++ *     Universidad Carlos III de Madrid - Leganes (Madrid) - Spain
++ *     Universidad Politecnica de Alcala de Henares - Alcala de H. (Madrid) - Spain
++ *     email: fanton@it.uc3m.es
++ *
++ * 2001-11-06: First try. Working with ip_queue.c for IPv4 and trying
++ *             to adapt it to IPv6
++ *             HEAVILY based in ipqueue.c by James Morris. It's just
++ *             a little modified version of it, so he's nearly the
++ *             real coder of this.
++ *             Few changes needed, mainly the hard_routing code and
++ *             the netlink socket protocol (we're NETLINK_IP6_FW).
++ *
++ */
++#include <linux/module.h>
++#include <linux/skbuff.h>
++#include <linux/init.h>
++#include <linux/ipv6.h>
++#include <linux/notifier.h>
++#include <linux/netdevice.h>
++#include <linux/netfilter.h>
++#include <linux/netlink.h>
++#include <linux/spinlock.h>
++#include <linux/rtnetlink.h>
++#include <linux/sysctl.h>
++#include <linux/proc_fs.h>
++#include <net/sock.h>
++#include <net/ipv6.h>
++#include <net/ip6_route.h>
++
++/* We're still usign the following structs. No need to change them: */
++/*   ipq_packet_msg                                                 */
++/*   ipq_mode_msg                                                   */
++/*   ipq_verdict_msg                                                */
++/*   ipq_peer_msg                                                   */
++#include <linux/netfilter_ipv4/ip_queue.h>
++#include <linux/netfilter_ipv4/ip_tables.h>
++#include <linux/netfilter_ipv6/ip6_tables.h>
++
++#define IPQ_QMAX_DEFAULT 1024
++#define IPQ_PROC_FS_NAME "ip6_queue"
++#define NET_IPQ_QMAX 2088
++#define NET_IPQ_QMAX_NAME "ip6_queue_maxlen"
++
++typedef struct ip6q_rt_info {
++	struct in6_addr daddr;
++	struct in6_addr saddr;
++} ip6q_rt_info_t;
++
++typedef struct ip6q_queue_element {
++	struct list_head list;		/* Links element into queue */
++	int verdict;			/* Current verdict */
++	struct nf_info *info;		/* Extra info from netfilter */
++	struct sk_buff *skb;		/* Packet inside */
++	ip6q_rt_info_t rt_info;		/* May need post-mangle routing */
++} ip6q_queue_element_t;
++
++typedef int (*ip6q_send_cb_t)(ip6q_queue_element_t *e);
++
++typedef struct ip6q_peer {
++	pid_t pid;			/* PID of userland peer */
++	unsigned char died;		/* We think the peer died */
++	unsigned char copy_mode;	/* Copy packet as well as metadata? */
++	size_t copy_range;		/* Range past metadata to copy */
++	ip6q_send_cb_t send;		/* Callback for sending data to peer */
++} ip6q_peer_t;
++
++typedef struct ip6q_queue {
++ 	int len;			/* Current queue len */
++ 	int *maxlen;			/* Maximum queue len, via sysctl */
++ 	unsigned char flushing;		/* If queue is being flushed */
++ 	unsigned char terminate;	/* If the queue is being terminated */
++ 	struct list_head list;		/* Head of packet queue */
++ 	spinlock_t lock;		/* Queue spinlock */
++ 	ip6q_peer_t peer;		/* Userland peer */
++} ip6q_queue_t;
++
++/****************************************************************************
++ *
++ * Packet queue
++ *
++ ****************************************************************************/
++/* Dequeue a packet if matched by cmp, or the next available if cmp is NULL */
++static ip6q_queue_element_t *
++ip6q_dequeue(ip6q_queue_t *q,
++            int (*cmp)(ip6q_queue_element_t *, unsigned long),
++            unsigned long data)
++{
++	struct list_head *i;
++
++	spin_lock_bh(&q->lock);
++	for (i = q->list.prev; i != &q->list; i = i->prev) {
++		ip6q_queue_element_t *e = (ip6q_queue_element_t *)i;
++		
++		if (!cmp || cmp(e, data)) {
++			list_del(&e->list);
++			q->len--;
++			spin_unlock_bh(&q->lock);
++			return e;
++		}
++	}
++	spin_unlock_bh(&q->lock);
++	return NULL;
++}
++
++/* Flush all packets */
++static void ip6q_flush(ip6q_queue_t *q)
++{
++	ip6q_queue_element_t *e;
++	
++	spin_lock_bh(&q->lock);
++	q->flushing = 1;
++	spin_unlock_bh(&q->lock);
++	while ((e = ip6q_dequeue(q, NULL, 0))) {
++		e->verdict = NF_DROP;
++		nf_reinject(e->skb, e->info, e->verdict);
++		kfree(e);
++	}
++	spin_lock_bh(&q->lock);
++	q->flushing = 0;
++	spin_unlock_bh(&q->lock);
++}
++
++static ip6q_queue_t *ip6q_create_queue(nf_queue_outfn_t outfn,
++                                     ip6q_send_cb_t send_cb,
++                                     int *errp, int *sysctl_qmax)
++{
++	int status;
++	ip6q_queue_t *q;
++
++	*errp = 0;
++	q = kmalloc(sizeof(ip6q_queue_t), GFP_KERNEL);
++	if (q == NULL) {
++		*errp = -ENOMEM;
++		return NULL;
++	}
++	q->peer.pid = 0;
++	q->peer.died = 0;
++	q->peer.copy_mode = IPQ_COPY_NONE;
++	q->peer.copy_range = 0;
++	q->peer.send = send_cb;
++	q->len = 0;
++	q->maxlen = sysctl_qmax;
++	q->flushing = 0;
++	q->terminate = 0;
++	INIT_LIST_HEAD(&q->list);
++	spin_lock_init(&q->lock);
++	status = nf_register_queue_handler(PF_INET6, outfn, q);
++	if (status < 0) {
++		*errp = -EBUSY;
++		kfree(q);
++		return NULL;
++	}
++	return q;
++}
++
++static int ip6q_enqueue(ip6q_queue_t *q,
++                       struct sk_buff *skb, struct nf_info *info)
++{
++	ip6q_queue_element_t *e;
++	int status;
++	
++	e = kmalloc(sizeof(*e), GFP_ATOMIC);
++	if (e == NULL) {
++		printk(KERN_ERR "ip6_queue: OOM in enqueue\n");
++		return -ENOMEM;
++	}
++
++	e->verdict = NF_DROP;
++	e->info = info;
++	e->skb = skb;
++
++	if (e->info->hook == NF_IP_LOCAL_OUT) {
++		struct ipv6hdr *iph = skb->nh.ipv6h;
++
++		e->rt_info.daddr = iph->daddr;
++		e->rt_info.saddr = iph->saddr;
++	}
++
++	spin_lock_bh(&q->lock);
++	if (q->len >= *q->maxlen) {
++		spin_unlock_bh(&q->lock);
++		if (net_ratelimit()) 
++			printk(KERN_WARNING "ip6_queue: full at %d entries, "
++			       "dropping packet(s).\n", q->len);
++		goto free_drop;
++	}
++	if (q->flushing || q->peer.copy_mode == IPQ_COPY_NONE
++	    || q->peer.pid == 0 || q->peer.died || q->terminate) {
++		spin_unlock_bh(&q->lock);
++		goto free_drop;
++	}
++	status = q->peer.send(e);
++	if (status > 0) {
++		list_add(&e->list, &q->list);
++		q->len++;
++		spin_unlock_bh(&q->lock);
++		return status;
++	}
++	spin_unlock_bh(&q->lock);
++	if (status == -ECONNREFUSED) {
++		printk(KERN_INFO "ip6_queue: peer %d died, "
++		       "resetting state and flushing queue\n", q->peer.pid);
++			q->peer.died = 1;
++			q->peer.pid = 0;
++			q->peer.copy_mode = IPQ_COPY_NONE;
++			q->peer.copy_range = 0;
++			ip6q_flush(q);
++	}
++free_drop:
++	kfree(e);
++	return -EBUSY;
++}
++
++static void ip6q_destroy_queue(ip6q_queue_t *q)
++{
++	nf_unregister_queue_handler(PF_INET6);
++	spin_lock_bh(&q->lock);
++	q->terminate = 1;
++	spin_unlock_bh(&q->lock);
++	ip6q_flush(q);
++	kfree(q);
++}
++
++/*
++ * Taken from net/ipv6/ip6_output.c
++ *
++ * We should use the one there, but is defined static
++ * so we put this just here and let the things as
++ * they are now.
++ *
++ * If that one is modified, this one should be modified too.
++ */
++static int route6_me_harder(struct sk_buff *skb)
++{
++	struct ipv6hdr *iph = skb->nh.ipv6h;
++	struct dst_entry *dst;
++	struct flowi fl;
++
++	fl.proto = iph->nexthdr;
++	fl.fl6_dst = &iph->daddr;
++	fl.fl6_src = &iph->saddr;
++	fl.oif = skb->sk ? skb->sk->bound_dev_if : 0;
++	fl.fl6_flowlabel = 0;
++	fl.uli_u.ports.dport = 0;
++	fl.uli_u.ports.sport = 0;
++
++	dst = ip6_route_output(skb->sk, &fl);
++
++	if (dst->error) {
++		if (net_ratelimit())
++			printk(KERN_DEBUG "route6_me_harder: No more route.\n");
++		return -EINVAL;
++	}
++
++	/* Drop old route. */
++	dst_release(skb->dst);
++
++	skb->dst = dst;
++	return 0;
++}
++static int ip6q_mangle_ipv6(ipq_verdict_msg_t *v, ip6q_queue_element_t *e)
++{
++	int diff;
++	struct ipv6hdr *user_iph = (struct ipv6hdr *)v->payload;
++
++	if (v->data_len < sizeof(*user_iph))
++		return 0;
++	diff = v->data_len - e->skb->len;
++	if (diff < 0)
++		skb_trim(e->skb, v->data_len);
++	else if (diff > 0) {
++		if (v->data_len > 0xFFFF)
++			return -EINVAL;
++		if (diff > skb_tailroom(e->skb)) {
++			struct sk_buff *newskb;
++			
++			newskb = skb_copy_expand(e->skb,
++			                         skb_headroom(e->skb),
++			                         diff,
++			                         GFP_ATOMIC);
++			if (newskb == NULL) {
++				printk(KERN_WARNING "ip6_queue: OOM "
++				      "in mangle, dropping packet\n");
++				return -ENOMEM;
++			}
++			if (e->skb->sk)
++				skb_set_owner_w(newskb, e->skb->sk);
++			kfree_skb(e->skb);
++			e->skb = newskb;
++		}
++		skb_put(e->skb, diff);
++	}
++	memcpy(e->skb->data, v->payload, v->data_len);
++	e->skb->nfcache |= NFC_ALTERED;
++
++	/*
++	 * Extra routing may needed on local out, as the QUEUE target never
++	 * returns control to the table.
++         * Not a nice way to cmp, but works
++	 */
++	if (e->info->hook == NF_IP_LOCAL_OUT) {
++		struct ipv6hdr *iph = e->skb->nh.ipv6h;
++		if (!(   iph->daddr.in6_u.u6_addr32[0] == e->rt_info.daddr.in6_u.u6_addr32[0]
++                      && iph->daddr.in6_u.u6_addr32[1] == e->rt_info.daddr.in6_u.u6_addr32[1]
++                      && iph->daddr.in6_u.u6_addr32[2] == e->rt_info.daddr.in6_u.u6_addr32[2]
++                      && iph->daddr.in6_u.u6_addr32[3] == e->rt_info.daddr.in6_u.u6_addr32[3]
++		      && iph->saddr.in6_u.u6_addr32[0] == e->rt_info.saddr.in6_u.u6_addr32[0]
++		      && iph->saddr.in6_u.u6_addr32[1] == e->rt_info.saddr.in6_u.u6_addr32[1]
++		      && iph->saddr.in6_u.u6_addr32[2] == e->rt_info.saddr.in6_u.u6_addr32[2]
++		      && iph->saddr.in6_u.u6_addr32[3] == e->rt_info.saddr.in6_u.u6_addr32[3]))
++			return route6_me_harder(e->skb);
++	}
++	return 0;
++}
++
++static inline int id_cmp(ip6q_queue_element_t *e, unsigned long id)
++{
++	return (id == (unsigned long )e);
++}
++
++static int ip6q_set_verdict(ip6q_queue_t *q,
++                           ipq_verdict_msg_t *v, unsigned int len)
++{
++	ip6q_queue_element_t *e;
++
++	if (v->value > NF_MAX_VERDICT)
++		return -EINVAL;
++	e = ip6q_dequeue(q, id_cmp, v->id);
++	if (e == NULL)
++		return -ENOENT;
++	else {
++		e->verdict = v->value;
++		if (v->data_len && v->data_len == len)
++			if (ip6q_mangle_ipv6(v, e) < 0)
++				e->verdict = NF_DROP;
++		nf_reinject(e->skb, e->info, e->verdict);
++		kfree(e);
++		return 0;
++	}
++}
++
++static int ip6q_receive_peer(ip6q_queue_t* q, ipq_peer_msg_t *m,
++                            unsigned char type, unsigned int len)
++{
++
++	int status = 0;
++	int busy;
++		
++	spin_lock_bh(&q->lock);
++	busy = (q->terminate || q->flushing);
++	spin_unlock_bh(&q->lock);
++	if (busy)
++		return -EBUSY;
++	if (len < sizeof(ipq_peer_msg_t))
++		return -EINVAL;
++	switch (type) {
++		case IPQM_MODE:
++			switch (m->msg.mode.value) {
++				case IPQ_COPY_META:
++					q->peer.copy_mode = IPQ_COPY_META;
++					q->peer.copy_range = 0;
++					break;
++				case IPQ_COPY_PACKET:
++					q->peer.copy_mode = IPQ_COPY_PACKET;
++					q->peer.copy_range = m->msg.mode.range;
++					if (q->peer.copy_range > 0xFFFF)
++						q->peer.copy_range = 0xFFFF;
++					break;
++				default:
++					status = -EINVAL;
++			}
++			break;
++		case IPQM_VERDICT:
++			if (m->msg.verdict.value > NF_MAX_VERDICT)
++				status = -EINVAL;
++			else
++				status = ip6q_set_verdict(q,
++				                         &m->msg.verdict,
++				                         len - sizeof(*m));
++			break;
++		default:
++			 status = -EINVAL;
++	}
++	return status;
++}
++
++static inline int dev_cmp(ip6q_queue_element_t *e, unsigned long ifindex)
++{
++	if (e->info->indev)
++		if (e->info->indev->ifindex == ifindex)
++			return 1;
++	if (e->info->outdev)
++		if (e->info->outdev->ifindex == ifindex)
++			return 1;
++	return 0;
++}
++
++/* Drop any queued packets associated with device ifindex */
++static void ip6q_dev_drop(ip6q_queue_t *q, int ifindex)
++{
++	ip6q_queue_element_t *e;
++	
++	while ((e = ip6q_dequeue(q, dev_cmp, ifindex))) {
++		e->verdict = NF_DROP;
++		nf_reinject(e->skb, e->info, e->verdict);
++		kfree(e);
++	}
++}
++
++/****************************************************************************
++ *
++ * Netfilter interface
++ *
++ ****************************************************************************/
++
++/*
++ * Packets arrive here from netfilter for queuing to userspace.
++ * All of them must be fed back via nf_reinject() or Alexey will kill Rusty.
++ */
++static int netfilter6_receive(struct sk_buff *skb,
++                             struct nf_info *info, void *data)
++{
++	return ip6q_enqueue((ip6q_queue_t *)data, skb, info);
++}
++
++/****************************************************************************
++ *
++ * Netlink interface.
++ *
++ ****************************************************************************/
++
++static struct sock *nfnl = NULL;
++/* This is not a static one, so we should not repeat its name */
++ip6q_queue_t *nlq6 = NULL;
++
++static struct sk_buff *netlink_build_message(ip6q_queue_element_t *e, int *errp)
++{
++	unsigned char *old_tail;
++	size_t size = 0;
++	size_t data_len = 0;
++	struct sk_buff *skb;
++	ipq_packet_msg_t *pm;
++	struct nlmsghdr *nlh;
++
++	switch (nlq6->peer.copy_mode) {
++		size_t copy_range;
++
++		case IPQ_COPY_META:
++			size = NLMSG_SPACE(sizeof(*pm));
++			data_len = 0;
++			break;
++		case IPQ_COPY_PACKET:
++			copy_range = nlq6->peer.copy_range;
++			if (copy_range == 0 || copy_range > e->skb->len)
++				data_len = e->skb->len;
++			else
++				data_len = copy_range;
++			size = NLMSG_SPACE(sizeof(*pm) + data_len);
++			
++			break;
++		case IPQ_COPY_NONE:
++		default:
++			*errp = -EINVAL;
++			return NULL;
++	}
++	skb = alloc_skb(size, GFP_ATOMIC);
++	if (!skb)
++		goto nlmsg_failure;
++	old_tail = skb->tail;
++	nlh = NLMSG_PUT(skb, 0, 0, IPQM_PACKET, size - sizeof(*nlh));
++	pm = NLMSG_DATA(nlh);
++	memset(pm, 0, sizeof(*pm));
++	pm->packet_id = (unsigned long )e;
++	pm->data_len = data_len;
++	pm->timestamp_sec = e->skb->stamp.tv_sec;
++	pm->timestamp_usec = e->skb->stamp.tv_usec;
++	pm->mark = e->skb->nfmark;
++	pm->hook = e->info->hook;
++	if (e->info->indev) strcpy(pm->indev_name, e->info->indev->name);
++	else pm->indev_name[0] = '\0';
++	if (e->info->outdev) strcpy(pm->outdev_name, e->info->outdev->name);
++	else pm->outdev_name[0] = '\0';
++	pm->hw_protocol = e->skb->protocol;
++	if (e->info->indev && e->skb->dev) {
++		pm->hw_type = e->skb->dev->type;
++		if (e->skb->dev->hard_header_parse)
++			pm->hw_addrlen =
++				e->skb->dev->hard_header_parse(e->skb,
++				                               pm->hw_addr);
++	}
++	if (data_len)
++		memcpy(pm->payload, e->skb->data, data_len);
++	nlh->nlmsg_len = skb->tail - old_tail;
++	NETLINK_CB(skb).dst_groups = 0;
++	return skb;
++nlmsg_failure:
++	if (skb)
++		kfree_skb(skb);
++	*errp = 0;
++	printk(KERN_ERR "ip6_queue: error creating netlink message\n");
++	return NULL;
++}
++
++static int netlink_send_peer(ip6q_queue_element_t *e)
++{
++	int status = 0;
++	struct sk_buff *skb;
++
++	skb = netlink_build_message(e, &status);
++	if (skb == NULL)
++		return status;
++	return netlink_unicast(nfnl, skb, nlq6->peer.pid, MSG_DONTWAIT);
++}
++
++#define RCV_SKB_FAIL(err) do { netlink_ack(skb, nlh, (err)); return; } while (0);
++
++static __inline__ void netlink_receive_user_skb(struct sk_buff *skb)
++{
++	int status, type;
++	struct nlmsghdr *nlh;
++
++	if (skb->len < sizeof(struct nlmsghdr))
++		return;
++
++	nlh = (struct nlmsghdr *)skb->data;
++	if (nlh->nlmsg_len < sizeof(struct nlmsghdr)
++	    || skb->len < nlh->nlmsg_len)
++	    	return;
++
++	if(nlh->nlmsg_pid <= 0
++	    || !(nlh->nlmsg_flags & NLM_F_REQUEST)
++	    || nlh->nlmsg_flags & NLM_F_MULTI)
++		RCV_SKB_FAIL(-EINVAL);
++	if (nlh->nlmsg_flags & MSG_TRUNC)
++		RCV_SKB_FAIL(-ECOMM);
++	type = nlh->nlmsg_type;
++	if (type < NLMSG_NOOP || type >= IPQM_MAX)
++		RCV_SKB_FAIL(-EINVAL);
++	if (type <= IPQM_BASE)
++		return;
++	if(!cap_raised(NETLINK_CB(skb).eff_cap, CAP_NET_ADMIN))
++		RCV_SKB_FAIL(-EPERM);
++	if (nlq6->peer.pid && !nlq6->peer.died
++	    && (nlq6->peer.pid != nlh->nlmsg_pid)) {
++	    	printk(KERN_WARNING "ip6_queue: peer pid changed from %d to "
++	    	      "%d, flushing queue\n", nlq6->peer.pid, nlh->nlmsg_pid);
++		ip6q_flush(nlq6);
++	}	
++	nlq6->peer.pid = nlh->nlmsg_pid;
++	nlq6->peer.died = 0;
++	status = ip6q_receive_peer(nlq6, NLMSG_DATA(nlh),
++	                          type, skb->len - NLMSG_LENGTH(0));
++	if (status < 0)
++		RCV_SKB_FAIL(status);
++	if (nlh->nlmsg_flags & NLM_F_ACK)
++		netlink_ack(skb, nlh, 0);
++        return;
++}
++
++/* Note: we are only dealing with single part messages at the moment. */
++static void netlink_receive_user_sk(struct sock *sk, int len)
++{
++	do {
++		struct sk_buff *skb;
++
++		if (rtnl_shlock_nowait())
++			return;
++		while ((skb = skb_dequeue(&sk->receive_queue)) != NULL) {
++			netlink_receive_user_skb(skb);
++			kfree_skb(skb);
++		}
++		up(&rtnl_sem);
++	} while (nfnl && nfnl->receive_queue.qlen);
++}
++
++/****************************************************************************
++ *
++ * System events
++ *
++ ****************************************************************************/
++
++static int receive_event(struct notifier_block *this,
++                         unsigned long event, void *ptr)
++{
++	struct net_device *dev = ptr;
++
++	/* Drop any packets associated with the downed device */
++	if (event == NETDEV_DOWN)
++		ip6q_dev_drop(nlq6, dev->ifindex);
++	return NOTIFY_DONE;
++}
++
++struct notifier_block ip6q_dev_notifier = {
++	receive_event,
++	NULL,
++	0
++};
++
++/****************************************************************************
++ *
++ * Sysctl - queue tuning.
++ *
++ ****************************************************************************/
++
++static int sysctl_maxlen = IPQ_QMAX_DEFAULT;
++
++static struct ctl_table_header *ip6q_sysctl_header;
++
++static ctl_table ip6q_table[] = {
++	{ NET_IPQ_QMAX, NET_IPQ_QMAX_NAME, &sysctl_maxlen,
++	  sizeof(sysctl_maxlen), 0644,  NULL, proc_dointvec },
++ 	{ 0 }
++};
++
++static ctl_table ip6q_dir_table[] = {
++	{NET_IPV6, "ipv6", NULL, 0, 0555, ip6q_table, 0, 0, 0, 0, 0},
++	{ 0 }
++};
++
++static ctl_table ip6q_root_table[] = {
++	{CTL_NET, "net", NULL, 0, 0555, ip6q_dir_table, 0, 0, 0, 0, 0},
++	{ 0 }
++};
++
++/****************************************************************************
++ *
++ * Procfs - debugging info.
++ *
++ ****************************************************************************/
++
++static int ip6q_get_info(char *buffer, char **start, off_t offset, int length)
++{
++	int len;
++
++	spin_lock_bh(&nlq6->lock);
++	len = sprintf(buffer,
++	              "Peer pid            : %d\n"
++	              "Peer died           : %d\n"
++	              "Peer copy mode      : %d\n"
++	              "Peer copy range     : %Zu\n"
++	              "Queue length        : %d\n"
++	              "Queue max. length   : %d\n"
++	              "Queue flushing      : %d\n"
++	              "Queue terminate     : %d\n",
++	              nlq6->peer.pid,
++	              nlq6->peer.died,
++	              nlq6->peer.copy_mode,
++	              nlq6->peer.copy_range,
++	              nlq6->len,
++	              *nlq6->maxlen,
++	              nlq6->flushing,
++	              nlq6->terminate);
++	spin_unlock_bh(&nlq6->lock);
++	*start = buffer + offset;
++	len -= offset;
++	if (len > length)
++		len = length;
++	else if (len < 0)
++		len = 0;
++	return len;
++}
++
++/****************************************************************************
++ *
++ * Module stuff.
++ *
++ ****************************************************************************/
++
++static int __init init(void)
++{
++	int status = 0;
++	struct proc_dir_entry *proc;
++	
++        /* We must create the NETLINK_IP6_FW protocol service */
++	nfnl = netlink_kernel_create(NETLINK_IP6_FW, netlink_receive_user_sk);
++	if (nfnl == NULL) {
++		printk(KERN_ERR "ip6_queue: initialisation failed: unable to "
++		       "create kernel netlink socket\n");
++		return -ENOMEM;
++	}
++	nlq6 = ip6q_create_queue(netfilter6_receive,
++	                       netlink_send_peer, &status, &sysctl_maxlen);
++	if (nlq6 == NULL) {
++		printk(KERN_ERR "ip6_queue: initialisation failed: unable to "
++		       "create queue\n");
++		sock_release(nfnl->socket);
++		return status;
++	}
++        /* The file will be /proc/net/ip6_queue */
++	proc = proc_net_create(IPQ_PROC_FS_NAME, 0, ip6q_get_info);
++	if (proc) proc->owner = THIS_MODULE;
++	else {
++		ip6q_destroy_queue(nlq6);
++		sock_release(nfnl->socket);
++		return -ENOMEM;
++	}
++	register_netdevice_notifier(&ip6q_dev_notifier);
++	ip6q_sysctl_header = register_sysctl_table(ip6q_root_table, 0);
++	return status;
++}
++
++static void __exit fini(void)
++{
++	unregister_sysctl_table(ip6q_sysctl_header);
++	proc_net_remove(IPQ_PROC_FS_NAME);
++	unregister_netdevice_notifier(&ip6q_dev_notifier);
++	ip6q_destroy_queue(nlq6);
++	sock_release(nfnl->socket);
++}
++
++MODULE_DESCRIPTION("IPv6 packet queue handler");
++MODULE_LICENSE("GPL");
++
++module_init(init);
++module_exit(fini);
+
+

@@ -1,0 +1,3 @@
+ifeq (mipsIRQ.o reset.o display.o init.o memory.o printf.o cmdline.o time.o,$(strip $(subst $(comma),:,$(EXTRA_LDFLAGS) $(obj-y))))
+FILES_FLAGS_UP_TO_DATE += mipsboards.o
+endif

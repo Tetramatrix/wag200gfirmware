@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Gateway Rebooting</title>
+<meta name="description" content="LINKSYS WAG200G 1013">
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+
+<!-- hide script from old browsers
+var showit = (document.layers) ? "show" : "visible";
+var hideit = (document.layers) ? "hide" : "hidden";
+var time = 0;
+var pc = 0; 
+var back_page;
+
+function load() 
+{ 
+	pc+=1; 
+
+	back_page = "index.htm"; //document.forms[0].next_file.value;
+ 
+	if (pc > 100) 
+	{ 
+		location.href = back_page; 
+		clearTimeout(time); 
+		return;
+	} 
+	setWidth(self, "lpc", pc + "%");
+	setHTML(self, "percent", pc + "%");
+	time = setTimeout("load()",250);
+} 
+
+
+function setHTML(windowObj, el, htmlStr)
+{
+    if (document.all)
+	{
+	  if (windowObj.document.all(el) )
+        windowObj.document.all(el).innerHTML = htmlStr;
+	}
+	else if (document.getElementById)
+	{
+	  if (windowObj.document.getElementById(el) )
+	    windowObj.document.getElementById(el).innerHTML = htmlStr;
+	}
+}
+
+function setWidth(windowObj, el, newwidth)
+{
+    if (document.all)
+	{
+	  if (windowObj.document.all(el) )
+        windowObj.document.all(el).style.width = newwidth ;
+	}
+	else if (document.getElementById)
+	{
+	  if (windowObj.document.getElementById(el) )
+	    windowObj.document.getElementById(el).style.width = newwidth;
+	}
+}
+
+
+
+//-->
+
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="load();">
+<form name="rebootprogress" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+
+</TR>
+
+
+
+
+</table>
+
+<!-- data table--> 
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Gateway Rebooting</TD>
+  <td width="454">&nbsp;</TD>
+  <td width="192" valign="top" bgcolor="#6666CC" background="rh_bg.gif"></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7"> </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+ </TD>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+
+</TR>
+
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top"></TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+<table class="std" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+    <td colspan="2" height="40" align="center"><b>Progress &nbsp;</b></TD>	
+          
+</TR>
+<tr> 
+    <td width="380">
+	<table width="100%" align="left" bgcolor="#ffffff" cellpadding="0" cellspacing="0" bordercolor="#999999" id="AutoNumber19" style="border-style: solid; border-width: 1px">
+   <tr>
+	<td align=left> 
+	<table id=lpc bgcolor="#999999" height=25>
+	<tr>
+	  <td></TD>
+    </TR>
+	</table> 
+   </TD>				
+   </TR>
+   </table> 
+    </TD>
+	<td id="percent" width="40" align="center"></TD>
+</TR>
+</table>
+
+<br> &nbsp; 
+</TD>
+
+</TR>
+
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+</TD>
+
+</TR>
+
+
+</table>
+</div>
+
+<input type="hidden" name="todo" value="">
+<input type="hidden" name="this_file" value="reboot_guage.htm">
+<input type="hidden" name="next_file" value="@next_file#">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>     
+</body>
+
+
+</html>

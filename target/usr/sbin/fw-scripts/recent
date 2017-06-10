@@ -1,0 +1,9 @@
+#!/bin/sh
+
+i=/usr/sbin/iptables
+
+$i -A PREROUTING -t nat -p tcp --dport 6881:6999 -m recent --set --name pre --rsource
+$i -A PREROUTING -t nat -p tcp --dport 6881:6999 -m recent ! --rcheck --seconds 60 --hitcount 4 --name pre --rsource -j ACCEPT
+
+$i -I FORWARD 12 -p tcp --dport 6881:6999 -m recent --set --name fwd --rsource
+$i -I FORWARD 13 -p tcp --dport 6881:6999 -m recent ! --rcheck --seconds 60 --hitcount 4 --name pre --rsource -j ACCEPT

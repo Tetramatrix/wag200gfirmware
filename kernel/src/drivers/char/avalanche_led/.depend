@@ -1,0 +1,2 @@
+dep_register.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/addrspace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/addrspace.h)

@@ -1,0 +1,39 @@
+##common
+1= %s is NULL
+##dyndns
+1=No message.
+2=These fields must not be empty
+3=IP address is the same, and does not need to be updated!
+4=one NULL in username password or hostname
+5=DNS query error
+6=DNS server error
+7=No DNS server response or Internet can't connect
+8=HTTP cannot connected
+9=Username or password error
+10=Connected successfully.
+11=Connected successfully.
+12=Please wait...
+13=Not Fully Qualified Domain Name: notfqdn
+14=The host doesn't exist: nohost
+15=The host is not managed by you
+16=Blocked due to abuse: abuse
+17=DynDNS server error:numhost
+18=Service has been shut down
+19=Unknown return code received!
+20=Unknown error occurred!
+21=Can't open HTTP socket
+22=WAN IP address is NULL
+##upgrade
+1=Upgrade file is not the correct type or version for this device.<p>Upgrade failed.<p>Please obtain the correct file and try again.
+2=Firmware upgrade terminated due to insufficient resources.<B>Upgrade failed.<p>Please try again when system is idle (no Internet traffic)
+3=Cannot upload, please contact administrator.
+4=Cannot upload.
+##lan
+4=IP Address is illegal.
+##route
+5=No space to add new route.
+8=This static route already exists.
+##wireless
+2=MAC address filter list table full. 
+##end
+

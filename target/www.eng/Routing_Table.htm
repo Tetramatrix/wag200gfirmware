@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Routing Table</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+//
+//-->	
+</script>
+</head>
+<BODY bgColor="#808080" onLoad="dataToVisible(document.forms[0]);">
+<FORM name="routingtable" method="POST" action="none" onSubmit="return false;">
+<div align="center">
+<TABLE border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+<TR>
+  <td bgcolor="#6666cc">
+  <BR>
+  <hr size="1" color="#ffffff">
+  <img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+  </TD>
+
+</TR>
+<tr>
+  <td height="15" bgcolor="#E7E7E7"></TD>
+
+</TR>
+<tr>
+<td>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+ <td height="7" bgcolor="#E7E7E7" width="165"></TD>
+<td height="7" width="533" colspan="2"></TD>
+        
+</TR>
+  <tr>
+    <td width="164" height="24" align="right" class="bwhead" valign="top">Routing Table</TD>
+	<td>&nbsp;</TD>
+  
+</TR>
+  <tr>
+    <td bgcolor="#E7E7E7">&nbsp; </TD>
+	<td>
+	<div class="indent8">
+	<table border="0" cellpadding="4" bgcolor="#ffffff">
+<tr>
+<td nowrap colspan="3">
+<b class="sub">Routing Table Entry List</b>
+</TD>
+<td nowrap>
+<input type="button" name="refresh" value="Refresh" class="slbutton" onClick="location.href='setup.cgi?next_file=Routing_Table.htm'">
+</TD>
+
+</TR>
+
+<tr bgColor="#b3b3b3">
+<th nowrap>Destination LAN IP</th>
+<th nowrap>Subnet Mask</th>
+<th nowrap>Gateway</th>
+<th nowrap>Interface</th>
+
+</TR>
+
+@rt_list_route#
+
+<tr>
+<td nowrap colspan="3">&nbsp; </TD>
+<td nowrap>
+<input type="button" name="close" value="Close" class="slbutton" onClick="self.close()"></TD>
+
+</TR>
+
+
+</table>
+<BR> &nbsp; 
+ </div>
+ </TD>
+ 
+</TR>
+</table>
+   
+</TD>
+
+</TR>
+</table>
+
+</div>
+
+<input type="hidden" name="todo" value="">
+<input type="hidden" name="this_file" value="Routing_Table.htm">
+<input type="hidden" name="next_file" value="Routing_Table.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+</html>

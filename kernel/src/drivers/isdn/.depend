@@ -1,0 +1,130 @@
+isdn_audio.o: isdn_audio.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   isdn_audio.h $(dep_isdn_audio.h) \
+   isdn_common.h $(dep_isdn_common.h)
+isdn_bsdcomp.o: isdn_bsdcomp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn_ppp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn_ppp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tcp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp-comp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp-comp.h) \
+   isdn_ppp.h $(dep_isdn_ppp.h)
+isdn_common.o: isdn_common.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   isdn_common.h $(dep_isdn_common.h) \
+   isdn_tty.h $(dep_isdn_tty.h) \
+   isdn_net.h $(dep_isdn_net.h) \
+   isdn_ppp.h $(dep_isdn_ppp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/audio.h) \
+   isdn_audio.h $(dep_isdn_audio.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/diversion/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/diversion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn_divertif.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn_divertif.h) \
+   isdn_v110.h $(dep_isdn_v110.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/devfs_fs_kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/devfs_fs_kernel.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/ppp.h) \
+   avmb1/capicmd.h $(dep_avmb1/capicmd.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/x25.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netdevices.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/devfs/fs.h)
+isdn_concap.o: isdn_concap.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   isdn_x25iface.h $(dep_isdn_x25iface.h) \
+   isdn_net.h $(dep_isdn_net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h) \
+   isdn_concap.h $(dep_isdn_concap.h)
+isdn_net.o: isdn_net.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/pkt_sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/pkt_sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   isdn_common.h $(dep_isdn_common.h) \
+   isdn_net.h $(dep_isdn_net.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/ppp.h) \
+   isdn_ppp.h $(dep_isdn_ppp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/x25.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h) \
+   isdn_concap.h $(dep_isdn_concap.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/inet.h)
+isdn_ppp.o: isdn_ppp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp-comp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp-comp.h) \
+   isdn_common.h $(dep_isdn_common.h) \
+   isdn_ppp.h $(dep_isdn_ppp.h) \
+   isdn_net.h $(dep_isdn_net.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/mpp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/ppp/vj.h)
+dep_isdn_ppp.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn_ppp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn_ppp.h)
+isdn_tty.o: isdn_tty.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   isdn_common.h $(dep_isdn_common.h) \
+   isdn_tty.h $(dep_isdn_tty.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/audio.h) \
+   isdn_audio.h $(dep_isdn_audio.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/devfs/fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h) \
+   avmb1/capicmd.h $(dep_avmb1/capicmd.h)
+dep_isdn_tty.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h)
+isdn_ttyfax.o: isdn_ttyfax.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   isdn_common.h $(dep_isdn_common.h) \
+   isdn_tty.h $(dep_isdn_tty.h) \
+   isdn_ttyfax.h $(dep_isdn_ttyfax.h)
+isdn_v110.o: isdn_v110.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   isdn_v110.h $(dep_isdn_v110.h)
+isdn_x25iface.o: isdn_x25iface.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wanrouter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wanrouter.h) \
+   isdn_x25iface.h $(dep_isdn_x25iface.h)
+dep_isdn_x25iface.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wanrouter.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wanrouter.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/concap.h)

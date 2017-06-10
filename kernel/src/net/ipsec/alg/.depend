@@ -1,0 +1,163 @@
+ipsec_alg_1des.o: ipsec_alg_1des.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/1des.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_sa.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_sa.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   ../libdes/des.h $(dep_../libdes/des.h)
+ipsec_alg_3des.o: ipsec_alg_3des.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/3des.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_sa.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_sa.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   ../libdes/des.h $(dep_../libdes/des.h)
+ipsec_alg_aes.o: ipsec_alg_aes.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/aes.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libaes/aes_cbc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libaes/aes_cbc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/aes/mac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libaes/aes_xcbc_mac.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libaes/aes_xcbc_mac.h)
+ipsec_alg_blowfish.o: ipsec_alg_blowfish.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/blowfish.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libblowfish/blowfish.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libblowfish/blowfish.h)
+ipsec_alg_cast.o: ipsec_alg_cast.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/cast.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libcast/cast.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libcast/cast.h)
+ipsec_alg_cryptoapi.o: ipsec_alg_cryptoapi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/cryptoapi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/crypto.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/crypto/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/non/libre.h)
+ipsec_alg_md5.o: ipsec_alg_md5.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/md5.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libmd5/md5.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libmd5/md5.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libmd5/hmac_md5.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libmd5/hmac_md5.h)
+ipsec_alg_null.o: ipsec_alg_null.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/null.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h)
+ipsec_alg_serpent.o: ipsec_alg_serpent.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/serpent.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libserpent/serpent.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libserpent/serpent.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libserpent/serpent_cbc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libserpent/serpent_cbc.h)
+ipsec_alg_sha1.o: ipsec_alg_sha1.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/sha1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha1/sha.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha1/sha.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha1/hmac_sha1.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha1/hmac_sha1.h)
+ipsec_alg_sha2.o: ipsec_alg_sha2.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/sha2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha2/sha2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha2/sha2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha2/hmac_sha2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libsha2/hmac_sha2.h)
+ipsec_alg_static_init.o: ipsec_alg_static_init.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   ../ipsec_alg.h $(dep_../ipsec_alg.h)
+ipsec_alg_twofish.o: ipsec_alg_twofish.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/alg/twofish.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/ipsec_alg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libtwofish/twofish.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libtwofish/twofish.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libtwofish/twofish_cbc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/net/ipsec/libcrypto/libtwofish/twofish_cbc.h)

@@ -1,0 +1,159 @@
+datafab.o: datafab.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   datafab.h $(dep_datafab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h)
+debug.o: debug.c \
+   debug.h $(dep_debug.h)
+dep_debug.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/cdrom.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/cdrom.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/debug.h)
+dpcm.o: dpcm.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   dpcm.h $(dep_dpcm.h) \
+   sddr09.h $(dep_sddr09.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/sddr09.h)
+freecom.o: freecom.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   freecom.h $(dep_freecom.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/debug.h)
+initializers.o: initializers.c \
+   initializers.h $(dep_initializers.h) \
+   debug.h $(dep_debug.h)
+dep_initializers.h += \
+   usb.h $(dep_usb.h)
+isd200.o: isd200.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   scsiglue.h $(dep_scsiglue.h) \
+   isd200.h $(dep_isd200.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/hdreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ide.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/debug.h)
+jumpshot.o: jumpshot.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   jumpshot.h $(dep_jumpshot.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h)
+protocol.o: protocol.c \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   scsiglue.h $(dep_scsiglue.h) \
+   transport.h $(dep_transport.h)
+dep_protocol.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h) \
+   usb.h $(dep_usb.h)
+scsiglue.o: scsiglue.c \
+   scsiglue.h $(dep_scsiglue.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   transport.h $(dep_transport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h)
+dep_scsiglue.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/hosts.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/hosts.h)
+sddr09.o: sddr09.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   sddr09.h $(dep_sddr09.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h)
+shuttle_usbat.o: shuttle_usbat.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   shuttle_usbat.h $(dep_shuttle_usbat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h)
+transport.o: transport.c \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   usb.h $(dep_usb.h) \
+   debug.h $(dep_debug.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/debug.h)
+dep_transport.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   usb.h $(dep_usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/hp8200e.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/sddr09.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/freecom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/datafab.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/jumpshot.h)
+dep_unusual_devs.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/hp8200e.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/dpcm.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/sddr09.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/isd200.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/jumpshot.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/freecom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/datafab.h)
+usb.o: usb.c \
+   usb.h $(dep_usb.h) \
+   scsiglue.h $(dep_scsiglue.h) \
+   transport.h $(dep_transport.h) \
+   protocol.h $(dep_protocol.h) \
+   debug.h $(dep_debug.h) \
+   initializers.h $(dep_initializers.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/hp8200e.h) \
+   shuttle_usbat.h $(dep_shuttle_usbat.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/sddr09.h) \
+   sddr09.h $(dep_sddr09.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/dpcm.h) \
+   dpcm.h $(dep_dpcm.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/freecom.h) \
+   freecom.h $(dep_freecom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/isd200.h) \
+   isd200.h $(dep_isd200.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/datafab.h) \
+   datafab.h $(dep_datafab.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/usb/storage/jumpshot.h) \
+   jumpshot.h $(dep_jumpshot.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   unusual_devs.h $(dep_unusual_devs.h) \
+   unusual_devs.h $(dep_unusual_devs.h)
+dep_usb.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/blk.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/completion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/scsi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/hosts.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/scsi/hosts.h)

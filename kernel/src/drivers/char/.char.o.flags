@@ -1,0 +1,3 @@
+ifeq (mem.o tty_io.o n_tty.o tty_ioctl.o raw.o pty.o misc.o random.o serial.o avalanche_vlynq/avalanche_vlynq.o avalanche_led/avalanche_led.o,$(strip $(subst $(comma),:,$(EXTRA_LDFLAGS) $(obj-y))))
+FILES_FLAGS_UP_TO_DATE += char.o
+endif

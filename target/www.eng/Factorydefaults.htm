@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Factory Defaults</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+function Confirm()
+{
+	var cf = document.forms[0];	
+	if (getRadioCheckedValue(cf.Factory) == "1")  //alan
+  		return confirm(msg_confirmDefault);
+  return false;
+}
+
+//
+//-->
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="dataToVisible(document.forms[0]);">
+<form name="factorydefaults" method="POST" action="setup.cgi" onSubmit="return Confirm();">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Administration</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+  <table border="0" cellspacing="0" width="646" height="100%">
+    <tr>
+              <td height="10" colspan="5" background="UI_06.gif"></TD>
+              <td height="10" background="UI_07.gif"></TD>
+              <td height="10" colspan="1" background="UI_06.gif"></TD>
+            
+</TR>
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="thistab" width="105">Administration</TD>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+  
+</TR>
+  </table>
+ </TD>
+
+</TR>
+
+<!-- sub menu--> 
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Administration.htm">Management</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Log.htm">Reporting</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Diagnostics.htm">Diagnostics</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Backup.htm">Backup&amp;Restore</a><b class="separator">|</b>&nbsp;&nbsp;
+  <span class="current">Factory Defaults</span><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=FirmwareUpgrade.htm">Firmware Upgrade</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Reboot.htm">Reboot</a>&nbsp;&nbsp;
+ </TD>
+
+</TR>
+</table>
+
+<!-- data table--> 
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" height="300" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Factory Defaults</TD>
+  <td width="454">&nbsp;  </TD>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+      >&nbsp;&nbsp; <A href="help/h_FDefaults.htm" class="submenu" target="_blank">Help...</a></span></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7"> </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+ <table class="std">
+ <tr>
+  <td nowrap>Restore Factory Defaults:</TD>
+  <td nowrap><INPUT type=radio value="1" name="Factory"><B><FONT style="FONT-SIZE: 8pt" face=Arial>Yes<SPAN >&nbsp;</SPAN></FONT></B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT type=radio Checked value="0" name="Factory"><B><FONT style="FONT-SIZE: 8pt" face=Arial size=2>No</FONT></B></TD>
+ 
+</TR></table><br></TD>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+
+</TR>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  	<input type="submit" name="save" value="Save Settings" class="stdbutton" >
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=Factorydefaults.htm'"> &nbsp;  &nbsp; 
+  </TD>
+
+</TR>
+
+
+</table>
+
+</div>
+<input type="hidden" name="todo" value="defaultsettings">
+<input type="hidden" name="this_file" value="Factorydefaults.htm">
+<input type="hidden" name="next_file" value="index.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>     
+</body>
+
+</html>

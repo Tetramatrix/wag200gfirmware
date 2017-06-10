@@ -1,0 +1,28 @@
+--- ../080401_0030_working/net/ipv4/netfilter/ipt_dstlimit.c	2008-04-02 02:36:20.000000000 +0200
++++ ../src/net/ipv4/netfilter/ipt_dstlimit.c	2008-04-05 01:07:11.000000000 +0200
+@@ -8,8 +8,8 @@
+  * Development of this code was funded by Astaro AG, http://www.astaro.com/
+  *
+  * based on ipt_limit.c by:
+- * Jérôme de Vivie	<devivie@info.enserb.u-bordeaux.fr>
+- * Hervé Eychenne	<eychenne@info.enserb.u-bordeaux.fr>
++ * Jï¿½rï¿½me de Vivie	<devivie@info.enserb.u-bordeaux.fr>
++ * Hervï¿½ Eychenne	<eychenne@info.enserb.u-bordeaux.fr>
+  * Rusty Russell	<rusty@rustcorp.com.au>
+  *
+  * The general idea is to create a hash table for every dstip and have a
+@@ -601,6 +601,14 @@
+ 	.show  = dl_seq_show
+ };
+ 
++#if LINUX_VERSION_CODE < 0x020500
++static inline struct proc_dir_entry *PDE(const struct inode *inode)
++{
++        return inode->u.generic_ip;
++}
++#endif
++
++
+ static int dl_proc_open(struct inode *inode, struct file *file)
+ {
+ 	int ret = seq_open(file, &dl_seq_ops);

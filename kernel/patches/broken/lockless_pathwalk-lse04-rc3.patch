@@ -1,0 +1,484 @@
+This patch basically puts back the old path_walk code which uses ref
+counts instead of taking dcache_lock in path_walk(). The patch
+is made over lse04-rc3.diffs.
+
+
+diff -urN linux-2.4.17-lse04-rc3/fs/dcache.c linux-2.4.17-lse04-rc3-nofw/fs/dcache.c
+--- linux-2.4.17-lse04-rc3/fs/dcache.c	Thu May 30 11:55:30 2002
++++ linux-2.4.17-lse04-rc3-nofw/fs/dcache.c	Thu May 30 12:51:42 2002
+@@ -237,7 +237,7 @@
+ }
+ 
+ /* This should be called _only_ with dcache_lock held */
+-static inline struct dentry * __dget_locked(struct dentry *dentry)
++struct dentry * __dget_locked(struct dentry *dentry)
+ {
+ 	atomic_inc(&dentry->d_count);
+ 	dentry->d_vfs_flags |= DCACHE_REFERENCED;
+diff -urN linux-2.4.17-lse04-rc3/fs/exec.c linux-2.4.17-lse04-rc3-nofw/fs/exec.c
+--- linux-2.4.17-lse04-rc3/fs/exec.c	Thu May 30 11:55:30 2002
++++ linux-2.4.17-lse04-rc3-nofw/fs/exec.c	Thu May 30 12:15:23 2002
+@@ -343,7 +343,8 @@
+ 	struct file *file;
+ 	int err = 0;
+ 
+-	err = path_lookup(name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
++	if (path_init(name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd))
++		err = path_walk(name, &nd);
+ 	file = ERR_PTR(err);
+ 	if (!err) {
+ 		inode = nd.dentry->d_inode;
+diff -urN linux-2.4.17-lse04-rc3/fs/namei.c linux-2.4.17-lse04-rc3-nofw/fs/namei.c
+--- linux-2.4.17-lse04-rc3/fs/namei.c	Thu May 30 11:55:31 2002
++++ linux-2.4.17-lse04-rc3-nofw/fs/namei.c	Thu May 30 12:19:10 2002
+@@ -272,67 +272,6 @@
+ 	return dentry;
+ }
+ 
+-/*for fastwalking*/
+-static inline void undo_locked(struct nameidata *nd)
+-{
+-	if(nd->flags & LOOKUP_LOCKED){
+-		dget_locked(nd->dentry);
+-		mntget(nd->mnt);
+-		spin_unlock(&dcache_lock);
+-		nd->flags &= ~LOOKUP_LOCKED;
+-	}
+-}
+-
+-/*
+- * For fast path lookup while holding the dcache_lock. 
+- * SMP-safe
+- */
+-static struct dentry * cached_lookup_nd(struct nameidata * nd, struct qstr * name, int flags)
+-{
+-	struct dentry * dentry = NULL;
+-	if(!(nd->flags & LOOKUP_LOCKED))
+-		return cached_lookup(nd->dentry, name, flags);
+-	
+-	dentry = d_lookup(nd->dentry, name);
+-	
+-	if (dentry && dentry->d_op && dentry->d_op->d_revalidate) {
+-		undo_locked(nd);
+-		if (!dentry->d_op->d_revalidate(dentry, flags) && !d_invalidate(dentry)) {
+-			dput(dentry);
+-			dentry = NULL;
+-		}
+-	}
+-	return dentry;
+-}
+-
+-/*
+- * Short-cut version of permission(), for calling by
+- * path_walk(), when dcache lock is held.  Combines parts
+- * of permission() and vfs_permission(), and tests ONLY for
+- * MAY_EXEC permission.
+- *
+- * If appropriate, check DAC only.  If not appropriate, or
+- * short-cut DAC fails, then call permission() to do more
+- * complete permission check.
+- */
+-static inline int exec_permission_lite(struct inode *inode)
+-{
+-	umode_t	mode = inode->i_mode;
+-
+-	if ((inode->i_op && inode->i_op->permission))
+-		return -EACCES;
+-
+-	if (current->fsuid == inode->i_uid)
+-		mode >>= 6;
+-	else if (in_group_p(inode->i_gid))
+-		mode >>= 3;
+-
+-	if (mode & MAY_EXEC)
+-		return 0;
+-
+-	return -EACCES;
+-}
+-
+ /*
+  * This is called when everything else fails, and we actually have
+  * to go to the low-level filesystem to find out what we should do..
+@@ -527,11 +466,7 @@
+ 		struct qstr this;
+ 		unsigned int c;
+ 
+-		err = exec_permission_lite(inode);
+-		if(err){
+-			undo_locked(nd);
+-			err = permission(inode, MAY_EXEC);
+-		}
++		err = permission(inode, MAY_EXEC);
+ 		dentry = ERR_PTR(err);
+  		if (err)
+ 			break;
+@@ -566,7 +501,6 @@
+ 			case 2:	
+ 				if (this.name[1] != '.')
+ 					break;
+-				undo_locked(nd);
+ 				follow_dotdot(nd);
+ 				inode = nd->dentry->d_inode;
+ 				/* fallthrough */
+@@ -583,20 +517,16 @@
+ 				break;
+ 		}
+ 		/* This does the actual lookups.. */
+-		dentry = cached_lookup_nd(nd, &this, LOOKUP_CONTINUE);
++		dentry = cached_lookup(nd->dentry, &this, LOOKUP_CONTINUE);
+ 		if (!dentry) {
+-			undo_locked(nd);
+ 			dentry = real_lookup(nd->dentry, &this, LOOKUP_CONTINUE);
+ 			err = PTR_ERR(dentry);
+ 			if (IS_ERR(dentry))
+ 				break;
+ 		}
+ 		/* Check mountpoints.. */
+-		if(d_mountpoint(dentry)){
+-			undo_locked(nd);
+-			while (d_mountpoint(dentry) && __follow_down(&nd->mnt, &dentry))
+-				;
+-		}
++		while (d_mountpoint(dentry) && __follow_down(&nd->mnt, &dentry))
++			;
+ 
+ 		err = -ENOENT;
+ 		inode = dentry->d_inode;
+@@ -607,7 +537,6 @@
+ 			goto out_dput;
+ 
+ 		if (inode->i_op->follow_link) {
+-			undo_locked(nd);
+ 			err = do_follow_link(dentry, nd);
+ 			dput(dentry);
+ 			if (err)
+@@ -620,8 +549,7 @@
+ 			if (!inode->i_op)
+ 				break;
+ 		} else {
+-			if (!(nd->flags & LOOKUP_LOCKED))
+-				dput(nd->dentry);
++			dput(nd->dentry);
+ 			nd->dentry = dentry;
+ 		}
+ 		err = -ENOTDIR; 
+@@ -641,7 +569,6 @@
+ 			case 2:	
+ 				if (this.name[1] != '.')
+ 					break;
+-				undo_locked(nd);
+ 				follow_dotdot(nd);
+ 				inode = nd->dentry->d_inode;
+ 				/* fallthrough */
+@@ -653,8 +580,7 @@
+ 			if (err < 0)
+ 				break;
+ 		}
+-		dentry = cached_lookup_nd(nd, &this, 0);
+-		undo_locked(nd); 
++		dentry = cached_lookup(nd->dentry, &this, 0);
+ 		if (!dentry) {
+ 			dentry = real_lookup(nd->dentry, &this, 0);
+ 			err = PTR_ERR(dentry);
+@@ -699,14 +625,11 @@
+ 		else if (this.len == 2 && this.name[1] == '.')
+ 			nd->last_type = LAST_DOTDOT;
+ return_base:
+-		undo_locked(nd);
+ 		return 0;
+ out_dput:
+-		undo_locked(nd);
+ 		dput(dentry);
+ 		break;
+ 	}
+-	undo_locked(nd);
+ 	path_release(nd);
+ return_err:
+ 	return err;
+@@ -813,36 +736,6 @@
+ 	return 1;
+ }
+ 
+-int path_lookup(const char *name, unsigned int flags, struct nameidata *nd)
+-{
+-	nd->last_type = LAST_ROOT; /* if there are only slashes... */
+-	nd->flags = flags;
+-	if (*name=='/'){
+-		read_lock(&current->fs->lock);
+-		if (current->fs->altroot && !(nd->flags & LOOKUP_NOALT)) {
+-			nd->mnt = mntget(current->fs->altrootmnt);
+-			nd->dentry = dget(current->fs->altroot);
+-			read_unlock(&current->fs->lock);
+-			if (__emul_lookup_dentry(name,nd))
+-				return 0;
+-			read_lock(&current->fs->lock);
+-		}
+-		spin_lock(&dcache_lock); /*to avoid cacheline bouncing with d_count*/
+-		nd->mnt = current->fs->rootmnt;
+-		nd->dentry = current->fs->root;
+-		read_unlock(&current->fs->lock);
+-	}
+-	else{
+-		read_lock(&current->fs->lock);
+-		spin_lock(&dcache_lock);
+-		nd->mnt = current->fs->pwdmnt;
+-		nd->dentry = current->fs->pwd;
+-		read_unlock(&current->fs->lock);
+-	}
+-	nd->flags |= LOOKUP_LOCKED;
+-	return (path_walk(name, nd));
+-}
+-
+ /*
+  * Restricted form of lookup. Doesn't follow links, single-component only,
+  * needs parent already locked. Doesn't follow mounts.
+@@ -935,7 +828,8 @@
+ 	err = PTR_ERR(tmp);
+ 	if (!IS_ERR(tmp)) {
+ 		err = 0;
+-		err = path_lookup(tmp, flags, nd);
++		if (path_init(tmp, flags, nd))
++			err = path_walk(tmp, nd);
+ 		putname(tmp);
+ 	}
+ 	return err;
+@@ -1089,7 +983,8 @@
+ 	 * The simplest case - just a plain lookup.
+ 	 */
+ 	if (!(flag & O_CREAT)) {
+-		error = path_lookup(pathname, lookup_flags(flag), nd);
++		if (path_init(pathname, lookup_flags(flag), nd))
++			error = path_walk(pathname, nd);
+ 		if (error)
+ 			return error;
+ 		dentry = nd->dentry;
+@@ -1099,7 +994,8 @@
+ 	/*
+ 	 * Create - we need to know the parent.
+ 	 */
+-	error = path_lookup(pathname, LOOKUP_PARENT, nd);
++	if (path_init(pathname, LOOKUP_PARENT, nd))
++		error = path_walk(pathname, nd);
+ 	if (error)
+ 		return error;
+ 
+@@ -1351,7 +1247,8 @@
+ 	if (IS_ERR(tmp))
+ 		return PTR_ERR(tmp);
+ 
+-	error = path_lookup(tmp, LOOKUP_PARENT, &nd);
++	if (path_init(tmp, LOOKUP_PARENT, &nd))
++		error = path_walk(tmp, &nd);
+ 	if (error)
+ 		goto out;
+ 	dentry = lookup_create(&nd, 0);
+@@ -1419,7 +1316,8 @@
+ 		struct dentry *dentry;
+ 		struct nameidata nd;
+ 
+-		error = path_lookup(tmp, LOOKUP_PARENT, &nd);
++		if (path_init(tmp, LOOKUP_PARENT, &nd))
++			error = path_walk(tmp, &nd);
+ 		if (error)
+ 			goto out;
+ 		dentry = lookup_create(&nd, 1);
+@@ -1513,7 +1411,8 @@
+ 	if(IS_ERR(name))
+ 		return PTR_ERR(name);
+ 
+-	error = path_lookup(name, LOOKUP_PARENT, &nd);
++	if (path_init(name, LOOKUP_PARENT, &nd))
++		error = path_walk(name, &nd);
+ 	if (error)
+ 		goto exit;
+ 
+@@ -1581,7 +1480,8 @@
+ 	if(IS_ERR(name))
+ 		return PTR_ERR(name);
+ 
+-	error = path_lookup(name, LOOKUP_PARENT, &nd);
++	if (path_init(name, LOOKUP_PARENT, &nd))
++		error = path_walk(name, &nd);
+ 	if (error)
+ 		goto exit;
+ 	error = -EISDIR;
+@@ -1652,7 +1552,8 @@
+ 		struct dentry *dentry;
+ 		struct nameidata nd;
+ 
+-		error = path_lookup(to, LOOKUP_PARENT, &nd);
++		if (path_init(to, LOOKUP_PARENT, &nd))
++			error = path_walk(to, &nd);
+ 		if (error)
+ 			goto out;
+ 		dentry = lookup_create(&nd, 0);
+@@ -1735,10 +1636,12 @@
+ 		struct nameidata nd, old_nd;
+ 
+ 		error = 0;
+-		error = path_lookup(from, LOOKUP_POSITIVE, &old_nd);
++		if (path_init(from, LOOKUP_POSITIVE, &old_nd))
++			error = path_walk(from, &old_nd);
+ 		if (error)
+ 			goto exit;
+-		error = path_lookup(to, LOOKUP_PARENT, &nd);
++		if (path_init(to, LOOKUP_PARENT, &nd))
++			error = path_walk(to, &nd);
+ 		if (error)
+ 			goto out;
+ 		error = -EXDEV;
+@@ -1938,11 +1841,14 @@
+ 	struct dentry * old_dentry, *new_dentry;
+ 	struct nameidata oldnd, newnd;
+ 
+-	error = path_lookup(oldname, LOOKUP_PARENT, &oldnd);
++	if (path_init(oldname, LOOKUP_PARENT, &oldnd))
++		error = path_walk(oldname, &oldnd);
++
+ 	if (error)
+ 		goto exit;
+ 
+-	error = path_lookup(newname, LOOKUP_PARENT, &newnd);
++	if (path_init(newname, LOOKUP_PARENT, &newnd))
++		error = path_walk(newname, &newnd);
+ 	if (error)
+ 		goto exit1;
+ 
+diff -urN linux-2.4.17-lse04-rc3/fs/namespace.c linux-2.4.17-lse04-rc3-nofw/fs/namespace.c
+--- linux-2.4.17-lse04-rc3/fs/namespace.c	Thu May 30 11:55:31 2002
++++ linux-2.4.17-lse04-rc3-nofw/fs/namespace.c	Thu May 30 12:15:23 2002
+@@ -375,7 +375,8 @@
+ 	if (IS_ERR(kname))
+ 		goto out;
+ 	retval = 0;
+-	retval = path_lookup(kname, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &nd); 
++	if (path_init(kname, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &nd))
++		retval = path_walk(kname, &nd);
+ 	putname(kname);
+ 	if (retval)
+ 		goto out;
+@@ -504,7 +505,8 @@
+ 		return err;
+ 	if (!old_name || !*old_name)
+ 		return -EINVAL;
+-	err = path_lookup(old_name, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &old_nd);
++	if (path_init(old_name, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &old_nd))
++		err = path_walk(old_name, &old_nd);
+ 	if (err)
+ 		return err;
+ 
+@@ -667,7 +669,8 @@
+ 	flags &= ~(MS_NOSUID|MS_NOEXEC|MS_NODEV);
+ 
+ 	/* ... and get the mountpoint */
+-	retval = path_lookup(dir_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
++	if (path_init(dir_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd))
++		retval = path_walk(dir_name, &nd);
+ 	if (retval)
+ 		return retval;
+ 
+@@ -777,7 +780,8 @@
+ 	if (IS_ERR(name))
+ 		goto out0;
+ 	error = 0;
+-	error = path_lookup(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &new_nd);
++	if (path_init(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &new_nd))
++		error = path_walk(name, &new_nd);
+ 	putname(name);
+ 	if (error)
+ 		goto out0;
+@@ -790,7 +794,8 @@
+ 	if (IS_ERR(name))
+ 		goto out1;
+ 	error = 0;
+-	error = path_lookup(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &old_nd);
++	if (path_init(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &old_nd))
++		error = path_walk(name, &old_nd);
+ 	putname(name);
+ 	if (error)
+ 		goto out1;
+@@ -980,7 +985,8 @@
+ 	old_rootmnt = mntget(current->fs->rootmnt);
+ 	read_unlock(&current->fs->lock);
+ 	/*  First unmount devfs if mounted  */
+-	error = path_lookup("/dev", LOOKUP_FOLLOW|LOOKUP_POSITIVE, &devfs_nd);
++	if (path_init("/dev", LOOKUP_FOLLOW|LOOKUP_POSITIVE, &devfs_nd))
++		error = path_walk("/dev", &devfs_nd);
+ 	if (!error) {
+ 		if (devfs_nd.mnt->mnt_sb->s_magic == DEVFS_SUPER_MAGIC &&
+ 		    devfs_nd.dentry == devfs_nd.mnt->mnt_root) {
+@@ -1003,7 +1009,8 @@
+ 	 * Get the new mount directory
+ 	 */
+ 	error = 0;
+-	error = path_lookup(put_old, LOOKUP_FOLLOW|LOOKUP_POSITIVE|LOOKUP_DIRECTORY, &nd);
++	if (path_init(put_old, LOOKUP_FOLLOW|LOOKUP_POSITIVE|LOOKUP_DIRECTORY, &nd))
++		error = path_walk(put_old, &nd);
+ 	if (error) {
+ 		int blivet;
+ 		struct block_device *ramdisk = old_rootmnt->mnt_sb->s_bdev;
+diff -urN linux-2.4.17-lse04-rc3/fs/open.c linux-2.4.17-lse04-rc3-nofw/fs/open.c
+--- linux-2.4.17-lse04-rc3/fs/open.c	Thu May 30 11:55:31 2002
++++ linux-2.4.17-lse04-rc3-nofw/fs/open.c	Thu May 30 12:15:23 2002
+@@ -371,7 +371,8 @@
+ 		goto out;
+ 
+ 	error = 0;
+-	error = path_lookup(name,LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY,&nd);
++	if (path_init(name,LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY,&nd))
++		error = path_walk(name, &nd);
+ 	putname(name);
+ 	if (error)
+ 		goto out;
+@@ -429,8 +430,9 @@
+ 	if (IS_ERR(name))
+ 		goto out;
+ 
+-	error = path_lookup(name, LOOKUP_POSITIVE | LOOKUP_FOLLOW |
++	path_init(name, LOOKUP_POSITIVE | LOOKUP_FOLLOW |
+ 		      LOOKUP_DIRECTORY | LOOKUP_NOALT, &nd);
++	error = path_walk(name, &nd);	
+ 	putname(name);
+ 	if (error)
+ 		goto out;
+diff -urN linux-2.4.17-lse04-rc3/fs/super.c linux-2.4.17-lse04-rc3-nofw/fs/super.c
+--- linux-2.4.17-lse04-rc3/fs/super.c	Thu May 30 11:55:31 2002
++++ linux-2.4.17-lse04-rc3-nofw/fs/super.c	Thu May 30 12:15:23 2002
+@@ -548,7 +548,8 @@
+ 	/* What device it is? */
+ 	if (!dev_name || !*dev_name)
+ 		return ERR_PTR(-EINVAL);
+-	error = path_lookup(dev_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
++	if (path_init(dev_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd))
++		error = path_walk(dev_name, &nd);
+ 	if (error)
+ 		return ERR_PTR(error);
+ 	inode = nd.dentry->d_inode;
+diff -urN linux-2.4.17-lse04-rc3/include/linux/fs.h linux-2.4.17-lse04-rc3-nofw/include/linux/fs.h
+--- linux-2.4.17-lse04-rc3/include/linux/fs.h	Thu May 30 11:55:31 2002
++++ linux-2.4.17-lse04-rc3-nofw/include/linux/fs.h	Thu May 30 12:15:30 2002
+@@ -1272,7 +1272,6 @@
+  *  - require a directory
+  *  - ending slashes ok even for nonexistent files
+  *  - internal "there are more path compnents" flag
+- *  - locked when lookup done with dcache_lock held
+  */
+ #define LOOKUP_FOLLOW		(1)
+ #define LOOKUP_DIRECTORY	(2)
+@@ -1280,8 +1279,6 @@
+ #define LOOKUP_POSITIVE		(8)
+ #define LOOKUP_PARENT		(16)
+ #define LOOKUP_NOALT		(32)
+-#define LOOKUP_LOCKED		(64)
+-
+ /*
+  * Type of the last component on LOOKUP_PARENT
+  */
+@@ -1311,7 +1308,6 @@
+ extern int FASTCALL(__user_walk(const char *, unsigned, struct nameidata *));
+ extern int FASTCALL(path_init(const char *, unsigned, struct nameidata *));
+ extern int FASTCALL(path_walk(const char *, struct nameidata *));
+-extern int FASTCALL(path_lookup(const char *, unsigned, struct nameidata *));
+ extern int FASTCALL(link_path_walk(const char *, struct nameidata *));
+ extern void path_release(struct nameidata *);
+ extern int follow_down(struct vfsmount **, struct dentry **);

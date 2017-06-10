@@ -1,0 +1,23 @@
+dir.o: dir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h)
+file.o: file.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h)
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs_sb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs_sb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h)
+namei.o: namei.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h)
+super.o: super.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_vh.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_vh.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs_sb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs_sb.h)
+symlink.o: symlink.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/efs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)

@@ -1,0 +1,1557 @@
+diff -urN iptables-1.3.1/INCOMPATIBILITIES iptables-1.3.2/INCOMPATIBILITIES
+--- iptables-1.3.1/INCOMPATIBILITIES	2004-10-10 11:56:27.000000000 +0200
++++ iptables-1.3.2/INCOMPATIBILITIES	2005-07-04 17:20:46.000000000 +0200
+@@ -4,3 +4,9 @@
+   with kernels that do not support it, will result in a plain DROP instead
+   of REJECT.  Use with caution.
+   Kernels that do support it:
++
++- There are some issues related to upgrading from 1.2.x to 1.3.x on a system
++  with dynamic ruleset changes during runtime. (Please see 
++  https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=334).
++  After upgrading from 1.2 to 1.3, it suggest go do an iptables-save, then
++  iptables-restore to ensure your dynamic rule changes continue to work.
+diff -urN iptables-1.3.1/Makefile iptables-1.3.2/Makefile
+--- iptables-1.3.1/Makefile	2005-03-07 15:02:23.000000000 +0100
++++ iptables-1.3.2/Makefile	2005-07-10 16:01:40.000000000 +0200
+@@ -14,8 +14,8 @@
+ ifndef KERNEL_DIR
+ KERNEL_DIR=/usr/src/linux
+ endif
+-IPTABLES_VERSION:=1.3.1
+-OLD_IPTABLES_VERSION:=1.3.0
++IPTABLES_VERSION:=1.3.2
++OLD_IPTABLES_VERSION:=1.3.1
+ 
+ PREFIX:=/usr/local
+ LIBDIR:=$(PREFIX)/lib
+diff -urN iptables-1.3.1/extensions/libip6t_LOG.c iptables-1.3.2/extensions/libip6t_LOG.c
+--- iptables-1.3.1/extensions/libip6t_LOG.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libip6t_LOG.c	2005-07-10 16:33:42.000000000 +0200
+@@ -9,6 +9,12 @@
+ #include <linux/netfilter_ipv6/ip6_tables.h>
+ #include <linux/netfilter_ipv6/ip6t_LOG.h>
+ 
++#ifndef IP6T_LOG_UID	/* Old kernel */
++#define IP6T_LOG_UID	0x08
++#undef  IP6T_LOG_MASK
++#define IP6T_LOG_MASK	0x0f
++#endif
++
+ #define LOG_DEFAULT_LEVEL LOG_WARNING
+ 
+ /* Function which prints out usage message. */
+@@ -21,7 +27,8 @@
+ " --log-prefix prefix		Prefix log messages with this prefix.\n\n"
+ " --log-tcp-sequence		Log TCP sequence numbers.\n\n"
+ " --log-tcp-options		Log TCP options.\n\n"
+-" --log-ip-options		Log IP options.\n\n",
++" --log-ip-options		Log IP options.\n\n"
++" --log-uid			Log UID owning the local socket.\n\n",
+ IPTABLES_VERSION);
+ }
+ 
+@@ -31,6 +38,7 @@
+ 	{ .name = "log-tcp-sequence", .has_arg = 0, .flag = 0, .val = '1' },
+ 	{ .name = "log-tcp-options",  .has_arg = 0, .flag = 0, .val = '2' },
+ 	{ .name = "log-ip-options",   .has_arg = 0, .flag = 0, .val = '3' },
++	{ .name = "log-uid",          .has_arg = 0, .flag = 0, .val = '4' },
+ 	{ .name = 0 }
+ };
+ 
+@@ -96,6 +104,7 @@
+ #define IP6T_LOG_OPT_TCPSEQ 0x04
+ #define IP6T_LOG_OPT_TCPOPT 0x08
+ #define IP6T_LOG_OPT_IPOPT 0x10
++#define IP6T_LOG_OPT_UID 0x20
+ 
+ /* Function which parses command options; returns true if it
+    ate an option */
+@@ -134,6 +143,10 @@
+ 				   "Maximum prefix length %u for --log-prefix",
+ 				   (unsigned int)sizeof(loginfo->prefix) - 1);
+ 
++		if (strlen(optarg) != strlen(strtok(optarg, "\n")))
++			exit_error(PARAMETER_PROBLEM,
++				   "Newlines not allowed in --log-prefix");
++
+ 		strcpy(loginfo->prefix, optarg);
+ 		*flags |= IP6T_LOG_OPT_PREFIX;
+ 		break;
+@@ -166,6 +179,15 @@
+ 		*flags |= IP6T_LOG_OPT_IPOPT;
+ 		break;
+ 
++	case '4':
++		if (*flags & IP6T_LOG_OPT_UID)
++			exit_error(PARAMETER_PROBLEM,
++				   "Can't specify --log-uid twice");
++
++		loginfo->logflags |= IP6T_LOG_UID;
++		*flags |= IP6T_LOG_OPT_UID;
++		break;
++
+ 	default:
+ 		return 0;
+ 	}
+@@ -209,6 +231,8 @@
+ 			printf("tcp-options ");
+ 		if (loginfo->logflags & IP6T_LOG_IPOPT)
+ 			printf("ip-options ");
++		if (loginfo->logflags & IP6T_LOG_UID)
++			printf("uid ");
+ 		if (loginfo->logflags & ~(IP6T_LOG_MASK))
+ 			printf("unknown-flags ");
+ 	}
+@@ -236,6 +260,8 @@
+ 		printf("--log-tcp-options ");
+ 	if (loginfo->logflags & IP6T_LOG_IPOPT)
+ 		printf("--log-ip-options ");
++	if (loginfo->logflags & IP6T_LOG_UID)
++		printf("--log-uid ");
+ }
+ 
+ static
+diff -urN iptables-1.3.1/extensions/libip6t_LOG.man iptables-1.3.2/extensions/libip6t_LOG.man
+--- iptables-1.3.1/extensions/libip6t_LOG.man	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.2/extensions/libip6t_LOG.man	2005-06-24 18:34:19.000000000 +0200
+@@ -26,3 +26,6 @@
+ .TP
+ .B --log-ip-options
+ Log options from the IPv6 packet header.
++.TP
++.B --log-uid
++Log the userid of the process which generated the packet.
+diff -urN iptables-1.3.1/extensions/libip6t_multiport.man iptables-1.3.2/extensions/libip6t_multiport.man
+--- iptables-1.3.1/extensions/libip6t_multiport.man	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.2/extensions/libip6t_multiport.man	2005-06-24 18:34:18.000000000 +0200
+@@ -1,19 +1,20 @@
+ This module matches a set of source or destination ports.  Up to 15
+-ports can be specified.  It can only be used in conjunction with
++ports can be specified.  A port range (port:port) counts as two
++ports.  It can only be used in conjunction with
+ .B "-p tcp"
+ or
+ .BR "-p udp" .
+ .TP
+-.BR "--source-ports " "\fIport\fP[,\fIport\fP[,\fIport\fP...]]"
++.BR "--source-ports " "\fI[!] port\fP[,\fIport\fP[,\fIport:port\fP...]]"
+ Match if the source port is one of the given ports.  The flag
+ .B --sports
+ is a convenient alias for this option.
+ .TP
+-.BR "--destination-ports " "\fIport\fP[,\fIport\fP[,\fIport\fP...]]"
++.BR "--destination-ports " "\fI[!] port\fP[,\fIport\fP[,\fIport:port\fP...]]"
+ Match if the destination port is one of the given ports.  The flag
+ .B --dports
+ is a convenient alias for this option.
+ .TP
+-.BR "--ports " "\fIport\fP[,\fIport\fP[,\fIport\fP...]]"
++.BR "--ports " "\fI[!] port\fP[,\fIport\fP[,\fIport:port\fP...]]"
+ Match if the both the source and destination ports are equal to each
+ other and to one of the given ports.
+diff -urN iptables-1.3.1/extensions/libip6t_owner.c iptables-1.3.2/extensions/libip6t_owner.c
+--- iptables-1.3.1/extensions/libip6t_owner.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libip6t_owner.c	2005-06-29 18:39:54.000000000 +0200
+@@ -141,11 +141,11 @@
+ {
+ 	if(info->match & flag) {
+ 
+-		printf(label);
+-
+ 		if (info->invert & flag)
+ 			printf("! ");
+ 
++		printf(label);
++
+ 		switch(info->match & flag) {
+ 		case IP6T_OWNER_UID:
+ 			if(!numeric) {
+diff -urN iptables-1.3.1/extensions/libip6t_physdev.c iptables-1.3.2/extensions/libip6t_physdev.c
+--- iptables-1.3.1/extensions/libip6t_physdev.c	2005-02-01 16:30:28.000000000 +0100
++++ iptables-1.3.2/extensions/libip6t_physdev.c	2005-06-24 18:34:18.000000000 +0200
+@@ -34,45 +34,6 @@
+ 	{0}
+ };
+ 
+-/* copied from iptables.c */
+-static void
+-parse_interface(const char *arg, char *vianame, unsigned char *mask)
+-{
+-	int vialen = strlen(arg);
+-	unsigned int i;
+-
+-	memset(mask, 0, IFNAMSIZ);
+-	memset(vianame, 0, IFNAMSIZ);
+-
+-	if (vialen + 1 > IFNAMSIZ)
+-		exit_error(PARAMETER_PROBLEM,
+-			   "interface name `%s' must be shorter than IFNAMSIZ"
+-			   " (%i)", arg, IFNAMSIZ-1);
+-
+-	strcpy(vianame, arg);
+-	if (vialen == 0)
+-		memset(mask, 0, IFNAMSIZ);
+-	else if (vianame[vialen - 1] == '+') {
+-		memset(mask, 0xFF, vialen - 1);
+-		memset(mask + vialen - 1, 0, IFNAMSIZ - vialen + 1);
+-		/* Don't remove `+' here! -HW */
+-	} else {
+-		/* Include nul-terminator in match */
+-		memset(mask, 0xFF, vialen + 1);
+-		memset(mask + vialen + 1, 0, IFNAMSIZ - vialen - 1);
+-		for (i = 0; vianame[i]; i++) {
+-			if (!isalnum(vianame[i])
+-			    && vianame[i] != '_'
+-			    && vianame[i] != '.') {
+-				printf("Warning: wierd character in interface"
+-				       " `%s' (No aliases, :, ! or *).\n",
+-				       vianame);
+-				break;
+-			}
+-		}
+-	}
+-}
+-
+ static void
+ init(struct ip6t_entry_match *m, unsigned int *nfcache)
+ {
+diff -urN iptables-1.3.1/extensions/libipt_CONNMARK.c iptables-1.3.2/extensions/libipt_CONNMARK.c
+--- iptables-1.3.1/extensions/libipt_CONNMARK.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_CONNMARK.c	2005-06-24 18:34:18.000000000 +0200
+@@ -150,7 +150,7 @@
+ print_mask(const char *text, unsigned long long mask)
+ {
+ 	if (mask != ~0ULL)
+-		printf("%s%llx", text, mask);
++		printf("%s0x%llx", text, mask);
+ }
+ 
+ #else
+@@ -165,7 +165,7 @@
+ print_mask(const char *text, unsigned long mask)
+ {
+ 	if (mask != ~0UL)
+-		printf("%s%lx", text, mask);
++		printf("%s0x%lx", text, mask);
+ }
+ #endif
+ 
+diff -urN iptables-1.3.1/extensions/libipt_DNAT.c iptables-1.3.2/extensions/libipt_DNAT.c
+--- iptables-1.3.1/extensions/libipt_DNAT.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_DNAT.c	2005-06-24 18:34:19.000000000 +0200
+@@ -73,7 +73,7 @@
+ 		range.flags |= IP_NAT_RANGE_PROTO_SPECIFIED;
+ 
+ 		port = atoi(colon+1);
+-		if (port == 0 || port > 65535)
++		if (port <= 0 || port > 65535)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Port `%s' not valid\n", colon+1);
+ 
+@@ -91,7 +91,7 @@
+ 			int maxport;
+ 
+ 			maxport = atoi(dash + 1);
+-			if (maxport == 0 || maxport > 65535)
++			if (maxport <= 0 || maxport > 65535)
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "Port `%s' not valid\n", dash+1);
+ 			if (maxport < port)
+diff -urN iptables-1.3.1/extensions/libipt_IPMARK.man iptables-1.3.2/extensions/libipt_IPMARK.man
+--- iptables-1.3.1/extensions/libipt_IPMARK.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_IPMARK.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,45 @@
++Allows you to mark a received packet basing on its IP address. This
++can replace many mangle/mark entries with only one, if you use
++firewall based classifier.
++
++This target is to be used inside the mangle table, in the PREROUTING,
++POSTROUTING or FORWARD hooks.
++.TP
++.BI "--addr " "src/dst"
++Use source or destination IP address.
++.TP
++.BI "--and-mask " "mask"
++Perform bitwise `and' on the IP address and this mask.
++.TP
++.BI "--or-mask " "mask"
++Perform bitwise `or' on the IP address and this mask.
++.P
++The order of IP address bytes is reversed to meet "human order of bytes":
++192.168.0.1 is 0xc0a80001. At first the `and' operation is performed, then
++`or'.
++
++Examples:
++
++We create a queue for each user, the queue number is adequate
++to the IP address of the user, e.g.: all packets going to/from 192.168.5.2
++are directed to 1:0502 queue, 192.168.5.12 -> 1:050c etc.
++
++We have one classifier rule:
++.IP
++tc filter add dev eth3 parent 1:0 protocol ip fw
++.P
++Earlier we had many rules just like below:
++.IP
++iptables -t mangle -A POSTROUTING -o eth3 -d 192.168.5.2 -j MARK
++--set-mark 0x10502
++.IP
++iptables -t mangle -A POSTROUTING -o eth3 -d 192.168.5.3 -j MARK
++--set-mark 0x10503
++.P
++Using IPMARK target we can replace all the mangle/mark rules with only one:
++.IP
++iptables -t mangle -A POSTROUTING -o eth3 -j IPMARK --addr=dst
++--and-mask=0xffff --or-mask=0x10000
++.P
++On the routers with hundreds of users there should be significant load
++decrease (e.g. twice).
+diff -urN iptables-1.3.1/extensions/libipt_IPV4OPTSSTRIP.man iptables-1.3.2/extensions/libipt_IPV4OPTSSTRIP.man
+--- iptables-1.3.1/extensions/libipt_IPV4OPTSSTRIP.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_IPV4OPTSSTRIP.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,5 @@
++Strip all the IP options from a packet.
++
++The target doesn't take any option, and therefore is extremly easy to use :
++
++# iptables -t mangle -A PREROUTING -j IPV4OPTSSTRIP
+diff -urN iptables-1.3.1/extensions/libipt_LOG.c iptables-1.3.2/extensions/libipt_LOG.c
+--- iptables-1.3.1/extensions/libipt_LOG.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_LOG.c	2005-04-01 09:02:49.000000000 +0200
+@@ -143,6 +143,10 @@
+ 				   "Maximum prefix length %u for --log-prefix",
+ 				   (unsigned int)sizeof(loginfo->prefix) - 1);
+ 
++		if (strlen(optarg) != strlen(strtok(optarg, "\n")))
++			exit_error(PARAMETER_PROBLEM,
++				   "Newlines not allowed in --log-prefix");
++
+ 		strcpy(loginfo->prefix, optarg);
+ 		*flags |= IPT_LOG_OPT_PREFIX;
+ 		break;
+diff -urN iptables-1.3.1/extensions/libipt_REDIRECT.man iptables-1.3.2/extensions/libipt_REDIRECT.man
+--- iptables-1.3.1/extensions/libipt_REDIRECT.man	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.2/extensions/libipt_REDIRECT.man	2005-04-01 07:55:17.000000000 +0200
+@@ -5,9 +5,10 @@
+ and
+ .B OUTPUT
+ chains, and user-defined chains which are only called from those
+-chains.  It alters the destination IP address to send the packet to
+-the machine itself (locally-generated packets are mapped to the
+-127.0.0.1 address).  It takes one option:
++chains.  It redirects the packet to the machine itself by changing the
++destination IP to the primary address of the incoming interface
++(locally-generated packets are mapped to the 127.0.0.1 address).  It
++takes one option:
+ .TP
+ .BR "--to-ports " "\fIport\fP[-\fIport\fP]"
+ This specifies a destination port or range of ports to use: without
+diff -urN iptables-1.3.1/extensions/libipt_SAME.man iptables-1.3.2/extensions/libipt_SAME.man
+--- iptables-1.3.1/extensions/libipt_SAME.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_SAME.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,11 @@
++Similar to SNAT/DNAT depending on chain: it takes a range of addresses
++(`--to 1.2.3.4-1.2.3.7') and gives a client the same
++source-/destination-address for each connection.
++.TP
++.BI "--to " "<ipaddr>-<ipaddr>"
++Addresses to map source to. May be specified more than once for
++multiple ranges.
++.TP
++.B "--nodst"
++Don't use the destination-ip in the calculations when selecting the
++new source-ip
+diff -urN iptables-1.3.1/extensions/libipt_SET.c iptables-1.3.2/extensions/libipt_SET.c
+--- iptables-1.3.1/extensions/libipt_SET.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_SET.c	2005-04-01 07:55:18.000000000 +0200
+@@ -120,7 +120,9 @@
+ {
+ 	int i;
+ 	char setname[IP_SET_MAXNAMELEN];
+-	
++
++	if (info->index == IP_SET_INVALID_ID)
++		return;
+ 	get_set_byid(setname, info->index);
+ 	printf("%s %s", prefix, setname);
+ 	for (i = 0; i < IP_SET_MAX_BINDINGS; i++) {
+diff -urN iptables-1.3.1/extensions/libipt_SNAT.c iptables-1.3.2/extensions/libipt_SNAT.c
+--- iptables-1.3.1/extensions/libipt_SNAT.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_SNAT.c	2005-06-24 18:34:18.000000000 +0200
+@@ -73,7 +73,7 @@
+ 		range.flags |= IP_NAT_RANGE_PROTO_SPECIFIED;
+ 
+ 		port = atoi(colon+1);
+-		if (port == 0 || port > 65535)
++		if (port <= 0 || port > 65535)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Port `%s' not valid\n", colon+1);
+ 
+@@ -91,7 +91,7 @@
+ 			int maxport;
+ 
+ 			maxport = atoi(dash + 1);
+-			if (maxport == 0 || maxport > 65535)
++			if (maxport <= 0 || maxport > 65535)
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "Port `%s' not valid\n", dash+1);
+ 			if (maxport < port)
+diff -urN iptables-1.3.1/extensions/libipt_TARPIT.man iptables-1.3.2/extensions/libipt_TARPIT.man
+--- iptables-1.3.1/extensions/libipt_TARPIT.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_TARPIT.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,34 @@
++Captures and holds incoming TCP connections using no local
++per-connection resources. Connections are accepted, but immediately
++switched to the persist state (0 byte window), in which the remote
++side stops sending data and asks to continue every 60-240 seconds.
++Attempts to close the connection are ignored, forcing the remote side
++to time out the connection in 12-24 minutes.
++
++This offers similar functionality to LaBrea
++<http://www.hackbusters.net/LaBrea/> but doesn't require dedicated
++hardware or IPs. Any TCP port that you would normally DROP or REJECT
++can instead become a tarpit.
++
++To tarpit connections to TCP port 80 destined for the current machine:
++.IP
++iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
++.P
++To significantly slow down Code Red/Nimda-style scans of unused address
++space, forward unused ip addresses to a Linux box not acting as a router
++(e.g. "ip route 10.0.0.0 255.0.0.0 ip.of.linux.box" on a Cisco), enable IP
++forwarding on the Linux box, and add:
++.IP
++iptables -A FORWARD -p tcp -j TARPIT
++.IP
++iptables -A FORWARD -j DROP
++.TP
++NOTE:
++If you use the conntrack module while you are using TARPIT, you should
++also use the NOTRACK target, or the kernel will unnecessarily allocate
++resources for each TARPITted connection. To TARPIT incoming
++connections to the standard IRC port while using conntrack, you could:
++.IP
++iptables -t raw -A PREROUTING -p tcp --dport 6667 -j NOTRACK
++.IP
++iptables -A INPUT -p tcp --dport 6667 -j TARPIT
+diff -urN iptables-1.3.1/extensions/libipt_TCPLAG.c iptables-1.3.2/extensions/libipt_TCPLAG.c
+--- iptables-1.3.1/extensions/libipt_TCPLAG.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_TCPLAG.c	2005-04-01 07:55:18.000000000 +0200
+@@ -195,7 +195,7 @@
+ {
+ next:	          0,
+ name:             "TCPLAG",
+-version:          "1.2.3",
++version:          IPTABLES_VERSION,
+ size:             IPT_ALIGN( sizeof( struct ipt_tcplag )),
+ userspacesize:    IPT_ALIGN( sizeof( struct ipt_tcplag )),
+ help:             &help,
+diff -urN iptables-1.3.1/extensions/libipt_ULOG.c iptables-1.3.2/extensions/libipt_ULOG.c
+--- iptables-1.3.1/extensions/libipt_ULOG.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_ULOG.c	2005-05-04 09:25:38.000000000 +0200
+@@ -144,6 +144,8 @@
+ #endif
+ 		*flags |= IPT_LOG_OPT_QTHRESHOLD;
+ 		break;
++	default:
++		return 0;
+ 	}
+ 	return 1;
+ }
+diff -urN iptables-1.3.1/extensions/libipt_XOR.man iptables-1.3.2/extensions/libipt_XOR.man
+--- iptables-1.3.1/extensions/libipt_XOR.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_XOR.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,7 @@
++Encrypt TCP and UDP traffic using a simple XOR encryption
++.TP
++.BI "--key " "string"
++Set key to "string"
++.TP
++.BI "--block-size"
++Set block size
+diff -urN iptables-1.3.1/extensions/libipt_account.man iptables-1.3.2/extensions/libipt_account.man
+--- iptables-1.3.1/extensions/libipt_account.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_account.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,47 @@
++Account traffic for all hosts in defined network/netmask.
++
++Features:
++
++- long (one counter per protocol TCP/UDP/IMCP/Other) and short statistics
++
++- one iptables rule for all hosts in network/netmask
++
++- loading/saving counters (by reading/writting to procfs entries)
++
++.TP
++.BI "--aaddr " "network/netmask"
++defines network/netmask for which make statistics.
++.TP
++.BI "--aname " "name"
++defines name of list where statistics will be kept. If no is
++specified DEFAULT will be used.
++.TP
++.B "--ashort"
++table will colect only short statistics (only total counters
++without splitting it into protocols.
++.P
++Example usage:
++
++account traffic for/to 192.168.0.0/24 network into table mynetwork:
++
++# iptables -A FORWARD -m account --aname mynetwork --aaddr 192.168.0.0/24
++
++account traffic for/to WWW serwer for 192.168.0.0/24 network into table mywwwserver:
++
++# iptables -A INPUT -p tcp --dport 80
++  -m account --aname mywwwserver --aaddr 192.168.0.0/24 --ashort
++
++# iptables -A OUTPUT -p tcp --sport 80
++  -m account --aname mywwwserver --aaddr 192.168.0.0/24 --ashort
++
++read counters:
++
++# cat /proc/net/ipt_account/mynetwork
++# cat /proc/net/ipt_account/mywwwserver
++
++set counters:
++
++# echo "ip = 192.168.0.1 packets_src = 0" > /proc/net/ipt_account/mywwserver
++
++Webpage:
++  http://www.barbara.eu.org/~quaker/ipt_account/
+diff -urN iptables-1.3.1/extensions/libipt_comment.man iptables-1.3.2/extensions/libipt_comment.man
+--- iptables-1.3.1/extensions/libipt_comment.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_comment.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,6 @@
++Allows you to add comments (up to 256 characters) to any rule.
++.TP
++.BI "--comment " "comment"
++.TP
++Example:
++iptables -A INPUT -s 192.168.0.0/16 -m comment --comment "A privatized IP block"
+diff -urN iptables-1.3.1/extensions/libipt_connbytes.c iptables-1.3.2/extensions/libipt_connbytes.c
+--- iptables-1.3.1/extensions/libipt_connbytes.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_connbytes.c	2005-04-27 12:31:42.000000000 +0200
+@@ -93,6 +93,7 @@
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unknown --connbytes-mode `%s'", optarg);
+ 		*flags |= 4;
++		break;
+ 	default:
+ 		return 0;
+ 	}
+diff -urN iptables-1.3.1/extensions/libipt_connbytes.man iptables-1.3.2/extensions/libipt_connbytes.man
+--- iptables-1.3.1/extensions/libipt_connbytes.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_connbytes.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,30 @@
++Match by how many bytes or packets a connection (or one of the two
++flows constituting the connection) have tranferred so far, or by
++average bytes per packet.
++
++The counters are 64bit and are thus not expected to overflow ;)
++
++The primary use is to detect long-lived downloads and mark them to be
++scheduled using a lower priority band in traffic control.
++
++The transfered bytes per connection can also be viewed through
++/proc/net/ip_conntrack and accessed via ctnetlink
++.TP
++[\fB!\fR]\fB --connbytes \fIfrom\fB:\fR[\fIto\fR]
++match packets from a connection whose packets/bytes/average packet
++size is more than FROM and less than TO bytes/packets. if TO is
++omitted only FROM check is done. "!" is used to match packets not
++falling in the range.
++.TP
++\fB--connbytes-dir\fR [\fBoriginal\fR|\fBreply\fR|\fBboth\fR]
++which packets to consider
++.TP
++\fB--connbytes-mode\fR [\fBpackets\fR|\fBbytes\fR|\fBavgpkt\fR]
++whether to check the amount of packets, number of bytes transferred or
++the average size (in bytes) of all packets received so far. Note that
++when "both" is used together with "avgpkt", and data is going (mainly)
++only in one direction (for example HTTP), the average packet size will
++be about half of the actual data packets.
++.TP
++Example:
++iptables .. -m connbytes --connbytes 10000:100000 --connbytes-dir both --connbytes-mode bytes ...
+diff -urN iptables-1.3.1/extensions/libipt_connlimit.man iptables-1.3.2/extensions/libipt_connlimit.man
+--- iptables-1.3.1/extensions/libipt_connlimit.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_connlimit.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,21 @@
++Allows you to restrict the number of parallel TCP connections to a
++server per client IP address (or address block).
++.TP
++[\fB!\fR] \fB--connlimit-above \fIn\fR
++match if the number of existing tcp connections is (not) above n
++.TP
++.BI "--connlimit-mask " "bits"
++group hosts using mask
++.P
++Examples:
++.TP
++# allow 2 telnet connections per client host
++iptables -p tcp --syn --dport 23 -m connlimit --connlimit-above 2 -j REJECT
++.TP
++# you can also match the other way around:
++iptables -p tcp --syn --dport 23 -m connlimit ! --connlimit-above 2 -j ACCEPT
++.TP
++# limit the nr of parallel http requests to 16 per class C sized \
++network (24 bit netmask)
++iptables -p tcp --syn --dport 80 -m connlimit --connlimit-above 16
++--connlimit-mask 24 -j REJECT
+diff -urN iptables-1.3.1/extensions/libipt_hashlimit.man iptables-1.3.2/extensions/libipt_hashlimit.man
+--- iptables-1.3.1/extensions/libipt_hashlimit.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_hashlimit.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,35 @@
++This patch adds a new match called 'hashlimit'.
++The idea is to have something like 'limit', but either per
++destination-ip or per (destip,destport) tuple.
++
++It gives you the ability to express
++.IP
++ '1000 packets per second for every host in 192.168.0.0/16'
++.IP
++ '100 packets per second for every service of 192.168.1.1'
++.P
++with a single iptables rule.
++.TP
++.BI "--hashlimit " "rate"
++A rate just like the limit match
++.TP
++.BI "--hashlimit-burst " "num"
++Burst value, just like limit match
++.TP
++.BI "--hashlimit-mode " "destip | destip-destport"
++Limit per IP or per port
++.TP
++.BI "--hashlimit-name " "foo"
++The name for the /proc/net/ipt_hashlimit/foo entry
++.TP
++.BI "--hashlimit-htable-size " "num"
++The number of buckets of the hash table
++.TP
++.BI "--hashlimit-htable-max " "num"
++Maximum entries in the hash
++.TP
++.BI "--hashlimit-htable-expire " "num"
++After how many miliseconds do hash entries expire
++.TP
++.BI "--hashlimit-htable-gcinterval " "num"
++How many miliseconds between garbage collection intervals
+diff -urN iptables-1.3.1/extensions/libipt_ipv4options.man iptables-1.3.2/extensions/libipt_ipv4options.man
+--- iptables-1.3.1/extensions/libipt_ipv4options.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_ipv4options.man	2005-04-01 08:49:25.000000000 +0200
+@@ -0,0 +1,32 @@
++Match on IPv4 header options like source routing, record route,
++timestamp and router-alert.
++.TP
++.B "--ssrr"
++To match packets with the flag strict source routing.
++.TP
++.B "--lsrr"
++To match packets with the flag loose source routing.
++.TP
++.B "--no-srr"
++To match packets with no flag for source routing.
++.TP
++.B "\fR[\fB!\fR]\fB --rr"
++To match packets with the RR flag.
++.TP
++.B "\fR[\fB!\fR]\fB --ts"
++To match packets with the TS flag.
++.TP
++.B "\fR[\fB!\fR]\fB --ra"
++To match packets with the router-alert option.
++.TP
++.B "\fR[\fB!\fR]\fB --any-opt"
++To match a packet with at least one IP option, or no IP option
++at all if ! is chosen.
++.TP
++Examples:
++.TP
++$ iptables -A input -m ipv4options --rr -j DROP
++will drop packets with the record-route flag.
++.TP
++$ iptables -A input -m ipv4options --ts -j DROP
++will drop packets with the timestamp flag.
+diff -urN iptables-1.3.1/extensions/libipt_multiport.man iptables-1.3.2/extensions/libipt_multiport.man
+--- iptables-1.3.1/extensions/libipt_multiport.man	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.2/extensions/libipt_multiport.man	2005-06-24 18:34:18.000000000 +0200
+@@ -1,19 +1,20 @@
+ This module matches a set of source or destination ports.  Up to 15
+-ports can be specified.  It can only be used in conjunction with
++ports can be specified.  A port range (port:port) counts as two
++ports.  It can only be used in conjunction with
+ .B "-p tcp"
+ or
+ .BR "-p udp" .
+ .TP
+-.BR "--source-ports " "\fIport\fP[,\fIport\fP[,\fIport\fP...]]"
++.BR "--source-ports " "\fI[!] port\fP[,\fIport\fP[,\fIport:port\fP...]]"
+ Match if the source port is one of the given ports.  The flag
+ .B --sports
+ is a convenient alias for this option.
+ .TP
+-.BR "--destination-ports " "\fIport\fP[,\fIport\fP[,\fIport\fP...]]"
++.BR "--destination-ports " "\fI[!] port\fP[,\fIport\fP[,\fIport:port\fP...]]"
+ Match if the destination port is one of the given ports.  The flag
+ .B --dports
+ is a convenient alias for this option.
+ .TP
+-.BR "--ports " "\fIport\fP[,\fIport\fP[,\fIport\fP...]]"
+-Match if the both the source and destination ports are equal to each
+-other and to one of the given ports.
++.BR "--ports " "\fI[!] port\fP[,\fIport\fP[,\fIport:port\fP...]]"
++Match if either the source or destination ports are equal to one of
++the given ports.
+diff -urN iptables-1.3.1/extensions/libipt_osf.c iptables-1.3.2/extensions/libipt_osf.c
+--- iptables-1.3.1/extensions/libipt_osf.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_osf.c	2005-06-24 18:34:19.000000000 +0200
+@@ -35,14 +35,15 @@
+ 
+ static void help(void)
+ {
+-	printf("OS fingerprint match v%s options:\n"
++	printf("OS fingerprint match options:\n"
+ 		"--genre [!] string	Match a OS genre by passive fingerprinting.\n"
+ 		"--smart		Use some smart extensions to determine OS (do not use TTL).\n"
+ 		"--log level		Log all(or only first) determined genres even if "
+ 					"they do not match desired one. "
+ 					"Level may be 0(all) or 1(only first entry).\n"
+ 		"--netlink		Log through netlink(NETLINK_NFLOG).\n",
+-		IPTABLES_VERSION);
++		"--connector		Log through kernel connector [in 2.6.12-mm+].\n"
++		);
+ }
+ 
+ 
+@@ -51,6 +52,7 @@
+ 	{ .name = "smart",	.has_arg = 0, .flag = 0, .val = '2' },
+ 	{ .name = "log",	.has_arg = 1, .flag = 0, .val = '3' },
+ 	{ .name = "netlink",	.has_arg = 0, .flag = 0, .val = '4' },
++	{ .name = "connector",	.has_arg = 0, .flag = 0, .val = '5' },
+ 	{ .name = 0 }
+ };
+ 
+@@ -97,10 +99,16 @@
+ 			break;
+ 		case '4': /* --netlink */
+ 			if (*flags & IPT_OSF_NETLINK)
+-				exit_error(PARAMETER_PROBLEM, "Can't specify multiple smart parameter");
++				exit_error(PARAMETER_PROBLEM, "Can't specify multiple netlink parameter");
+ 			*flags |= IPT_OSF_NETLINK;
+ 			info->flags |= IPT_OSF_NETLINK;
+ 			break;
++		case '5': /* --connector */
++			if (*flags & IPT_OSF_CONNECTOR)
++				exit_error(PARAMETER_PROBLEM, "Can't specify multiple connector parameter");
++			*flags |= IPT_OSF_CONNECTOR;
++			info->flags |= IPT_OSF_CONNECTOR;
++			break;
+ 		default:
+ 			return 0;
+ 	}
+diff -urN iptables-1.3.1/extensions/libipt_osf.man iptables-1.3.2/extensions/libipt_osf.man
+--- iptables-1.3.1/extensions/libipt_osf.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_osf.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,47 @@
++The idea of passive OS fingerprint matching exists for quite a long time,
++but was created as extension fo OpenBSD pf only some weeks ago.
++Original idea was lurked in some OpenBSD mailing list (thanks
++grange@open...) and than adopted for Linux netfilter in form of this code.
++
++Original fingerprint table was created by Michal Zalewski <lcamtuf@coredump.cx>.
++
++This module compares some data(WS, MSS, options and it's order, ttl,
++df and others) from first SYN packet (actually from packets with SYN
++bit set) with dynamically loaded OS fingerprints.
++.TP
++.B "--log 1/0" 
++If present, OSF will log determined genres even if they don't match
++desired one.	
++0 - log all determined entries, 
++1 - only first one.
++
++In syslog you find something like this:
++.IP
++ipt_osf: Windows [2000:SP3:Windows XP Pro SP1, 2000 SP3]: 11.22.33.55:4024 -> 11.22.33.44:139
++.IP
++ipt_osf: Unknown: 16384:106:1:48:020405B401010402 44.33.22.11:1239 -> 11.22.33.44:80
++.TP
++.B "--smart"
++if present, OSF will use some smartness to determine remote OS.
++OSF will use initial TTL only if source of connection is in our local network.
++.TP
++.B "--netlink"
++If present, OSF will log all events also through netlink NETLINK_NFLOG groupt 1.
++.TP
++.BI "--genre " "[!] string"
++Match a OS genre by passive fingerprinting
++.P
++Example:
++
++#iptables -I INPUT -j ACCEPT -p tcp -m osf --genre Linux --log 1 --smart
++
++NOTE: -p tcp is obviously required as it is a TCP match.
++
++Fingerprints can be loaded and read through /proc/sys/net/ipv4/osf file.
++One can flush all fingerprints with following command:
++.IP
++echo -en FLUSH > /proc/sys/net/ipv4/osf
++.P
++Only one fingerprint per open/write/close.
++
++Fingerprints can be downloaded from http://www.openbsd.org/cgi-bin/cvsweb/src/etc/pf.os
+diff -urN iptables-1.3.1/extensions/libipt_physdev.c iptables-1.3.2/extensions/libipt_physdev.c
+--- iptables-1.3.1/extensions/libipt_physdev.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_physdev.c	2005-06-24 18:34:18.000000000 +0200
+@@ -34,45 +34,6 @@
+ 	{0}
+ };
+ 
+-/* copied from iptables.c */
+-static void
+-parse_interface(const char *arg, char *vianame, unsigned char *mask)
+-{
+-	int vialen = strlen(arg);
+-	unsigned int i;
+-
+-	memset(mask, 0, IFNAMSIZ);
+-	memset(vianame, 0, IFNAMSIZ);
+-
+-	if (vialen + 1 > IFNAMSIZ)
+-		exit_error(PARAMETER_PROBLEM,
+-			   "interface name `%s' must be shorter than IFNAMSIZ"
+-			   " (%i)", arg, IFNAMSIZ-1);
+-
+-	strcpy(vianame, arg);
+-	if (vialen == 0)
+-		memset(mask, 0, IFNAMSIZ);
+-	else if (vianame[vialen - 1] == '+') {
+-		memset(mask, 0xFF, vialen - 1);
+-		memset(mask + vialen - 1, 0, IFNAMSIZ - vialen + 1);
+-		/* Don't remove `+' here! -HW */
+-	} else {
+-		/* Include nul-terminator in match */
+-		memset(mask, 0xFF, vialen + 1);
+-		memset(mask + vialen + 1, 0, IFNAMSIZ - vialen - 1);
+-		for (i = 0; vianame[i]; i++) {
+-			if (!isalnum(vianame[i])
+-			    && vianame[i] != '_'
+-			    && vianame[i] != '.') {
+-				printf("Warning: wierd character in interface"
+-				       " `%s' (No aliases, :, ! or *).\n",
+-				       vianame);
+-				break;
+-			}
+-		}
+-	}
+-}
+-
+ static void
+ init(struct ipt_entry_match *m, unsigned int *nfcache)
+ {
+diff -urN iptables-1.3.1/extensions/libipt_psd.man iptables-1.3.2/extensions/libipt_psd.man
+--- iptables-1.3.1/extensions/libipt_psd.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_psd.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,18 @@
++Attempt to detect TCP and UDP port scans. This match was derived from
++Solar Designer's scanlogd.
++.TP
++.BI "--psd-weight-threshold " "threshold"
++Total weight of the latest TCP/UDP packets with different
++destination ports coming from the same host to be treated as port
++scan sequence.
++.TP
++.BI "--psd-delay-threshold " "delay"
++Delay (in hundredths of second) for the packets with different
++destination ports coming from the same host to be treated as
++possible port scan subsequence.
++.TP
++.BI "--psd-lo-ports-weight " "weight"
++Weight of the packet with privileged (<=1024) destination port.
++.TP
++.BI "--psd-hi-ports-weight " "weight"
++Weight of the packet with non-priviliged destination port.
+diff -urN iptables-1.3.1/extensions/libipt_quota.man iptables-1.3.2/extensions/libipt_quota.man
+--- iptables-1.3.1/extensions/libipt_quota.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_quota.man	2005-04-01 08:49:25.000000000 +0200
+@@ -0,0 +1,7 @@
++Implements network quotas by decrementing a byte counter with each
++packet.
++.TP
++.BI "--quota " "bytes"
++The quota in bytes.
++.P
++KNOWN BUGS: this does not work on SMP systems.
+diff -urN iptables-1.3.1/extensions/libipt_recent.man iptables-1.3.2/extensions/libipt_recent.man
+--- iptables-1.3.1/extensions/libipt_recent.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_recent.man	2005-04-01 08:49:25.000000000 +0200
+@@ -0,0 +1,93 @@
++Allows you to dynamically create a list of IP addresses and then match
++against that list in a few different ways.
++
++For example, you can create a `badguy' list out of people attempting
++to connect to port 139 on your firewall and then DROP all future
++packets from them without considering them.
++.TP
++.BI "--name " "name"
++Specify the list to use for the commands. If no name is given then 'DEFAULT'
++will be used.
++.TP
++[\fB!\fR] \fB--set\fR
++This will add the source address of the packet to the list. If the
++source address is already in the list, this will update the existing
++entry. This will always return success (or failure if `!' is passed
++in).
++.TP
++[\fB!\fR] \fB--rcheck\fR
++Check if the source address of the packet is currently in
++the list.
++.TP
++[\fB!\fR] \fB--update\fR
++Like \fB--rcheck\fR, except it will update the "last seen" timestamp if it
++matches.
++.TP
++[\fB!\fR] \fB--remove\fR
++Check if the source address of the packet is currently in the list and
++if so that address will be removed from the list and the rule will
++return true. If the address is not found, false is returned.
++.TP
++[\fB!\fR] \fB--seconds \fIseconds\fR
++This option must be used in conjunction with one of \fB--rcheck\fR or
++\fB--update\fR. When used, this will narrow the match to only happen
++when the address is in the list and was seen within the last given
++number of seconds.
++.TP
++[\fB!\fR] \fB--hitcount \fIhits\fR
++This option must be used in conjunction with one of \fB--rcheck\fR or
++\fB--update\fR. When used, this will narrow the match to only happen
++when the address is in the list and packets had been received greater
++than or equal to the given value. This option may be used along with
++\fB--seconds\fR to create an even narrower match requiring a certain
++number of hits within a specific time frame.
++.TP
++\fB--rttl\fR
++This option must be used in conjunction with one of \fB--rcheck\fR or
++\fB--update\fR. When used, this will narrow the match to only happen
++when the address is in the list and the TTL of the current packet
++matches that of the packet which hit the \fB--set\fR rule. This may be
++useful if you have problems with people faking their source address in
++order to DoS you via this module by disallowing others access to your
++site by sending bogus packets to you.
++.P
++Examples:
++.IP
++# iptables -A FORWARD -m recent --name badguy --rcheck --seconds 60 -j DROP
++
++# iptables -A FORWARD -p tcp -i eth0 --dport 139 -m recent --name badguy --set -j DROP
++.P
++Official website (http://snowman.net/projects/ipt_recent/) also has
++some examples of usage.
++
++/proc/net/ipt_recent/* are the current lists of addresses and information 
++about each entry of each list.
++
++Each file in /proc/net/ipt_recent/ can be read from to see the current list
++or written two using the following commands to modify the list:
++.TP
++echo xx.xx.xx.xx > /proc/net/ipt_recent/DEFAULT
++to Add to the DEFAULT list
++.TP
++echo -xx.xx.xx.xx > /proc/net/ipt_recent/DEFAULT
++to Remove from the DEFAULT list
++.TP
++echo clear > /proc/net/ipt_recent/DEFAULT
++to empty the DEFAULT list.
++.P
++The module itself accepts parameters, defaults shown:
++.TP
++.BI "ip_list_tot=" "100"
++Number of addresses remembered per table
++.TP
++.BI "ip_pkt_list_tot=" "20"
++Number of packets per address remembered
++.TP
++.BI "ip_list_hash_size=" "0"
++Hash table size. 0 means to calculate it based on ip_list_tot, default: 512
++.TP
++.BI "ip_list_perms=" "0644"
++Permissions for /proc/net/ipt_recent/* files
++.TP
++.BI "debug=" "0"
++Set to 1 to get lots of debugging info
+diff -urN iptables-1.3.1/extensions/libipt_sctp.man iptables-1.3.2/extensions/libipt_sctp.man
+--- iptables-1.3.1/extensions/libipt_sctp.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_sctp.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,28 @@
++.TP
++\fB--source-port\fR,\fB--sport \fR[\fB!\fR] \fIport\fR[\fB:\fIport\fR]
++.TP
++\fB--destination-port\fR,\fB--dport \fR[\fB!\fR] \fIport\fR[\fB:\fIport\fR]
++.TP
++\fB--chunk-types\fR [\fB!\fR] \fBall\fR|\fBany\fR|\fBonly \fIchunktype\fR[\fB:\fIflags\fR] [...]
++The flag letter in upper case indicates that the flag is to match if set,
++in the lower case indicates to match if unset.
++
++Chunk types: DATA INIT INIT_ACK SACK HEARTBEAT HEARTBEAT_ACK ABORT SHUTDOWN SHUTDOWN_ACK ERROR COOKIE_ECHO COOKIE_ACK ECN_ECNE ECN_CWR SHUTDOWN_COMPLETE ASCONF ASCONF_ACK
++
++chunk type            available flags      
++.br
++DATA                  U B E u b e         
++.br
++ABORT                 T t                 
++.br
++SHUTDOWN_COMPLETE     T t                 
++
++(lowercase means flag should be "off", uppercase means "on")
++.P
++Examples:
++
++iptables -A INPUT -p sctp --dport 80 -j DROP
++
++iptables -A INPUT -p sctp --chunk-types any DATA,INIT -j DROP
++
++iptables -A INPUT -p sctp --chunk-types any DATA:Be -j ACCEPT
+diff -urN iptables-1.3.1/extensions/libipt_tcp.c iptables-1.3.2/extensions/libipt_tcp.c
+--- iptables-1.3.1/extensions/libipt_tcp.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_tcp.c	2005-05-04 09:26:13.000000000 +0200
+@@ -205,7 +205,7 @@
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one of `--syn' or `--tcp-flags' "
+ 				   " allowed");
+-		parse_tcp_flags(tcpinfo, "SYN,RST,ACK", "SYN", invert);
++		parse_tcp_flags(tcpinfo, "SYN,RST,ACK,FIN", "SYN", invert);
+ 		*flags |= TCP_FLAGS;
+ 		break;
+ 
+diff -urN iptables-1.3.1/extensions/libipt_tcp.man iptables-1.3.2/extensions/libipt_tcp.man
+--- iptables-1.3.1/extensions/libipt_tcp.man	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.2/extensions/libipt_tcp.man	2005-05-04 09:26:48.000000000 +0200
+@@ -32,12 +32,12 @@
+ RST flags unset.
+ .TP
+ .B "[!] --syn"
+-Only match TCP packets with the SYN bit set and the ACK and RST bits
++Only match TCP packets with the SYN bit set and the ACK,RST and FIN bits
+ cleared.  Such packets are used to request TCP connection initiation;
+ for example, blocking such packets coming in an interface will prevent
+ incoming TCP connections, but outgoing TCP connections will be
+ unaffected.
+-It is equivalent to \fB--tcp-flags SYN,RST,ACK SYN\fP.
++It is equivalent to \fB--tcp-flags SYN,RST,ACK,FIN SYN\fP.
+ If the "!" flag precedes the "--syn", the sense of the
+ option is inverted.
+ .TP
+diff -urN iptables-1.3.1/extensions/libipt_u32.man iptables-1.3.2/extensions/libipt_u32.man
+--- iptables-1.3.1/extensions/libipt_u32.man	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.2/extensions/libipt_u32.man	2005-04-01 08:49:12.000000000 +0200
+@@ -0,0 +1,8 @@
++U32 allows you to extract quantities of up to 4 bytes from a packet,
++AND them with specified masks, shift them by specified amounts and
++test whether the results are in any of a set of specified ranges.
++The specification of what to extract is general enough to skip over
++headers with lengths stored in the packet, as in IP or TCP header
++lengths.
++
++Details and examples are in the kernel module source.
+diff -urN iptables-1.3.1/extensions/svn-commit.tmp iptables-1.3.2/extensions/svn-commit.tmp
+--- iptables-1.3.1/extensions/svn-commit.tmp	2005-02-12 21:03:21.000000000 +0100
++++ iptables-1.3.2/extensions/svn-commit.tmp	1970-01-01 01:00:00.000000000 +0100
+@@ -1,4 +0,0 @@
+-fix cut'n'paste error with SPT/DPT (Closes: #298)
+---This line, and those below, will be ignored--
+-
+-M    libipt_hashlimit.c
+diff -urN iptables-1.3.1/include/ip6tables.h iptables-1.3.2/include/ip6tables.h
+--- iptables-1.3.1/include/ip6tables.h	2005-01-04 11:38:28.000000000 +0100
++++ iptables-1.3.2/include/ip6tables.h	2005-06-24 18:34:17.000000000 +0200
+@@ -137,6 +137,8 @@
+ extern struct ip6tables_target *find_target(const char *name, enum ip6t_tryload);
+ extern struct ip6tables_match *find_match(const char *name, enum ip6t_tryload, struct ip6tables_rule_match **match);
+ 
++extern void parse_interface(const char *arg, char *vianame, unsigned char *mask);
++
+ extern int for_each_chain(int (*fn)(const ip6t_chainlabel, int, ip6tc_handle_t *), int verbose, int builtinstoo, ip6tc_handle_t *handle);
+ extern int flush_entries(const ip6t_chainlabel chain, int verbose, ip6tc_handle_t *handle);
+ extern int delete_chain(const ip6t_chainlabel chain, int verbose, ip6tc_handle_t *handle);
+diff -urN iptables-1.3.1/include/iptables.h iptables-1.3.2/include/iptables.h
+--- iptables-1.3.1/include/iptables.h	2005-01-04 11:38:28.000000000 +0100
++++ iptables-1.3.2/include/iptables.h	2005-06-24 18:34:17.000000000 +0200
+@@ -152,6 +152,7 @@
+ extern void parse_hostnetworkmask(const char *name, struct in_addr **addrpp,
+                       struct in_addr *maskp, unsigned int *naddrs);
+ extern u_int16_t parse_protocol(const char *s);
++extern void parse_interface(const char *arg, char *vianame, unsigned char *mask);
+ 
+ extern int do_command(int argc, char *argv[], char **table,
+ 		      iptc_handle_t *handle);
+diff -urN iptables-1.3.1/include/linux/netfilter_ipv4/ipt_conntrack.h iptables-1.3.2/include/linux/netfilter_ipv4/ipt_conntrack.h
+--- iptables-1.3.1/include/linux/netfilter_ipv4/ipt_conntrack.h	2004-10-10 11:56:23.000000000 +0200
++++ iptables-1.3.2/include/linux/netfilter_ipv4/ipt_conntrack.h	2005-07-10 16:47:14.000000000 +0200
+@@ -5,6 +5,23 @@
+ #ifndef _IPT_CONNTRACK_H
+ #define _IPT_CONNTRACK_H
+ 
++#include <linux/netfilter_ipv4/ip_conntrack.h>
++
++/* backwards compatibility crap. only exists in userspace - HW */
++#include <linux/version.h>
++#ifndef KERNEL_VERSION
++#define KERNEL_VERSION(a,b,c) (((a) << 16) | ((b) << 8) | (c))
++#endif
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,18)
++#define IPS_EXPECTED	(1 << 0)
++#define IPS_SEEN_REPLY	(1 << 1)
++#define IPS_ASSURED	(1 << 2)
++#define IP_CT_DIR_ORIGINAL	0
++#define IP_CT_DIR_REPLY		1
++#define IP_CT_DIR_MAX		2
++#endif
++
+ #define IPT_CONNTRACK_STATE_BIT(ctinfo) (1 << ((ctinfo)%IP_CT_IS_REPLY+1))
+ #define IPT_CONNTRACK_STATE_INVALID (1 << 0)
+ 
+@@ -22,11 +39,32 @@
+ #define IPT_CONNTRACK_STATUS	0x40
+ #define IPT_CONNTRACK_EXPIRES	0x80
+ 
++/* This is exposed to userspace, so remains frozen in time. */
++struct ip_conntrack_old_tuple
++{
++	struct {
++		u_int32_t ip;
++		union {
++			u_int16_t all;
++		} u;
++	} src;
++
++	struct {
++		u_int32_t ip;
++		union {
++			u_int16_t all;
++		} u;
++
++		/* The protocol. */
++		u_int16_t protonum;
++	} dst;
++};
++
+ struct ipt_conntrack_info
+ {
+ 	unsigned int statemask, statusmask;
+ 
+-	struct ip_conntrack_tuple tuple[IP_CT_DIR_MAX];
++	struct ip_conntrack_old_tuple tuple[IP_CT_DIR_MAX];
+ 	struct in_addr sipmsk[IP_CT_DIR_MAX], dipmsk[IP_CT_DIR_MAX];
+ 
+ #ifdef KERNEL_64_USERSPACE_32
+diff -urN iptables-1.3.1/ip6tables-restore.c iptables-1.3.2/ip6tables-restore.c
+--- iptables-1.3.1/ip6tables-restore.c	2005-01-04 11:38:39.000000000 +0100
++++ iptables-1.3.2/ip6tables-restore.c	2005-06-24 18:34:19.000000000 +0200
+@@ -7,7 +7,7 @@
+  * 	Rusty Russell <rusty@linuxcare.com.au>
+  * This code is distributed under the terms of GNU GPL v2
+  *
+- * $Id: ip6tables-restore.c 3504 2004-12-27 19:49:28Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=gandalf/emailAddress=gandalf@netfilter.org $
++ * $Id: ip6tables-restore.c 3980 2005-06-12 15:54:15Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=kaber/emailAddress=kaber@netfilter.org $
+  */
+ 
+ #include <getopt.h>
+@@ -233,12 +233,21 @@
+ 			}
+ 
+ 			if (ip6tc_builtin(chain, handle) <= 0) {
+-				DEBUGP("Creating new chain '%s'\n", chain);
+-				if (!ip6tc_create_chain(chain, &handle))
+-					exit_error(PARAMETER_PROBLEM,
+-						   "error creating chain "
+-						   "'%s':%s\n", chain,
+-						   strerror(errno));
++				if (noflush && ip6tc_is_chain(chain, handle)) {
++					DEBUGP("Flushing existing user defined chain '%s'\n", chain);
++					if (!ip6tc_flush_entries(chain, &handle))
++						exit_error(PARAMETER_PROBLEM,
++							   "error flushing chain "
++							   "'%s':%s\n", chain,
++							   strerror(errno));
++				} else {
++					DEBUGP("Creating new chain '%s'\n", chain);
++					if (!ip6tc_create_chain(chain, &handle))
++						exit_error(PARAMETER_PROBLEM,
++							   "error creating chain "
++							   "'%s':%s\n", chain,
++							   strerror(errno));
++				}
+ 			}
+ 
+ 			policy = strtok(NULL, " \t\n");
+diff -urN iptables-1.3.1/ip6tables.c iptables-1.3.2/ip6tables.c
+--- iptables-1.3.1/ip6tables.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/ip6tables.c	2005-06-24 18:34:19.000000000 +0200
+@@ -1,4 +1,4 @@
+-/* Code to take an iptables-style command line and do it. */
++/* Code to take an ip6tables-style command line and do it. */
+ 
+ /*
+  * Author: Paul.Russell@rustcorp.com.au and mneuling@radlogic.com.au
+@@ -103,7 +103,7 @@
+ #define OPT_COUNTERS	0x00400U
+ #define NUMBER_OF_OPT	11
+ static const char optflags[NUMBER_OF_OPT]
+-= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '3', 'c'};
++= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', '0', 'c'};
+ 
+ static struct option original_opts[] = {
+ 	{ "append", 1, 0, 'A' },
+@@ -252,6 +252,16 @@
+ 	/* dst->s6_addr = src->s6_addr; */
+ }
+ 
++static void free_opts(int reset_offset)
++{
++	if (opts != original_opts) {
++		free(opts);
++		opts = original_opts;
++		if (reset_offset)
++			global_option_offset = 0;
++	}
++}
++
+ void
+ exit_error(enum exittype status, char *msg, ...)
+ {
+@@ -266,7 +276,9 @@
+ 		exit_tryhelp(status);
+ 	if (status == VERSION_PROBLEM)
+ 		fprintf(stderr,
+-			"Perhaps iptables or your kernel needs to be upgraded.\n");
++			"Perhaps ip6tables or your kernel needs to be upgraded.\n");
++	/* On error paths, make sure that we don't leak memory */
++	free_opts(1);
+ 	exit(status);
+ }
+ 
+@@ -277,6 +289,7 @@
+ 		fprintf(stderr, "Error occurred at line: %d\n", line);
+ 	fprintf(stderr, "Try `%s -h' or '%s --help' for more information.\n",
+ 			program_name, program_name );
++	free_opts(1);
+ 	exit(status);
+ }
+ 
+@@ -816,8 +829,7 @@
+ 	return (u_int16_t)proto;
+ }
+ 
+-static void
+-parse_interface(const char *arg, char *vianame, unsigned char *mask)
++void parse_interface(const char *arg, char *vianame, unsigned char *mask)
+ {
+ 	int vialen = strlen(arg);
+ 	unsigned int i;
+@@ -1016,6 +1028,9 @@
+ 	unsigned int num_old, num_new, i;
+ 	struct option *merge;
+ 
++	/* Release previous options merged if any */
++	free_opts(0);
++
+ 	for (num_old = 0; oldopts[num_old].name; num_old++);
+ 	for (num_new = 0; newopts[num_new].name; num_new++);
+ 
+@@ -1806,10 +1821,10 @@
+ 			break;
+ 
+ 		case 'N':
+-			if (optarg && *optarg == '-')
++			if (optarg && (*optarg == '-' || *optarg == '!'))
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "chain name not allowed to start "
+-					   "with `-'\n");
++					   "with `%c'\n", *optarg);
+ 			if (find_target(optarg, TRY_LOAD))
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "chain name may not clash "
+@@ -1859,7 +1874,7 @@
+ 			if (!optarg)
+ 				optarg = argv[optind];
+ 
+-			/* iptables -p icmp -h */
++			/* ip6tables -p icmp -h */
+ 			if (!matches && protocol)
+ 				find_match(protocol, TRY_LOAD, &matches);
+ 
+@@ -1919,7 +1934,8 @@
+ 				target->t = fw_calloc(1, size);
+ 				target->t->u.target_size = size;
+ 				strcpy(target->t->u.user.name, jumpto);
+-				target->init(target->t, &fw.nfcache);
++				if (target->init != NULL)
++					target->init(target->t, &fw.nfcache);
+ 				opts = merge_options(opts, target->extra_opts, &target->option_offset);
+ 			}
+ 			break;
+@@ -1963,7 +1979,8 @@
+ 			m->m = fw_calloc(1, size);
+ 			m->m->u.match_size = size;
+ 			strcpy(m->m->u.user.name, m->name);
+-			m->init(m->m, &fw.nfcache);
++			if (m->init != NULL)
++				m->init(m->m, &fw.nfcache);
+ 			opts = merge_options(opts, m->extra_opts, &m->option_offset);
+ 		}
+ 		break;
+@@ -2079,7 +2096,7 @@
+ 				 * - a protocol has been specified
+ 				 * - the protocol extension has not been
+ 				 *   loaded yet, or is loaded and unused
+-				 *   [think of iptables-restore!]
++				 *   [think of ip6tables-restore!]
+ 				 * - the protocol extension can be successively
+ 				 *   loaded
+ 				 */
+@@ -2104,7 +2121,8 @@
+ 					m->m = fw_calloc(1, size);
+ 					m->m->u.match_size = size;
+ 					strcpy(m->m->u.user.name, m->name);
+-					m->init(m->m, &fw.nfcache);
++					if (m->init != NULL)
++						m->init(m->m, &fw.nfcache);
+ 
+ 					opts = merge_options(opts,
+ 					    m->extra_opts, &m->option_offset);
+@@ -2232,7 +2250,8 @@
+ 			target->t = fw_calloc(1, size);
+ 			target->t->u.target_size = size;
+ 			strcpy(target->t->u.user.name, jumpto);
+-			target->init(target->t, &fw.nfcache);
++			if (target->init != NULL)
++				target->init(target->t, &fw.nfcache);
+ 		}
+ 
+ 		if (!target) {
+@@ -2332,11 +2351,7 @@
+ 	for (c = 0; c < ndaddrs; c++)
+ 		free(&daddrs[c]);
+ 
+-	if (opts != original_opts) {
+-		free(opts);
+-		opts = original_opts;
+-		global_option_offset = 0;
+-	}
++	free_opts(1);
+ 
+ 	return ret;
+ }
+diff -urN iptables-1.3.1/iptables-restore.c iptables-1.3.2/iptables-restore.c
+--- iptables-1.3.1/iptables-restore.c	2005-01-04 11:38:39.000000000 +0100
++++ iptables-1.3.2/iptables-restore.c	2005-06-24 18:34:19.000000000 +0200
+@@ -4,7 +4,7 @@
+  *
+  * This code is distributed under the terms of GNU GPL v2
+  *
+- * $Id: iptables-restore.c 3504 2004-12-27 19:49:28Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=gandalf/emailAddress=gandalf@netfilter.org $
++ * $Id: iptables-restore.c 3980 2005-06-12 15:54:15Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=kaber/emailAddress=kaber@netfilter.org $
+  */
+ 
+ #include <getopt.h>
+@@ -236,12 +236,21 @@
+ 			}
+ 
+ 			if (iptc_builtin(chain, handle) <= 0) {
+-				DEBUGP("Creating new chain '%s'\n", chain);
+-				if (!iptc_create_chain(chain, &handle)) 
+-					exit_error(PARAMETER_PROBLEM, 
+-						   "error creating chain "
+-						   "'%s':%s\n", chain, 
+-						   strerror(errno));
++				if (noflush && iptc_is_chain(chain, handle)) {
++					DEBUGP("Flushing existing user defined chain '%s'\n", chain);
++					if (!iptc_flush_entries(chain, &handle))
++						exit_error(PARAMETER_PROBLEM,
++							   "error flushing chain "
++							   "'%s':%s\n", chain,
++							   strerror(errno));
++				} else {
++					DEBUGP("Creating new chain '%s'\n", chain);
++					if (!iptc_create_chain(chain, &handle))
++						exit_error(PARAMETER_PROBLEM,
++							   "error creating chain "
++							   "'%s':%s\n", chain,
++							   strerror(errno));
++				}
+ 			}
+ 
+ 			policy = strtok(NULL, " \t\n");
+diff -urN iptables-1.3.1/iptables.8.in iptables-1.3.2/iptables.8.in
+--- iptables-1.3.1/iptables.8.in	2005-02-12 21:05:34.000000000 +0100
++++ iptables-1.3.2/iptables.8.in	2005-06-24 18:34:19.000000000 +0200
+@@ -400,7 +400,7 @@
+ other errors cause an exit code of 1.
+ .SH BUGS
+ Bugs?  What's this? ;-)
+-Well... the counters are not reliable on sparc64.
++Well, you might want to have a look at http://bugzilla.netfilter.org/
+ .SH COMPATIBILITY WITH IPCHAINS
+ This
+ .B iptables
+diff -urN iptables-1.3.1/iptables.c iptables-1.3.2/iptables.c
+--- iptables-1.3.1/iptables.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/iptables.c	2005-06-24 18:34:19.000000000 +0200
+@@ -101,7 +101,7 @@
+ #define OPT_COUNTERS	0x00800U
+ #define NUMBER_OF_OPT	12
+ static const char optflags[NUMBER_OF_OPT]
+-= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', 'f', '3', 'c'};
++= { 'n', 's', 'd', 'p', 'j', 'v', 'x', 'i', 'o', 'f', '0', 'c'};
+ 
+ static struct option original_opts[] = {
+ 	{ "append", 1, 0, 'A' },
+@@ -306,6 +306,16 @@
+ 	dst->s_addr = src->s_addr;
+ }
+ 
++static void free_opts(int reset_offset)
++{
++	if (opts != original_opts) {
++		free(opts);
++		opts = original_opts;
++		if (reset_offset)
++			global_option_offset = 0;
++	}
++}
++
+ void
+ exit_error(enum exittype status, char *msg, ...)
+ {
+@@ -321,6 +331,8 @@
+ 	if (status == VERSION_PROBLEM)
+ 		fprintf(stderr,
+ 			"Perhaps iptables or your kernel needs to be upgraded.\n");
++	/* On error paths, make sure that we don't leak memory */
++	free_opts(1);
+ 	exit(status);
+ }
+ 
+@@ -331,6 +343,7 @@
+ 		fprintf(stderr, "Error occurred at line: %d\n", line);
+ 	fprintf(stderr, "Try `%s -h' or '%s --help' for more information.\n",
+ 			program_name, program_name );
++	free_opts(1);
+ 	exit(status);
+ }
+ 
+@@ -756,8 +769,7 @@
+ 	return (u_int16_t)proto;
+ }
+ 
+-static void
+-parse_interface(const char *arg, char *vianame, unsigned char *mask)
++void parse_interface(const char *arg, char *vianame, unsigned char *mask)
+ {
+ 	int vialen = strlen(arg);
+ 	unsigned int i;
+@@ -1016,6 +1028,9 @@
+ 	unsigned int num_old, num_new, i;
+ 	struct option *merge;
+ 
++	/* Release previous options merged if any */
++	free_opts(0);
++	
+ 	for (num_old = 0; oldopts[num_old].name; num_old++);
+ 	for (num_new = 0; newopts[num_new].name; num_new++);
+ 
+@@ -1909,10 +1924,10 @@
+ 			break;
+ 
+ 		case 'N':
+-			if (optarg && *optarg == '-')
++			if (optarg && (*optarg == '-' || *optarg == '!'))
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "chain name not allowed to start "
+-					   "with `-'\n");
++					   "with `%c'\n", *optarg);
+ 			if (find_target(optarg, TRY_LOAD))
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "chain name may not clash "
+@@ -2443,12 +2458,7 @@
+ 
+ 	free(saddrs);
+ 	free(daddrs);
+-
+-	if (opts != original_opts) {
+-		free(opts);
+-		opts = original_opts;
+-		global_option_offset = 0;
+-	}
++	free_opts(1);
+ 
+ 	return ret;
+ }
+diff -urN iptables-1.3.1/libiptc/libip4tc.c iptables-1.3.2/libiptc/libip4tc.c
+--- iptables-1.3.1/libiptc/libip4tc.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/libiptc/libip4tc.c	2005-06-24 18:34:17.000000000 +0200
+@@ -210,6 +210,7 @@
+ 	mptr = matchmask + sizeof(STRUCT_ENTRY);
+ 	if (IPT_MATCH_ITERATE(a, match_different, a->elems, b->elems, &mptr))
+ 		return NULL;
++	mptr += IPT_ALIGN(sizeof(struct ipt_entry_target));
+ 
+ 	return mptr;
+ }
+diff -urN iptables-1.3.1/libiptc/libip6tc.c iptables-1.3.2/libiptc/libip6tc.c
+--- iptables-1.3.1/libiptc/libip6tc.c	2005-02-19 20:19:17.000000000 +0100
++++ iptables-1.3.2/libiptc/libip6tc.c	2005-06-24 18:34:17.000000000 +0200
+@@ -242,6 +242,7 @@
+ 	mptr = matchmask + sizeof(STRUCT_ENTRY);
+ 	if (IP6T_MATCH_ITERATE(a, match_different, a->elems, b->elems, &mptr))
+ 		return NULL;
++	mptr += IP6T_ALIGN(sizeof(struct ip6t_entry_target));
+ 
+ 	return mptr;
+ }
+diff -urN iptables-1.3.1/linux/netfilter_ipv4/ipt_CLUSTERIP.h iptables-1.3.2/linux/netfilter_ipv4/ipt_CLUSTERIP.h
+--- iptables-1.3.1/linux/netfilter_ipv4/ipt_CLUSTERIP.h	2005-03-07 15:00:32.000000000 +0100
++++ iptables-1.3.2/linux/netfilter_ipv4/ipt_CLUSTERIP.h	1970-01-01 01:00:00.000000000 +0100
+@@ -1,37 +0,0 @@
+-#ifndef _IPT_CLUSTERIP_H_target
+-#define _IPT_CLUSTERIP_H_target
+-
+-enum clusterip_hashmode {
+-    CLUSTERIP_HASHMODE_SIP = 0,
+-    CLUSTERIP_HASHMODE_SIP_SPT,
+-    CLUSTERIP_HASHMODE_SIP_SPT_DPT,
+-};
+-
+-#define CLUSTERIP_HASHMODE_MAX CLUSTERIP_HASHMODE_SIP_SPT_DPT
+-
+-#define CLUSTERIP_MAX_NODES 16
+-
+-#define CLUSTERIP_FLAG_NEW 0x00000001
+-
+-struct clusterip_config;
+-
+-struct ipt_clusterip_tgt_info {
+-
+-	u_int32_t flags;
+-	
+-	/* only relevant for new ones */
+-	u_int8_t clustermac[6];
+-	u_int16_t num_total_nodes;
+-	u_int16_t num_local_nodes;
+-	u_int16_t local_nodes[CLUSTERIP_MAX_NODES];
+-	enum clusterip_hashmode hash_mode;
+-	u_int32_t hash_initval;
+-	
+-#ifdef KERNEL_64_USERSPACE_32
+-	u_int64_t config;
+-#else
+-	struct clusterip_config *config;
+-#endif
+-};
+-
+-#endif /*_IPT_CLUSTERIP_H_target*/

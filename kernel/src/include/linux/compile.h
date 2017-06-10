@@ -1,0 +1,6 @@
+#define UTS_VERSION "#716 Sun Nov 9 13:33:31 CET 2008"
+#define LINUX_COMPILE_TIME "13:33:31"
+#define LINUX_COMPILE_BY "root"
+#define LINUX_COMPILE_HOST "Optimus"
+#define LINUX_COMPILE_DOMAIN "Transformers"
+#define LINUX_COMPILER "gcc version 2.95.3 20010315 (release/MontaVista)"

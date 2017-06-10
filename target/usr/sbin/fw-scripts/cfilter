@@ -1,0 +1,255 @@
+#!/bin/sh
+
+IPTABLES=/usr/sbin/iptables
+
+#insert module with parameter first
+#/sbin/insmod ipt_REJECT #lan_ipaddr=$INTERNALIP
+
+$IPTABLES -N HTTP_1 2> /dev/null
+$IPTABLES -N HTTP_2 2> /dev/null
+$IPTABLES -N HTTP_3 2> /dev/null
+$IPTABLES -N HTTP_4 2> /dev/null
+$IPTABLES -N HTTP_5 2> /dev/null
+$IPTABLES -N HTTP_6 2> /dev/null
+$IPTABLES -N HTTP_7 2> /dev/null
+$IPTABLES -N HTTP_8 2> /dev/null
+$IPTABLES -N HTTP_9 2> /dev/null
+$IPTABLES -N HTTP_10 2> /dev/null
+#$IPTABLES -F HTTP
+
+$IPTABLES -N CONCHK_1 2> /dev/null
+$IPTABLES -N CONCHK_2 2> /dev/null
+$IPTABLES -N CONCHK_3 2> /dev/null
+$IPTABLES -N CONCHK_4 2> /dev/null
+$IPTABLES -N CONCHK_5 2> /dev/null
+$IPTABLES -N CONCHK_6 2> /dev/null
+$IPTABLES -N CONCHK_7 2> /dev/null
+$IPTABLES -N CONCHK_8 2> /dev/null
+$IPTABLES -N CONCHK_9 2> /dev/null
+$IPTABLES -N CONCHK_10 2> /dev/null
+#$IPTABLES -F CONCHK
+
+$IPTABLES -N BLOCK_URL 2> /dev/null
+#$IPTABLES -F BLOCK_URL
+$IPTABLES -N BLOCK_KEYWORD 2> /dev/null
+#$IPTABLES -F BLOCK_KEYWORD
+
+$IPTABLES -A BLOCK_URL -j LOG --log-level 4 --log-prefix "[Access Log-Block URL]"
+$IPTABLES -A BLOCK_URL -j DROP
+$IPTABLES -A BLOCK_KEYWORD -j LOG --log-level 4 --log-prefix "[Access Log-Block Keyword]"
+$IPTABLES -A BLOCK_KEYWORD -j DROP
+
+
+#Redirect all forwarding http traffic to HTTP chain
+$IPTABLES -A POLICY_1 -p tcp --dport 80 -i $LANIF -j HTTP_1
+$IPTABLES -A POLICY_2 -p tcp --dport 80 -i $LANIF -j HTTP_2
+$IPTABLES -A POLICY_3 -p tcp --dport 80 -i $LANIF -j HTTP_3
+$IPTABLES -A POLICY_4 -p tcp --dport 80 -i $LANIF -j HTTP_4
+$IPTABLES -A POLICY_5 -p tcp --dport 80 -i $LANIF -j HTTP_5
+$IPTABLES -A POLICY_6 -p tcp --dport 80 -i $LANIF -j HTTP_6
+$IPTABLES -A POLICY_7 -p tcp --dport 80 -i $LANIF -j HTTP_7
+$IPTABLES -A POLICY_8 -p tcp --dport 80 -i $LANIF -j HTTP_8
+$IPTABLES -A POLICY_9 -p tcp --dport 80 -i $LANIF -j HTTP_9
+$IPTABLES -A POLICY_10 -p tcp --dport 80 -i $LANIF -j HTTP_10
+
+#Allow all http traffic from trusted user
+#if [ "$TRUST_IP" != "" ]; then
+#	$IPTABLES -A HTTP -s $TRUST_IP -j RETURN
+#fi
+
+#only Get data packet  will we check its URL
+$IPTABLES -A HTTP_1 -m string --string GET -j CONCHK_1
+$IPTABLES -A HTTP_1 -m string --string HEAD -j CONCHK_1
+$IPTABLES -A HTTP_1 -m string --string POST -j CONCHK_1
+$IPTABLES -A HTTP_2 -m string --string GET -j CONCHK_2
+$IPTABLES -A HTTP_2 -m string --string HEAD -j CONCHK_2
+$IPTABLES -A HTTP_2 -m string --string POST -j CONCHK_2
+$IPTABLES -A HTTP_3 -m string --string GET -j CONCHK_3
+$IPTABLES -A HTTP_3 -m string --string HEAD -j CONCHK_3
+$IPTABLES -A HTTP_3 -m string --string POST -j CONCHK_3
+$IPTABLES -A HTTP_4 -m string --string GET -j CONCHK_4
+$IPTABLES -A HTTP_4 -m string --string HEAD -j CONCHK_4
+$IPTABLES -A HTTP_4 -m string --string POST -j CONCHK_4
+$IPTABLES -A HTTP_5 -m string --string GET -j CONCHK_5
+$IPTABLES -A HTTP_5 -m string --string HEAD -j CONCHK_5
+$IPTABLES -A HTTP_5 -m string --string POST -j CONCHK_5
+$IPTABLES -A HTTP_6 -m string --string GET -j CONCHK_6
+$IPTABLES -A HTTP_6 -m string --string HEAD -j CONCHK_6
+$IPTABLES -A HTTP_6 -m string --string POST -j CONCHK_6
+$IPTABLES -A HTTP_7 -m string --string GET -j CONCHK_7
+$IPTABLES -A HTTP_7 -m string --string HEAD -j CONCHK_7
+$IPTABLES -A HTTP_7 -m string --string POST -j CONCHK_7
+$IPTABLES -A HTTP_8 -m string --string GET -j CONCHK_8
+$IPTABLES -A HTTP_8 -m string --string HEAD -j CONCHK_8
+$IPTABLES -A HTTP_8 -m string --string POST -j CONCHK_8
+$IPTABLES -A HTTP_9 -m string --string GET -j CONCHK_9
+$IPTABLES -A HTTP_9 -m string --string HEAD -j CONCHK_9
+$IPTABLES -A HTTP_9 -m string --string POST -j CONCHK_9
+$IPTABLES -A HTTP_10 -m string --string GET -j CONCHK_10
+$IPTABLES -A HTTP_10 -m string --string HEAD -j CONCHK_10
+$IPTABLES -A HTTP_10 -m string --string POST -j CONCHK_10
+
+SYSLOG "Enabling GLOBAL string drops"	
+
+if [ "$BAD_STRING1" != "" ]; then
+	for all in $BAD_STRING1
+		do
+			$IPTABLES -I HTTP_1 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING2" != "" ]; then
+	for all in $BAD_STRING2
+		do
+			$IPTABLES -I HTTP_2 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING3" != "" ]; then
+	for all in $BAD_STRING3
+		do
+			$IPTABLES -I HTTP_3 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING4" != "" ]; then
+	for all in $BAD_STRING4
+		do
+			$IPTABLES -I HTTP_4 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING5" != "" ]; then
+	for all in $BAD_STRING5
+		do
+			$IPTABLES -I HTTP_5 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING6" != "" ]; then
+	for all in $BAD_STRING6
+		do
+			$IPTABLES -I HTTP_6 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING7" != "" ]; then
+	for all in $BAD_STRING7
+		do
+			$IPTABLES -I HTTP_7 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING8" != "" ]; then
+	for all in $BAD_STRING8
+		do
+			$IPTABLES -I HTTP_8 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING9" != "" ]; then
+	for all in $BAD_STRING9
+		do
+			$IPTABLES -I HTTP_9 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+if [ "$BAD_STRING10" != "" ]; then
+	for all in $BAD_STRING10
+		do
+			$IPTABLES -I HTTP_10 -m string --string $all -j BLOCK_KEYWORD
+		done
+fi
+
+
+if [ "$BAD_URL1" != "" ]; then
+	for all in $BAD_URL1
+		do
+			$IPTABLES -I CONCHK_1 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL2" != "" ]; then
+	for all in $BAD_URL2
+		do
+			$IPTABLES -I CONCHK_2 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL3" != "" ]; then
+	for all in $BAD_URL3
+		do
+			$IPTABLES -I CONCHK_3 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL4" != "" ]; then
+	for all in $BAD_URL4
+		do
+			$IPTABLES -I CONCHK_4 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL5" != "" ]; then
+	for all in $BAD_URL5
+		do
+			$IPTABLES -I CONCHK_5 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL6" != "" ]; then
+	for all in $BAD_URL6
+		do
+			$IPTABLES -I CONCHK_6 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL7" != "" ]; then
+	for all in $BAD_URL7
+		do
+			$IPTABLES -I CONCHK_7 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL8" != "" ]; then
+	for all in $BAD_URL8
+		do
+			$IPTABLES -I CONCHK_8 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL9" != "" ]; then
+	for all in $BAD_URL9
+		do
+			$IPTABLES -I CONCHK_9 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+if [ "$BAD_URL10" != "" ]; then
+	for all in $BAD_URL10
+		do
+			$IPTABLES -I CONCHK_10 -m stringHOST --stringHOST $all -j BLOCK_URL
+		done
+fi
+
+$IPTABLES -A HTTP_1 -j RETURN
+$IPTABLES -A HTTP_2 -j RETURN
+$IPTABLES -A HTTP_3 -j RETURN
+$IPTABLES -A HTTP_4 -j RETURN
+$IPTABLES -A HTTP_5 -j RETURN
+$IPTABLES -A HTTP_6 -j RETURN
+$IPTABLES -A HTTP_7 -j RETURN
+$IPTABLES -A HTTP_8 -j RETURN
+$IPTABLES -A HTTP_9 -j RETURN
+$IPTABLES -A HTTP_10 -j RETURN
+
+$IPTABLES -A CONCHK_1 -j RETURN
+$IPTABLES -A CONCHK_2 -j RETURN
+$IPTABLES -A CONCHK_3 -j RETURN
+$IPTABLES -A CONCHK_4 -j RETURN
+$IPTABLES -A CONCHK_5 -j RETURN
+$IPTABLES -A CONCHK_6 -j RETURN
+$IPTABLES -A CONCHK_7 -j RETURN
+$IPTABLES -A CONCHK_8 -j RETURN
+$IPTABLES -A CONCHK_9 -j RETURN
+$IPTABLES -A CONCHK_10 -j RETURN

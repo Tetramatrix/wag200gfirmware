@@ -1,0 +1,16 @@
+***************
+*** 571,576 ****
+  EXPORT_SYMBOL(ip_ct_selective_cleanup);
+  EXPORT_SYMBOL(ip_ct_refresh);
+  EXPORT_SYMBOL(ip_conntrack_expect_related);
+  EXPORT_SYMBOL(ip_conntrack_tuple_taken);
+  EXPORT_SYMBOL(ip_ct_gather_frags);
+  EXPORT_SYMBOL(ip_conntrack_htable_size);
+--- 590,596 ----
+  EXPORT_SYMBOL(ip_ct_selective_cleanup);
+  EXPORT_SYMBOL(ip_ct_refresh);
+  EXPORT_SYMBOL(ip_conntrack_expect_related);
++ EXPORT_SYMBOL(ip_conntrack_unexpect_related);
+  EXPORT_SYMBOL(ip_conntrack_tuple_taken);
+  EXPORT_SYMBOL(ip_ct_gather_frags);
+  EXPORT_SYMBOL(ip_conntrack_htable_size);

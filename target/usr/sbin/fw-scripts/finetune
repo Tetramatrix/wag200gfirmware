@@ -1,0 +1,404 @@
+#!/bin/sh
+#
+# kill wpa_auth (secure with mac-addresse should be enough - for me at least!)
+#killall wpa_auth
+#
+#
+# modify firmware version number
+#
+MY_VER=`cat /etc/version_my`
+if [ -f /etc/version_linksys ]
+then
+	VERSION=`/bin/cat /etc/version_linksys`
+else
+	cp /etc/version /etc/version_linksys
+	VERSION=`/bin/cat /etc/version`
+fi
+REBUILD_VER=`echo $VERSION-Byterape-$MY_VER`
+echo $REBUILD_VER > /etc/version
+#
+#
+echo 2.4.17_mvl21-byterape > /proc/sys/kernel/osrelease
+#
+# default 256
+echo 512 > /proc/sys/kernel/threads-max
+#
+# pagetable_cache
+# ---------------
+#
+# The kernel  keeps a number of page tables in a per-processor cache (this helps
+# a lot  on  SMP systems). The cache size for each processor will be between the
+# low and the high value.
+#
+# On a  low-memory,  single  CPU system, you can safely set these values to 0 so
+# you don't  waste  memory.  It  is  used  on SMP systems so that the system can
+# perform fast  pagetable allocations without having to acquire the kernel memory
+# lock.
+#
+# For large  systems,  the  settings  are probably fine. For normal systems they
+# won't hurt  a  bit.  For  small  systems  (  less  than  16MB ram) it might be
+# advantageous to set both values to 0.
+#
+echo "0 0" > /proc/sys/vm/pagetable_cache
+#
+# /* The dummy values in this structure are left in there for compatibility
+#  * with old programs that play with the /proc entries.
+#  */
+# union bdflush_param {
+#	struct {
+#		int nfract;	/* Percentage of buffer cache dirty to 
+#				   activate bdflush */
+#		int dummy1;	/* old "ndirty" */
+#		int dummy2;	/* old "nrefill" */
+#		int dummy3;	/* unused */
+#		int interval;	/* jiffies delay between kupdate flushes */
+#		int age_buffer;	/* Time for normal buffer to age before we flush it */
+#		int nfract_sync;/* Percentage of buffer cache dirty to 
+#				   activate bdflush synchronously */
+#		int dummy4;	/* unused */
+#		int dummy5;	/* unused */
+#	} b_un;
+#	unsigned int data[N_PARAM];
+# } bdf_prm = {{40, 0, 0, 0, 5*HZ, 30*HZ, 60, 0, 0}};
+#
+# /* These are the min and max parameter values that we will allow to be assigned */
+# int bdflush_min[N_PARAM] = {  0,  0,  0,  0,  0,   1*HZ,   0, 0, 0};
+# int bdflush_max[N_PARAM] = {100,50000, 20000, 20000,10000*HZ, 6000*HZ, 100, 0, 0};
+#
+# in Kernel < 2.4 HZ=100
+# in Kernel > 2.4 HZ=1000
+#
+echo 60 0 0 0 50000 20000 80 0 0 > /proc/sys/vm/bdflush
+#
+# kswapd
+# ------
+#
+# Kswapd is  the  kernel  swap  out daemon. That is, kswapd is that piece of the
+# kernel that  frees  memory when it gets fragmented or full. Since every system
+# is different, you'll probably want some control over this piece of the system.
+#
+# The file contains three numbers:
+#
+# tries_base
+# ----------
+#
+# The maximum  number  of  pages kswapd tries to free in one round is calculated
+# from this  number.  Usually  this  number  will  be  divided  by  4  or 8 (see
+# mm/vmscan.c), so it isn't as big as it looks.
+#
+# When you  need to increase the bandwidth to/from swap, you'll want to increase
+# this number.
+#
+# tries_min
+# ---------
+#
+# This is  the  minimum number of times kswapd tries to free a page each time it
+# is called. Basically it's just there to make sure that kswapd frees some pages
+# even when it's being called with minimum priority.
+#
+# swap_cluster
+# ------------
+#
+# This is probably the greatest influence on system performance.
+#
+# swap_cluster is  the  number  of  pages kswapd writes in one turn. You'll want
+# this value  to  be  large  so that kswapd does its I/O in large chunks and the
+# disk doesn't  have  to  seek  as  often, but you don't want it to be too large
+# since that would flood the request queue.
+#
+# Example:
+# Here I am specifying that kswapd search up to 1024 pages to be paged out, and that
+# during one round of paging that kswapd can write out 64 pages. There is no hard 
+# and fast rule on modifying these parameters as their effect is very much dependent 
+# on disk speed. The best bet is to simply experiment until finding the right value 
+# for the server application.
+# echo 1024 32 64 > /proc/sys/vm/kswapd
+# 
+echo 256 32 64 > /proc/sys/vm/kswapd
+#
+#
+#
+# Network Subsystem Options
+#
+# Renew ip_dynaddr at each dialin (default 0!)
+echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+#
+# Network Subsystem Time Management
+#
+# turns TCP timestamp support off, default 1, reduces CPU use
+echo 0 > /proc/sys/net/ipv4/tcp_timestamps
+#
+# Wenn bei einer TCP-Verbindung die Gegenseite dem Wunsch zum Abbau der
+# Verbindung nicht nachkommt, wird diese nach Ablauf dieser Zeitspanne
+# (Sekunden) gekappt.
+echo 5 > /proc/sys/net/ipv4/tcp_fin_timeout
+#
+# Zeit in Sekunden, nach der ein ungenutztes Fragment eines IP-Paketes
+# verworfen wird (falls nicht alle Fragmente ihr Ziel erreichen, wird
+# sichergestellt, dass unvollständige Pakete nicht ewig im Speicher
+# verharren)
+echo 5 > /proc/sys/net/ipv4/ipfrag_time
+#
+# Increase the tcp-time-wait buckets pool size
+# default: 180000
+tcp_max=180000
+let tcp_max=300*$tcp_max/100
+echo $tcp_max > /proc/sys/net/ipv4/tcp_max_tw_buckets
+#
+# Zeit des regelmäßigen Aussendens von Testpaketen, um eine Verbindung
+# offen zu halten. Die Uhr startet neu, sobald ein reguläres Paket
+# über die Verbindung geht
+echo 300 > /proc/sys/net/ipv4/tcp_keepalive_time
+#
+# Maximale Zeit, die eine unbenutzte Route im Cache verweilen kann
+echo 5 > /proc/sys/net/ipv4/route/mtu_expires
+#
+#
+# Network Subsystem Packet Management
+#
+# Stop Source-Routing
+for i in /proc/sys/net/ipv4/conf/*; do echo 0 > $i/accept_source_route 2> /dev/null; done
+#
+# Stop Redirecting
+for i in /proc/sys/net/ipv4/conf/*; do echo 0 > $i/accept_redirects 2> /dev/null; done
+#
+# Reverse-Path-Filter
+for i in /proc/sys/net/ipv4/conf/*; do echo 2 > $i/rp_filter 2> /dev/null; done
+#
+# BOOTP-Relaying ausschalten
+for i in /proc/sys/net/ipv4/conf/*; do echo 0 > $i/bootp_relay 2> /dev/null; done
+#
+# Proxy-ARP ausschalten
+for i in /proc/sys/net/ipv4/conf/*; do echo 0 > $i/proxy_arp 2> /dev/null; done
+#
+# Stop secure_redirects
+for i in /proc/sys/net/ipv4/conf/*; do echo 0 > $i/secure_redirects 2> /dev/null; done
+#
+# Stop send_redirects
+for i in /proc/sys/net/ipv4/conf/*; do echo 0 > $i/send_redirects 2> /dev/null; done
+#
+# router
+echo 1 > /proc/sys/net/ipv4/ip_forward
+#
+# Anzahl Testpakete, die ausgesendet werden, um festzustellen,
+# ob der Partner aktiv ist. Danach gilt die Verbindung als unterbrochen
+echo 3 > /proc/sys/net/ipv4/tcp_keepalive_probes
+#
+# whatever
+echo 1 > /proc/sys/net/ipv4/tcp_tw_recycle
+#
+# unterbreche Verbindungsaufbau nach 3 SYN-Paketen
+# Default ist 6
+echo 2 > /proc/sys/net/ipv4/tcp_syn_retries
+#
+# unterbreche Verbindungsaufbau nach 3 SYN/ACK-Paketen
+# Default ist 6
+echo 2 > /proc/sys/net/ipv4/tcp_synack_retries
+#
+# Anzahl Versuche, eine ICMP-Nachricht zuzustellen
+echo 3 > /proc/sys/net/ipv4/route/redirect_number
+#
+# default:512
+echo 32 > /proc/sys/net/ipv4/route/gc_thresh
+
+# Don't allow the arp table to become bigger than this
+# default: 1024
+for i in /proc/sys/net/ipv4/neigh/*; do echo 2048 > $i/gc_thresh3 2> /dev/null; done
+#
+# Tell the gc when to become aggressive with arp table cleaning.
+# Adjust this based on size of the LAN. 256 is suitable for most
+# default: 512
+for i in /proc/sys/net/ipv4/neigh/*; do echo 1024 > $i/gc_thresh2 2> /dev/null; done
+#
+# Adjust where the gc will leave arp table alone - set to 32.
+# default: 128
+for i in /proc/sys/net/ipv4/neigh/*; do echo 32 > $i/gc_thresh1 2> /dev/null; done
+#
+# Adjust to arp table gc to clean-up more often
+# default:30
+for i in /proc/sys/net/ipv4/neigh/*; do echo 180 > $i/gc_interval 2> /dev/null; done
+#
+# Increase TCP
+# default:64
+for i in /proc/sys/net/ipv4/neigh/*; do echo 96 > $i/proxy_qlen 2> /dev/null; done
+#
+#default:3
+for i in /proc/sys/net/ipv4/neigh/*; do echo 6 > $i/unres_qlen 2> /dev/null; done
+#
+#
+# Network Subsystem Memory Management
+#
+#
+# Enable really big (>65kB) TCP window scaling if we want it.
+echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
+#
+# Turn on the tcp_sack
+echo 1 > /proc/sys/net/ipv4/tcp_sack
+#
+# tcp_fack should be on because of sack
+echo 1 > /proc/sys/net/ipv4/tcp_fack
+#
+# Set TCP Re-Ordering value in kernel
+# default:3
+echo 5 > /proc/sys/net/ipv4/tcp_reordering
+#
+#
+# ipfrag_high_thresh setzt das Limit für den maximalen Speicher,
+# der für das fragmentieren von Paketen reserviert wird. Wenn mehr Speicher
+# benötigt wird fängt der Kernel an fragmentierte Pakete zu
+# verwerfen. Dieses Limit ist sehr kritisch für Denial of Service Angriffe,
+# da es, wenn es zu niedrig gewählt wird zu viele Pakete verwirft, und wenn
+# es zu hoch gewählt wird zu viel Speicher, und CPU Leistung verbrauchen
+# kann. ipfrag_low_thresh ist für das minimale Limit zuständig.
+#
+#default high: 262144 (256kb)
+#default low:  196608 (192kb)
+#
+# einfach mal 300% mehr nehmen
+
+high=262144
+low=196608
+let high=300*$high/100
+let low=300*$low/100
+echo $high > /proc/sys/net/ipv4/ipfrag_high_thresh
+echo $low > /proc/sys/net/ipv4/ipfrag_low_thresh
+#
+# Länge der Warteschlange für eingehende TCP-Verbindungsanforderungen für
+# einen Socket (default 300)
+echo 2048 > /proc/sys/net/ipv4/tcp_max_syn_backlog
+#
+#
+# add more conntrack
+echo 2048 > /proc/sys/net/ipv4/ip_conntrack_max
+#
+# Länge der Warteschlange der routing tabelle (experimental)
+# default:8192 (gc_thresh x 16)
+echo 4096 > /proc/sys/net/ipv4/route/max_size
+#
+# TCP Autotuning setting. "The tcp_mem variable defines how the TCP stack should behave when it comes to memory usage. ...
+# The first value specified in the tcp_mem variable tells the kernel the low threshold. Below this point, the TCP stack do
+# not bother at all about putting any pressure on the memory usage by different TCP sockets. ... The second value tells the
+# kernel at which point to start pressuring memory usage down. ... The final value tells the kernel how many memory pages it
+# may use maximally. If this value is reached, TCP streams and packets start getting dropped until we reach a lower memory
+# usage again. This value includes all TCP sockets currently in use."
+#
+# min:      65535  (64kb)
+# default: 131071 (128kb)
+# test:    262144 (256kb)
+
+tmem=65535
+let tmem_max=300*$tmem/100
+echo 4096 $tmem $tmem_max > /proc/sys/net/ipv4/tcp_mem
+
+# TCP Autotuning setting. "The first value tells the kernel the minimum receive buffer for each TCP connection, and this
+# buffer is always allocated to a TCP socket, even under high pressure on the system. ... The second value specified tells
+# the kernel the default receive buffer allocated for each TCP socket. This value overrides the /proc/sys/net/core/rmem_default
+# value used by other protocols. ... The third and last value specified in this variable specifies the maximum receive buffer
+# that can be allocated for a TCP socket."
+#
+# Increase the maximum and default receive socket buffer size
+# (Increase default size for 4 Mbytes/s)
+# default: 131071 (128kb)
+# test:    262144 (256kb)
+#
+rmem=262144
+let rmem_max=300*$rmem/100
+echo $rmem > /proc/sys/net/core/rmem_default
+echo $rmem_max > /proc/sys/net/core/rmem_max
+echo 4096 $rmem $rmem_max > /proc/sys/net/ipv4/tcp_rmem
+#
+# TCP Autotuning setting. "This variable takes 3 different values which holds information on how much TCP sendbuffer memory
+# space each TCP socket has to use. Every TCP socket has this much buffer space to use before the buffer is filled up. Each of
+# the three values are used under different conditions. ... The first value in this variable tells the minimum TCP send buffer
+# space available for a single TCP socket. ... The second value in the variable tells us the default buffer space allowed for a
+# single TCP socket to use. ... The third value tells the kernel the maximum TCP send buffer space."
+# min:      65535  (64kb)
+# default: 131071 (128kb)
+# test:    262144 (256kb)
+#
+wmem=262144
+let wmem_max=300*$wmem/100
+echo $wmem > /proc/sys/net/core/wmem_default
+echo $wmem_max > /proc/sys/net/core/wmem_max
+echo 4096 $wmem $wmem_max > /proc/sys/net/ipv4/tcp_wmem
+#
+# Maximum ancillary buffer size allowed per socket. Ancillary data is a 
+# sequence of struct cmsghdr structures with appended data. 
+# The default size is 10240 bytes
+optmem_max=10240
+let max=300*$optmem_max/100
+echo $max > /proc/sys/net/core/optmem_max
+#
+# default: 10
+echo 64 > /proc/sys/net/unix/max_dgram_qlen
+#
+# default: 50
+echo 128 > /proc/sys/net/core/message_burst
+#
+# default: 290
+echo 512 > /proc/sys/net/core/mod_cong
+#
+# default: 100
+echo 128 > /proc/sys/net/core/lo_cong
+#
+# default: 20
+echo 64 > /proc/sys/net/core/no_cong
+#
+# default: 20
+echo 64 > /proc/sys/net/core/no_cong_thresh
+#
+#
+# Listed below are general net settings, like "netdev_max_backlog" (typically 300), the length of all your
+# network packets. This value can limit your network bandwidth when receiving packets, Linux has to wait
+# up to scheduling time to flush buffers (due to bottom half mechanism), about 1000/HZ ms
+#
+#   300    *        100             =     30 000
+# packets     HZ(Timeslice freq)         packets/s
+#
+# 30 000   *       1000             =      30 M
+# packets     average (Bytes/packet)   throughput Bytes/s
+#
+# If you want to get higher throughput, you need to increase netdev_max_backlog, by typing:
+# echo 4000 > /proc/sys/net/core/netdev_max_backlog
+#
+# default value: 300
+echo 2048 > /proc/sys/net/core/netdev_max_backlog
+#
+# Note that you can turn off memory overcommit, your leaky app
+# should then get a memory allocation error instead of
+# triggering the oom-killer
+# (always overcommit, never check)
+#
+echo 0 > /proc/sys/vm/overcommit_memory
+#
+# Set timeout on kernel panics (auto reboots after # seconds):
+# default:0 (no autoreboot)
+#
+echo 60 > /proc/sys/kernel/panic
+#
+# less shmmax
+# default: 33554432/1024/1024 = 32 MB,
+# this machine has only 16 MB so what the fuck is this!!!
+# recomondation ist 50% of machine memory
+shmmax=16777216
+let shmmax=50*$shmmax/100
+echo $shmmax > /proc/sys/kernel/shmmax
+#
+# PAGE_SIZE: now 4096 (see patches-Archives) (before 16384 fuck that)
+# wenn Bytes, dann gleich SHMMAX; wenn Seiten, dann ceil(SHMMAX/PAGE_SIZE)
+# ich nehme mal ceil(SHMMAX/PAGE_SIZE)
+# default: 2097152
+echo 2048 > /proc/sys/kernel/shmall
+#
+# default: 8192
+echo 2048 > /proc/sys/kernel/msgmax
+#
+# default: 16384
+echo 2048 > /proc/sys/kernel/msgmnb
+#
+# default: 4096
+echo 128 > /proc/sys/kernel/shmmni
+
+# This will enusre that immediatly subsequent connections use these values.
+echo 1 > /proc/sys/net/ipv4/route/flush
+

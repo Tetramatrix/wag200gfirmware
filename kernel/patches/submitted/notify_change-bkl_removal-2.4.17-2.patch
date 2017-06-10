@@ -1,0 +1,979 @@
+diff -ur linux-2.4.17-clean/Documentation/filesystems/Locking linux-2.4.17-bklrollup/Documentation/filesystems/Locking
+--- linux-2.4.17-clean/Documentation/filesystems/Locking	Thu Apr 11 11:58:29 2002
++++ linux-2.4.17-bklrollup/Documentation/filesystems/Locking	Thu Apr 11 11:59:13 2002
+@@ -60,7 +60,7 @@
+ readlink:	no	no		no
+ follow_link:	no	no		no
+ truncate:	yes	yes		no		(see below)
+-setattr:	yes	if ATTR_SIZE	no
++setattr:	no	yes  		no
+ permssion:	yes	no		no
+ getattr:						(see below)
+ revalidate:	no					(see below)
+Only in linux-2.4.17-clean/Documentation/filesystems: Locking.orig
+Only in linux-2.4.17-clean/Documentation/filesystems: Locking.rej
+diff -ur linux-2.4.17-clean/fs/adfs/inode.c linux-2.4.17-bklrollup/fs/adfs/inode.c
+--- linux-2.4.17-clean/fs/adfs/inode.c	Sun Sep 30 12:26:08 2001
++++ linux-2.4.17-bklrollup/fs/adfs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -306,6 +306,8 @@
+ 	struct super_block *sb = inode->i_sb;
+ 	unsigned int ia_valid = attr->ia_valid;
+ 	int error;
++	
++	lock_kernel();
+ 
+ 	error = inode_change_ok(inode, attr);
+ 
+@@ -350,6 +352,7 @@
+ 	if (ia_valid & (ATTR_SIZE | ATTR_MTIME | ATTR_MODE))
+ 		mark_inode_dirty(inode);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/affs/inode.c linux-2.4.17-bklrollup/fs/affs/inode.c
+--- linux-2.4.17-clean/fs/affs/inode.c	Sun Sep 30 12:26:08 2001
++++ linux-2.4.17-bklrollup/fs/affs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -226,6 +226,8 @@
+ 	struct inode *inode = dentry->d_inode;
+ 	int error;
+ 
++	lock_kernel();
++
+ 	pr_debug("AFFS: notify_change(%lu,0x%x)\n",inode->i_ino,attr->ia_valid);
+ 
+ 	error = inode_change_ok(inode,attr);
+@@ -245,6 +247,7 @@
+ 	if (!error && (attr->ia_valid & ATTR_MODE))
+ 		mode_to_prot(inode);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/attr.c linux-2.4.17-bklrollup/fs/attr.c
+--- linux-2.4.17-clean/fs/attr.c	Thu Oct 11 09:43:30 2001
++++ linux-2.4.17-bklrollup/fs/attr.c	Thu Apr 11 11:59:13 2002
+@@ -21,6 +21,8 @@
+ 	int retval = -EPERM;
+ 	unsigned int ia_valid = attr->ia_valid;
+ 
++	lock_kernel();
++
+ 	/* If force is set do it anyway. */
+ 	if (ia_valid & ATTR_FORCE)
+ 		goto fine;
+@@ -55,6 +57,7 @@
+ fine:
+ 	retval = 0;
+ error:
++	unlock_kernel();
+ 	return retval;
+ }
+ 
+@@ -62,7 +65,8 @@
+ {
+ 	unsigned int ia_valid = attr->ia_valid;
+ 	int error = 0;
+-
++	
++	lock_kernel();
+ 	if (ia_valid & ATTR_SIZE) {
+ 		error = vmtruncate(inode, attr->ia_size);
+ 		if (error)
+@@ -86,6 +90,7 @@
+ 	}
+ 	mark_inode_dirty(inode);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+@@ -114,6 +119,7 @@
+ int notify_change(struct dentry * dentry, struct iattr * attr)
+ {
+ 	struct inode *inode = dentry->d_inode;
++	mode_t mode = inode->i_mode;
+ 	int error;
+ 	time_t now = CURRENT_TIME;
+ 	unsigned int ia_valid = attr->ia_valid;
+@@ -126,8 +132,25 @@
+ 		attr->ia_atime = now;
+ 	if (!(ia_valid & ATTR_MTIME_SET))
+ 		attr->ia_mtime = now;
++	if (ia_valid & ATTR_KILL_SUID) {
++		if (mode & S_ISUID) {
++			if (!ia_valid & ATTR_MODE) {
++				ia_valid = attr->ia_valid |= ATTR_MODE;
++				attr->ia_mode = inode->i_mode;
++			}
++			attr->ia_mode &= ~S_ISUID;
++		}
++	}
++	if (ia_valid & ATTR_KILL_SGID) {
++		if ((mode & (S_ISGID | S_IXGRP)) == (S_ISGID | S_IXGRP)) {
++			if (!ia_valid & ATTR_MODE) {
++				ia_valid = attr->ia_valid |= ATTR_MODE;
++				attr->ia_mode = inode->i_mode;
++			}
++			attr->ia_mode &= ~S_ISGID;
++		}
++	}
+ 
+-	lock_kernel();
+ 	if (inode->i_op && inode->i_op->setattr) 
+ 		error = inode->i_op->setattr(dentry, attr);
+ 	else {
+@@ -140,7 +163,6 @@
+ 				error = inode_setattr(inode, attr);
+ 		}
+ 	}
+-	unlock_kernel();
+ 	if (!error) {
+ 		unsigned long dn_mask = setattr_mask(ia_valid);
+ 		if (dn_mask)
+diff -ur linux-2.4.17-clean/fs/coda/inode.c linux-2.4.17-bklrollup/fs/coda/inode.c
+--- linux-2.4.17-clean/fs/coda/inode.c	Fri Dec 21 09:41:55 2001
++++ linux-2.4.17-bklrollup/fs/coda/inode.c	Thu Apr 11 11:59:13 2002
+@@ -240,6 +240,8 @@
+         struct coda_vattr vattr;
+         int error;
+ 	
++	lock_kernel();
++	
+         memset(&vattr, 0, sizeof(vattr)); 
+ 
+         coda_iattr_to_vattr(iattr, &vattr);
+@@ -279,6 +281,8 @@
+ 		buf->f_ffree  = 9000000;
+ 	}
+ 
++	unlock_kernel();
++
+ 	/* and fill in the rest */
+ 	buf->f_type = CODA_SUPER_MAGIC;
+ 	buf->f_bsize = 1024;
+diff -ur linux-2.4.17-clean/fs/ext3/inode.c linux-2.4.17-bklrollup/fs/ext3/inode.c
+--- linux-2.4.17-clean/fs/ext3/inode.c	Fri Dec 21 09:41:55 2001
++++ linux-2.4.17-bklrollup/fs/ext3/inode.c	Thu Apr 11 11:59:13 2002
+@@ -2374,6 +2374,8 @@
+ 			return error;
+ 	}
+ 
++	lock_kernel();
++
+ 	if (attr->ia_valid & ATTR_SIZE && attr->ia_size < inode->i_size) {
+ 		handle_t *handle;
+ 
+@@ -2401,6 +2403,7 @@
+ 
+ err_out:
+ 	ext3_std_error(inode->i_sb, error);
++	unlock_kernel();
+ 	if (!error)
+ 		error = rc;
+ 	return error;
+diff -ur linux-2.4.17-clean/fs/fat/inode.c linux-2.4.17-bklrollup/fs/fat/inode.c
+--- linux-2.4.17-clean/fs/fat/inode.c	Tue Nov 20 14:15:26 2001
++++ linux-2.4.17-bklrollup/fs/fat/inode.c	Thu Apr 11 11:59:13 2002
+@@ -1023,17 +1023,24 @@
+ {
+ 	struct super_block *sb = dentry->d_sb;
+ 	struct inode *inode = dentry->d_inode;
+-	int error;
++	int error = 0;
++
++	lock_kernel();
+ 
+ 	/* FAT cannot truncate to a longer file */
+ 	if (attr->ia_valid & ATTR_SIZE) {
+-		if (attr->ia_size > inode->i_size)
+-			return -EPERM;
++		if (attr->ia_size > inode->i_size) {
++			error = -EPERM;
++			goto out;
++		}
+ 	}
+ 
+ 	error = inode_change_ok(inode, attr);
+-	if (error)
+-		return MSDOS_SB(sb)->options.quiet ? 0 : error;
++	if (error) {
++		if( MSDOS_SB(sb)->options.quiet )
++		    error = 0; 
++ 		goto out;
++	}
+ 
+ 	if (((attr->ia_valid & ATTR_UID) && 
+ 	     (attr->ia_uid != MSDOS_SB(sb)->options.fs_uid)) ||
+@@ -1043,12 +1050,14 @@
+ 	     (attr->ia_mode & ~MSDOS_VALID_MODE)))
+ 		error = -EPERM;
+ 
+-	if (error)
+-		return MSDOS_SB(sb)->options.quiet ? 0 : error;
+-
++	if (error) {
++		if( MSDOS_SB(sb)->options.quiet )  
++			error = 0;
++		goto out;
++	}
+ 	error = inode_setattr(inode, attr);
+ 	if (error)
+-		return error;
++		goto out;
+ 
+ 	if (S_ISDIR(inode->i_mode))
+ 		inode->i_mode |= S_IXUGO;
+@@ -1056,6 +1065,8 @@
+ 	inode->i_mode = ((inode->i_mode & S_IFMT) | ((((inode->i_mode & S_IRWXU
+ 	    & ~MSDOS_SB(sb)->options.fs_umask) | S_IRUSR) >> 6)*S_IXUGO)) &
+ 	    ~MSDOS_SB(sb)->options.fs_umask;
+-	return 0;
++out:
++	unlock_kernel();
++	return error;
+ }
+ MODULE_LICENSE("GPL");
+diff -ur linux-2.4.17-clean/fs/hfs/inode.c linux-2.4.17-bklrollup/fs/hfs/inode.c
+--- linux-2.4.17-clean/fs/hfs/inode.c	Wed Sep 12 15:34:06 2001
++++ linux-2.4.17-bklrollup/fs/hfs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -117,17 +117,18 @@
+ 	struct hfs_cat_entry *entry = HFS_I(inode)->entry;
+ 	struct dentry **de = entry->sys_entry;
+ 	struct hfs_sb_info *hsb = HFS_SB(inode->i_sb);
+-	int error, i;
++	int error=0, i;
++
++	lock_kernel();
+ 
+ 	error = inode_change_ok(inode, attr); /* basic permission checks */
+ 	if (error) {
+ 		/* Let netatalk's afpd think chmod() always succeeds */
+ 		if (hsb->s_afpd &&
+ 		    (attr->ia_valid == (ATTR_MODE | ATTR_CTIME))) {
+-			return 0;
+-		} else {
+-			return error;
++			error = 0;
+ 		}
++		goto out; 
+ 	}
+ 
+ 	/* no uig/gid changes and limit which mode bits can be set */
+@@ -139,7 +140,10 @@
+ 	     (((entry->type == HFS_CDR_DIR) &&
+ 	       (attr->ia_mode != inode->i_mode))||
+ 	      (attr->ia_mode & ~HFS_VALID_MODE_BITS)))) {
+-		return hsb->s_quiet ? 0 : error;
++		if( hsb->s_quiet ) { 
++			error = 0;
++			goto out;
++		}
+ 	}
+ 	
+ 	if (entry->type == HFS_CDR_DIR) {
+@@ -170,9 +174,9 @@
+ 		}
+ 	}
+ 	error = inode_setattr(inode, attr);
+-	if (error)
+-		return error;
+-
++	if (error) 
++		goto out;
++	
+ 	/* We wouldn't want to mess with the sizes of the other fork */
+ 	attr->ia_valid &= ~ATTR_SIZE;
+ 
+@@ -204,7 +208,9 @@
+ 	}
+ 	/* size changes handled in hfs_extent_adj() */
+ 
+-	return 0;
++out:
++	unlock_kernel();
++	return error;
+ }
+ 
+ int hfs_notify_change(struct dentry *dentry, struct iattr * attr)
+diff -ur linux-2.4.17-clean/fs/hpfs/inode.c linux-2.4.17-bklrollup/fs/hpfs/inode.c
+--- linux-2.4.17-clean/fs/hpfs/inode.c	Mon Sep 10 07:31:25 2001
++++ linux-2.4.17-bklrollup/fs/hpfs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -299,15 +299,18 @@
+ int hpfs_notify_change(struct dentry *dentry, struct iattr *attr)
+ {
+ 	struct inode *inode = dentry->d_inode;
+-	int error;
+-	if ((attr->ia_valid & ATTR_SIZE) && attr->ia_size > inode->i_size) 
+-		return -EINVAL;
+-	if (inode->i_sb->s_hpfs_root == inode->i_ino) return -EINVAL;
+-	if ((error = inode_change_ok(inode, attr))) return error;
+-	error = inode_setattr(inode, attr);
+-	if (error) return error;
+-	hpfs_write_inode(inode);
+-	return 0;
++	int error=0;
++	lock_kernel();
++	if ( ((attr->ia_valid & ATTR_SIZE) && attr->ia_size > inode->i_size) ||
++	     (inode->i_sb->s_hpfs_root == inode->i_ino) ) {
++		error = -EINVAL;
++	} else if ((error = inode_change_ok(inode, attr))) {
++	} else if ((error = inode_setattr(inode, attr))) {
++	} else {
++		hpfs_write_inode(inode);
++	}
++	unlock_kernel();
++	return error;
+ }
+ 
+ void hpfs_write_if_changed(struct inode *inode)
+diff -ur linux-2.4.17-clean/fs/hpfs/namei.c linux-2.4.17-bklrollup/fs/hpfs/namei.c
+--- linux-2.4.17-clean/fs/hpfs/namei.c	Fri Dec 29 14:07:57 2000
++++ linux-2.4.17-bklrollup/fs/hpfs/namei.c	Thu Apr 11 11:59:13 2002
+@@ -340,11 +340,9 @@
+ 			goto ret;
+ 		}
+ 		/*printk("HPFS: truncating file before delete.\n");*/
+-		down(&inode->i_sem);
+ 		newattrs.ia_size = 0;
+ 		newattrs.ia_valid = ATTR_SIZE | ATTR_CTIME;
+ 		err = notify_change(dentry, &newattrs);
+-		up(&inode->i_sem);
+ 		put_write_access(inode);
+ 		if (err)
+ 			goto ret;
+diff -ur linux-2.4.17-clean/fs/intermezzo/dir.c linux-2.4.17-bklrollup/fs/intermezzo/dir.c
+--- linux-2.4.17-clean/fs/intermezzo/dir.c	Tue Nov 13 09:20:56 2001
++++ linux-2.4.17-bklrollup/fs/intermezzo/dir.c	Thu Apr 11 11:59:13 2002
+@@ -282,11 +282,13 @@
+         struct presto_file_set *fset;
+         struct lento_vfs_context info = { 0, 0, 0 };
+ 
++	lock_kernel();	
++
+         ENTRY;
+         error = presto_prep(de, &cache, &fset);
+         if ( error ) {
+                 EXIT;
+-                return error;
++                goto out;        
+         }
+ 
+         if (!iattr->ia_valid)
+@@ -300,7 +302,8 @@
+         
+         if ( presto_get_permit(de->d_inode) < 0 ) {
+                 EXIT;
+-                return -EROFS;
++                error = -EROFS;
++                goto out;
+         }
+ 
+         if (!ISLENTO(presto_c2m(cache)))
+@@ -308,6 +311,8 @@
+ 	info.flags |= LENTO_FL_IGNORE_TIME;
+         error = presto_do_setattr(fset, de, iattr, &info);
+         presto_put_permit(de->d_inode);
++out:
++        unlock_kernel();
+         return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/jffs/inode-v23.c linux-2.4.17-bklrollup/fs/jffs/inode-v23.c
+--- linux-2.4.17-clean/fs/jffs/inode-v23.c	Thu Oct  4 15:14:35 2001
++++ linux-2.4.17-bklrollup/fs/jffs/inode-v23.c	Thu Apr 11 11:59:13 2002
+@@ -198,11 +198,13 @@
+ 	struct jffs_file *f;
+ 	struct jffs_node *new_node;
+ 	int update_all;
+-	int res;
++	int res = 0;
+ 	int recoverable = 0;
+ 
+-	if ((res = inode_change_ok(inode, iattr)))
+-		return res;
++	lock_kernel();
++
++	if ((res = inode_change_ok(inode, iattr))) 
++		goto out;
+ 
+ 	c = (struct jffs_control *)inode->i_sb->u.generic_sbp;
+ 	fmc = c->fmc;
+@@ -217,7 +219,8 @@
+ 		       inode->i_ino);
+ 		D3(printk (KERN_NOTICE "notify_change(): up biglock\n"));
+ 		up(&fmc->biglock);
+-		return -EINVAL;
++		res = -EINVAL;
++		goto out;
+ 	});
+ 
+ 	D1(printk("***jffs_setattr(): file: \"%s\", ino: %u\n",
+@@ -237,7 +240,8 @@
+ 		D(printk("jffs_setattr(): Allocation failed!\n"));
+ 		D3(printk (KERN_NOTICE "notify_change(): up biglock\n"));
+ 		up(&fmc->biglock);
+-		return -ENOMEM;
++		res = -ENOMEM;
++		goto out;
+ 	}
+ 
+ 	new_node->data_offset = 0;
+@@ -323,7 +327,7 @@
+ 		jffs_free_node(new_node);
+ 		D3(printk (KERN_NOTICE "n_c(): up biglock\n"));
+ 		up(&c->fmc->biglock);
+-		return res;
++		goto out;
+ 	}
+ 
+ 	jffs_insert_node(c, f, &raw_inode, 0, new_node);
+@@ -331,7 +335,9 @@
+ 	mark_inode_dirty(inode);
+ 	D3(printk (KERN_NOTICE "n_c(): up biglock\n"));
+ 	up(&c->fmc->biglock);
+-	return 0;
++out:
++	unlock_kernel();
++	return res;
+ } /* jffs_notify_change()  */
+ 
+ 
+diff -ur linux-2.4.17-clean/fs/jffs2/file.c linux-2.4.17-bklrollup/fs/jffs2/file.c
+--- linux-2.4.17-clean/fs/jffs2/file.c	Thu Oct  4 15:13:18 2001
++++ linux-2.4.17-bklrollup/fs/jffs2/file.c	Thu Apr 11 11:59:13 2002
+@@ -41,6 +41,7 @@
+ #include <linux/fs.h>
+ #include <linux/pagemap.h>
+ #include <linux/jffs2.h>
++#include <linux/smp_lock.h>
+ #include "nodelist.h"
+ #include "crc32.h"
+ 
+@@ -91,12 +92,12 @@
+ 	int mdatalen = 0;
+ 	unsigned int ivalid;
+ 	__u32 phys_ofs, alloclen;
+-	int ret;
++	int ret = 0;
++	lock_kernel();
+ 	D1(printk(KERN_DEBUG "jffs2_setattr(): ino #%lu\n", inode->i_ino));
+ 	ret = inode_change_ok(inode, iattr);
+ 	if (ret) 
+-		return ret;
+-
++		goto out;
+ 	/* Special cases - we don't want more than one data node
+ 	   for these types on the medium at any time. So setattr
+ 	   must read the original data associated with the node
+@@ -113,12 +114,14 @@
+ 	} else if ((inode->i_mode & S_IFMT) == S_IFLNK) {
+ 		mdatalen = f->metadata->size;
+ 		mdata = kmalloc(f->metadata->size, GFP_USER);
+-		if (!mdata)
+-			return -ENOMEM;
++		if (!mdata) {
++			ret = -ENOMEM;
++			goto out;
++		}
+ 		ret = jffs2_read_dnode(c, f->metadata, mdata, 0, mdatalen);
+ 		if (ret) {
+ 			kfree(mdata);
+-			return ret;
++			goto out;
+ 		}
+ 		D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of symlink target\n", mdatalen));
+ 	}
+@@ -127,7 +130,8 @@
+ 	if (!ri) {
+ 		if ((inode->i_mode & S_IFMT) == S_IFLNK)
+ 			kfree(mdata);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto out;
+ 	}
+ 		
+ 	ret = jffs2_reserve_space(c, sizeof(*ri) + mdatalen, &phys_ofs, &alloclen, ALLOC_NORMAL);
+@@ -135,7 +139,7 @@
+ 		jffs2_free_raw_inode(ri);
+ 		if ((inode->i_mode & S_IFMT) == S_IFLNK)
+ 			 kfree(mdata);
+-		return ret;
++		goto out;
+ 	}
+ 	down(&f->sem);
+         ivalid = iattr->ia_valid;
+@@ -185,7 +189,8 @@
+ 	if (IS_ERR(new_metadata)) {
+ 		jffs2_free_raw_inode(ri);
+ 		up(&f->sem);
+-		return PTR_ERR(new_metadata);
++		ret = PTR_ERR(new_metadata);
++		goto out;
+ 	}
+ 	/* It worked. Update the inode */
+ 	inode->i_atime = ri->atime;
+@@ -216,7 +221,9 @@
+ 	}
+ 	jffs2_free_raw_inode(ri);
+ 	up(&f->sem);
+-	return 0;
++out:
++	unlock_kernel();
++	return ret;
+ }
+ 
+ int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+diff -ur linux-2.4.17-clean/fs/ncpfs/inode.c linux-2.4.17-bklrollup/fs/ncpfs/inode.c
+--- linux-2.4.17-clean/fs/ncpfs/inode.c	Sun Sep 30 12:26:08 2001
++++ linux-2.4.17-bklrollup/fs/ncpfs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -27,6 +27,7 @@
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+ #include <linux/init.h>
++#include <linux/smp_lock.h>
+ 
+ #include <linux/ncp_fs.h>
+ 
+@@ -552,6 +553,8 @@
+ 
+ 	result = -EIO;
+ 
++	lock_kernel();	
++
+ 	server = NCP_SERVER(inode);
+ 	if ((!server) || !ncp_conn_valid(server))
+ 		goto out;
+@@ -596,7 +599,8 @@
+ 				info.attributes |=  (aRONLY|aRENAMEINHIBIT|aDELETEINHIBIT);
+                 } else if (!S_ISREG(inode->i_mode))
+                 {
+-                        return -EPERM;
++			result = -EPERM;
++			goto out;
+                 }
+                 else
+                 {
+@@ -682,7 +686,8 @@
+ 			attr->ia_size);
+ 
+ 		if ((result = ncp_make_open(inode, O_WRONLY)) < 0) {
+-			return -EACCES;
++			result = -EACCES;
++			goto out;
+ 		}
+ 		ncp_write_kernel(NCP_SERVER(inode), NCP_FINFO(inode)->file_handle,
+ 			  attr->ia_size, 0, "", &written);
+@@ -695,6 +700,7 @@
+ 			result = vmtruncate(inode, attr->ia_size);
+ 	}
+ out:
++	unlock_kernel();
+ 	return result;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/nfs/inode.c linux-2.4.17-bklrollup/fs/nfs/inode.c
+--- linux-2.4.17-clean/fs/nfs/inode.c	Fri Dec 21 09:41:55 2001
++++ linux-2.4.17-bklrollup/fs/nfs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -783,6 +783,8 @@
+ 	struct nfs_fattr fattr;
+ 	int error;
+ 
++	lock_kernel();
++
+ 	/*
+ 	 * Make sure the inode is up-to-date.
+ 	 */
+@@ -827,6 +829,7 @@
+ 	}
+ 	error = nfs_refresh_inode(inode, &fattr);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/nfsd/vfs.c linux-2.4.17-bklrollup/fs/nfsd/vfs.c
+--- linux-2.4.17-clean/fs/nfsd/vfs.c	Fri Dec 21 09:41:55 2001
++++ linux-2.4.17-bklrollup/fs/nfsd/vfs.c	Thu Apr 11 11:59:13 2002
+@@ -266,6 +266,7 @@
+ 		if (err)
+ 			goto out_nfserr;
+ 
++		size_change = 1;
+ 		err = locks_verify_truncate(inode, NULL, iap->ia_size);
+ 		if (err) {
+ 			put_write_access(inode);
+@@ -281,35 +282,24 @@
+ 	}
+ 
+ 	/* Revoke setuid/setgid bit on chown/chgrp */
+-	if ((iap->ia_valid & ATTR_UID) && (imode & S_ISUID)
+-	 && iap->ia_uid != inode->i_uid) {
+-		iap->ia_valid |= ATTR_MODE;
+-		iap->ia_mode = imode &= ~S_ISUID;
+-	}
+-	if ((iap->ia_valid & ATTR_GID) && (imode & S_ISGID)
+-	 && iap->ia_gid != inode->i_gid) {
+-		iap->ia_valid |= ATTR_MODE;
+-		iap->ia_mode = imode &= ~S_ISGID;
+-	}
++	if ((iap->ia_valid & ATTR_UID) && iap->ia_uid != inode->i_uid)
++		iap->ia_valid |= ATTR_KILL_SUID;
++	if ((iap->ia_valid & ATTR_GID) && iap->ia_gid != inode->i_gid)
++		iap->ia_valid |= ATTR_KILL_SGID;
+ 
+ 	/* Change the attributes. */
+ 
+-
+ 	iap->ia_valid |= ATTR_CTIME;
+ 
+-	if (iap->ia_valid & ATTR_SIZE) {
+-		fh_lock(fhp);
+-		size_change = 1;
+-	}
+ 	err = nfserr_notsync;
+ 	if (!check_guard || guardtime == inode->i_ctime) {
++		fh_lock(fhp);
+ 		err = notify_change(dentry, iap);
+ 		err = nfserrno(err);
+-	}
+-	if (size_change) {
+ 		fh_unlock(fhp);
+-		put_write_access(inode);
+ 	}
++	if (size_change)
++		put_write_access(inode);
+ 	if (!err)
+ 		if (EX_ISSYNC(fhp->fh_export))
+ 			write_inode_now(inode, 1);
+@@ -710,10 +700,11 @@
+ 	/* clear setuid/setgid flag after write */
+ 	if (err >= 0 && (inode->i_mode & (S_ISUID | S_ISGID))) {
+ 		struct iattr	ia;
++		ia.ia_valid = ATTR_KILL_SUID | ATTR_KILL_SGID;
+ 
+-		ia.ia_valid = ATTR_MODE;
+-		ia.ia_mode  = inode->i_mode & ~(S_ISUID | S_ISGID);
++		down(&inode->i_sem);
+ 		notify_change(dentry, &ia);
++		up(&inode->i_sem);
+ 	}
+ 
+ 	if (err >= 0 && stable) {
+@@ -1142,7 +1133,9 @@
+ 				iap->ia_valid |= ATTR_CTIME;
+ 				iap->ia_mode = (iap->ia_mode&S_IALLUGO)
+ 					| S_IFLNK;
++				down(&dentry->d_inode->i_sem);
+ 				err = notify_change(dnew, iap);
++				up(&dentry->d_inode->i_sem);
+ 				if (!err && EX_ISSYNC(fhp->fh_export))
+ 					write_inode_now(dentry->d_inode, 1);
+ 		       }
+diff -ur linux-2.4.17-clean/fs/open.c linux-2.4.17-bklrollup/fs/open.c
+--- linux-2.4.17-clean/fs/open.c	Fri Oct 12 13:48:42 2001
++++ linux-2.4.17-bklrollup/fs/open.c	Thu Apr 11 11:59:17 2002
+@@ -73,20 +73,19 @@
+ 
+ int do_truncate(struct dentry *dentry, loff_t length)
+ {
+-	struct inode *inode = dentry->d_inode;
+-	int error;
+ 	struct iattr newattrs;
+-
++	int err;
++	
+ 	/* Not pretty: "inode->i_size" shouldn't really be signed. But it is. */
+ 	if (length < 0)
+ 		return -EINVAL;
+ 
+-	down(&inode->i_sem);
+ 	newattrs.ia_size = length;
+ 	newattrs.ia_valid = ATTR_SIZE | ATTR_CTIME;
+-	error = notify_change(dentry, &newattrs);
+-	up(&inode->i_sem);
+-	return error;
++	down(&dentry->d_inode->i_sem);
++	err = notify_change(dentry, &newattrs);
++	up(&dentry->d_inode->i_sem);
++	return err;
+ }
+ 
+ static inline long do_sys_truncate(const char * path, loff_t length)
+@@ -260,7 +259,9 @@
+ 		    (error = permission(inode,MAY_WRITE)) != 0)
+ 			goto dput_and_out;
+ 	}
++	down(&inode->i_sem);
+ 	error = notify_change(nd.dentry, &newattrs);
++	up(&inode->i_sem);
+ dput_and_out:
+ 	path_release(&nd);
+ out:
+@@ -304,7 +305,9 @@
+ 		if ((error = permission(inode,MAY_WRITE)) != 0)
+ 			goto dput_and_out;
+ 	}
++	down(&inode->i_sem);
+ 	error = notify_change(nd.dentry, &newattrs);
++	up(&inode->i_sem);
+ dput_and_out:
+ 	path_release(&nd);
+ out:
+@@ -472,11 +475,13 @@
+ 	err = -EPERM;
+ 	if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
+ 		goto out_putf;
++	down(&inode->i_sem);
+ 	if (mode == (mode_t) -1)
+ 		mode = inode->i_mode;
+ 	newattrs.ia_mode = (mode & S_IALLUGO) | (inode->i_mode & ~S_IALLUGO);
+ 	newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
+ 	err = notify_change(dentry, &newattrs);
++	up(&inode->i_sem);
+ 
+ out_putf:
+ 	fput(file);
+@@ -504,11 +509,13 @@
+ 	if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
+ 		goto dput_and_out;
+ 
++	down(&inode->i_sem);
+ 	if (mode == (mode_t) -1)
+ 		mode = inode->i_mode;
+ 	newattrs.ia_mode = (mode & S_IALLUGO) | (inode->i_mode & ~S_IALLUGO);
+ 	newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
+ 	error = notify_change(nd.dentry, &newattrs);
++	up(&inode->i_sem);
+ 
+ dput_and_out:
+ 	path_release(&nd);
+@@ -533,45 +540,20 @@
+ 	error = -EPERM;
+ 	if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
+ 		goto out;
+-	if (user == (uid_t) -1)
+-		user = inode->i_uid;
+-	if (group == (gid_t) -1)
+-		group = inode->i_gid;
+-	newattrs.ia_mode = inode->i_mode;
+-	newattrs.ia_uid = user;
+-	newattrs.ia_gid = group;
+-	newattrs.ia_valid =  ATTR_UID | ATTR_GID | ATTR_CTIME;
+-	/*
+-	 * If the user or group of a non-directory has been changed by a
+-	 * non-root user, remove the setuid bit.
+-	 * 19981026	David C Niemi <niemi@tux.org>
+-	 *
+-	 * Changed this to apply to all users, including root, to avoid
+-	 * some races. This is the behavior we had in 2.0. The check for
+-	 * non-root was definitely wrong for 2.2 anyway, as it should
+-	 * have been using CAP_FSETID rather than fsuid -- 19990830 SD.
+-	 */
+-	if ((inode->i_mode & S_ISUID) == S_ISUID &&
+-		!S_ISDIR(inode->i_mode))
+-	{
+-		newattrs.ia_mode &= ~S_ISUID;
+-		newattrs.ia_valid |= ATTR_MODE;
++	newattrs.ia_valid =  ATTR_CTIME;
++	if (user != (uid_t) -1) {
++		newattrs.ia_valid |= ATTR_UID;
++		newattrs.ia_uid = user;
+ 	}
+-	/*
+-	 * Likewise, if the user or group of a non-directory has been changed
+-	 * by a non-root user, remove the setgid bit UNLESS there is no group
+-	 * execute bit (this would be a file marked for mandatory locking).
+-	 * 19981026	David C Niemi <niemi@tux.org>
+-	 *
+-	 * Removed the fsuid check (see the comment above) -- 19990830 SD.
+-	 */
+-	if (((inode->i_mode & (S_ISGID | S_IXGRP)) == (S_ISGID | S_IXGRP)) 
+-		&& !S_ISDIR(inode->i_mode))
+-	{
+-		newattrs.ia_mode &= ~S_ISGID;
+-		newattrs.ia_valid |= ATTR_MODE;
++	if (group != (gid_t) -1) {
++		newattrs.ia_valid |= ATTR_GID;
++		newattrs.ia_gid = group;
+ 	}
++	if (!S_ISDIR(inode->i_mode))
++		newattrs.ia_valid |= ATTR_KILL_SUID|ATTR_KILL_SGID;
++	down(&inode->i_sem);
+ 	error = notify_change(dentry, &newattrs);
++	up(&inode->i_sem);
+ out:
+ 	return error;
+ }
+Only in linux-2.4.17-bklrollup/fs: open.c.orig
+diff -ur linux-2.4.17-clean/fs/reiserfs/file.c linux-2.4.17-bklrollup/fs/reiserfs/file.c
+--- linux-2.4.17-clean/fs/reiserfs/file.c	Fri Dec 21 09:42:03 2001
++++ linux-2.4.17-bklrollup/fs/reiserfs/file.c	Thu Apr 11 11:59:13 2002
+@@ -93,25 +93,32 @@
+ static int reiserfs_setattr(struct dentry *dentry, struct iattr *attr) {
+     struct inode *inode = dentry->d_inode ;
+     int error ;
++    lock_kernel();
+     if (attr->ia_valid & ATTR_SIZE) {
+ 	/* version 2 items will be caught by the s_maxbytes check
+ 	** done for us in vmtruncate
+ 	*/
+ 	if (get_inode_item_key_version(inode) == KEY_FORMAT_3_5 &&
+-	    attr->ia_size > MAX_NON_LFS)
+-            return -EFBIG ;
++	    attr->ia_size > MAX_NON_LFS) {
++            error = -EFBIG ;
++	    goto out;
++	}
+     }
+ 
+     if ((((attr->ia_valid & ATTR_UID) && (attr->ia_uid & ~0xffff)) ||
+ 	 ((attr->ia_valid & ATTR_GID) && (attr->ia_gid & ~0xffff))) &&
+-	(get_inode_sd_version (inode) == STAT_DATA_V1))
++	(get_inode_sd_version (inode) == STAT_DATA_V1)) {
+ 		/* stat data of format v3.5 has 16 bit uid and gid */
+-	    return -EINVAL;
++	    error = -EINVAL;
++	    goto out;
++    }
+ 
+     error = inode_change_ok(inode, attr) ;
+     if (!error)
+         inode_setattr(inode, attr) ;
+ 
++out:
++    unlock_kernel();
+     return error ;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/smbfs/inode.c linux-2.4.17-bklrollup/fs/smbfs/inode.c
+--- linux-2.4.17-clean/fs/smbfs/inode.c	Tue Oct  2 17:03:34 2001
++++ linux-2.4.17-bklrollup/fs/smbfs/inode.c	Thu Apr 11 11:59:13 2002
+@@ -514,6 +514,8 @@
+ 	int error, changed, refresh = 0;
+ 	struct smb_fattr fattr;
+ 
++	lock_kernel();
++
+ 	error = smb_revalidate_inode(dentry);
+ 	if (error)
+ 		goto out;
+@@ -604,6 +606,7 @@
+ out:
+ 	if (refresh)
+ 		smb_refresh_inode(dentry);
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/umsdos/inode.c linux-2.4.17-bklrollup/fs/umsdos/inode.c
+--- linux-2.4.17-clean/fs/umsdos/inode.c	Sun Sep 30 12:26:08 2001
++++ linux-2.4.17-bklrollup/fs/umsdos/inode.c	Thu Apr 11 11:59:13 2002
+@@ -19,7 +19,7 @@
+ #include <linux/umsdos_fs.h>
+ #include <linux/list.h>
+ #include <linux/pagemap.h>
+-
++#include <linux/smp_lock.h>
+ extern struct dentry_operations umsdos_dentry_operations;
+ 
+ struct dentry *saved_root;	/* Original root if changed */
+@@ -164,6 +164,8 @@
+ 	struct dentry *temp, *old_dentry = NULL;
+ 	int ret;
+ 
++	lock_kernel();
++
+ 	ret = umsdos_parse (dentry->d_name.name, dentry->d_name.len,
+ 				&info);
+ 	if (ret)
+@@ -207,14 +209,13 @@
+ 	if (ret)
+ 		goto out;
+ 
+-	down(&dir->i_sem);
+ 	ret = umsdos_notify_change_locked(dentry, attr);
+-	up(&dir->i_sem);
+ 	if (ret == 0)
+ 		ret = inode_setattr (inode, attr);
+ out:
+ 	if (old_dentry)
+ 		dput (dentry);	/* if we had to use fake dentry for hardlinks, dput() it now */
++	unlock_kernel();
+ 	return ret;
+ }
+ 
+diff -ur linux-2.4.17-clean/include/linux/fs.h linux-2.4.17-bklrollup/include/linux/fs.h
+--- linux-2.4.17-clean/include/linux/fs.h	Fri Dec 21 09:42:03 2001
++++ linux-2.4.17-bklrollup/include/linux/fs.h	Thu Apr 11 11:59:13 2002
+@@ -331,6 +331,8 @@
+ #define ATTR_MTIME_SET	256
+ #define ATTR_FORCE	512	/* Not a change, but a change it */
+ #define ATTR_ATTR_FLAG	1024
++#define ATTR_KILL_SUID	2048
++#define ATTR_KILL_SGID	4096
+ 
+ /*
+  * This is the Inode Attributes structure, used for notify_change().  It
+@@ -1340,7 +1342,7 @@
+ 	}
+ 	return inode;
+ }
+-extern void remove_suid(struct inode *inode);
++extern void remove_suid(struct dentry *);
+ 
+ extern void insert_inode_hash(struct inode *);
+ extern void remove_inode_hash(struct inode *);
+diff -ur linux-2.4.17-clean/mm/filemap.c linux-2.4.17-bklrollup/mm/filemap.c
+--- linux-2.4.17-clean/mm/filemap.c	Fri Dec 21 09:42:04 2001
++++ linux-2.4.17-bklrollup/mm/filemap.c	Thu Apr 11 11:59:13 2002
+@@ -2816,18 +2816,19 @@
+ 	return page;
+ }
+ 
+-inline void remove_suid(struct inode *inode)
++inline void remove_suid(struct dentry *dentry)
+ {
+-	unsigned int mode;
++	struct iattr newattrs;
++	struct inode *inode = dentry->d_inode;
++	unsigned int mode = inode->i_mode & (S_ISUID|S_ISGID|S_IXGRP);
+ 
+-	/* set S_IGID if S_IXGRP is set, and always set S_ISUID */
+-	mode = (inode->i_mode & S_IXGRP)*(S_ISGID/S_IXGRP) | S_ISUID;
++	if (!(mode & S_IXGRP))
++		mode &= S_ISUID;
+ 
+ 	/* was any of the uid bits set? */
+-	mode &= inode->i_mode;
+ 	if (mode && !capable(CAP_FSETID)) {
+-		inode->i_mode &= ~mode;
+-		mark_inode_dirty(inode);
++		newattrs.ia_valid = ATTR_KILL_SUID | ATTR_KILL_SGID;
++		notify_change(dentry, &newattrs);
+ 	}
+ }
+ 
+@@ -2959,7 +2960,7 @@
+ 	if (count == 0)
+ 		goto out;
+ 
+-	remove_suid(inode);
++	remove_suid(file->f_dentry);
+ 	inode->i_ctime = inode->i_mtime = CURRENT_TIME;
+ 	mark_inode_dirty_sync(inode);
+ 
+diff -ur linux-2.4.17-clean/mm/shmem.c linux-2.4.17-bklrollup/mm/shmem.c
+--- linux-2.4.17-clean/mm/shmem.c	Fri Dec 21 09:42:05 2001
++++ linux-2.4.17-bklrollup/mm/shmem.c	Thu Apr 11 11:59:13 2002
+@@ -788,7 +788,7 @@
+ 
+ 	status	= 0;
+ 	if (count) {
+-		remove_suid(inode);
++		remove_suid(file->f_dentry);
+ 		inode->i_ctime = inode->i_mtime = CURRENT_TIME;
+ 	}
+ 

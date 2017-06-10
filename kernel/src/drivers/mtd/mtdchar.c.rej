@@ -1,0 +1,16 @@
+***************
+*** 10,15 ****
+  #include <linux/kernel.h>
+  #include <linux/module.h>
+  #include <linux/mtd/mtd.h>
+  #include <linux/slab.h>
+  
+  #ifdef CONFIG_DEVFS_FS
+--- 10,16 ----
+  #include <linux/kernel.h>
+  #include <linux/module.h>
+  #include <linux/mtd/mtd.h>
++ #include <linux/smp_lock.h>
+  #include <linux/slab.h>
+  
+  #ifdef CONFIG_DEVFS_FS

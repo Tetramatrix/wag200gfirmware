@@ -1,0 +1,34 @@
+#!/bin/sh
+
+case "$1" in
+  start)
+
+    echo "Starte Webinterface"
+
+	# start webinterface
+	/usr/sbin/rc httpd start
+	
+	# set nvram for webinterace ???
+	/usr/sbin/cmd_agent_ap
+	
+	# get nvram for webinterface ???
+	/usr/sbin/pb_ap&
+
+	;;
+
+  stop)
+    echo "Stoppe Webinterface"
+
+	killall mini_httpd
+	killall cmd_agent_ap
+	killall pb_ap&
+	
+	;;
+
+  *)
+    echo "Fehlerhafter Aufruf"
+    echo "Syntax: $0 {start|status}"
+    exit 1
+    ;;
+
+esac

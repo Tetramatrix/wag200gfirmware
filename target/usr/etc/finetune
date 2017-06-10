@@ -1,0 +1,28 @@
+#!/bin/sh
+
+TIMEOUT=10
+INTERVAL=40
+
+while sleep $INTERVAL
+do
+	let TIMEOUT=$TIMEOUT-1
+
+	if [ $TIMEOUT -le 0 ]
+	then
+		break
+	fi
+
+	pppd=`ps | grep pppd-2.4.4 | grep -v grep | awk '{print $2}'`
+	
+	if [ $pppd = "root" ]
+	then
+		echo "pppd_up: increase txqueuelen to xxx bytes"
+		# Increase txqueuelen		
+		ifconfig eth0 txqueuelen 1000
+		ifconfig ppp0 txqueuelen 1000
+		ifconfig br0 txqueuelen 1000
+		ifconfig nas0 txqueuelen 1000
+		ifconfig wlan0 txqueuelen 1000
+		break
+	fi
+done

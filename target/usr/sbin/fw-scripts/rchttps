@@ -1,0 +1,21 @@
+#!/bin/sh
+
+
+SYSLOG "Web Management from WAN is enabled"
+
+case "$REMOTE_TYPE" in
+
+	1)  # single
+	$IPTABLES -t nat -I PREROUTING -i $WANIF -s $REMOTE_NET -d $EXTERNALIP -p tcp --dport $REMOTE_PORT -j DNAT --to $INTERNALIP:80
+	$IPTABLES -A INPUT_TCP -d $INTERNALIP -p tcp --dport 80 -j ACCEPT
+	;;
+	2)  # range
+	$IPTABLES -t nat -I PREROUTING -i $WANIF -m iprange --src-range $REMOTE_NET -d $EXTERNALIP -p tcp --dport $REMOTE_PORT -j DNAT --to $INTERNALIP:80
+	$IPTABLES -A INPUT_TCP -d $INTERNALIP -p tcp --dport 80 -j ACCEPT
+	;;
+	3)  # all
+	$IPTABLES -t nat -I PREROUTING -i $WANIF -s $REMOTE_NET -d $EXTERNALIP -p tcp --dport $REMOTE_PORT -j DNAT --to $INTERNALIP:80
+	$IPTABLES -A INPUT_TCP -d $INTERNALIP -p tcp --dport 80 -j ACCEPT
+	;;
+esac
+

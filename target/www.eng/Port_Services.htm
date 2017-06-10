@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Blocked Services List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<meta HTTP-EQUIV="Expires" CONTENT="Mon, 06 Jan 1990 00:00:01 GMT">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+function service(id, name, port_start, port_end, protocol){
+	this.id = id;
+	this.name = name;
+	this.start = port_start;
+	this.end = port_end;
+	this.protocol = protocol;
+	this.deleted = false;
+	this.modified = false;
+}
+services=new Array();
+services_length=0;
+/* Init. services data structure */
+//services[0] = new service(0, "None", "", "", 23);
+@service_table#
+
+services_length=services.length;
+
+function setValue(){
+	var cf=document.forms[0];
+	cf.ServiceTable.selectedIndex = 0;
+	cf.Add_Service_Name.value =
+		services[cf.ServiceTable.options[cf.ServiceTable.selectedIndex].value].name;
+	switch(services[cf.ServiceTable.options[
+		cf.ServiceTable.selectedIndex].value].protocol){
+	 case "icmp":
+	 case 1:
+		cf.Add_Service_Protocol.selectedIndex = 0;
+ 		break;
+	 default:
+	 case "tcp":
+	 case 6:
+		cf.Add_Service_Protocol.selectedIndex = 1;
+		break;
+	 case "udp":
+	 case 17:
+		cf.Add_Service_Protocol.selectedIndex = 2;
+		break;
+	 case "both":
+	 case 23:
+	 	cf.Add_Service_Protocol.selectedIndex = 3;
+		break;
+	}
+	cf.Add_Service_Port_S.value =
+		services[cf.ServiceTable.options[cf.ServiceTable.selectedIndex].value].start;
+	cf.Add_Service_Port_E.value =
+		services[cf.ServiceTable.options[cf.ServiceTable.selectedIndex].value].end;
+
+	cf.Add_Service_Port_S.disabled=(cf.Add_Service_Protocol.selectedIndex == 0)?true:false;
+	cf.Add_Service_Port_E.disabled=(cf.Add_Service_Protocol.selectedIndex == 0)?true:false;
+}
+
+function onChange_ServiceTable(index, name, protocol, start, end){ 
+	name.value = services[index].name;
+	switch(services[index].protocol){
+	 case "icmp":
+	 case 1:
+	 case "1":
+		protocol.selectedIndex = 0;
+    		break;
+	 case "tcp":
+	 case 6:
+	 case "6":
+		protocol.selectedIndex = 1;
+		break;
+	 case "udp":
+	 case 17:
+	 case "17":
+		protocol.selectedIndex = 2;
+		break;
+	 case "both":
+	 case 23:
+	 case "23":
+		protocol.selectedIndex = 3;
+		break;
+	}
+
+	start.value = services[index].start;
+	end.value = services[index].end;
+
+	start.disabled = (protocol.selectedIndex == 0)?true:false;
+	end.disabled = (protocol.selectedIndex == 0)?true:false;
+}
+
+function onClick_Delete(){
+	var cf = document.forms[0];
+	if(cf.ServiceTable.selectedIndex == 0)
+		return false;
+	if(!confirm("After finished all actions, click the Apply button to save the settings."))
+		return false;
+  	var index = cf.ServiceTable.options[cf.ServiceTable.selectedIndex].value;
+	services[index].deleted = true;
+	cf.ServiceTable.options[cf.ServiceTable.selectedIndex] = null;
+	cf.ServiceTable.selectedIndex = 0;
+	setValue();
+}
+
+function onClick_Change(howto){//howto==1?Add:Modify
+	var cf=document.forms[0];
+	var index1 = cf.ServiceTable.options[cf.ServiceTable.selectedIndex].value;
+	var index2 = cf.ServiceTable.selectedIndex;
+
+	if(index2==0 && howto!=1) return false;
+
+	//check if service name whether blank.
+	if(cf.Add_Service_Name.value == ""){
+		alert("You must input a Service Name!");
+		cf.Add_Service_Name.focus();
+		return false;
+  	}
+ 
+  	//check port whether valid.
+	if(isInteger(cf.Add_Service_Port_S.value,0,65535,false)==false
+		|| isInteger(cf.Add_Service_Port_E.value,0,65535,false)==false){
+		alert(msg_invalid_portnumber);
+		return false;
+	}
+
+	//if select icmp, change start and end all to zero.
+	if(parseInt(cf.Add_Service_Protocol[
+		cf.Add_Service_Protocol.selectedIndex].value) == 1){	// icmp
+		cf.Add_Service_Port_S.value = "0";
+		cf.Add_Service_Port_E.value = "0";
+	}
+
+	//if start > end, exchange them.
+	if(parseInt(cf.Add_Service_Port_S.value) > parseInt(cf.Add_Service_Port_E.value)){
+		var start = cf.Add_Service_Port_S.value;
+		var end = cf.Add_Service_Port_E.value;
+		cf.Add_Service_Port_S.value = end;
+		cf.Add_Service_Port_E.value = start;
+	}
+
+	//check service name and port whether used.
+ 	for(i=0 ; i<services.length ; i++){
+		if(services[i].deleted == true)	continue;
+		if(howto!=1 && i == index2) continue;//if do Modify, no check itself.
+		if(cf.Add_Service_Name.value == services[i].name){
+			alert("The Service Name have exist!");
+			cf.Add_Service_Name.focus();
+			return false;
+		}
+	//	if(parseInt(cf.Add_Service_Port_S.value)<=services[i].end
+	//		&& parseInt(cf.Add_Service_Port_E.value)>=services[i].start){
+	//		alert("Your select port is used");
+	//		return false;
+	//	}
+ 	}
+
+	if(!confirm("After finished all actions, click the Apply button to save the settings."))
+		return false;
+
+	if(howto!=1){//Modify
+		services[index1].modified = true;
+		services[index1].name = cf.Add_Service_Name.value;
+		services[index1].protocol = cf.Add_Service_Protocol.options[
+								cf.Add_Service_Protocol.selectedIndex].value.valueOf();
+		services[index1].start = cf.Add_Service_Port_S.value;
+		services[index1].end = cf.Add_Service_Port_E.value;
+	
+		cf.ServiceTable.options[index2].text = services[index1].name + "[ "+
+					services[index1].start+" ~ "+services[index1].end+" ]";
+	}
+	else{//Add
+		services[services_length] = new service(services_length, 
+				cf.Add_Service_Name.value, cf.Add_Service_Port_S.value, 
+				cf.Add_Service_Port_E.value, 
+				cf.Add_Service_Protocol.options[
+						cf.Add_Service_Protocol.selectedIndex].value);
+		services[services_length].modified = true;
+		cf.ServiceTable.options[cf.ServiceTable.length] = 
+								new Option(services[services_length].name + 
+								" [ "+services[services_length].start+" ~ "+services[services_length].end+" ]",
+								services_length, 0, 1);
+		services_length ++;
+	}
+}
+
+function onClick_Apply(F){
+	var i;
+ 	for(i=0 ; i<services.length ; i++){
+		if(services[i].deleted == true)	continue;
+		F.service_list.value += services[i].name+":";
+		F.service_list.value += services[i].protocol+":";
+		F.service_list.value += services[i].start+"-";
+		F.service_list.value += services[i].end+'\1';
+ 		//F.services_array.value += services[i].deleted+":";
+ 		//F.services_array.value += services[i].modified +"|";
+ 	}
+ 	services_length = services.length;
+	//F.submit();
+}
+
+function onChange_Prot(F,I)
+{
+	if(services[1]==null || F.ServiceTable.selectedIndex==0)
+		return false;
+
+	if(parseInt(I) == 1){
+		F.Add_Service_Port_S.value = "0";
+		F.Add_Service_Port_E.value = "0";
+		F.Add_Service_Port_S.disabled=true;
+		F.Add_Service_Port_E.disabled=true;
+	}
+	else{
+		F.Add_Service_Port_S.value = 
+			services[F.ServiceTable.options[F.ServiceTable.selectedIndex].value].start;
+		F.Add_Service_Port_E.value =
+			services[F.ServiceTable.options[F.ServiceTable.selectedIndex].value].end;
+		F.Add_Service_Port_S.disabled=false;
+		F.Add_Service_Port_E.disabled=false;
+	}
+}
+
+function checkData()
+{
+	var cf=document.forms[0];
+	cf.service_list.value="";
+	onClick_Apply(cf);
+	dataToHidden(cf);
+	//window.opener.location.reload();
+	return true;
+}
+
+//-->	
+</script>
+</head>
+<BODY bgColor="#808080" onLoad="setValue()">
+<FORM name="PortServices" method="POST" action="setup.cgi">
+<div align="center">
+<TABLE border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+<TR>
+  <td bgcolor="#6666cc">
+  <BR>
+  <hr size="1" color="#ffffff">
+  <img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+  </TD>
+</TR>
+    <tr>
+    <td height="15" bgcolor="#E7E7E7"></TD>
+</TR>
+    
+    <tr>
+    <td>
+    <table border="0" cellspacing="0" cellpadding="4">
+	    <tr>
+             <td height="7" bgcolor="#E7E7E7"  width="160"></TD>
+			 <td height="7" colspan="2" width="500"></TD>
+	    
+</TR>	
+        <tr>
+            <td height="24" class="bwhead" valign="top">Blocked Services List</TD>
+<td>&nbsp;</TD>
+
+</TR>
+<tr>
+<td bgColor="#e7e7e7" class="boldhead" valign="top">&nbsp;</TD>
+<td height="1" width="500" bgcolor="#FFFFFF" align="center">
+<TABLE cellSpacing="0" cellPadding="10" width="500" border="1">
+<tr><td>
+	
+	<table width="100%" border="0">
+      <tr>
+        <td width="47%">
+        	<b><font size=2 face=Arial color=black>&nbsp; Service Name</font></b><br>
+          &nbsp; &nbsp;
+      <input name=Add_Service_Name size=12 maxlength=12></td>
+        <td width="53%" rowspan="4"><select name="ServiceTable" size=12 onchange="onChange_ServiceTable(
+ServiceTable.options[ServiceTable.selectedIndex].value, 
+Add_Service_Name, Add_Service_Protocol, Add_Service_Port_S, Add_Service_Port_E)">
+      <SCRIPT language="javascript">
+      var i=0;
+	for(;i<services_length;i++)
+      		document.write("<option value="+i+">"+services[i].name+ " [ "+
+			services[i].start+" ~ "+
+			services[i].end + " ]" + "</option>");
+      </SCRIPT>
+      </select></td>
+      </tr>
+      <tr>
+        <td><b><font size=2 face=Arial color=black>&nbsp;&nbsp;Protocol</font></b><br>&nbsp; &nbsp;
+      <select name=Add_Service_Protocol onChange=onChange_Prot(this.form,Add_Service_Protocol.options[Add_Service_Protocol.selectedIndex].value)>
+	<option value=1>ICMP</option>
+	<option value=6>TCP</option>
+	<option value=17>UDP</option>
+        <option value=23>TCP & UDP</option>
+      </select></td>
+        </tr>
+      <tr>
+        <td><b><font size=2 face=Arial color=black>&nbsp;&nbsp;Port Range</font></b><br>&nbsp; &nbsp;
+      <input name=Add_Service_Port_S size=5 maxlength=5 class=num value=0> ~
+      <input name=Add_Service_Port_E size=5 maxlength=5 class=num value=0></td>
+        </tr>
+      <tr>
+        <td><input type=button value= '  Add  ' onClick="onClick_Change(1)">&nbsp; 
+	<input type=button value= 'Modify'  onClick="onClick_Change(0)">&nbsp; 
+	<input type=button value= 'Delete'  onClick="onClick_Delete()"></td>
+        </tr>
+    </table></TD>
+</TR>
+</table>
+				
+<center>	
+   <BR><input type="SUBMIT" name="save" value="Save Settings" class="slbutton" onClick="return checkData();">
+   <input type="button" name="cancel" value="Cancel Changes" class="slbutton" onClick="location.href='setup.cgi?next_file=Port_Services.htm'">
+<input type="BUTTON" name="close" value="Close" class="slbutton" onClick="self.close()">
+</center>
+<BR> &nbsp; 
+				
+				</TD>
+</TR>
+                             
+            </table>
+			</TD>
+</TR>
+        </table></div>
+
+<input name="todo" type="hidden" value="save">
+<input name="this_file" type="hidden" value="Port_Services.htm">
+<input name="next_file" type="hidden" value="Port_Services.htm">
+<input type="hidden" name="service_list" value="">
+
+</form>
+</body>
+</html>
+

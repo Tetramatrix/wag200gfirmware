@@ -1,0 +1,36 @@
+diff -urN linux-2.4.22/include/linux/list.h linux-2.4.23/include/linux/list.h
+--- linux-2.4.22/include/linux/list.h	2002-11-28 15:53:15.000000000 -0800
++++ linux-2.4.23/include/linux/list.h	2003-11-28 10:26:21.000000000 -0800
+@@ -227,6 +227,19 @@
+ 	     pos = list_entry(pos->member.next, typeof(*pos), member),	\
+ 		     prefetch(pos->member.next))
+ 
++/**
++ * list_for_each_entry_safe - iterate over list of given type safe against removal of list entry
++ * @pos:	the type * to use as a loop counter.
++ * @n:		another type * to use as temporary storage
++ * @head:	the head for your list.
++ * @member:	the name of the list_struct within the struct.
++ */
++#define list_for_each_entry_safe(pos, n, head, member)			\
++	for (pos = list_entry((head)->next, typeof(*pos), member),	\
++		n = list_entry(pos->member.next, typeof(*pos), member);	\
++	     &pos->member != (head); 					\
++	     pos = n, n = list_entry(n->member.next, typeof(*n), member))
++
+ #endif /* __KERNEL__ || _LVM_H_INCLUDE */
+ 
+ #endif
+diff -urN linux-2.4.22/include/linux/proc_fs.h linux-2.4.23/include/linux/proc_fs.h
+--- linux-2.4.22/include/linux/proc_fs.h	2002-08-02 17:39:45.000000000 -0700
++++ linux-2.4.23/include/linux/proc_fs.h	2003-11-28 10:26:21.000000000 -0800
+@@ -209,4 +209,9 @@
+ 
+ #endif /* CONFIG_PROC_FS */
+ 
++static inline struct proc_dir_entry *PDE(const struct inode *inode)
++{
++	return (struct proc_dir_entry *)inode->u.generic_ip;
++}
++
+ #endif /* _LINUX_PROC_FS_H */

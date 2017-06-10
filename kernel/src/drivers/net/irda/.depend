@@ -1,0 +1,286 @@
+actisys.o: actisys.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h)
+ali-ircc.o: ali-ircc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/ali-ircc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/ali-ircc.h)
+au1k_ir.o: au1k_ir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/au1000.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/au1000.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/pb1000.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/pb1000.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/au1000_ircc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/au1000_ircc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/cpu/little/endian.h)
+ep7211_ir.o: ep7211_ir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h)
+esi.o: esi.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h)
+girbil.o: girbil.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irtty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irtty.h)
+irda-usb.o: irda-usb.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda-usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda-usb.h)
+irport.o: irport.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irport.h)
+irtty.o: irtty.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irtty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irtty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h)
+litelink.o: litelink.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h)
+nsc-ircc.o: nsc-ircc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/nsc-ircc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/nsc-ircc.h)
+old_belkin.o: old_belkin.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h)
+sa1100_ir.o: sa1100_ir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/irq.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/h3xxx.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/sa1100/pfs168.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pm.h)
+smc-ircc.o: smc-ircc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/smc-ircc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/smc-ircc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irport.h)
+tekram.o: tekram.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irtty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irtty.h)
+toshoboe.o: toshoboe.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap_frame.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/toshoboe.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/toshoboe.h)
+vlsi_ir.o: vlsi_ir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irlap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/vlsi_ir.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/vlsi_ir.h)
+w83977af_ir.o: w83977af_ir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/dma.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/wrapper.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/irda_device.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/w83977af.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/w83977af.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/irda/w83977af_ir.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/irda/w83977af_ir.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/arch/netwinder.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/use/w977/pnp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/use/internal/timer.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netwinder/tx/dma/problems.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/netwinder/rx/dma/problems.h)

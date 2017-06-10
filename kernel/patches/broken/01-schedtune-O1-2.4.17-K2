@@ -1,0 +1,124 @@
+diff -Naur linux/include/linux/sysctl.h linux.jfv/include/linux/sysctl.h
+--- linux/include/linux/sysctl.h	Mon Nov 26 05:29:17 2001
++++ linux.jfv/include/linux/sysctl.h	Tue Feb  5 17:45:00 2002
+@@ -72,6 +72,20 @@
+ 	BUS_ISA=1		/* ISA */
+ };
+ 
++// Tuneable scheduler names:
++enum
++{
++        MAX_SLICE=1,    /* Timeslice scaling */
++        MIN_SLICE=2,
++        CHILD_PENALTY=3,
++        PARENT_PENALTY=4,
++        EWEIGHT=5,
++        BONUS_RATIO=6,
++        INT_DELTA=7,
++        MAX_SLEEP=8,
++        STARVE_LIM=9
++};
++
+ /* CTL_KERN names: */
+ enum
+ {
+diff -Naur linux/kernel/sched.c linux.jfv/kernel/sched.c
+--- linux/kernel/sched.c	Tue Feb  5 18:07:33 2002
++++ linux.jfv/kernel/sched.c	Tue Feb  5 16:48:19 2002
+@@ -55,6 +55,7 @@
+  * maximum timeslice is 300 msecs. Timeslices get refilled after
+  * they expire.
+  */
++#ifdef CONFIG_SCHEDTUNE	// Here just to make patch clean
+ #define MIN_TIMESLICE		( 10 * HZ / 1000)
+ #define MAX_TIMESLICE		(300 * HZ / 1000)
+ #define CHILD_PENALTY		95
+@@ -64,6 +65,29 @@
+ #define INTERACTIVE_DELTA	2
+ #define MAX_SLEEP_AVG		(2*HZ)
+ #define STARVATION_LIMIT	(2*HZ)
++#else	// Make parameters tuneable at runtime
++
++int min_timeslice = ( 10 * HZ / 1000);
++int max_timeslice = (300 * HZ / 1000);
++int child_penalty = 95;
++int parent_penalty = 100;
++int exit_weight = 3;
++int prio_bonus_ratio = 25;
++int interactive_delta = 2;
++int max_sleep_avg = (2*HZ);
++int starvation_limit = (2*HZ);
++
++#define MIN_TIMESLICE		(min_timeslice)
++#define MAX_TIMESLICE		(max_timeslice)
++#define CHILD_PENALTY		(child_penalty)
++#define PARENT_PENALTY		(parent_penalty)
++#define EXIT_WEIGHT		(exit_weight)
++#define PRIO_BONUS_RATIO	(prio_bonus_ratio)
++#define INTERACTIVE_DELTA	(interactive_delta)
++#define MAX_SLEEP_AVG		(max_sleep_avg)
++#define STARVATION_LIMIT	(starvation_limit)
++
++#endif
+ 
+ /*
+  * If a task is 'interactive' then we reinsert it in the active
+diff -Naur linux/kernel/sysctl.c linux.jfv/kernel/sysctl.c
+--- linux/kernel/sysctl.c	Fri Dec 21 09:42:04 2001
++++ linux.jfv/kernel/sysctl.c	Tue Feb  5 17:45:45 2002
+@@ -51,6 +51,10 @@
+ extern int core_uses_pid;
+ extern int cad_pid;
+ 
++extern int min_timeslice, max_timeslice, child_penalty, parent_penalty;
++extern int prio_bonus_ratio, interactive_delta;
++extern int exit_weight, max_sleep_avg, starvation_limit;
++
+ /* this is needed for the proc_dointvec_minmax for [fs_]overflow UID and GID */
+ static int maxolduid = 65535;
+ static int minolduid;
+@@ -109,6 +113,7 @@
+ 
+ static ctl_table kern_table[];
+ static ctl_table vm_table[];
++static ctl_table sched_table[];
+ #ifdef CONFIG_NET
+ extern ctl_table net_table[];
+ #endif
+@@ -153,6 +158,7 @@
+ 	{CTL_FS, "fs", NULL, 0, 0555, fs_table},
+ 	{CTL_DEBUG, "debug", NULL, 0, 0555, debug_table},
+         {CTL_DEV, "dev", NULL, 0, 0555, dev_table},
++        {CTL_KERN, "sched", NULL, 0, 0555, sched_table},
+ 	{0}
+ };
+ 
+@@ -278,6 +284,28 @@
+ 	{0}
+ };
+ 
++static ctl_table sched_table[] = {
++	{MAX_SLICE, "MAX_TIMESLICE",
++	&max_timeslice, sizeof(int), 0644, NULL, &proc_dointvec},
++	{MIN_SLICE, "MIN_TIMESLICE",
++	&min_timeslice, sizeof(int), 0644, NULL, &proc_dointvec},
++	{CHILD_PENALTY, "CHILD_FORK_PENALTY",
++	&child_penalty, sizeof(int), 0644, NULL, &proc_dointvec},
++	{PARENT_PENALTY, "PARENT_FORK_PENALTY",
++	&parent_penalty, sizeof(int), 0644, NULL, &proc_dointvec},
++	{EWEIGHT, "EXIT_WEIGHT",
++	&exit_weight, sizeof(int), 0644, NULL, &proc_dointvec},
++	{BONUS_RATIO, "PRIO_BONUS_RATIO",
++	&prio_bonus_ratio, sizeof(int), 0644, NULL, &proc_dointvec},
++	{INT_DELTA, "INTERACTIVE_DELTA",
++	&interactive_delta, sizeof(int), 0644, NULL, &proc_dointvec},
++	{MAX_SLEEP, "MAX_SLEEP_AVG",
++	&max_sleep_avg, sizeof(int), 0644, NULL, &proc_dointvec},
++	{STARVE_LIM, "STARVATION_LIMIT",
++	&starvation_limit, sizeof(int), 0644, NULL, &proc_dointvec},
++	{0}
++};
++
+ static ctl_table proc_table[] = {
+ 	{0}
+ };

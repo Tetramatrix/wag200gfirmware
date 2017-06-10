@@ -1,0 +1,603 @@
+diff -urN linux-2.4.17-sched/include/linux/rcudata.h linux-2.4.17-cgl-rcu/include/linux/rcudata.h
+--- linux-2.4.17-sched/include/linux/rcudata.h	Thu Jan  1 05:30:00 1970
++++ linux-2.4.17-cgl-rcu/include/linux/rcudata.h	Thu Mar 28 17:02:16 2002
+@@ -0,0 +1,109 @@
++/*
++ * Read-Copy Update mechanism for mutual exclusion
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ * Copyright (c) International Business Machines Corp., 2001
++ *
++ * Author: Dipankar Sarma <dipankar@in.ibm.com>
++ * 
++ * Based on the original work by Paul McKenney <paul.mckenney@us.ibm.com>
++ * and inputs from Andrea Arcangeli, Rusty Russell, Andi Kleen etc.
++ *
++ * Papers:
++ * http://www.rdrop.com/users/paulmck/paper/rclockpdcsproof.pdf
++ * http://lse.sourceforge.net/locking/rclock_OLS.2001.05.01c.sc.pdf (OLS2001)
++ *
++ * For detailed explanation of Read-Copy Update mechanism see -
++ * 		http://lse.sourceforge.net/locking/rcupdate.html
++ *
++ */
++
++#ifndef __LINUX_RCUDATA_H
++#define __LINUX_RCUDATA_H
++
++#include <linux/cache.h>
++#include <linux/interrupt.h>
++#include <linux/list.h>
++#include <linux/timer.h>
++#include <linux/rcupdate.h>
++
++/* Batch counter type. */
++typedef long rcu_batch_t;
++
++/*
++ * RCU_BATCH_XX(rcu_batch_t a, rcu_batch_t b)
++ * 
++ * Returns true if batch number ``a'' compares as specified to ``b''.
++ * This comparison allows for the fact that the batch numbers wrap.
++ */
++#define RCU_BATCH_EQ(a, b)		((a) - (b) == 0)
++#define RCU_BATCH_GE(a, b)		((a) - (b) >= 0)
++#define RCU_BATCH_GT(a, b)		((a) - (b) > 0)
++#define RCU_BATCH_LE(a, b)		((a) - (b) <= 0)
++#define RCU_BATCH_LT(a, b)		((a) - (b) < 0)
++#define RCU_BATCH_NE(a, b)		((a) - (b) != 0)
++
++/*
++ * Per-CPU data for Read-Copy UPdate.
++ * We maintain callbacks in 3 per-cpu lists. Each list represents
++ * a batch and every batch is given a number that is global across
++ * all CPUs. The global current batch number (curbatch) represents
++ * the current batch of callbacks for which the quiescent cycle
++ * has started.
++ * nxtlist - new callbacks are added here
++ * curlist - current batch for which quiescent cycle started if any
++ * donelist - one or more batches that have finished waiting to be invoked
++ */
++struct rcu_data {
++	/*
++	 * Per-cpu counters maintained to indicate quiscent state
++	 * transition. A queiscent state can be context switch,
++	 * idle loop or user mode code. A quiesent state transition
++	 * indicates that the CPU no longer has kernel data references.
++	 */
++	long		qsctr;		/* cswitch/idle loop etc. */
++
++        /*
++         * Per-CPU variables used by the write side of the read-copy update
++         * mechanism.  See kernel/rcupdate.c.
++         */
++        long              last_qsctr;	 /* value of qsctr at beginning */
++                                         /* of last rcu interval. */
++        rcu_batch_t       batch;         /* Batch # for current RCU batch */
++
++        struct list_head  nxtlist;
++        struct list_head  curlist;
++        struct list_head  donelist;
++	struct tasklet_struct  tasklet;
++	struct task_struct *task;
++	struct semaphore  sema;
++} ____cacheline_aligned_in_smp;
++
++extern struct rcu_data rcu_data[NR_CPUS];
++
++#define RCU_qsctr(cpu) 		(rcu_data[(cpu)].qsctr)
++#define RCU_last_qsctr(cpu) 	(rcu_data[(cpu)].last_qsctr)
++#define RCU_batch(cpu) 		(rcu_data[(cpu)].batch)
++#define RCU_nxtlist(cpu) 	(rcu_data[(cpu)].nxtlist)
++#define RCU_curlist(cpu) 	(rcu_data[(cpu)].curlist)
++#define RCU_donelist(cpu) 	(rcu_data[(cpu)].donelist)
++#define RCU_tasklet(cpu) 	(rcu_data[(cpu)].tasklet)
++#define krcud_sema(cpu)		(rcu_data[(cpu)].sema)
++#define krcud_task(cpu)		(rcu_data[(cpu)].task)
++
++#define RCU_QSCTR_INVALID	0
++
++#endif
+diff -urN linux-2.4.17-sched/include/linux/rcupdate.h linux-2.4.17-cgl-rcu/include/linux/rcupdate.h
+--- linux-2.4.17-sched/include/linux/rcupdate.h	Thu Jan  1 05:30:00 1970
++++ linux-2.4.17-cgl-rcu/include/linux/rcupdate.h	Thu Mar 28 17:02:16 2002
+@@ -0,0 +1,57 @@
++/*
++ * Read-Copy Update mechanism for mutual exclusion 
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ * Copyright (c) International Business Machines Corp., 2001
++ *
++ * Author: Dipankar Sarma <dipankar@in.ibm.com>
++ * 
++ * Based on the original work by Paul McKenney <paul.mckenney@us.ibm.com>
++ * and inputs from Andrea Arcangeli, Rusty Russell, Andi Kleen etc.
++ * Papers:
++ * http://www.rdrop.com/users/paulmck/paper/rclockpdcsproof.pdf
++ * http://lse.sourceforge.net/locking/rclock_OLS.2001.05.01c.sc.pdf (OLS2001)
++ *
++ * For detailed explanation of Read-Copy Update mechanism see -
++ * 		http://lse.sourceforge.net/locking/rcupdate.html
++ *
++ */
++
++#ifndef __LINUX_RCUPDATE_H
++#define __LINUX_RCUPDATE_H
++
++#include <linux/list.h>
++
++/*
++ * Callback structure for use with call_rcu(). 
++ */
++struct rcu_head {
++	struct list_head list;
++	void (*func)(void *obj);
++	void *arg;
++};
++
++#define RCU_HEAD_INIT(head) { LIST_HEAD_INIT(head.list), NULL, NULL }
++#define RCU_HEAD(head) struct rcu_head head = RCU_HEAD_INIT(head)
++#define INIT_RCU_HEAD(ptr) do { \
++	INIT_LIST_HEAD(&(ptr)->list); (ptr)->func = NULL; (ptr)->arg = NULL; \
++} while (0)
++
++
++extern void call_rcu(struct rcu_head *head, void (*func)(void *arg), void *arg);
++extern void synchronize_kernel(void);
++
++#endif /* __LINUX_RCUPDATE_H */
+diff -urN linux-2.4.17-sched/include/linux/sched.h linux-2.4.17-cgl-rcu/include/linux/sched.h
+--- linux-2.4.17-sched/include/linux/sched.h	Thu Mar 28 00:03:03 2002
++++ linux-2.4.17-cgl-rcu/include/linux/sched.h	Thu Mar 28 17:02:16 2002
+@@ -161,6 +161,7 @@
+ extern void flush_scheduled_tasks(void);
+ extern int start_context_thread(void);
+ extern int current_is_keventd(void);
++extern int task_idle(task_t *p);
+ 
+ /*
+  * The default fd array needs to be at least BITS_PER_LONG,
+diff -urN linux-2.4.17-sched/kernel/Makefile linux-2.4.17-cgl-rcu/kernel/Makefile
+--- linux-2.4.17-sched/kernel/Makefile	Mon Sep 17 09:52:40 2001
++++ linux-2.4.17-cgl-rcu/kernel/Makefile	Thu Mar 28 16:57:50 2002
+@@ -9,12 +9,12 @@
+ 
+ O_TARGET := kernel.o
+ 
+-export-objs = signal.o sys.o kmod.o context.o ksyms.o pm.o exec_domain.o printk.o
++export-objs = signal.o sys.o kmod.o context.o ksyms.o pm.o exec_domain.o printk.o rcupdate.o
+ 
+ obj-y     = sched.o dma.o fork.o exec_domain.o panic.o printk.o \
+ 	    module.o exit.o itimer.o info.o time.o softirq.o resource.o \
+ 	    sysctl.o acct.o capability.o ptrace.o timer.o user.o \
+-	    signal.o sys.o kmod.o context.o
++	    signal.o sys.o kmod.o context.o rcupdate.o
+ 
+ obj-$(CONFIG_UID16) += uid16.o
+ obj-$(CONFIG_MODULES) += ksyms.o
+diff -urN linux-2.4.17-sched/kernel/rcupdate.c linux-2.4.17-cgl-rcu/kernel/rcupdate.c
+--- linux-2.4.17-sched/kernel/rcupdate.c	Thu Jan  1 05:30:00 1970
++++ linux-2.4.17-cgl-rcu/kernel/rcupdate.c	Thu Mar 28 16:56:58 2002
+@@ -0,0 +1,363 @@
++/*
++ * Read-Copy Update mechanism for mutual exclusion
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ * Copyright (c) International Business Machines Corp., 2001
++ *
++ * Author: Dipankar Sarma <dipankar@in.ibm.com>
++ * 
++ * Based on the original work by Paul McKenney <paul.mckenney@us.ibm.com>
++ * and inputs from Andrea Arcangeli, Rusty Russell, Andi Kleen etc.
++ *
++ * Papers:
++ * http://www.rdrop.com/users/paulmck/paper/rclockpdcsproof.pdf
++ * http://lse.sourceforge.net/locking/rclock_OLS.2001.05.01c.sc.pdf (OLS2001)
++ *
++ * For detailed explanation of Read-Copy Update mechanism see -
++ * 		http://lse.sourceforge.net/locking/rcupdate.html
++ *
++ */
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/config.h>
++#include <linux/spinlock.h>
++#include <linux/smp.h>
++#include <linux/sched.h>
++#include <asm/atomic.h>
++#include <asm/bitops.h>
++#include <linux/module.h>
++#include <linux/completion.h>
++#include <linux/smp.h>
++#include <linux/init.h>
++#include <linux/rcudata.h>
++
++static spinlock_t	rcu_lock = SPIN_LOCK_UNLOCKED;
++static rcu_batch_t	rcu_curbatch = 1; /* Current batch number */
++static rcu_batch_t	rcu_maxbatch = 1; /* Max requested batch number*/
++
++/* CPUs that need to switch in order for current RCU batch to proceed */
++static unsigned long	rcu_cpumask = 0; 	
++/* CPUs that have active RCUs */
++static unsigned long	rcu_active_cpumask = 0;
++/* Global timer to nudge CPUs */
++static struct timer_list rcu_timer;	
++struct rcu_data rcu_data[NR_CPUS] __cacheline_aligned;
++
++asmlinkage long sys_sched_get_priority_max(int policy);
++
++/*
++ * Register a new rcu callback. This will be invoked as soon
++ * as all CPUs have performed a context switch or been seen in the
++ * idle loop or in a user process.
++ */
++void call_rcu(struct rcu_head *head, void (*func)(void *arg), void *arg)
++{
++	int cpu = cpu_number_map(smp_processor_id());
++	unsigned long flags;
++
++	head->func = func;
++	head->arg = arg;
++	local_irq_save(flags);
++	list_add_tail(&head->list, &RCU_nxtlist(cpu));
++	local_irq_restore(flags);
++	tasklet_schedule(&RCU_tasklet(cpu));
++}
++
++/*
++ * Invoke the completed RCU callbacks. They are expected to be in
++ * a per-cpu list.
++ */
++static inline void rcu_invoke_callbacks(struct list_head *list)
++{
++	struct list_head *entry;
++	struct rcu_head *head;
++
++	while (!list_empty(list)) {
++		entry = list->next;
++		list_del(entry);
++		head = list_entry(entry, struct rcu_head, list);
++		head->func(head->arg);
++	}
++}
++
++/*
++ * Register a new batch of callbacks with the global state maintainers.
++ * Caller must hold the rcu global lock.
++ */
++static inline void rcu_reg_batch(rcu_batch_t newbatch)
++{
++	if (RCU_BATCH_LT(rcu_maxbatch, newbatch)) {
++		rcu_maxbatch = newbatch;
++	}
++	if (RCU_BATCH_LT(rcu_maxbatch, rcu_curbatch) || (rcu_cpumask != 0)) {
++		return;
++	}
++	rcu_cpumask = cpu_online_map;
++}
++
++/*
++ * Check if the cpu has gone through a quiescent state.
++ * If so and if it already hasn't done so in this RCU
++ * quiescent cycle, then indicate that it has done so.
++ */
++static void rcu_check_quiescent_state(void)
++{
++	int cpu = cpu_number_map(smp_processor_id());
++
++	if (!test_bit(cpu, &rcu_cpumask)) {
++		return;
++	}
++
++	/* 
++	 * May race with rcu per-cpu tick - in the worst case
++	 * we may miss one quiescent state of that CPU. That is
++	 * tolerable. So no need to disable interrupts.
++	 */
++	if (RCU_last_qsctr(cpu) == RCU_QSCTR_INVALID) {
++		RCU_last_qsctr(cpu) = RCU_qsctr(cpu);
++		return;
++	}
++	if (RCU_qsctr(cpu) == RCU_last_qsctr(cpu)) {
++		return;
++	}
++
++	spin_lock(&rcu_lock);
++	if (!test_bit(cpu, &rcu_cpumask)) {
++		spin_unlock(&rcu_lock);
++		return;
++	}
++	clear_bit(cpu, &rcu_cpumask);
++	RCU_last_qsctr(cpu) = RCU_QSCTR_INVALID;
++	if (rcu_cpumask != 0) {
++		/* All CPUs haven't gone through a quiescent state */
++		spin_unlock(&rcu_lock);
++		return;
++	}
++	rcu_curbatch++;
++	rcu_reg_batch(rcu_maxbatch);
++	spin_unlock(&rcu_lock);
++}
++
++static void rcu_move_next_batch(void)
++{
++	int rcu_timer_active;
++	int cpu = cpu_number_map(smp_processor_id());
++
++	local_irq_disable();
++	if (!list_empty(&RCU_nxtlist(cpu)) && list_empty(&RCU_curlist(cpu))) {
++		list_splice(&RCU_nxtlist(cpu), &RCU_curlist(cpu));
++		INIT_LIST_HEAD(&RCU_nxtlist(cpu));
++		local_irq_enable();
++
++		/*
++		 * start the next batch of callbacks
++		 */
++		spin_lock(&rcu_lock);
++		rcu_timer_active = (rcu_active_cpumask != 0);
++		if (!test_bit(cpu, &rcu_active_cpumask))
++			set_bit(cpu, &rcu_active_cpumask);
++		if (!rcu_timer_active && 
++		    !timer_pending(&rcu_timer)) {
++			rcu_timer.expires = jiffies + 5;
++			add_timer(&rcu_timer);
++		}
++		RCU_batch(cpu) = rcu_curbatch + 1;
++		rcu_reg_batch(RCU_batch(cpu));
++		spin_unlock(&rcu_lock);
++	} else {
++		local_irq_enable();
++	}
++}
++
++/*
++ * Look into the per-cpu callback information to see if there is
++ * any processing necessary - if so do it.
++ */
++static void rcu_process_callbacks(unsigned long data)
++{
++	int cpu = cpu_number_map(smp_processor_id());
++
++	if (!list_empty(&RCU_curlist(cpu)) &&
++	    RCU_BATCH_GT(rcu_curbatch, RCU_batch(cpu))) {
++		list_splice(&RCU_curlist(cpu), &RCU_donelist(cpu));
++		INIT_LIST_HEAD(&RCU_curlist(cpu));
++	}
++
++	rcu_move_next_batch();
++
++	/* 
++	 * No race between nxtlist here & call_rcu() from irq -
++         * call_rcu() will anyway reschedule the tasklet so if the
++	 * bit in cpu_active_mask gets cleared, it will get set again.
++	 */
++	if (list_empty(&RCU_nxtlist(cpu)) && list_empty(&RCU_curlist(cpu))) {
++		spin_lock(&rcu_lock);
++		clear_bit(cpu, &rcu_active_cpumask);
++		spin_unlock(&rcu_lock);
++	}
++	rcu_check_quiescent_state();
++
++	if (!list_empty(&RCU_donelist(cpu))) {
++		rcu_invoke_callbacks(&RCU_donelist(cpu));
++	}
++}
++
++/*
++ * Per-cpu tick that processes per-cpu queues
++ */
++static void rcu_percpu_tick_common(void)
++{
++	/* Take this opportunity to check for idle loop */
++	if (task_idle(current))
++		RCU_qsctr(cpu_logical_map(smp_processor_id()))++;
++	rcu_process_callbacks(0);
++}
++
++
++#ifdef CONFIG_SMP
++static void rcu_percpu_tick(void)
++{
++	int cpu;
++
++	for (cpu = 0; cpu < smp_num_cpus; cpu++) {
++		up(&krcud_sema(cpu));
++	}
++}
++#else
++static void rcu_percpu_tick(void)
++{
++	rcu_percpu_tick_common();
++}
++#endif
++
++/*
++ * RCU timer handler - called one in every 50ms only if there is
++ * any RCU pending in the system. It nudges every CPU.
++ */
++static void rcu_timer_handler(unsigned long data)
++{
++	rcu_percpu_tick();
++	spin_lock(&rcu_lock);
++	if (rcu_active_cpumask) {
++		rcu_timer.expires = jiffies + 5;
++		add_timer(&rcu_timer);
++	}
++	spin_unlock(&rcu_lock);
++
++}
++
++#ifdef CONFIG_SMP
++/*
++ * Per-CPU RCU dameon. It runs at an absurdly high priority so
++ * that it is not starved out by the scheduler thereby holding
++ * up RC updates.
++ */
++static int krcud(void * __bind_cpu)
++{
++	int bind_cpu = *(int *) __bind_cpu;
++	int cpu = cpu_logical_map(bind_cpu);
++
++	daemonize();
++        current->policy = SCHED_FIFO;
++        current->rt_priority = 1001 + sys_sched_get_priority_max(SCHED_FIFO);
++
++	sigfillset(&current->blocked);
++
++	/* Migrate to the right CPU */
++	set_cpus_allowed(current, 1UL << cpu);
++
++	sprintf(current->comm, "krcud_CPU%d", bind_cpu);
++	sema_init(&krcud_sema(cpu), 0);
++
++	krcud_task(cpu) = current;
++
++	for (;;) {
++		while (down_interruptible(&krcud_sema(cpu)));
++		local_bh_disable();
++		rcu_percpu_tick_common();
++		local_bh_enable();
++	}
++}
++
++static void spawn_krcud(void)
++{
++	int cpu;
++
++	for (cpu = 0; cpu < smp_num_cpus; cpu++) {
++		if (kernel_thread(krcud, (void *) &cpu,
++				  CLONE_FS | CLONE_FILES | CLONE_SIGNAL) < 0)
++			printk(KERN_ERR "spawn_krcud() failed for cpu %d\n", 
++									cpu);
++		else {
++			while (!krcud_task(cpu_logical_map(cpu))) {
++				schedule();
++			}
++		}
++	}
++}
++
++#endif
++
++/*
++ * Initializes rcu mechanism.  Assumed to be called early.
++ * That is before local timer(SMP) or jiffie timer (uniproc) is setup.
++ * Note that rcu_qsctr and friends are implicitly
++ * initialized due to the choice of ``0'' for RCU_CTR_INVALID.
++ */
++static __init int rcu_init(void)
++{
++	int i;
++
++	memset(&rcu_data[0], 0, sizeof(rcu_data));
++	for (i = 0; i < NR_CPUS; i++) {
++		tasklet_init(&RCU_tasklet(i), rcu_process_callbacks, 0UL);
++		INIT_LIST_HEAD(&RCU_nxtlist(i));
++		INIT_LIST_HEAD(&RCU_curlist(i));
++		INIT_LIST_HEAD(&RCU_donelist(i));
++	}
++	init_timer(&rcu_timer);
++	rcu_timer.function = rcu_timer_handler;
++#ifdef CONFIG_SMP
++	spawn_krcud();
++#endif
++	return 0;
++}
++
++/* Because of FASTCALL declaration of complete, we use this wrapper */
++static void wakeme_after_rcu(void *completion)
++{
++	complete(completion);
++}
++
++/*
++ * Wait until all the CPUs have gone through a "quiescent" state.
++ */
++void synchronize_kernel(void)
++{
++	struct rcu_head rcu;
++	DECLARE_COMPLETION(completion);
++
++	/* Will wake me after RCU finished */
++	call_rcu(&rcu, wakeme_after_rcu, &completion);
++
++	/* Wait for it */
++	wait_for_completion(&completion);
++}
++
++__initcall(rcu_init);
++
++EXPORT_SYMBOL(call_rcu);
++EXPORT_SYMBOL(synchronize_kernel);
+diff -urN linux-2.4.17-sched/kernel/sched.c linux-2.4.17-cgl-rcu/kernel/sched.c
+--- linux-2.4.17-sched/kernel/sched.c	Thu Mar 28 00:03:03 2002
++++ linux-2.4.17-cgl-rcu/kernel/sched.c	Thu Mar 28 16:58:49 2002
+@@ -18,6 +18,7 @@
+ #include <asm/uaccess.h>
+ #include <linux/smp_lock.h>
+ #include <linux/interrupt.h>
++#include <linux/rcudata.h>
+ #include <asm/mmu_context.h>
+ #include <linux/kernel_stat.h>
+ 
+@@ -798,6 +799,7 @@
+ switch_tasks:
+ 	prefetch(next);
+ 	prev->need_resched = 0;
++	RCU_qsctr(prev->cpu)++;
+ 
+ 	if (likely(prev != next)) {
+ 		rq->nr_switches++;
+@@ -1343,6 +1345,13 @@
+ 	return retval;
+ }
+ 
++int task_idle(task_t *p)
++{
++	if (task_rq(p)->idle == p)
++		return 1;
++	return 0;
++}
++
+ static void show_task(task_t * p)
+ {
+ 	unsigned long free = 0;

@@ -1,0 +1,54 @@
+***************
+*** 55,61 ****
+   * maximum timeslice is 300 msecs. Timeslices get refilled after
+   * they expire.
+   */
+- #ifdef CONFIG_SCHEDTUNE	// Here just to make patch clean
+  #define MIN_TIMESLICE		( 10 * HZ / 1000)
+  #define MAX_TIMESLICE		(300 * HZ / 1000)
+  #define CHILD_PENALTY		95
+--- 55,60 ----
+   * maximum timeslice is 300 msecs. Timeslices get refilled after
+   * they expire.
+   */
+  #define MIN_TIMESLICE		( 10 * HZ / 1000)
+  #define MAX_TIMESLICE		(300 * HZ / 1000)
+  #define CHILD_PENALTY		95
+***************
+*** 65,93 ****
+  #define INTERACTIVE_DELTA	2
+  #define MAX_SLEEP_AVG		(2*HZ)
+  #define STARVATION_LIMIT	(2*HZ)
+- #else	// Make parameters tuneable at runtime
+- 
+- int min_timeslice = ( 10 * HZ / 1000);
+- int max_timeslice = (300 * HZ / 1000);
+- int child_penalty = 95;
+- int parent_penalty = 100;
+- int exit_weight = 3;
+- int prio_bonus_ratio = 25;
+- int interactive_delta = 2;
+- int max_sleep_avg = (2*HZ);
+- int starvation_limit = (2*HZ);
+- 
+- #define MIN_TIMESLICE		(min_timeslice)
+- #define MAX_TIMESLICE		(max_timeslice)
+- #define CHILD_PENALTY		(child_penalty)
+- #define PARENT_PENALTY		(parent_penalty)
+- #define EXIT_WEIGHT		(exit_weight)
+- #define PRIO_BONUS_RATIO	(prio_bonus_ratio)
+- #define INTERACTIVE_DELTA	(interactive_delta)
+- #define MAX_SLEEP_AVG		(max_sleep_avg)
+- #define STARVATION_LIMIT	(starvation_limit)
+- 
+- #endif
+  
+  /*
+   * If a task is 'interactive' then we reinsert it in the active
+--- 64,69 ----
+  #define INTERACTIVE_DELTA	2
+  #define MAX_SLEEP_AVG		(2*HZ)
+  #define STARVATION_LIMIT	(2*HZ)
+  
+  /*
+   * If a task is 'interactive' then we reinsert it in the active

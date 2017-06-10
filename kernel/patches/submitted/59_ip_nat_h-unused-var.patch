@@ -1,0 +1,13 @@
+===== include/linux/netfilter_ipv4/ip_nat.h 1.4 vs edited =====
+--- 1.4/include/linux/netfilter_ipv4/ip_nat.h	Thu Aug  8 16:49:17 2002
++++ edited/include/linux/netfilter_ipv4/ip_nat.h	Mon Aug 18 13:13:47 2003
+@@ -105,9 +105,6 @@
+ 	/* Manipulations to be done on this conntrack. */
+ 	struct ip_nat_info_manip manips[IP_NAT_MAX_MANIPS];
+ 
+-	/* The mapping type which created us (NULL for null mapping). */
+-	const struct ip_nat_mapping_type *mtype;
+-
+ 	struct ip_nat_hash bysource, byipsproto;
+ 
+ 	/* Helper (NULL if none). */

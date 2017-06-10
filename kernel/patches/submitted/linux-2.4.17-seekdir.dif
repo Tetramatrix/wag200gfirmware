@@ -1,0 +1,110 @@
+diff -u --recursive --new-file linux-2.4.9-stale/fs/nfs/dir.c linux-2.4.9-seekdir/fs/nfs/dir.c
+--- linux-2.4.9-stale/fs/nfs/dir.c	Tue Jun 12 20:15:08 2001
++++ linux-2.4.9-seekdir/fs/nfs/dir.c	Wed Aug 15 10:55:27 2001
+@@ -34,6 +34,7 @@
+ #define NFS_PARANOIA 1
+ /* #define NFS_DEBUG_VERBOSE 1 */
+ 
++static loff_t nfs_dir_llseek(struct file *, loff_t, int);
+ static int nfs_readdir(struct file *, void *, filldir_t);
+ static struct dentry *nfs_lookup(struct inode *, struct dentry *);
+ static int nfs_create(struct inode *, struct dentry *, int);
+@@ -47,6 +48,7 @@
+ 		      struct inode *, struct dentry *);
+ 
+ struct file_operations nfs_dir_operations = {
++	llseek:		nfs_dir_llseek,
+ 	read:		generic_read_dir,
+ 	readdir:	nfs_readdir,
+ 	open:		nfs_open,
+@@ -67,6 +69,25 @@
+ 	revalidate:	nfs_revalidate,
+ 	setattr:	nfs_notify_change,
+ };
++
++static loff_t nfs_dir_llseek(struct file *file, loff_t offset, int origin)
++{
++	switch (origin) {
++		case 1:
++			if (offset == 0) {
++				offset = file->f_pos;
++				break;
++			}
++		case 2:
++			return -EINVAL;
++	}
++	if (offset != file->f_pos) {
++		file->f_pos = offset;
++		file->f_reada = 0;
++		file->f_version = ++event;
++	}
++	return (offset <= 0) ? 0 : offset;
++}
+ 
+ typedef u32 * (*decode_dirent_t)(u32 *, struct nfs_entry *, int);
+ typedef struct {
+diff -u --recursive --new-file linux-2.4.9-stale/fs/nfs/nfs2xdr.c linux-2.4.9-seekdir/fs/nfs/nfs2xdr.c
+--- linux-2.4.9-stale/fs/nfs/nfs2xdr.c	Fri Feb  9 20:29:44 2001
++++ linux-2.4.9-seekdir/fs/nfs/nfs2xdr.c	Wed Aug 15 10:55:28 2001
+@@ -419,7 +419,7 @@
+ 		bufsiz = bufsiz >> 2;
+ 
+ 	p = xdr_encode_fhandle(p, args->fh);
+-	*p++ = htonl(args->cookie);
++	*p++ = htonl(args->cookie & 0xFFFFFFFF);
+ 	*p++ = htonl(bufsiz); /* see above */
+ 	req->rq_slen = xdr_adjust_iovec(req->rq_svec, p);
+ 
+@@ -504,7 +504,7 @@
+ 	entry->name	  = (const char *) p;
+ 	p		 += XDR_QUADLEN(entry->len);
+ 	entry->prev_cookie	  = entry->cookie;
+-	entry->cookie	  = ntohl(*p++);
++	entry->cookie	  = (s64)((off_t)ntohl(*p++));
+ 	entry->eof	  = !p[0] && p[1];
+ 
+ 	return p;
+diff -u --recursive --new-file linux-2.4.9-stale/fs/nfs/nfs3xdr.c linux-2.4.9-seekdir/fs/nfs/nfs3xdr.c
+--- linux-2.4.9-stale/fs/nfs/nfs3xdr.c	Fri Feb  9 20:29:44 2001
++++ linux-2.4.9-seekdir/fs/nfs/nfs3xdr.c	Wed Aug 15 10:55:28 2001
+@@ -523,6 +523,13 @@
+ 	return 0;
+ }
+ 
++/* Hack to sign-extending 32-bit cookies */
++static inline
++u64 nfs_transform_cookie64(u64 cookie)
++{
++	return (cookie & 0x80000000) ? (cookie ^ 0xFFFFFFFF00000000) : cookie;
++}
++
+ /*
+  * Encode arguments to readdir call
+  */
+@@ -533,7 +540,7 @@
+ 	int		buflen, replen;
+ 
+ 	p = xdr_encode_fhandle(p, args->fh);
+-	p = xdr_encode_hyper(p, args->cookie);
++	p = xdr_encode_hyper(p, nfs_transform_cookie64(args->cookie));
+ 	*p++ = args->verf[0];
+ 	*p++ = args->verf[1];
+ 	if (args->plus) {
+@@ -635,6 +642,7 @@
+ nfs3_decode_dirent(u32 *p, struct nfs_entry *entry, int plus)
+ {
+ 	struct nfs_entry old = *entry;
++	u64 cookie;
+ 
+ 	if (!*p++) {
+ 		if (!*p)
+@@ -648,7 +656,8 @@
+ 	entry->name = (const char *) p;
+ 	p += XDR_QUADLEN(entry->len);
+ 	entry->prev_cookie = entry->cookie;
+-	p = xdr_decode_hyper(p, &entry->cookie);
++	p = xdr_decode_hyper(p, &cookie);
++	entry->cookie = nfs_transform_cookie64(cookie);
+ 
+ 	if (plus) {
+ 		p = xdr_decode_post_op_attr(p, &entry->fattr);

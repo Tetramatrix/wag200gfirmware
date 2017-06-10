@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>DHCP Active IP Table</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+function deleteHost()
+{	
+   	var cf = document.forms[0];
+	
+	//submit, todo set to "delete"
+	cf.todo.value = 'delete';
+    cf.submit();
+}
+// 
+//-->	
+</script>
+</head>
+<body bgColor="#808080" onload="window.focus();">
+<form name="dhcpclientable" method="post" action="setup.cgi" onSubmit="return false">
+<div align="center">
+<table border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+<tr>
+<td bgcolor="#6666cc">
+  <br><hr size="1" color="#ffffff"><img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+  </TD>
+
+</TR>
+<tr>
+<td>
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+ <td height="7" bgcolor="#E7E7E7" width="165"></TD>
+ <td height="7" width="533" colspan="2"></TD>
+
+</TR>			
+			    <tr>
+ <td width="164" height="24" align="right" class="bwhead" valign="top">DHCP Active IP Table</TD>
+ <td>&nbsp;</TD>
+
+</TR>
+			    
+<tr>
+ <td bgColor="#e7e7e7">&nbsp; </TD>
+<td>
+<div class="indent8">
+ <table border="0" cellspacing="3" cellpadding="0" bgcolor="#ffffff" width="500">
+  <tr> 
+   <td nowrap colspan="5"><B style="color:#0000ff; font-size:120%">DHCP Active IP Table</b></TD>
+  </TR>
+  <tr> 
+   <td nowrap colspan="4">DHCP Server IP Address: &nbsp; @dhcp_ip#</TD>
+   <td nowrap align="center" height="30">
+   <input type="button" name="refresh" value="Refresh" class="slbutton" onClick="location.href='setup.cgi?next_file=DHCPClientTable.htm'">
+   </TD>
+  </TR>
+  <tr bgColor="#b3b3b3">
+   <th nowrap height="30">Client Host Name</th>
+   <th nowrap>IP Address</th>
+   <th nowrap>MAC Address</th>
+   <th nowrap>Expires</th>
+   <th nowrap><input type="button" name="delete" value="Delete" onClick="deleteHost()"></th>
+  </TR>
+  @dhcp_client_table#<tr>
+<td nowrap colspan="4">&nbsp; </TD>
+<td nowrap align="center" height="30">
+<input type="button" name="close" value="Close" class="slbutton" onClick="self.close()"></TD>
+</TR>
+</table>
+    <br> &nbsp; 
+
+</div>
+</TD>
+</TR></table>
+</TD>
+</TR></table>
+
+</div>
+
+
+<input type="hidden" name="h_d_0" value="@h_d_0#">
+
+<input type="hidden" name="todo" value="none">
+<input type="hidden" name="this_file" value="DHCPClientTable.htm">
+<input type="hidden" name="next_file" value="DHCPClientTable.htm">
+<input type="hidden" name="message" value="@msg_text#">
+	    
+</form>
+</body>
+</html>

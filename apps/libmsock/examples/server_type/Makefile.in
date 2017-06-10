@@ -1,0 +1,29 @@
+###############################################################
+# Makefile for hget
+# muquit, Jul-10-1999
+#####
+
+INCLUDES= -I. -I../..
+CC= @CC@
+DEFS= @DEFS@ -DSYS_UNIX=1 -DDEBUG=1
+PROGNAME=server_type
+
+LIBS= @LIBS@ -L../.. -lmsock
+
+DEFINES= $(INCLUDES) $(DEFS)
+CFLAGS= @CFLAGS@ $(DEFINES) 
+
+
+OBJS= server_type.o
+
+.c.o:
+	rm -f $@
+	$(CC) $(CFLAGS) -c $*.c
+
+all: $(PROGNAME)
+
+$(PROGNAME): $(OBJS)
+	$(CC) $(CFLAGS) -o $(PROGNAME) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(PROGNAME)

@@ -1,0 +1,11 @@
+diff -u -d -r1.39 -r1.40
+--- uClibc-0.9.19/libc/inet/Makefile	12 Feb 2003 12:45:11 -0000	1.39
++++ uClibc/libc/inet/Makefile	15 Oct 2003 09:04:40 -0000	1.40
+@@ -42,7 +42,8 @@
+ 	closenameservers.o resolvename.o gethostbyname.o res_init.o \
+ 	res_query.o gethostbyaddr.o read_etc_hosts_r.o get_hosts_byname_r.o \
+ 	get_hosts_byaddr_r.o gethostbyname2.o getnameinfo.o gethostent.o \
+-	gethostbyname_r.o gethostbyname2_r.o gethostbyaddr_r.o
++	gethostbyname_r.o gethostbyname2_r.o gethostbyaddr_r.o \
++	res_comp.o ns_name.o
+

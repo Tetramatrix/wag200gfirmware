@@ -1,0 +1,26 @@
+tbconvrt.o: tbconvrt.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actbl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actbl.h)
+tbget.o: tbget.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h)
+tbinstal.o: tbinstal.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h)
+tbutils.o: tbutils.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h)
+tbxface.o: tbxface.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acnamesp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acinterp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h)
+tbxfroot.o: tbxfroot.c \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/acpi.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/achware.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/drivers/acpi/include/actables.h)

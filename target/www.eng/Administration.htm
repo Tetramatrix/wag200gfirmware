@@ -1,0 +1,729 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Management</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+
+<!-- hide script from old browsers
+
+
+var passwordChanged = false;
+
+var ip_restrict; //alan
+var snmp_ip_addr; //alan
+
+
+function checkData()
+{
+    var cf = document.forms[0];
+    var msg = "";
+    var pass1 = cf.sysPasswd.value;
+    var pass2 = cf.sysConfirmPasswd.value;
+
+	if (passwordChanged)
+	{
+		cf.pwchanged.value = "yes";
+    		if(pass1 != pass2)
+		{
+    			msg+= msg_nomatch_pwd;
+			cf.sysPasswd.value = "";
+			cf.sysConfirmPasswd.value = "";
+		}
+
+		if((pass1 == "admin")&&(getRadioCheckedValue(cf.remote_management) == "enable"))
+    		{
+    			alert(msg_default_pwd);
+    			return false;
+    		}
+	}
+	else{
+		if ((cf.pass_is_default.value=="true") && (getRadioCheckedValue(cf.remote_management) == "enable"))
+		{
+			alert(msg_default_pwd);
+			return false;
+		}
+		cf.pwchanged.value = "no";
+	}
+
+	if(getRadioCheckedValue(cf.remote_management)== "enable")
+	{
+		msg+= checkInt(cf.http_wanport, msg_rm_port, 1, 64534, (getRadioCheckedValue(cf.remote_management) == "enable"));
+
+		if(cf.ip_restrict.value=="1")
+		{
+			if(!blankIP(cf.range_ip_1,cf.range_ip_2,cf.range_ip_3,cf.range_ip_4))
+				if(badIP(cf.range_ip_1,cf.range_ip_2,cf.range_ip_3,cf.range_ip_4,255))
+					msg+= msg_invalid_remote_allow_ipaddr;
+		}
+		else if(cf.ip_restrict.value=="2")
+		{
+			if(!blankIP(cf.range_ipstart_1,cf.range_ipstart_2,cf.range_ipstart_3,cf.range_ipstart_4))
+				if(badIP(cf.range_ipstart_1,cf.range_ipstart_2,cf.range_ipstart_3,cf.range_ipstart_4,255))
+					msg+=msg_invalid_remote_start_ip;
+			if(!blankIP(cf.range_ipend_1,cf.range_ipend_2,cf.range_ipend_3,cf.range_ipend_4))
+				if(badIP(cf.range_ipend_1,cf.range_ipend_2,cf.range_ipend_3,cf.range_ipend_4,255))
+					msg+=msg_invalid_remote_end_ip;
+
+			if(parseInt(cf.range_ipstart_1.value)>parseInt(cf.range_ipend_1.value))
+			{
+				msg+=msg_invalid_start_end_ip;
+			}
+			else if(parseInt(cf.range_ipstart_1.value)==parseInt(cf.range_ipend_1.value))
+			{
+				if(parseInt(cf.range_ipstart_2.value)>parseInt(cf.range_ipend_2.value))
+				{
+					msg+=msg_invalid_start_end_ip;
+				}
+				else if(parseInt(cf.range_ipstart_2.value)==parseInt(cf.range_ipend_2.value))
+				{
+					if(parseInt(cf.range_ipstart_3.value)>parseInt(cf.range_ipend_3.value))
+					{
+						msg+=msg_invalid_start_end_ip;
+					}
+					else if(parseInt(cf.range_ipstart_3.value)==parseInt(cf.range_ipend_3.value))
+					{
+						if(parseInt(cf.range_ipstart_4.value)>parseInt(cf.range_ipend_4.value))
+						{
+							msg+=msg_invalid_start_end_ip;
+						}
+						else if(parseInt(cf.range_ipstart_4.value)==parseInt(cf.range_ipend_4.value))
+						{
+							msg+=msg_invalid_start_end_ip;
+						}
+					}
+				}
+			}
+		}
+
+	}
+	if (getRadioCheckedValue(cf.snmp_enable) == "enable" )
+	{
+		msg+= checkBlank(cf.devname, msg_device_name);
+		msg+= checkBlank(cf.snmp_getcomm, msg_snmp_get_comm);
+		msg+= checkBlank(cf.snmp_setcomm, msg_snmp_set_comm);
+		if(!blankIP(cf.snmp_ipaddr1,cf.snmp_ipaddr2,cf.snmp_ipaddr3,cf.snmp_ipaddr4))
+			if(badIP(cf.snmp_ipaddr1,cf.snmp_ipaddr2,cf.snmp_ipaddr3,cf.snmp_ipaddr4,255))
+				msg+=msg_invalid_snmp_ipaddr;
+		if(!blankIP(cf.snmp_ipStartAddr1,cf.snmp_ipStartAddr2,cf.snmp_ipStartAddr3,cf.snmp_ipStartAddr4))
+			if(badIP(cf.snmp_ipStartAddr1,cf.snmp_ipStartAddr2,cf.snmp_ipStartAddr3,cf.snmp_ipStartAddr4,255))
+				msg+=msg_invalid_snmp_start_ip;
+		if(!blankIP(cf.snmp_ipEndAddr1,cf.snmp_ipEndAddr2,cf.snmp_ipEndAddr3,cf.snmp_ipEndAddr4))
+			if(badIP(cf.snmp_ipEndAddr1,cf.snmp_ipEndAddr2,cf.snmp_ipEndAddr3,cf.snmp_ipEndAddr4,255))
+				msg+=msg_invalid_snmp_end_ip;
+
+		if(parseInt(cf.snmp_ipStartAddr1.value)>parseInt(cf.snmp_ipEndAddr1.value))
+		{
+			msg+=msg_invalid_snmp_start_end_ip;
+		}
+		else if(parseInt(cf.snmp_ipStartAddr1.value)==parseInt(cf.snmp_ipEndAddr1.value))
+		{
+			if(parseInt(cf.snmp_ipStartAddr2.value)>parseInt(cf.snmp_ipEndAddr2.value))
+			{
+				msg+=msg_invalid_snmp_start_end_ip;
+			}
+			else if(parseInt(cf.snmp_ipStartAddr2.value)==parseInt(cf.snmp_ipEndAddr2.value))
+			{
+				if(parseInt(cf.snmp_ipStartAddr3.value)>parseInt(cf.snmp_ipEndAddr3.value))
+				{
+					msg+=msg_invalid_snmp_start_end_ip;
+				}
+				else if(parseInt(cf.snmp_ipStartAddr3.value)==parseInt(cf.snmp_ipEndAddr3.value))
+				{
+					if(parseInt(cf.snmp_ipStartAddr4.value)>parseInt(cf.snmp_ipEndAddr4.value))
+					{
+						msg+=msg_invalid_snmp_start_end_ip;
+					}
+					else if(parseInt(cf.snmp_ipStartAddr4.value)==parseInt(cf.snmp_ipEndAddr4.value))
+					{
+						msg+=msg_invalid_snmp_start_end_ip;
+					}
+				}
+			}
+		}
+		if(!blankIP(cf.trap_ip_1, cf.trap_ip_2, cf.trap_ip_3, cf.trap_ip_4))
+			if (badIP(cf.trap_ip_1, cf.trap_ip_2, cf.trap_ip_3, cf.trap_ip_4, 255))
+				msg+= msg_invalid_snmp_trap;
+
+	}
+    dataToHidden(cf);
+	return checkMsg(msg);
+}
+
+function setSNMP()
+{
+    var cf = document.forms[0];
+	var dflag = (getRadioCheckedValue(cf.snmp_enable) == "disable");
+	setDisabled(dflag, cf.snmp_ip_addr);  //alan
+	if(cf.snmp_ip_addr.value=="1")
+	{
+		cf.snmp_ipaddr1.disabled=dflag;
+		cf.snmp_ipaddr2.disabled=dflag;
+		cf.snmp_ipaddr3.disabled=dflag;
+		cf.snmp_ipaddr4.disabled=dflag;
+	}
+ 	else if(cf.snmp_ip_addr.value=="2")
+	{
+		cf.snmp_ipStartAddr1.disabled=dflag;
+		cf.snmp_ipStartAddr2.disabled=dflag;
+		cf.snmp_ipStartAddr3.disabled=dflag;
+		cf.snmp_ipStartAddr4.disabled=dflag;
+		cf.snmp_ipEndAddr1.disabled=dflag;
+		cf.snmp_ipEndAddr2.disabled=dflag;
+		cf.snmp_ipEndAddr3.disabled=dflag;
+		cf.snmp_ipEndAddr4.disabled=dflag;
+	}
+	setDisabled(dflag,cf.devname,cf.snmp_getcomm,cf.snmp_setcomm, cf.trap_ip_1, cf.trap_ip_2, cf.trap_ip_3, cf.trap_ip_4 );
+}
+
+function setRM()
+{
+    var cf = document.forms[0];
+	var dflag = (getRadioCheckedValue(cf.remote_management) == "disable") ;
+	setDisabled(dflag, cf.http_wanport,cf.ip_restrict);
+	if(cf.ip_restrict.value=="1")
+	setDisabled(dflag,cf.range_ip_1,cf.range_ip_2,cf.range_ip_3,cf.range_ip_4);
+	else if(cf.ip_restrict.value=="2")
+	setDisabled(dflag,cf.range_ipstart_1,cf.range_ipstart_2,cf.range_ipstart_3,cf.range_ipstart_4,cf.range_ipend_1,cf.range_ipend_2,cf.range_ipend_3,cf.range_ipend_4);
+
+}
+
+function setpwfields()
+{
+    var cf = document.forms[0];
+	var dummy_pw = "123456" ;
+	var dummy_pwv = "abcdef" ;
+	// must be different so adding char to end of existing password creates an error
+	if (cf.h_pwset.value == "yes")
+	{
+		cf.sysPasswd.value = dummy_pw;
+		cf.sysConfirmPasswd.value = dummy_pwv;
+	}
+
+}
+
+function loaduser()
+{
+	var cf = document.forms[0];
+	cf.todo.value="loaduser";
+	dataToHidden(cf);
+	cf.submit();
+}
+
+function init()
+{
+    var cf = document.forms[0];
+	dataToVisible(cf);
+	setpwfields();
+	setDivs2();
+	setSNMP();
+	setDivs();
+	setRM();
+
+
+}
+
+
+function setDivs()  //alan
+{
+ 	var cf = document.forms[0];
+	ip_restrict = cf.ip_restrict.options[cf.ip_restrict.selectedIndex].value;
+	//alert("ip_restrict="+ip_restrict);
+	if (ip_restrict == "0")
+	{
+			show_hide("optDIV01", (ip_restrict != "0"));
+			show_hide("optDIV02", (ip_restrict != "0"));
+			show_hide("optDIV03", (ip_restrict != "0"));
+			show_hide("optDIV04", (ip_restrict != "0"));
+  }
+  else
+  {
+			show_hide("optDIV01", (ip_restrict != "2"));
+			show_hide("optDIV02", (ip_restrict != "2"));
+			show_hide("optDIV03", (ip_restrict != "1"));
+			show_hide("optDIV04", (ip_restrict != "1"));
+	}
+}
+
+
+
+function setDivs2()  //alan
+{
+ 	var cf = document.forms[0];
+	snmp_ip_addr = cf.snmp_ip_addr.options[cf.snmp_ip_addr.selectedIndex].value;
+	//alert("snmp_ip_addr="+snmp_ip_addr);
+	if (snmp_ip_addr == "0")
+	{
+		  show_hide("snmpDIV01", (snmp_ip_addr != "0"));
+			show_hide("snmpDIV02", (snmp_ip_addr != "0"));
+			show_hide("snmpDIV03", (snmp_ip_addr != "0"));
+			show_hide("snmpDIV04", (snmp_ip_addr != "0"));
+  }
+  else
+  {
+			show_hide("snmpDIV01", (snmp_ip_addr != "2"));
+			show_hide("snmpDIV02", (snmp_ip_addr != "2"));
+			show_hide("snmpDIV03", (snmp_ip_addr != "1"));
+			show_hide("snmpDIV04", (snmp_ip_addr != "1"));
+	}
+}
+
+//-->
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="init()">
+<form name="administration" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Administration</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+  <table border="0" cellspacing="0" width="646" height="100%">
+    <tr>
+              <td height="10" colspan="5" background="UI_06.gif"></TD>
+			  <td height="10" background="UI_07.gif"></TD>
+			  <td height="10" colspan="1" background="UI_06.gif"></TD>
+</TR>
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="thistab" width="105">Administration</TD>
+	 <td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+</TR>
+  </table></TD>
+</TR>
+
+<!-- sub menu-->
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <span class="current">Management</span><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Log.htm">Reporting</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Diagnostics.htm">Diagnostics</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Backup.htm">Backup&amp;Restore</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Factorydefaults.htm">Factory Defaults</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=FirmwareUpgrade.htm">Firmware Upgrade</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=Reboot.htm">Reboot</a>&nbsp;&nbsp;
+ </TD>
+</TR>
+</table><!-- data table-->
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD><td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+</TR>
+
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Gateway Access</TD><td width="454">&nbsp;  </TD><td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+      >&nbsp;&nbsp; <A href="help/h_Management.htm" class="submenu"
+      target="_blank">Help...</a></span></TD>
+</TR>
+
+<tr>
+ <td width="156" valign="top" bgColor="#e7e7e7" class="boldhead">Local Gateway Access</TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+ <table class="std" WIDTH="206">
+ <!--
+ <tr>
+  <td nowrap width="120">Gateway Userlist:</TD>
+  <td nowrap>
+    <SELECT name="user_list" size="1" onchange="loaduser()">
+	<OPTION value="1">1</OPTION>
+	<OPTION value="2">2</OPTION>
+	<OPTION value="3">3</OPTION>
+	<OPTION value="4">4</OPTION>
+	<OPTION value="5">5</OPTION>
+	<OPTION value="6">6</OPTION>
+	<OPTION value="7">7</OPTION>
+	<OPTION value="8">8</OPTION></SELECT>
+  </TD>
+</TR>
+-->
+ <tr>
+  <td nowrap>Gateway Username:</TD>
+  <td nowrap><input type="text" maxlength="62" size="21" name="sysname" value="@sysname#"></TD>
+</TR>
+<tr>
+  <td nowrap>Gateway Password:</TD>
+  <td nowrap><INPUT type="password" maxlength="43" size="21" name="sysPasswd" value="" onchange="passwordChanged=true"></TD>
+</TR>
+ <tr>
+  <td nowrap>Re-enter to Confirm:</TD>
+  <td nowrap><INPUT type="password" maxlength="43" size="21" name="sysConfirmPasswd" value="" onchange="passwordChanged=true"></TD>
+</TR>
+ </table>
+ </TD>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">Remote Gateway Access</TD><td width="8" background="UI_04.gif"> </TD><td valign="top">
+
+<table class="std" WIDTH="206">
+<tr> 
+  <td nowrap width="118">Remote Management:</TD>
+  <td nowrap>
+  <INPUT type="radio" name="remote_management" value="enable" onclick="setRM()"> <B>Enable</b>&nbsp;&nbsp;
+  <INPUT type="radio" name="remote_management" value="disable" onclick="setRM()"> <B>Disable</b>
+  </TD>
+</TR>
+ <tr>
+  <td nowrap>Management Port:</TD>
+  <td nowrap>&nbsp;
+  <input type="text" class="num" maxlength="5" size="6" value="@http_wanport#" name="http_wanport">
+  </TD>
+</TR>
+<tr>
+  <td nowrap>Allowed IP:</TD>
+  <td nowrap>&nbsp;
+  <select name="ip_restrict" onChange="setDivs();">
+	<option value="0" selected> All </option>
+	<option value="1">IP Addr.</option>
+	<option value="2">IP Range</option>
+	</select>
+  </TD>
+</TR>
+
+
+
+<tr>
+  <td nowrap><div ID="optDIV01" style="display:none">IP Address:</div></TD>
+  <td nowrap>
+  	<div ID="optDIV02" style="display:none">
+  				<input type="text" name="range_ip_1" size="3" maxlength="3" class="num" value= >.
+          <input type="text" name="range_ip_2" size="3" maxlength="3" class="num" value= >.
+          <input type="text" name="range_ip_3" size="3" maxlength="3" class="num" value= >.
+          <input type="text" name="range_ip_4" size="3" maxlength="3" class="num" value= >
+    </div>
+  </TD>
+</TR>
+
+<tr>
+  <td nowrap><div ID="optDIV03" style="display:none">IP Range:</div></TD>
+  <td nowrap>
+  	<div ID="optDIV04" style="display:none">
+  				<INPUT class=num maxLength=3 size=3 name="range_ipstart_1" value=
+>.<INPUT class=num maxLength=3 size=3 name="range_ipstart_2" value=
+>.<INPUT class=num maxLength=3 size=3 name="range_ipstart_3" value=
+>.<INPUT class=num maxLength=3 size=3 name="range_ipstart_4" value=
+>~<INPUT class=num maxLength=3 size=3 name="range_ipend_1" value=
+>.<INPUT class=num maxLength=3 size=3 name="range_ipend_2" value=
+>.<INPUT class=num maxLength=3 size=3 name="range_ipend_3" value=
+>.<INPUT class=num maxLength=3 size=3 name="range_ipend_4" value=
+>
+    </div>
+  </TD>
+</TR>
+
+</table>
+</TD>
+</TR>
+
+
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">Remote Upgrade</TD><td width="8" background="UI_04.gif"> </TD><td valign="top">
+
+<table class="std" WIDTH="206">
+<tr> 
+  <td nowrap width="118">Remote Upgrade:</TD>
+  <td nowrap>
+  <INPUT type="radio" name="remote_upgrade" value="enable"> <B>Enable</b>&nbsp;&nbsp;
+  <INPUT type="radio" name="remote_upgrade" value="disable"> <B>Disable</b>
+  </TD>
+</TR>
+
+</table>
+</TD>
+</TR>
+
+
+
+
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD><td width="8" background="UI_04.gif"> </TD><td><hr class="std"></TD>
+</TR>
+
+<tr>
+<td width="164" height="24" colspan="2" class="bwhead">SNMP</TD><td width="454">&nbsp;  </TD>
+</TR>
+
+<tr>
+<td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;</TD><td width="8" background="UI_04.gif"> </TD><td valign="top">
+
+<table class="std" WIDTH="206">
+<tr>
+<td nowrap width="118">SNMP:</TD>
+<td nowrap>
+<INPUT type="radio" name="snmp_enable" value="enable" onclick="setSNMP()"><B>Enable</b>&nbsp;&nbsp;
+<INPUT type="radio" name="snmp_enable" value="disable" onclick="setSNMP()"><B>Disable</b>
+</TD>
+</TR>
+
+<tr> 
+<td nowrap>Allowed IP:</TD>
+<td nowrap>&nbsp;
+	<SELECT name="snmp_ip_addr" onChange="setDivs2();">
+		<option value="0" selected>All</option>
+		<option value="1">IP-Addr</option>
+		<option value="2">IP-Range</option>
+	</SELECT></TD>
+</TR>
+
+<tr> 
+<td nowrap><div ID="snmpDIV01" style="display:none">IP Address:</div></TD>
+<td nowrap>
+	<div ID="snmpDIV02" style="display:none">
+  				<input type="text" name="snmp_ipaddr1" size="3" maxlength="3" class="num" value= >.
+          <input type="text" name="snmp_ipaddr2" size="3" maxlength="3" class="num" value= >.
+          <input type="text" name="snmp_ipaddr3" size="3" maxlength="3" class="num" value= >.
+          <input type="text" name="snmp_ipaddr4" size="3" maxlength="3" class="num" value= >
+    </div></TD>
+</TR>
+
+<tr> 
+<td nowrap><div ID="snmpDIV03" style="display:none">IP Range:</div></TD>
+<td nowrap>
+	<div ID="snmpDIV04" style="display:none">
+  				<INPUT class=num maxLength=3 size=3 name="snmp_ipStartAddr1" value=
+>.<INPUT class=num maxLength=3 size=3 name="snmp_ipStartAddr2" value=
+>.<INPUT class=num maxLength=3 size=3 name="snmp_ipStartAddr3" value=
+>.<INPUT class=num maxLength=3 size=3 name="snmp_ipStartAddr4" value=
+>~<INPUT class=num maxLength=3 size=3 name="snmp_ipEndAddr1" value=
+>.<INPUT class=num maxLength=3 size=3 name="snmp_ipEndAddr2" value=
+>.<INPUT class=num maxLength=3 size=3 name="snmp_ipEndAddr3" value=
+>.<INPUT class=num maxLength=3 size=3 name="snmp_ipEndAddr4" value=
+>
+    </div></TD>
+</TR>
+
+
+
+
+<tr> 
+<td nowrap>Device Name:</TD>
+<td nowrap>&nbsp;
+<input type="text" size="24" maxlength="39" name="devname" value="@devname#"></TD>
+</TR>
+
+<tr> 
+<td nowrap>Snmp V1/V2:</TD>
+<td nowrap>&nbsp;
+@snmpv1v2#
+</TD>
+</TR>
+
+<tr> 
+<td nowrap>Get Community:</TD>
+<td nowrap>&nbsp;
+<input type="text" maxlength="39"  name="snmp_getcomm" value="@snmp_getcomm#"></TD>
+</TR>
+<tr> 
+<td nowrap>Set Community:</TD>
+<td nowrap>&nbsp;
+<input type="text" maxlength="39"  name="snmp_setcomm" value="@snmp_setcomm#"></TD>
+</TR>
+
+
+<tr> 
+<td nowrap colspan="2">Trap Management:</TD>
+</TR>
+<tr> 
+<td nowrap>Trap to:</TD>
+<td nowrap>&nbsp;
+ <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="trap_ip_1"> .
+  <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="trap_ip_2"> .
+  <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="trap_ip_3"> .
+ <INPUT type="text" class="ipnum" maxLength="3" size="3" value="" name="trap_ip_4"></TD>
+</TR>
+</table>
+ </TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+<td width="164" height="24" colspan="2" class="bwhead">UPnP</TD>
+<td width="454">&nbsp;  </TD>
+</TR>
+
+<tr>
+<td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;</TD>
+<td width="8" background="UI_04.gif"> </TD>
+<td valign="top">
+
+<table class="std">
+<tr>
+<td nowrap width="118">UPnP:</TD>
+<td nowrap>
+<INPUT type="radio" name="upnp_enable" value="enable"><B>Enable</b>&nbsp;&nbsp;
+<INPUT type="radio" name="upnp_enable" value="disable"><B>Disable</b></TD>
+</TR>
+</table>
+ </TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+
+
+<tr>
+<td width="164" height="24" colspan="2" class="bwhead">IGMP-Proxy</TD>
+<td width="454">&nbsp;  </TD>
+</TR>
+
+<tr>
+<td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;</TD>
+<td width="8" background="UI_04.gif"> </TD>
+<td valign="top">
+
+<table class="std">
+<tr> 
+<td nowrap width="118">IGMP Proxy</TD>
+<td nowrap>
+<INPUT type="radio" name="igmp_proxy_enable" value="enable"><B>Enable</b>&nbsp;&nbsp;
+<INPUT type="radio" name="igmp_proxy_enable" value="disable"><B>Disable</b></TD>
+</TR>
+</table>
+ </TD>
+</TR>
+
+
+
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+<td width="164" height="24" colspan="2" class="bwhead">WLAN</TD>
+<td width="454">&nbsp;  </TD>
+</TR>
+
+<tr>
+<td width="156" bgColor="#e7e7e7" valign="top" class="boldhead">&nbsp;</TD>
+<td width="8" background="UI_04.gif"> </TD>
+<td valign="top">
+
+<table class="std">
+<tr>
+<td nowrap width="118">Management via WLAN:</TD>
+<td nowrap>
+<INPUT type="radio" name="wlan_enable" value="enable"><B>Enable</b>&nbsp;&nbsp;
+<INPUT type="radio" name="wlan_enable" value="disable"><B>Disable</b></TD>
+</TR>
+</table>
+
+
+
+<br>&nbsp;
+ </TD>
+</TR>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+<td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="submit" name="save" value="Save Settings" class="stdbutton" onClick="return checkData();">
+  <input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=Administration.htm'"> &nbsp;  &nbsp; </TD>
+</TR>
+
+
+</table>
+</div>
+
+<!--
+<input type="hidden" name="h_user_list" value="@h_user_list#">-->
+
+<input type="hidden" name="h_pwset" value="@h_pwset#">    <!-- yes, no -->
+<input type="hidden" name="pwchanged" value="">     <!-- yes, no  NOT SET BY CGI -->
+<input type="hidden" name="pass_is_default" value="@pass_is_default#">
+
+<input type="hidden" name="h_remote_management" value="@h_remote_management#">
+<input type="hidden" name="h_ip_restrict" value="@h_ip_restrict#">
+<input type="hidden" name="c4_range_ip_" value="@c4_range_ip_#">
+<input type="hidden" name="c4_range_ipstart_" value="@c4_range_ipstart_#">
+<input type="hidden" name="c4_range_ipend_" value="@c4_range_ipend_#">
+<input type="hidden" name="h_remote_upgrade" value="@h_remote_upgrade#">
+
+<input type="hidden" name="h_snmp_enable" value="@h_snmp_enable#">
+<input type="hidden" name="h_snmp_ip_addr" value="@h_snmp_ip_addr#">
+<input type="hidden" name="c4_snmp_ipaddr" value="@c4_snmp_ipaddr#">
+<input type="hidden" name="c4_snmp_ipStartAddr" value="@c4_snmp_ipStartAddr#">
+<input type="hidden" name="c4_snmp_ipEndAddr" value="@c4_snmp_ipEndAddr#">
+<input type="hidden" name="c4_trap_ip_" value="@c4_trap_ip_#">
+
+<input type="hidden" name="h_upnp_enable" value="@h_upnp_enable#">
+<input type="hidden" name="h_igmp_proxy_enable" value="@h_igmp_proxy_enable#">
+<input type="hidden" name="h_wlan_enable" value="@h_wlan_enable#">
+
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="Administration.htm">
+<input type="hidden" name="next_file" value="Administration.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+
+</html>

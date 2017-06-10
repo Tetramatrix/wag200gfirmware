@@ -1,0 +1,124 @@
+diff -urN bridge-utils-without-nat/Makefile bridge-utils-with-nat/Makefile
+--- bridge-utils-without-nat/Makefile	2004-10-17 13:39:28.000000000 +0200
++++ bridge-utils-with-nat/Makefile	2003-08-22 07:35:41.000000000 +0200
+@@ -1,4 +1,4 @@
+-mips-linux-uclibc-gcc:				brctl/brctl brctl/brctld misc/bidi
++all:				brctl/brctl brctl/brctld misc/bidi
+ 
+ clean:
+ 				make -C brctl clean
+diff -urN bridge-utils-without-nat/brctl/brctl.c bridge-utils-with-nat/brctl/brctl.c
+--- bridge-utils-without-nat/brctl/brctl.c	2003-05-30 14:11:45.000000000 +0200
++++ bridge-utils-with-nat/brctl/brctl.c	2003-08-22 07:35:41.000000000 +0200
+@@ -34,6 +34,9 @@
+ "\tshowmacs\t<bridge>\t\tshow a list of mac addrs\n"
+ "\tshowstp\t\t<bridge>\t\tshow bridge stp info\n"
+ "\n"
++"\tnat2.5\t\t<bridge> <port> <state>\tturn nat2.5 on/off\n"
++"\tclone\t\t<bridge> <port> <port>\tturn MAC clone on\n"
++"\n"
+ "\tsetageing\t<bridge> <time>\t\tset ageing time\n"
+ "\tsetbridgeprio\t<bridge> <prio>\t\tset bridge priority\n"
+ "\tsetfd\t\t<bridge> <time>\t\tset bridge forward delay\n"
+diff -urN bridge-utils-without-nat/brctl/brctl_cmd.c bridge-utils-with-nat/brctl/brctl_cmd.c
+--- bridge-utils-without-nat/brctl/brctl_cmd.c	2003-05-30 14:11:45.000000000 +0200
++++ bridge-utils-with-nat/brctl/brctl_cmd.c	2003-08-22 07:35:41.000000000 +0200
+@@ -229,6 +229,40 @@
+ 	br_set_stp_state(br, stp);
+ }
+ 
++void br_cmd_nat25(struct bridge *br, char *arg0, char *arg1)
++{
++	int enable;
++	struct port *p;
++
++	if ((p = br_find_port(br, arg0)) == NULL) {
++		fprintf(stderr, "can't find port %s in bridge %s\n", arg0, br->ifname);
++		return;
++	}
++
++	enable = 0;
++	if (!strcmp(arg1, "enable") || !strcmp(arg1, "on") || !strcmp(arg1, "yes") || !strcmp(arg1, "1"))
++		enable = 1;
++
++	br_set_port_nat25(p, enable);
++}
++
++void br_cmd_enable_macclone(struct bridge *br, char *arg0, char *arg1)
++{
++	struct port *p, *target;
++
++	if ((p = br_find_port(br, arg0)) == NULL) {
++		fprintf(stderr, "can't find port %s in bridge %s\n", arg0, br->ifname);
++		return;
++	}
++
++	if ((target = br_find_port(br, arg1)) == NULL) {
++		fprintf(stderr, "can't find port %s in bridge %s\n", arg1, br->ifname);
++		return;
++	}
++
++	br_set_port_enable_macclone(p, target);
++}
++
+ void br_cmd_showstp(struct bridge *br, char *arg0, char *arg1)
+ {
+ 	br_dump_info(br);
+@@ -317,6 +351,9 @@
+ 	{1, 0, "showmacs", br_cmd_showmacs},
+ 	{1, 0, "showstp", br_cmd_showstp},
+ 	{1, 1, "stp", br_cmd_stp},
++	
++	{1, 2, "nat2.5", br_cmd_nat25},
++	{1, 2, "clone", br_cmd_enable_macclone},
+ };
+ 
+ struct command *br_command_lookup(char *cmd)
+diff -urN bridge-utils-without-nat/libbridge/libbridge.h bridge-utils-with-nat/libbridge/libbridge.h
+--- bridge-utils-without-nat/libbridge/libbridge.h	2003-05-30 14:11:45.000000000 +0200
++++ bridge-utils-with-nat/libbridge/libbridge.h	2003-08-22 07:35:41.000000000 +0200
+@@ -125,6 +125,9 @@
+ int br_set_path_cost(struct port *p, int path_cost);
+ int br_read_fdb(struct bridge *br, struct fdb_entry *fdbs, int offset, int num);
+ 
++int br_set_port_nat25(struct port *p, int enable);
++int br_set_port_enable_macclone(struct port *p, struct port *target);
++
+ /* libc5 combatability */
+ char *if_indextoname(unsigned int __ifindex, char *__ifname);
+ unsigned int if_nametoindex(const char *__ifname);
+diff -urN bridge-utils-without-nat/libbridge/libbridge_devif.c bridge-utils-with-nat/libbridge/libbridge_devif.c
+--- bridge-utils-without-nat/libbridge/libbridge_devif.c	2003-05-30 14:11:45.000000000 +0200
++++ bridge-utils-with-nat/libbridge/libbridge_devif.c	2003-08-22 07:35:41.000000000 +0200
+@@ -196,3 +196,22 @@
+ 
+ 	return numread;
+ }
++
++int br_set_port_nat25(struct port *p, int enable)
++{
++	if (br_device_ioctl(p->parent, 100, p->index,
++			    enable, 0) < 0)
++		return errno;
++
++	return 0;
++}
++
++int br_set_port_enable_macclone(struct port *p, struct port *target)
++{
++	if (br_device_ioctl(p->parent, 101, p->index,
++			    target->index, 0) < 0)
++		return errno;
++
++	return 0;
++}
++
+diff -urN bridge-utils-without-nat/misc/README bridge-utils-with-nat/misc/README
+--- bridge-utils-without-nat/misc/README	2004-10-17 13:39:29.000000000 +0200
++++ bridge-utils-with-nat/misc/README	2003-08-22 07:35:41.000000000 +0200
+@@ -1,4 +1,4 @@
+-mips-linux-uclibc-gcc in this directory:
++Files in this directory:
+ 
+ bidi.c		A quick-and-dirty hack that allows you to 'connect'
+ 		multiple file descriptors together (everything

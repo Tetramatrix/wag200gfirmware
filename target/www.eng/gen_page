@@ -1,0 +1,6 @@
+#!/bin/sh
+REQUEST_METHOD="GET"
+QUERY_STRING="next_file=/www/reboot_guage.htm"
+export REQUEST_METHOD
+export QUERY_STRING
+/www/setup.cgi 

@@ -1,0 +1,25 @@
+Binary files sangam_atm_1207/aal5sar.o and sangam_atm_5.00.04/aal5sar.o differ
+diff -Nur sangam_atm_1207/tn7atm.c sangam_atm_5.00.04/tn7atm.c
+--- sangam_atm_1207/tn7atm.c	2005-12-07 12:34:03.000000000 +0800
++++ sangam_atm_5.00.04/tn7atm.c	2005-11-18 11:58:52.000000000 +0800
+@@ -783,6 +783,7 @@
+   char esi_addr[ESI_LEN] = { 0x00, 0x00, 0x11, 0x22, 0x33, 0x44 };
+   char *esiaddr_str = NULL;
+ 
++//  esiaddr_str = prom_getenv ("macc");
+   esiaddr_str = prom_getenv ("macb");
+ 
+   if (!esiaddr_str)
+diff -Nur sangam_atm_1207/tn7sar.c sangam_atm_5.00.04/tn7sar.c
+--- sangam_atm_1207/tn7sar.c	2005-12-07 16:01:07.000000000 +0800
++++ sangam_atm_5.00.04/tn7sar.c	2005-10-11 18:06:28.000000000 +0800
+@@ -777,7 +777,7 @@
+   HAL_DEVICE    *pHalDev;
+   int chan=RESERVED_OAM_CHANNEL; //15;
+   char *pauto_pvc = NULL;
+-  int  auto_pvc = 1;
++  int  auto_pvc = 0;
+   
+   dgprintf(4, "tn7sar_setup_oam_channel\n");
+ 
+Binary files sangam_atm_1207/tn7sar.o and sangam_atm_5.00.04/tn7sar.o differ

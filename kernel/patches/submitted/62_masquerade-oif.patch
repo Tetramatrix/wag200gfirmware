@@ -1,0 +1,12 @@
+diff -Nur linux-masqorig/net/ipv4/netfilter/ipt_MASQUERADE.c linux/net/ipv4/netfilter/ipt_MASQUERADE.c
+--- linux-masqorig/net/ipv4/netfilter/ipt_MASQUERADE.c	Fri Nov 28 19:26:21 2003
++++ linux/net/ipv4/netfilter/ipt_MASQUERADE.c	Thu Dec 11 15:14:04 2003
+@@ -87,7 +87,7 @@
+ 	key.dst = (*pskb)->nh.iph->daddr;
+ 	key.src = 0; /* Unknown: that's what we're trying to establish */
+ 	key.tos = RT_TOS((*pskb)->nh.iph->tos)|RTO_CONN;
+-	key.oif = 0;
++	key.oif = out->ifindex;
+ #ifdef CONFIG_IP_ROUTE_FWMARK
+ 	key.fwmark = (*pskb)->nfmark;
+ #endif

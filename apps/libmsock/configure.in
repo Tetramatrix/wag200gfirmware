@@ -1,0 +1,56 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(msock.h)
+
+AC_PROG_MAKE_SET
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_RANLIB
+AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
+
+test "$GCC" = yes && CFLAGS="$CFLAGS -Wall"
+
+
+dnl Checks for libraries.
+dnl Checks for header files.
+dnl AC_HEADER_STDC
+AC_STDC_HEADERS
+AC_HEADER_SYS_WAIT
+AC_HEADER_TIME
+AC_CHECK_HEADERS(string.h fcntl.h memory.h malloc.h unistd.h ctype.h)
+AC_CHECK_HEADERS(strings.h)
+
+AC_CHECK_HEADERS(sys/stat.h sys/param.h sys/file.h stdlib.h)
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_STRUCT_TM
+dnl AC_CHECK_FUNC(flock,AC_DEFINE(HAVE_FLOCK))
+dnl AC_CHECK_FUNC(strcasecmp,AC_DEFINE(HAVE_STRCASECMP))
+dnl AC_CHECK_FUNC(mktime,AC_DEFINE(HAVE_MKTIME))
+AC_CHECK_FUNCS(flock strcasecmp mktime strftime gmtime)
+
+AC_MSG_CHECKING([for system type])
+case "$host_os" in
+*linux*)
+    AC_MSG_RESULT("Cool  It is Linux")
+
+    ;;
+*solaris*)
+    AC_DEFINE(SOLARIS)
+    AC_MSG_RESULT("Solaris")
+    if test "$GCC" != yes; then
+        AC_DEFINE(__STDC__)
+    fi
+    ;;
+*ultrix*)
+    AC_DEFINE(NOPROTO)
+    AC_DEFINE(NOCONST)
+    AC_MSG_RESULT("ultrix")
+    ;;
+esac
+
+dnl Checks for library functions.
+
+AC_OUTPUT(Makefile ./examples/htget/Makefile ./examples/server_type/Makefile \
+        ./examples/echod/Makefile)

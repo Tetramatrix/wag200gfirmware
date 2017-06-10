@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>MAC Address Filter List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+function checkData()
+{
+    var cf = document.forms[0];
+    var MacAddr = new Array(cf.wl_mac0, cf.wl_mac1, cf.wl_mac2, cf.wl_mac3, cf.wl_mac4, cf.wl_mac5, cf.wl_mac6, cf.wl_mac7, cf.wl_mac8, cf.wl_mac9, cf.wl_mac10, cf.wl_mac11, cf.wl_mac12, cf.wl_mac13, cf.wl_mac14, cf.wl_mac15, cf.wl_mac16, cf.wl_mac17, cf.wl_mac18, cf.wl_mac19);
+    
+    for(var i=0; i < 20 ; i++)
+    {
+        var macvalue = MacAddr[i].value;
+        
+		if( macvalue!="00:00:00:00:00:00" && macvalue!="00-00-00-00-00-00" && macvalue!= "")
+		{
+        	if(badMac(MacAddr[i], false))
+        	{   
+            	alert(msg_item_mac + (i+1) );
+            	return false;
+        	}
+            for( var j=i+1; j<20; j++)
+            {
+                if( macvalue==MacAddr[j].value )
+                {
+                    alert(addstr(msg_mac_same,(i+1), (j+1) ));
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+
+//
+//-->	
+</script>
+</head>
+<BODY bgColor="#808080">
+<FORM name="wmacfilter" method="POST" action="setup.cgi">
+<div align="center">
+<TABLE border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+<TR>
+  <td bgcolor="#6666cc">
+  <BR>
+  <hr size="1" color="#ffffff">
+  <img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+  </TD>
+</TR>
+		<tr>
+             <td height="15" bgcolor="#E7E7E7"></TD>
+</TR>
+<tr>
+  <td>
+  <table border="0" cellspacing="0" cellpadding="4">
+          <tr>
+             <td height="7" bgcolor="#E7E7E7" width="165"></TD><td height="7" width="533" colspan="2"></TD>
+</TR>
+  <tr>
+    <td width="164" height="24" align="right" class="bwhead" valign="top">MAC Address Filter List</TD><td>&nbsp; </TD>
+</TR>
+  <tr>
+    <td bgcolor="#E7E7E7">&nbsp; </TD>
+	<td align="center">
+	
+	<TABLE cellSpacing="0" cellPadding="10" width="436" border="1">
+  <TR>
+    <TD width="412" align="center">
+	
+      <TABLE HEIGHT="320" CELLSPACING="0" CELLPADDING="0" BORDER="0">
+        <TR>
+          <TD COLSPAN=5 HEIGHT=17 ALIGN="center">
+            <P><B style="color:#0000ff; font-size:120%">MAC Address Filter List</b></p></TD>
+</TR>
+        <TR>
+          <TD COLSPAN=5 HEIGHT=40 ALIGN="center">
+            Enter MAC Address Format: xxxxxxxxxxxx/xx:xx:xx:xx:xx:xx</TD>
+</TR>
+	 	<TR> 
+          <TD nowrap ALIGN="right"><B>MAC 01:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac0" value="@wl_mac0#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 11:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac10" value="@wl_mac10#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 02:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac1" value="@wl_mac1#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 12:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac11" value="@wl_mac11#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 03:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac2" value="@wl_mac2#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 13:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac12" value="@wl_mac12#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 04:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac3" value="@wl_mac3#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 14:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac13" value="@wl_mac13#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 05:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac4" value="@wl_mac4#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 15:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac14" value="@wl_mac14#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 06:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac5" value="@wl_mac5#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 16:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac15" value="@wl_mac15#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 07:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac6" value="@wl_mac6#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 17:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac16" value="@wl_mac16#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 08:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac7" value="@wl_mac7#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 18:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac17" value="@wl_mac17#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 09:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac8" value="@wl_mac8#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 19:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac18" value="@wl_mac18#"></TD>
+</TR>
+ 	    <TR> 
+          <TD nowrap ALIGN="right"><B>MAC 10:</b></TD>
+		  <TD nowrap><B>&nbsp;  </b> <input type="text" class="num" maxlength="17" size="18"  name="wl_mac9" value="@wl_mac9#"></TD>
+		  <TD nowrap>&nbsp;</TD>
+		  <TD nowrap ALIGN="right"><B>MAC 20:</b></TD>
+		  <TD nowrap>&nbsp; <input type="text" class="num" maxlength="17" size="18"  name="wl_mac19" value="@wl_mac19#"></TD>
+</TR>
+
+<TR>
+  <TD COLSPAN=5 HEIGHT=40 ALIGN="center">
+    <INPUT TYPE="button" NAME="wireclients" VALUE="Wireless Client MAC List" onClick="location.href='setup.cgi?todo=nbtscan&next_file=WClientMACList.htm'"></TD>
+</TR>
+  </table>
+</TD>
+</TR></table>
+			<table border="0" cellpadding="0" cellspacing="0" width="330" height="40">
+              <tr>
+                <td nowrap align="center">
+                <INPUT type="SUBMIT" class="slbutton" name="save" value="Save Settings" onClick="return checkData();">&nbsp;
+	            <input type="button" class="slbutton" name="cancel" value="Cancel Changes" onClick="location.href='setup.cgi?next_file=WL_FilterTable.htm'">
+				</TD>
+			  
+</TR>
+            </table>
+</TD>
+</TR>
+</table></TD>
+</TR>
+</table></div>
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="WL_FilterTable.htm">
+<input type="hidden" name="next_file" value="WL_FilterTable.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+</html>

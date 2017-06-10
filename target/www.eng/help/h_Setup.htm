@@ -1,0 +1,382 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<HTML><HEAD><TITLE>Setup Tab / Basic Setup</TITLE>
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<meta HTTP-EQUIV="Expires" CONTENT="Mon, 06 Jan 1990 00:00:01 GMT">
+
+
+
+
+<link REL="stylesheet" TYPE="text/css" HREF="help.css">
+
+<script language="javascript" type="text/javascript">
+
+</SCRIPT>
+</HEAD>
+
+<BODY>
+<div align="center">
+<form name="dummy">
+<TABLE cellSpacing="0" cellpadding="0" border="0">
+<TR>
+<th>
+<div align="left">
+<table border="0" cellpadding="0" cellspacing="0" width="760">
+<tr>
+<td nowrap><img border="0" src="../UI_Linksys.gif"></td>
+<td height="57" class="blue" width="596" colspan="3">&nbsp;</td>
+</tr>
+<tr>
+<td height="16" class="blue" colspan="4">&nbsp;</td>
+</tr>
+<tr>
+<td height="15" class="gray" colspan="4">&nbsp;</td>
+</tr>
+<tr>
+<td height="7" class="gray"></td>
+<td colspan="3"></td>
+</tr>
+<tr>
+<th height="25" class="bar" align="right">Help &nbsp;&nbsp;</th>
+<td height="25" colspan="3">&nbsp;</td>
+</tr>
+<tr>
+<td class="gray">&nbsp;</td>
+<td>&nbsp;</td>
+<td>
+
+<!-- Start Help Content -->
+<h1>Setup Tab / Basic Setup</h1><br>
+<p>The <i>Basic Setup</i> screen you will see when accessing the Router. Most users will be able to configure the Router and get it working properly using only the settings on this screen. Some Internet Service Providers (ISPs) will require that you enter specific information, such as User Name, Password, Internet IP Address, Default Gateway Address, or DNS Address. This information can be obtained from your ISP, if required.</p>
+
+<p><b>Note: After you have configured these settings, you 
+should set a new password for the Router using the <i>Management </i>
+screen of the <i>Administration</i> tab. This will increase 
+security by protecting the Router from unauthorized changes. All users 
+who try to access the Router web-based utility or Setup Wizard 
+will be prompted for the Router password.</b>
+</p>
+
+
+<table border="0" cellspacing="0" cellpadding="4">
+<caption>Internet Setup</caption>
+<!--
+
+<tr>
+<td class="leftstyle" valign="top"><b>PVC Connection </b></td>
+<td class="rightstyle" valign="top">
+Choose the type of PVC (Permanent Virtual Circuit) connection your ISP provides from the drop-down menu, and check to enable it.<br>&nbsp;
+</td>
+</tr>
+-->
+
+<tr>
+<td class="leftstyle" valign="top"><b>Internet Connection Type</b></td>
+<td class="rightstyle" valign="top">
+Choose the type of Internet connection your ISP provides from the <strong>Encapsulation</strong> drop-down menu.
+Check the documentation from your ISP if necessary.
+<br>
+<br>
+<b>Bridge Mode Only</b>
+<div class="morespace">
+In this mode, only the DSL modem function is available, and all Router/Gateway features are disabled.
+If selected, you only need to enter the <strong>VC Settings</strong>. 
+</div>
+
+<p><b>RFC 1483 Bridged</b>
+<div class="morespace">
+If selected, enter the correct data for the <b>IP Settings</b>.
+</DIV>
+<div class="morespace">
+Select <B>Obtain an IP Address Automatically</B> if your ISP allocates an IP address upon connection.
+<BR>Otherwise, select <b>Use the following IP Address</b>, and enter the following values.
+<ul>
+<li><b>Internet IP Address and Subnet Mask</b>
+<div class="morespace">This is the Router IP Address and Subnet Mask as seen by 
+external users on the Internet (including your ISP). If your 
+Internet connection requires a static IP address, then your ISP 
+will provide you with a Static IP Address and Subnet Mask. </div>
+</li>
+
+<li><b>Default Gateway</b>
+<div class="morespace">Your ISP will provide you with the Gateway IP Address.  </div>
+</li>
+
+<li><b>DNS (Primary and Secondary)</b> (Domain Name Server)
+<div class="morespace">Your ISP will provide you with at least one DNS IP Address. The other DNS entries are optional. </div>
+</li>
+</ul>
+
+<p><b>RFC 1483 Routed</b>
+<div class="morespace">
+With this method, you are required to use a permanent IP address to connect to the Internet.
+Enter the following data. 
+</div>
+
+<ul>
+
+<li><b>Internet IP Address and Subnet Mask</b>
+<div class="morespace">This is the Router IP Address and Subnet Mask as seen by 
+external users on the Internet (including your ISP). If your 
+Internet connection requires a static IP address, then your ISP 
+will provide you with a Static IP Address and Subnet Mask. </div>
+</li>
+
+<li><b>Default Gateway</b>
+<div class="morespace">Your ISP will provide you with the Gateway IP Address.  </div>
+</li>
+
+<li><b>DNS (Primary and Secondary)</b> (Domain Name Server)
+<div class="morespace">Your ISP will provide you with at least one DNS IP Address. The other DNS entries are optional. </div>
+</li>
+</ul>
+
+<p><b>RFC 2516 PPPoE</b> (For ADSL users)
+<div class="morespace">
+Some DSL-based ISPs use PPPoE (Point-to-Point Protocol over Ethernet) to 
+establish Internet Connections. If using PPPoE, your IP address is provided automatically, but the following data must be entered.
+</div>
+
+<ul>
+<li><b>User Name and Password</b>
+<div class="morespace">
+Enter the <b>Username</b> and <b>Password</b> you use when 
+logging onto your ISP through a PPPoE connection.
+</div></li>
+
+<li><b>Connect on Demand</b>
+<div class="morespace">
+You can configure the Router to disconnect your Internet 
+connection after a specified period of inactivity (Max Idle 
+Time). If your Internet connection has been terminated due to 
+inactivity, Connect on Demand enables the Router to 
+automatically re-establish your connection as soon as you 
+attempt to access the Internet again. If you wish to activate 
+Connect on Demand, click the radio button. In the  <i>Max Idle Time</i>
+field, enter the number of minutes to elapse before an idle Internet 
+connection is terminated.
+</div></li>
+
+<li><b>Keep Alive</b>
+<div class="morespace">
+This option keeps you connected to the Internet 
+indefinitely, even when your connection sits idle. To use this 
+option, click the radio button next to <i>Keep Alive</i>. The 
+default <em>Redial Period</em> is 30 seconds. (In other words, the Router 
+will check the Internet connection every 30 seconds, and re-establish
+the connection if it does not exist.)
+</div></li>
+</ul>
+
+<p><b>RFC 2364 PPPoA</b> 
+<div class="morespace">
+Some DSL-based ISPs use PPPoA (Point-to-Point Protocol over ATM) to 
+establish Internet Connections. If using PPPoA, your IP address is provided automatically, but the following data must be entered.
+</div>
+
+<ul>
+<li><b>User Name and Password</b>
+<div class="morespace">
+Enter the <b>Username</b> and <b>Password</b> you use when 
+logging onto your ISP through a PPPoA connection.
+</div></li>
+
+<li><b>Connect on Demand</b>
+<div class="morespace">
+You can configure the Router to disconnect your Internet 
+connection after a specified period of inactivity (Max Idle 
+Time). If your Internet connection has been terminated due to 
+inactivity, Connect on Demand enables the Router to 
+automatically re-establish your connection as soon as you 
+attempt to access the Internet again. If you wish to activate 
+Connect on Demand, click the radio button. In the  <i>Max Idle Time</i>
+field, enter the number of minutes to elapse before an idle Internet 
+connection is terminated.
+</div></li>
+
+<li><b>Keep Alive</b>
+<div class="morespace">
+This option keeps you connected to the Internet 
+indefinitely, even when your connection sits idle. To use this 
+option, click the radio button next to <i>Keep Alive</i>. The 
+default <em>Redial Period</em> is 30 seconds. (In other words, the Router 
+will check the Internet connection every 30 seconds, and re-establish
+the connection if it does not exist.)
+</div>
+</li>
+</ul></DIV>
+</td>
+</tr>
+
+<tr>
+<td class="leftstyle" valign="top"><b>VC Settings </b></td>
+<td class="rightstyle" valign="top">
+<p><b>Multiplexing</b>
+<div class="morespace">Select LLC or VC, as used by your DSL connection.
+If necessary, check the documentation for your DSL service.
+</div>
+
+<p><b>Qos Type</b>
+<div class="morespace">Select UBR, CBR, or VBR, as used by your DSL connection.
+If necessary, check the documentation for your DSL service.
+</div>
+
+<p><b>Pcr Rate</b>
+<div class="morespace">If using UBR for Qos, this rate is determined automatically.
+Otherwise, enter the desired value.
+</div>
+
+<p><b>Scr Rate</b>
+<div class="morespace">If the Qos value is UBR or CBR, this rate is determined automatically. If using VBR for Qos, enter the desired value.
+</div>
+
+<p><b>Autodetect</b>
+<div class="morespace">Select this if you wish the Virtual Circuit values (VPI, VCI) to be set automatically. This option should only be used  when there is a single Virtual Circuit (PVC).
+</div>
+
+<p><b>Virtual Circuit</b>
+<div class="morespace">
+Refer to the data from your DSL provider, and enter the correct VPI and VCI values.
+</div>&nbsp;
+</td>
+</tr>
+
+<tr>
+<td class="leftstyle" valign="top"><b>Optional Settings </b></td>
+<td class="rightstyle" valign="top">
+Some of these settings may be required by your ISP.
+Verify with your ISP before making any changes.
+
+<p><b>Host Name and Domain Name</b>
+<div class="morespace">
+These fields allow you to supply a host and domain name for the Router. Some 
+ISPs, usually cable ISPs, require these names as identification. 
+You may have to check with your ISP to see if your broadband 
+Internet service has been configured with a host and domain 
+name. In most cases, leaving these fields blank will work.
+</div>
+
+<p><b>MTU</b>
+<div class="morespace">
+MTU is the Maximum Transmission Unit. It specifics the largest packet size 
+permitted for Internet transmission. Select <b>Manual</b> if you 
+want to manually enter the largest packet size that will be 
+transmitted. The recommended size, entered in the <i>Size </i>
+field, is 1500. You should leave this value in the 600 to 1500 
+range. To have the Router select the best MTU for your Internet 
+connection, keep the default setting, <b>Auto</b>. <br>&nbsp; </div></td>
+</tr>
+</table>
+
+
+<p>
+
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0">
+<caption>Network Setup</caption>
+<tr>
+<td class="leftstyle" valign="top"><b>Router IP</b></td>
+<td class="rightstyle" valign="top">
+<b>IP Address and Subnet Mask</b>
+<div class="morespace">
+This shows both the Router’s IP Address and Subnet Mask, as seen by your 
+network. The default IP Address is <b>192.168.1.1</b>, and the 
+default Subnet Mask is <b>255.255.255.0</b>. In most cases, 
+keeping the default values will work. 
+<br>&nbsp; </div></td>
+</tr>
+<tr>
+<td class="leftstyle" valign="top"><b>Network Address Server Settings (DHCP)</b></td>
+<td class="rightstyle" valign="top">
+These settings allow you to configure the Router Dynamic Host Configuration 
+Protocol (DHCP) server function. The Router can be used as a 
+DHCP server for your network. A DHCP server automatically 
+assigns an IP address to each computer on your network. If you 
+choose to enable the Router DHCP server option, you must make 
+sure there is no other DHCP server on your network.
+
+<p><b>DHCP Server</b>
+<div class="morespace">
+DHCP is enabled by factory default. 
+<BR>If you already have a DHCP server on 
+your network, or you don’t want a DHCP server, then select <b>
+Disabled </b>(no other DHCP features will be available).
+<BR>If you already have a DHCP server on 
+your network, and you want this Router to act as a Relay for that DHCP Server, select <b>
+DHCP Relay </b>, then enter the <b>DHCP Server</b> IP Address. 
+</div>
+
+<p><b>Start IP Address</b>
+<div class="morespace">
+Enter a value for the DHCP server to start with when issuing IP 
+addresses. Because the Router default IP address is 
+192.168.1.1, the Starting IP Address must be 192.168.1.2 or 
+greater, but smaller than 192.168.1.254. The default Starting IP 
+Address is <b>192.168.1.100</b>. 
+</div>
+
+<p><b>Maximum Number of DHCP Users</b>
+<div class="morespace">
+Enter the maximum number of PCs that you want the DHCP server to assign IP 
+addresses to. This number cannot be greater than 253. The 
+default is <b>50</b>.
+</div>
+
+<p><b>Client Lease Time</b>
+<div class="morespace">
+The Client Lease Time is the amount of time a network user will be allowed 
+connection to the Router with their current dynamic IP address. 
+Enter the amount of time, in minutes, that the user will be leased this dynamic 
+IP address. After the time is up, the user will be automatically 
+assigned a new dynamic IP address. The default is 0 minutes, which means one day.
+</div>
+
+<p><b>Static DNS (Domain Name Server) 1~3</b>
+<div class="morespace">
+Every time a PC reboots, it is assigned a new local IP address 
+by the Router. If you want a PC to be assigned the same IP 
+address every time it reboots, then enter the <b>Static DNS </b>IP Address. 
+</div>
+
+<p><b>WINS</b>
+<div class="morespace">
+The Windows Internet Naming Service (WINS) manages each Windows PC’s interaction 
+with the Internet. If you use a WINS server, enter that server's IP Address here. Otherwise, leave this blank. <br>&nbsp; </div></td>
+</tr>
+<tr>
+<td class="leftstyle" valign="top"><b>Time Settings</b></td>
+<td class="rightstyle" valign="top">
+Select the time zone for your location. If your location experiences daylight 
+savings, check the checkbox <i>Automatically adjust clock for daylight saving changes</i>.<br>&nbsp;
+
+<p><b>Time Interval</b>
+<div class="morespace">
+The default value is 3600. The time Interval value indicates the frequency interval of the time.
+<br>&nbsp; </div>
+</TD></TR></TABLE>
+<!-- End Help Content -->
+
+<br>
+Click the <b>Save Settings </b>button to apply your changes or <b>Cancel Changes </b>button to cancel.</td>
+<td width="9">&nbsp;</td>
+</tr>
+<tr>
+<td height="45" width="164" class="gray">&nbsp;</td>
+<td height="45" width="12">&nbsp;</td>
+<td height="45" width="584" colspan="2">
+<table border="0" cellpadding="0" cellspacing="0" width="450" height="19">
+<tr>
+<td height="12" width="103"><input type="button" name="close" value="Close" class="slbutton" onClick="self.close()"></td>
+<td width="8">&nbsp;</td>
+<td width="103"><input type="button" name="print" value="Print" class="slbutton" onClick="window.print()"></td>
+<td>&nbsp;</td>
+</tr>
+</table>
+</td></tr></table>
+</div>
+</TH></TR></TABLE>
+</FORM></div></BODY></HTML>

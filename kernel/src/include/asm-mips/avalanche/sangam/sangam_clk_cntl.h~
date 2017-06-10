@@ -1,0 +1,84 @@
+/*******************************************************************************
+**+--------------------------------------------------------------------------+**
+**|                            ****                                          |**
+**|                            ****                                          |**
+**|                            ******o***                                    |**
+**|                      ********_///_****                                   |**
+**|                      ***** /_//_/ ****                                   |**
+**|                       ** ** (__/ ****                                    |**
+**|                           *********                                      |**
+**|                            ****                                          |**
+**|                            ***                                           |**
+**|                                                                          |**
+**|         Copyright (c) 1998-2004 Texas Instruments Incorporated           |**
+**|                        ALL RIGHTS RESERVED                               |**
+**|                                                                          |**
+**| Permission is hereby granted to licensees of Texas Instruments           |**
+**| Incorporated (TI) products to use this computer program for the sole     |**
+**| purpose of implementing a licensee product based on TI products.         |**
+**| No other rights to reproduce, use, or disseminate this computer          |**
+**| program, whether in part or in whole, are granted.                       |**
+**|                                                                          |**
+**| TI makes no representation or warranties with respect to the             |**
+**| performance of this computer program, and specifically disclaims         |**
+**| any responsibility for any damages, special or consequential,            |**
+**| connected with the use of this program.                                  |**
+**|                                                                          |**
+**+--------------------------------------------------------------------------+**
+*******************************************************************************/
+
+/*****************************************************************************
+ * Clock Control
+ *****************************************************************************/
+#ifndef _SANGAM_CLK_CNTL_H_
+#define _SANGAM_CLK_CNTL_H_
+
+#define CLK_MHZ(x)    ( (x) * 1000000 )
+
+/* The order of ENUMs here should not be altered since
+ * the register addresses are derived from the order
+ */
+#define CLK_ID_OHIO_USB_DIV     1  
+#define CLK_ID_OHIO_USB_PRE_DIV 13
+#define CLK_ID_OHIO_USB_MULT    5
+#define OHIO_DIVIDER_ENABLE_MASK 0x8000
+
+typedef enum PAL_SYS_CLKC_ID_tag
+{
+    CLKC_VBUS,
+    CLKC_MIPS,
+    CLKC_USB,
+    CLKC_SYS
+} PAL_SYS_CLKC_ID_T;
+
+typedef enum
+{
+	CLK_ID_OHIO_MIPS,
+	CLK_ID_OHIO_SYS,
+	CLK_ID_OHIO_USB,
+	CLK_ID_OHIO_VBUS
+}OHIO_CLKC_ID_T;
+/**
+ * This stucture is populated and passed on to the pal_sys_clkc_init function
+ */
+typedef struct PAL_SYS_Tnetd73xxInit_tag
+{
+    unsigned int afeclk;
+    unsigned int refclk;
+    unsigned int xtal3in;
+    
+} PAL_SYS_Tnetd73xxInit;
+
+#define CLK_ID_OHIO_CPU         0
+#define CLK_ID_OHIO_SYS         1
+#define CLK_ID_OHIO_USB         2
+#define CLK_ID_OHIO_VBUS        3
+
+
+
+void avalanche_clkc_init(unsigned int afe_clk,unsigned int refclk, unsigned int xtal3in);
+// int avalanche_clkc_set_freq(AVALANCHE_CLKC_ID_T clk_id, unsigned int output_freq);
+//unsigned int avalanche_clkc_get_freq(AVALANCHE_CLKC_ID_T clk_id);
+
+#endif
+

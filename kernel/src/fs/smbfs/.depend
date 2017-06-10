@@ -1,0 +1,115 @@
+cache.o: cache.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/dirent.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/dirent.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/page.h) \
+   smb_debug.h $(dep_smb_debug.h) \
+   proto.h $(dep_proto.h)
+dir.o: dir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h) \
+   smb_debug.h $(dep_smb_debug.h) \
+   proto.h $(dep_proto.h)
+file.o: file.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   smb_debug.h $(dep_smb_debug.h) \
+   proto.h $(dep_proto.h)
+getopt.o: getopt.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   getopt.h $(dep_getopt.h)
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/dcache.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/dcache.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nls.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nls.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   smb_debug.h $(dep_smb_debug.h) \
+   getopt.h $(dep_getopt.h) \
+   proto.h $(dep_proto.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/smb/nls/remote.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nls/default.h)
+ioctl.o: ioctl.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioctl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/highuid.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/highuid.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   proto.h $(dep_proto.h)
+proc.o: proc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/dcache.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/dcache.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/dirent.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/dirent.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nls.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nls.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/div64.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/div64.h) \
+   smb_debug.h $(dep_smb_debug.h) \
+   proto.h $(dep_proto.h)
+sock.o: sock.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/scm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/scm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smbno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   smb_debug.h $(dep_smb_debug.h) \
+   proto.h $(dep_proto.h)

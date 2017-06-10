@@ -1,0 +1,1 @@
+#undef  CONFIG_VR41XX_WDT

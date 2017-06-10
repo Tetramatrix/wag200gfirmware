@@ -1,0 +1,60 @@
+#!/bin/sh
+
+SYSLOG "# --------- [ dstlimit ] -------------- #"
+
+I=/usr/sbin/iptables
+
+# dstlimit
+
+dstlimithtablesize=`/usr/sbin/nvram get dstlimithtablesize | awk 'BEGIN{FS="=";}{print $2;}'`
+if [ $dstlimithtablesize -ne 0 ]
+then
+        htablesize="--dstlimit-htable-size $dstlimithtablesize"
+fi
+
+dstlimitburst=`/usr/sbin/nvram get dstlimitburst | awk 'BEGIN{FS="=";}{print $2;}'`
+if [ $dstlimitburst -ne 0 ]
+then
+        burst="--dstlimit-burst $dstlimitburst"
+fi
+
+dstlimitinterval=`/usr/sbin/nvram get dstlimitinterval | awk 'BEGIN{FS="=";}{print $2;}'`
+if [ $dstlimitinterval -ne 0 ]
+then
+        interval="--dstlimit-htable-gcinterval $dstlimitinterval"
+fi
+
+dstlimitexpire=`/usr/sbin/nvram get dstlimitexpire | awk 'BEGIN{FS="=";}{print $2;}'`
+if [ $dstlimitexpire -ne 0 ]
+then
+        expire="--dstlimit-htable-expire $dstlimitexpire"
+fi
+
+dstlimit=`/usr/sbin/nvram get dstlimit | awk 'BEGIN{FS="=";}{print $2;}'`
+if [ $dstlimit -ne 0 ]
+then
+        #
+        # quick fix for this: http://seclists.org/bugtraq/2007/Mar/0344.html (916/udp sensitive info disclosure)
+        # (what the hell is this for ?)
+        #
+        $I -I INPUT 11 -p udp -s 0.0.0.0/0.0.0.0 -d 0.0.0.0/0.0.0.0 --dport 916 -j DROP
+
+        # Policy based Routing Bittorrent
+        $I -I INPUT 12 -p tcp --dport 6881:6999 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name torrent-Input-1 -j DROP
+
+        # Policy based Routing eMule
+        $I -I INPUT 13 -p tcp --dport 4661 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Input-1 -j DROP
+        $I -I INPUT 14 -p tcp --dport 4662 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Input-2 -j DROP
+        $I -I INPUT 15 -p tcp --dport 4665 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Input-3 -j DROP
+        $I -I INPUT 16 -p tcp --dport 4672 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Input-4 -j DROP
+
+        # Policy based Routing Bittorrent
+        $I -I FORWARD 9  -p tcp --dport 6881:6999 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name torrent-Fwd-1 -j DROP
+
+        # Policy based Routing eMule
+        $I -I FORWARD 10 -p tcp --dport 4661 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Fwd-1 -j DROP
+        $I -I FORWARD 11 -p tcp --dport 4662 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Fwd-2 -j DROP
+        $I -I FORWARD 12 -p tcp --dport 4665 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Fwd-3 -j DROP
+        $I -I FORWARD 13 -p tcp --dport 4672 -m dstlimit --dstlimit $dstlimit --dstlimit-mode dstip-dstport $htablesize $burst $inverval $expire --dstlimit-name emule-Fwd-4 -j DROP
+
+fi

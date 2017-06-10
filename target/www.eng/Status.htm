@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Router Status</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1018">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+
+var timerID = null;
+var RefreshDelay = 15000;
+
+function init()
+{
+	timerID = setTimeout("Refresh()", RefreshDelay);
+	setDivs();
+	setbutton();
+}
+
+function setbutton()
+{
+    var cf = document.forms[0];
+    
+    if(cf.ifstatus.value == "Up")
+    {
+        cf.release.disabled = false;
+        cf.renew.disabled = true;
+    }
+    else
+    {
+        cf.release.disabled = true;
+        cf.renew.disabled = false;
+    }
+}
+
+function Refresh()
+{
+	window.location.replace("setup.cgi?next_file=Status.htm");
+}
+
+function setDivs()
+{
+ 	var cf = document.forms[0];
+
+	if(cf.ctype.value == "dhcp")
+	{
+	    cf.release.value = msg_button_release;
+		cf.renew.value = msg_button_renew;
+		show_hide("dhcpDIV", true);
+    }
+	else if(cf.ctype.value == "pppoe" || cf.ctype.value == "pppoa")
+	{
+	    cf.release.value = msg_button_disconnect;
+		cf.renew.value = msg_button_connect;
+		show_hide("dhcpDIV", true);
+	}
+	else
+		show_hide("dhcpDIV", false);
+}
+
+function release_disconnect()
+{
+ 	var cf = document.forms[0];
+
+	if(cf.ctype.value == "dhcp")
+		stdAction(cf,'release');
+	else if(cf.ctype.value == "pppoe" || cf.ctype.value == "pppoa")
+		stdAction(cf,'disconnect');
+}
+
+function renew_connect()
+{
+ 	var cf = document.forms[0];
+
+	if(cf.ctype.value == "dhcp")
+		stdAction(cf,'renew');
+	else if(cf.ctype.value == "pppoe" || cf.ctype.value == "pppoa")
+		stdAction(cf,'connect');
+}
+
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onLoad="init()">
+<form name="status" method="POST" action="setup.cgi">
+<div align="center">
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+<!-- header 1 -->
+<tr>
+  <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+  <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+
+</TR>
+<!-- header 2 -->
+<tr>
+  <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+
+</TR>
+<!-- header 3 -->
+<tr>
+  <td rowspan="4" width="164" align="center" class="bighead">Status</TD>
+  <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+  <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+
+</TR>
+
+<!-- header 3 -->
+<tr>
+  <TD colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+
+</TR>
+
+<!-- main menu-->
+<TR>
+  <TD height="42" colspan="2" width="646">
+<table border="0" cellspacing="0" width="646" height="100%">
+<tr>
+  <td height="10" colspan="6" background="UI_06.gif"></TD>
+  <td height="10" background="UI_07.gif"></TD>
+
+</TR>
+<tr>
+     <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+	 <td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<BR>Restrictions</a></TD>
+	 <td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=SingleForwarding.htm">Applications &amp;<BR>Gaming</a></TD>
+	 <td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD>
+	 <td class="thistab" width="86">Status</TD>
+  
+</TR>
+  </table>
+ </TD>
+
+</TR>
+
+<!-- sub menu--> 
+<TR>
+  <TD height="21" colspan="2" width="646"> &nbsp; &nbsp;
+  <span class="current">Gateway</span><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=LocalNetwork.htm">Local Network</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=WNetwork.htm">Wireless</a><b class="separator">|</b>&nbsp;&nbsp;
+  <a class="submenu" href="setup.cgi?next_file=DSL_status.htm">DSL Connection</a>&nbsp;&nbsp;
+ </TD>
+
+</TR>
+</table>
+
+<!-- data table--> 
+
+<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+<tr>
+ <td width="164" height="15" bgcolor="#E7E7E7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+ <td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+</TR>
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Gateway Information</TD>
+  <td width="454">&nbsp;  </TD>
+  <td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+      >&nbsp;&nbsp; <A href="help/h_Router.htm" class="submenu"
+      target="_blank">Help...</a></span></TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7"> </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+<td valign="top">
+
+<table class="std">
+<tr>
+<td width="140" nowrap>Firmware Version:</TD>
+<td class="stdbold" nowrap>@fw_ver#</TD>
+
+</TR>
+
+<tr>
+<td width="140" nowrap>MAC Address:</TD>
+<td class="stdbold" nowrap>@device_mac#</TD>
+
+</TR>
+<tr>
+<td width="140" nowrap>Current Time:</TD>
+<td class="stdbold" nowrap>@now_time#</TD>
+
+</TR>
+</table>
+ 
+ </TD>
+ <td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+
+</TR>
+
+<tr>
+  <td width="164" height="24" colspan="2" class="bwhead">Internet Connection</TD>
+  <td>&nbsp;   </TD>
+
+</TR>
+
+<tr>
+ <td width="156" bgcolor="#E7E7E7"> </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+
+<table class="std">
+
+<tr> 
+  <td width="140" nowrap>Login Type</TD>
+  <td class="stdbold" nowrap>@login_type#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>Interface:</TD>
+  <td class="stdbold" nowrap>@interface#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>IP Address:</TD>
+  <td class="stdbold" nowrap>@wan_ip#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>Subnet Mask:</TD>
+  <td class="stdbold" nowrap>@wan_mask#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>Default Gateway:</TD>
+  <td class="stdbold" nowrap>@wan_gateway#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>DNS1:</TD>
+  <td class="stdbold" nowrap>@dns1#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>DNS2:</TD>
+  <td class="stdbold" nowrap>@dns2#</TD>
+
+</TR>
+<tr> 
+  <td width="140" nowrap>DNS3:</TD>
+  <td class="stdbold" nowrap>@dns3#</TD>
+</TR>
+
+<tr> 
+  <td width="140" nowrap>WINS:</TD>
+  <td class="stdbold" nowrap>@wins#</TD>
+</TR>
+</table>
+</TD>
+</tr>
+
+
+
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td><hr class="std"></TD>
+</TR>
+
+<tr>
+ <td width="156" bgColor="#e7e7e7" valign="top">&nbsp;  </TD>
+ <td width="8" background="UI_04.gif"> </TD>
+ <td valign="top">
+	<div ID="dhcpDIV" style="display:none">
+	<table class="std">
+	<tr> 
+	  <td width="100" nowrap><INPUT type="button" name="release" value=""  style="width:90px" onClick="release_disconnect()"></td>
+	  <td nowrap><INPUT type="button" name="renew" value="" style="width:90px" onClick="renew_connect()"></td>
+	</tr>
+	</table>
+	</div>
+	<br>&nbsp;
+ </TD>
+</TR>
+
+<tr>
+  <td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+  <td class="footer" bgcolor="#6666cc" height="33" align="right">
+  <input type="button" name="refresh" value="Refresh" class="stdbutton" onClick="location.href='setup.cgi?next_file=Status.htm'"> &nbsp;  &nbsp; 
+  </TD>
+
+</TR>
+
+
+</table>
+
+</div>
+
+
+<input type="hidden" name="ctype" value="@ctype#">
+<input type="hidden" name="ifstatus" value="@ifstatus#">
+<input type="hidden" name="todo" value="">
+<INPUT type="hidden" name="this_file" value="Status.htm">
+<INPUT type="hidden" name="next_file" value="Status.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>     
+</body>
+
+</html>

@@ -1,0 +1,154 @@
+diff -urbN linux-2.4.17/kernel/fork.c linux-2.4.17-pid/kernel/fork.c
+--- linux-2.4.17/kernel/fork.c	Wed Nov 21 13:18:42 2001
++++ linux-2.4.17-pid/kernel/fork.c	Thu Mar 28 17:05:33 2002
+@@ -81,23 +81,111 @@
+ /* Protects next_safe and last_pid. */
+ spinlock_t lastpid_lock = SPIN_LOCK_UNLOCKED;
+ 
++/* this should be provided in every architecture */
++#ifndef SHIFT_PER_LONG
++#if BITS_PER_LONG == 64
++#   define SHIFT_PER_LONG 6
++#elif BITS_PER_LONG == 32
++#   define SHIFT_PER_LONG 5
++#else
++#error "SHIFT_PER_LONG"
++#endif
++#endif
++
++#define RESERVED_PIDS       (300)
++#define GETPID_THRESHOLD    (22000)  /* when to switch to a mapped algo */
++#define PID_MAP_SIZE        (PID_MAX >> SHIFT_PER_LONG)
++static unsigned long pid_map[PID_MAP_SIZE];
++static int next_safe = PID_MAX;
++
++static inline void mark_pid(int pid)
++{
++	__set_bit(pid,pid_map);
++}
++
++static int get_pid_by_map(int lastpid) 
++{
++	static int mark_and_sweep = 0;
++
++	int round = 0;
++        struct task_struct *p;
++        int i;
++	unsigned long mask;
++	int fpos;
++
++
++	if (mark_and_sweep) {
++repeat:
++		mark_and_sweep = 0;
++		memset(pid_map, 0, PID_MAP_SIZE * sizeof(unsigned long));
++		lastpid = RESERVED_PIDS;
++	}
++	for_each_task(p) {
++		mark_pid(p->pid);
++		mark_pid(p->pgrp);
++		mark_pid(p->tgid);
++		mark_pid(p->session);
++	}
++
++	/* find next free pid */
++	i = (lastpid >> SHIFT_PER_LONG);
++	mask = pid_map[i] | ((1 << ((lastpid & (BITS_PER_LONG-1)))) - 1);   
++	
++	while ((mask == ~0) && (++i < PID_MAP_SIZE)) 
++		mask = pid_map[i];
++	
++	if (i == PID_MAP_SIZE) { 
++		if (round == 0) {
++			round = 1;
++			goto repeat;
++		}
++		next_safe = RESERVED_PIDS;
++		mark_and_sweep = 1;  /* mark next time */
++		return 0; 
++	}
++
++	fpos = ffz(mask);
++	i &= (PID_MAX-1);
++	lastpid = (i << SHIFT_PER_LONG) + fpos;
++
++	/* find next save pid */
++	mask &= ~((1 << fpos) - 1);
++
++	while ((mask == 0) && (++i < PID_MAP_SIZE)) 
++		mask = pid_map[i];
++
++	if (i==PID_MAP_SIZE) 
++		next_safe = PID_MAX;
++	else 
++		next_safe = (i << SHIFT_PER_LONG) + ffs(mask) - 1;
++	return lastpid;
++}
++
+ static int get_pid(unsigned long flags)
+ {
+-	static int next_safe = PID_MAX;
+ 	struct task_struct *p;
++	int pid;
+ 
+ 	if (flags & CLONE_PID)
+ 		return current->pid;
+ 
+ 	spin_lock(&lastpid_lock);
+ 	if((++last_pid) & 0xffff8000) {
+-		last_pid = 300;		/* Skip daemons etc. */
++		last_pid = RESERVED_PIDS;		/* Skip daemons etc. */
+ 		goto inside;
+ 	}
+ 	if(last_pid >= next_safe) {
+ inside:
+ 		next_safe = PID_MAX;
+ 		read_lock(&tasklist_lock);
++		if (nr_threads > GETPID_THRESHOLD) {
++			last_pid = get_pid_by_map(last_pid);
++			if (last_pid == 0) {
++				last_pid = PID_MAX;
++				goto nomorepids; 
++			}
++		} else {
++			int beginpid = last_pid;
+ 	repeat:
+ 		for_each_task(p) {
+ 			if(p->pid == last_pid	||
+@@ -106,9 +194,11 @@
+ 			   p->session == last_pid) {
+ 				if(++last_pid >= next_safe) {
+ 					if(last_pid & 0xffff8000)
+-						last_pid = 300;
++							last_pid = RESERVED_PIDS;
+ 					next_safe = PID_MAX;
+ 				}
++					if(last_pid == beginpid)
++						goto nomorepids;
+ 				goto repeat;
+ 			}
+ 			if(p->pid > last_pid && next_safe > p->pid)
+@@ -117,12 +207,22 @@
+ 				next_safe = p->pgrp;
+ 			if(p->session > last_pid && next_safe > p->session)
+ 				next_safe = p->session;
++				if(p->tgid > last_pid && next_safe > p->tgid)
++					next_safe = p->tgid;
++			}
+ 		}
+ 		read_unlock(&tasklist_lock);
+ 	}
++	pid = last_pid;
+ 	spin_unlock(&lastpid_lock);
+ 
+-	return last_pid;
++	return pid;
++
++nomorepids:
++        next_safe = last_pid = PID_MAX;
++        read_unlock(&tasklist_lock);
++        spin_unlock(&lastpid_lock);
++        return 0;
+ }
+ 
+ static inline int dup_mmap(struct mm_struct * mm)

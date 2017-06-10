@@ -1,0 +1,65 @@
+diff -Naur -p linux-2.4.29-original/include/linux/pkt_sched.h linux-2.4.29-overhead/include/linux/pkt_sched.h
+--- linux-2.4.29-original/include/linux/pkt_sched.h	Wed Nov 17 12:54:22 2004
++++ linux-2.4.29-overhead/include/linux/pkt_sched.h	Sat Mar 12 16:47:57 2005
+@@ -81,7 +81,7 @@ struct tc_ratespec
+ 	unsigned char	cell_log;
+ 	unsigned char	__reserved;
+ 	unsigned short	feature;
+-	short		addend;
++	unsigned short	overhead;
+ 	unsigned short	mpu;
+ 	__u32		rate;
+ };
+diff -Naur -p linux-2.4.29-original/net/sched/police.c linux-2.4.29-overhead/net/sched/police.c
+--- linux-2.4.29-original/net/sched/police.c	Fri Dec 21 18:42:06 2001
++++ linux-2.4.29-overhead/net/sched/police.c	Sat Mar 12 19:20:16 2005
+@@ -31,8 +31,8 @@
+ #include <net/sock.h>
+ #include <net/pkt_sched.h>
+ 
+-#define L2T(p,L)   ((p)->R_tab->data[(L)>>(p)->R_tab->rate.cell_log])
+-#define L2T_P(p,L) ((p)->P_tab->data[(L)>>(p)->P_tab->rate.cell_log])
++#define L2T(p,L)   ((p)->R_tab->data[((L)-1+(p)->R_tab->rate.overhead)>>(p)->R_tab->rate.cell_log])
++#define L2T_P(p,L) ((p)->P_tab->data[((L)-1+(p)->P_tab->rate.overhead)>>(p)->P_tab->rate.cell_log])
+ 
+ static u32 idx_gen;
+ static struct tcf_police *tcf_police_ht[16];
+diff -Naur -p linux-2.4.29-original/net/sched/sch_cbq.c linux-2.4.29-overhead/net/sched/sch_cbq.c
+--- linux-2.4.29-original/net/sched/sch_cbq.c	Wed Nov 17 12:54:22 2004
++++ linux-2.4.29-overhead/net/sched/sch_cbq.c	Sat Mar 12 19:20:36 2005
+@@ -190,7 +190,7 @@ struct cbq_sched_data
+ };
+ 
+ 
+-#define L2T(cl,len)	((cl)->R_tab->data[(len)>>(cl)->R_tab->rate.cell_log])
++#define L2T(cl,len)	((cl)->R_tab->data[((len)-1+(cl)->R_tab->rate.overhead)>>(cl)->R_tab->rate.cell_log])
+ 
+ 
+ static __inline__ unsigned cbq_hash(u32 h)
+diff -Naur -p linux-2.4.29-original/net/sched/sch_htb.c linux-2.4.29-overhead/net/sched/sch_htb.c
+--- linux-2.4.29-original/net/sched/sch_htb.c	Wed Nov 17 12:54:22 2004
++++ linux-2.4.29-overhead/net/sched/sch_htb.c	Sat Mar 12 16:48:57 2005
+@@ -205,7 +205,8 @@ struct htb_class
+ static __inline__ long L2T(struct htb_class *cl,struct qdisc_rate_table *rate,
+ 	int size)
+ { 
+-    int slot = size >> rate->rate.cell_log;
++    int overhead = rate->rate.overhead;
++    int slot = (size-1+overhead) >> rate->rate.cell_log;
+     if (slot > 255) {
+ 	cl->xstats.giants++;
+ 	slot = 255;
+diff -Naur -p linux-2.4.29-original/net/sched/sch_tbf.c linux-2.4.29-overhead/net/sched/sch_tbf.c
+--- linux-2.4.29-original/net/sched/sch_tbf.c	Sun Aug  8 01:26:07 2004
++++ linux-2.4.29-overhead/net/sched/sch_tbf.c	Sat Mar 12 19:20:44 2005
+@@ -132,8 +132,8 @@ struct tbf_sched_data
+ 	struct Qdisc	*qdisc;		/* Inner qdisc, default - bfifo queue */
+ };
+ 
+-#define L2T(q,L)   ((q)->R_tab->data[(L)>>(q)->R_tab->rate.cell_log])
+-#define L2T_P(q,L) ((q)->P_tab->data[(L)>>(q)->P_tab->rate.cell_log])
++#define L2T(q,L)   ((q)->R_tab->data[((L)-1+(q)->R_tab->rate.overhead)>>(q)->R_tab->rate.cell_log])
++#define L2T_P(q,L) ((q)->P_tab->data[((L)-1+(q)->P_tab->rate.overhead)>>(q)->P_tab->rate.cell_log])
+ 
+ static int tbf_enqueue(struct sk_buff *skb, struct Qdisc* sch)
+ {

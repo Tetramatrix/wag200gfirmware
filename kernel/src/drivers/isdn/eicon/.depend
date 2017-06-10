@@ -1,0 +1,216 @@
+Divas_mod.o: Divas_mod.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h) \
+   idi.h $(dep_idi.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+dep_adapter.h += \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   divas.h $(dep_divas.h) \
+   pc.h $(dep_pc.h)
+bri.o: bri.c \
+   eicon.h $(dep_eicon.h) \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   divas.h $(dep_divas.h) \
+   pc.h $(dep_pc.h) \
+   pr_pc.h $(dep_pr_pc.h) \
+   dsp_defs.h $(dep_dsp_defs.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h)
+common.o: common.c \
+   eicon.h $(dep_eicon.h) \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   constant.h $(dep_constant.h) \
+   divas.h $(dep_divas.h) \
+   pc.h $(dep_pc.h) \
+   pr_pc.h $(dep_pr_pc.h) \
+   uxio.h $(dep_uxio.h)
+dep_divas.h += \
+   sys.h $(dep_sys.h)
+dep_dsp_defs.h += \
+   dspdids.h $(dep_dspdids.h)
+dep_eicon.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdn.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h) \
+   eicon_isa.h $(dep_eicon_isa.h) \
+   idi.h $(dep_idi.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h) \
+   eicon_pci.h $(dep_eicon_pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mca.h) \
+   eicon_idi.h $(dep_eicon_idi.h)
+dep_eicon_dsp.h += \
+   dsp_defs.h $(dep_dsp_defs.h)
+eicon_idi.o: eicon_idi.c \
+   eicon.h $(dep_eicon.h) \
+   eicon_idi.h $(dep_eicon_idi.h) \
+   eicon_dsp.h $(dep_eicon_dsp.h) \
+   uxio.h $(dep_uxio.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h)
+dep_eicon_idi.h += \
+   pc.h $(dep_pc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h)
+eicon_io.o: eicon_io.c \
+   eicon.h $(dep_eicon.h) \
+   uxio.h $(dep_uxio.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/drv/eicon/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/drv/eicon/isa.h)
+eicon_isa.o: eicon_isa.c \
+   eicon.h $(dep_eicon.h) \
+   eicon_isa.h $(dep_eicon_isa.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/drv/eicon/isa.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mca.h)
+dep_eicon_isa.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mca.h)
+eicon_mod.o: eicon_mod.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mca.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mca.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mca.h) \
+   eicon.h $(dep_eicon.h) \
+   ../avmb1/capicmd.h $(dep_../avmb1/capicmd.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/drv/eicon/isa.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/drv/eicon/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/tty/fax.h)
+eicon_pci.o: eicon_pci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   eicon.h $(dep_eicon.h) \
+   eicon_pci.h $(dep_eicon_pci.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/isdn/drv/eicon/pci.h)
+fourbri.o: fourbri.c \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   divas.h $(dep_divas.h) \
+   pc.h $(dep_pc.h) \
+   pr_pc.h $(dep_pr_pc.h) \
+   dsp_defs.h $(dep_dsp_defs.h) \
+   constant.h $(dep_constant.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h)
+fpga.o: fpga.c \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   uxio.h $(dep_uxio.h)
+idi.o: idi.c \
+   idi.h $(dep_idi.h) \
+   adapter.h $(dep_adapter.h) \
+   pc.h $(dep_pc.h) \
+   pr_pc.h $(dep_pr_pc.h) \
+   sys.h $(dep_sys.h) \
+   uxio.h $(dep_uxio.h)
+dep_idi.h += \
+   sys.h $(dep_sys.h)
+kprintf.o: kprintf.c \
+   eicon.h $(dep_eicon.h) \
+   sys.h $(dep_sys.h) \
+   divas.h $(dep_divas.h) \
+   divalog.h $(dep_divalog.h) \
+   uxio.h $(dep_uxio.h)
+lincfg.o: lincfg.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   constant.h $(dep_constant.h) \
+   divas.h $(dep_divas.h) \
+   pc.h $(dep_pc.h) \
+   pr_pc.h $(dep_pr_pc.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h)
+linchr.o: linchr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   adapter.h $(dep_adapter.h) \
+   divas.h $(dep_divas.h) \
+   divalog.h $(dep_divalog.h)
+linio.o: linio.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   uxio.h $(dep_uxio.h)
+linsys.o: linsys.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   sys.h $(dep_sys.h) \
+   divas.h $(dep_divas.h) \
+   adapter.h $(dep_adapter.h) \
+   divalog.h $(dep_divalog.h) \
+   uxio.h $(dep_uxio.h)
+log.o: log.c \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   divas.h $(dep_divas.h) \
+   adapter.h $(dep_adapter.h) \
+   divalog.h $(dep_divalog.h) \
+   uxio.h $(dep_uxio.h)
+pri.o: pri.c \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   divas.h $(dep_divas.h) \
+   pc.h $(dep_pc.h) \
+   pr_pc.h $(dep_pr_pc.h) \
+   dsp_defs.h $(dep_dsp_defs.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h)
+dep_sys.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h)
+dep_uxio.h += \
+   sys.h $(dep_sys.h) \
+   adapter.h $(dep_adapter.h)
+xlog.o: xlog.c \
+   sys.h $(dep_sys.h) \
+   idi.h $(dep_idi.h) \
+   pc.h $(dep_pc.h) \
+   pc_maint.h $(dep_pc_maint.h) \
+   divalog.h $(dep_divalog.h) \
+   adapter.h $(dep_adapter.h) \
+   uxio.h $(dep_uxio.h)

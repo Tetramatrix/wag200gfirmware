@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Summary</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+var hlight = "#6666ff";  // highlight days ON
+//                       Sun to Mon
+// eg. var p1days = new Array(0,1,0,1,0,1,0);
+
+var p1days = new Array(@p1days#);
+var p2days = new Array(@p2days#);
+var p3days = new Array(@p3days#);
+var p4days = new Array(@p4days#);
+var p5days = new Array(@p5days#);
+var p6days = new Array(@p6days#);
+var p7days = new Array(@p7days#);
+var p8days = new Array(@p8days#);
+var p9days = new Array(@p9days#);
+var p10days = new Array(@p10days#);
+
+function setDay(avar, elements)
+{
+	var cf = document.forms[0];
+	var i;
+	for ( i = 0; i < 7; i++)
+	{
+		if(avar[i] == 1)
+			setColor(setDay.arguments[i+1], hlight);
+	}
+}
+
+function init()
+{
+	var cf = document.forms[0];
+//	dataToVisible(cf);  checkboxes not set by CGI
+	setDay(p1days, "p1su", "p1m", "p1tu", "p1w", "p1th", "p1f", "p1sa" );
+	setDay(p2days, "p2su", "p2m", "p2tu", "p2w", "p2th", "p2f", "p2sa" );
+	setDay(p3days, "p3su", "p3m", "p3tu", "p3w", "p3th", "p3f", "p3sa" );
+	setDay(p4days, "p4su", "p4m", "p4tu", "p4w", "p4th", "p4f", "p4sa" );
+	setDay(p5days, "p5su", "p5m", "p5tu", "p5w", "p5th", "p5f", "p5sa" );
+	setDay(p6days, "p6su", "p6m", "p6tu", "p6w", "p6th", "p6f", "p6sa" );
+	setDay(p7days, "p7su", "p7m", "p7tu", "p7w", "p7th", "p7f", "p7sa" );
+	setDay(p8days, "p8su", "p8m", "p8tu", "p8w", "p8th", "p8f", "p8sa" );
+	setDay(p9days, "p9su", "p9m", "p9tu", "p9w", "p9th", "p9f", "p9sa" );
+	setDay(p10days, "p10su", "p10m", "p10tu", "p10w", "p10th", "p10f", "p10sa" );
+}
+
+function setColor(el, colorStr)
+{
+    if (document.all)
+	{
+	  if (document.all(el) )
+        document.all(el).style.background = colorStr;
+	}
+	else if (document.getElementById)
+	{
+	  if (document.getElementById(el) )
+	    document.getElementById(el).style.background = colorStr;
+	}
+}
+
+//
+//-->	
+</script>
+</head>
+<body bgColor="#808080" onload="init()">
+<form name="summary" method="POST" action="setup.cgi">
+<div align="center">
+  
+<table border="0" cellSpacing="0" cellPadding="0" bgColor="#ffffff">
+<tr>
+   <td bgcolor="#6666cc">
+<br>
+<hr size="1" color="#ffffff">
+<img src="UI_Linksys.gif" width="164" height="57" alt="" border="0"></TD>
+</TR>
+
+<tr>
+   <td height="15" bgcolor="#E7E7E7"></TD>    
+</TR>
+
+<tr>
+  <td>
+
+<table border="0" cellspacing="0" cellpadding="4">
+<tr>
+ <td height="7" bgcolor="#E7E7E7"  width="160"></TD>
+ <td height="7" colspan="2" width="500"></TD>
+</TR>
+
+<tr>
+   <td nowrap height="24" class="bwhead" valign="top">Summary</TD>
+   <td>&nbsp;</TD>
+</TR>
+
+<tr>
+   <td bgcolor="#E7E7E7">&nbsp; </TD>
+<td>
+				
+<div class="indent8">
+
+<table border=0 cellspacing=1 width="450">
+<tr bgcolor="#b3b3b3">
+  <td colspan="5" bgcolor="#FFFFFF" nowrap><b class="sub">Internet Policy Summary</b></TD>
+</TR>
+<tr align="center" bgcolor="#b3b3b3">
+  <th nowrap>No.</th>
+  <th nowrap>Policy Name</th>
+  <th nowrap>Days (Sun - Sat)</th>
+  <th nowrap>Time of Day</th>
+  <th nowrap><input type="button" name="delete" value="Delete" onClick="stdAction(this.form,'delete')"></th>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>1.</TD>
+ <td nowrap>@p1name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p1su">S</TD>
+	<td width="18" align="center" ID="p1m">M</TD>
+	<td width="18" align="center" ID="p1tu">T</TD>
+	<td width="18" align="center" ID="p1w">W</TD>
+	<td width="18" align="center" ID="p1th">T</TD>
+	<td width="18" align="center" ID="p1f">F</TD>
+	<td width="18" align="center" ID="p1sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p1time#</TD>
+ <td nowrap><input type="checkbox" name="sum1" value="sum1"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>2.</TD>
+ <td nowrap>@p2name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p2su">S</TD>
+	<td width="18" align="center" ID="p2m">M</TD>
+	<td width="18" align="center" ID="p2tu">T</TD>
+	<td width="18" align="center" ID="p2w">W</TD>
+	<td width="18" align="center" ID="p2th">T</TD>
+	<td width="18" align="center" ID="p2f">F</TD>
+	<td width="18" align="center" ID="p2sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p2time#</TD>
+ <td nowrap><input type="checkbox" name="sum2" value="sum2"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>3.</TD>
+ <td nowrap>@p3name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p3su">S</TD>
+	<td width="18" align="center" ID="p3m">M</TD>
+	<td width="18" align="center" ID="p3tu">T</TD>
+	<td width="18" align="center" ID="p3w">W</TD>
+	<td width="18" align="center" ID="p3th">T</TD>
+	<td width="18" align="center" ID="p3f">F</TD>
+	<td width="18" align="center" ID="p3sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p3time#</TD>
+ <td nowrap><input type="checkbox" name="sum3" value="sum3"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>4.</TD>
+ <td nowrap>@p4name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p4su">S</TD>
+	<td width="18" align="center" ID="p4m">M</TD>
+	<td width="18" align="center" ID="p4tu">T</TD>
+	<td width="18" align="center" ID="p4w">W</TD>
+	<td width="18" align="center" ID="p4th">T</TD>
+	<td width="18" align="center" ID="p4f">F</TD>
+	<td width="18" align="center" ID="p4sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p4time#</TD>
+ <td nowrap><input type="checkbox" name="sum4" value="sum4"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>5.</TD>
+ <td nowrap>@p5name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p5su">S</TD>
+	<td width="18" align="center" ID="p5m">M</TD>
+	<td width="18" align="center" ID="p5tu">T</TD>
+	<td width="18" align="center" ID="p5w">W</TD>
+	<td width="18" align="center" ID="p5th">T</TD>
+	<td width="18" align="center" ID="p5f">F</TD>
+	<td width="18" align="center" ID="p5sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p5time#</TD>
+ <td nowrap><input type="checkbox" name="sum5" value="sum5"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>6.</TD>
+ <td nowrap>@p6name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p6su">S</TD>
+	<td width="18" align="center" ID="p6m">M</TD>
+	<td width="18" align="center" ID="p6tu">T</TD>
+	<td width="18" align="center" ID="p6w">W</TD>
+	<td width="18" align="center" ID="p6th">T</TD>
+	<td width="18" align="center" ID="p6f">F</TD>
+	<td width="18" align="center" ID="p6sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p6time#</TD>
+ <td nowrap><input type="checkbox" name="sum6" value="sum6"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>7.</TD>
+ <td nowrap>@p7name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p7su">S</TD>
+	<td width="18" align="center" ID="p7m">M</TD>
+	<td width="18" align="center" ID="p7tu">T</TD>
+	<td width="18" align="center" ID="p7w">W</TD>
+	<td width="18" align="center" ID="p7th">T</TD>
+	<td width="18" align="center" ID="p7f">F</TD>
+	<td width="18" align="center" ID="p7sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p7time#</TD>
+ <td nowrap><input type="checkbox" name="sum7" value="sum7"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>8.</TD>
+ <td nowrap>@p8name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p8su">S</TD>
+	<td width="18" align="center" ID="p8m">M</TD>
+	<td width="18" align="center" ID="p8tu">T</TD>
+	<td width="18" align="center" ID="p8w">W</TD>
+	<td width="18" align="center" ID="p8th">T</TD>
+	<td width="18" align="center" ID="p8f">F</TD>
+	<td width="18" align="center" ID="p8sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p8time#</TD>
+ <td nowrap><input type="checkbox" name="sum8" value="sum8"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>9.</TD>
+ <td nowrap>@p9name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p9su">S</TD>
+	<td width="18" align="center" ID="p9m">M</TD>
+	<td width="18" align="center" ID="p9tu">T</TD>
+	<td width="18" align="center" ID="p9w">W</TD>
+	<td width="18" align="center" ID="p9th">T</TD>
+	<td width="18" align="center" ID="p9f">F</TD>
+	<td width="18" align="center" ID="p9sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p9time#</TD>
+ <td nowrap><input type="checkbox" name="sum9" value="sum9"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap>10.</TD>
+ <td nowrap>@p10name#</TD>
+ <td nowrap bordercolor="#000000" bgcolor="#CCCCCC">  
+	<table border=1 cellspacing=1 bordercolor="#000000" style="border-collapse: collapse" bgcolor="#FFFFFF">
+	<tr bgcolor="#FFFFFF">
+	<td width="18" align="center" ID="p10su">S</TD>
+	<td width="18" align="center" ID="p10m">M</TD>
+	<td width="18" align="center" ID="p10tu">T</TD>
+	<td width="18" align="center" ID="p10w">W</TD>
+	<td width="18" align="center" ID="p10th">T</TD>
+	<td width="18" align="center" ID="p10f">F</TD>
+	<td width="18" align="center" ID="p10sa">S</TD>
+	</TR>
+	</table>
+ </TD>         
+ <td nowrap>@p10time#</TD>
+ <td nowrap><input type="checkbox" name="sum10" value="sum10"></TD>
+</TR>
+
+<tr bgcolor="#cccccc" align="center">
+ <td nowrap bgcolor="#FFFFFF">&nbsp;</TD>
+ <td bgcolor="#FFFFFF" nowrap>&nbsp;</TD>
+ <td bgcolor="#FFFFFF" nowrap>&nbsp;</TD>
+ <td bgcolor="#FFFFFF" nowrap colspan="2" height="40">
+ <INPUT type="button" name="close" value="Close" class="slbutton" onclick="self.close();"></TD>
+</TR>
+</table>
+
+<br>&nbsp;
+</div>
+</TD>
+			    
+</TR>
+</table>
+	
+</TD>
+		
+</TR>
+</table>
+	    
+</div>
+	
+
+
+<input type="hidden" name="h_sum1" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum2" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum3" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum4" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum5" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum6" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum7" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum8" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum9" value="">  <!-- not set by CGI -->
+<input type="hidden" name="h_sum10" value="">  <!-- not set by CGI -->
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="Summary.htm">
+<input type="hidden" name="next_file" value="Summary.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>
+</body>
+</html>
+

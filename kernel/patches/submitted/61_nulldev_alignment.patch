@@ -1,0 +1,16 @@
+--- linux-2.4.orig/net/ipv4/netfilter/ip_tables.c	2003-12-26 19:24:46.000000000
++0200
++++ linux-2.4/net/ipv4/netfilter/ip_tables.c	2003-12-26 18:58:30.000000000 +0200
+@@ -260,7 +278,11 @@ ipt_do_table(struct sk_buff **pskb,
+ 	     struct ipt_table *table,
+ 	     void *userdata)
+ {
+-	static const char nulldevname[IFNAMSIZ] = { 0 };
++	/* Pointer to nulldevname may be dereferenced as unsigned
++	   long* in ip_packet_match. We need to guarantee
++	   sufficient alignment here. */
++	static const char nulldevname[IFNAMSIZ]
++		__attribute__((__aligned__(__alignof__ (unsigned long)))) = {0};
+ 	u_int16_t offset;
+ 	struct iphdr *ip;
+ 	void *protohdr;

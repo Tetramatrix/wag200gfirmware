@@ -1,0 +1,213 @@
+dir.o: dir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)
+file.o: file.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/bind.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/bind.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h)
+flushd.o: flushd.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/auth.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/auth.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs_sb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs_sb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfs/v3.h)
+inode.o: inode.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/locks.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/unistd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/stats.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/bind.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/lockd/bind.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/seq_file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfs/v3.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+mount_clnt.o: mount_clnt.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/uio.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/xprt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/xprt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h)
+nfs2xdr.o: nfs2xdr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h)
+nfs3proc.o: nfs3proc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs3.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs3.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h)
+nfs3xdr.o: nfs3xdr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kdev_t.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kdev_t.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs3.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs3.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h)
+nfsroot.o: nfsroot.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/ipconfig.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/ipconfig.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfs/v3.h)
+pagelist.o: pagelist.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs3.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs3.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfs/v3.h)
+proc.o: proc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/utsname.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h)
+read.o: read.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfs/v3.h)
+symlink.o: symlink.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs2.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)
+unlink.o: unlink.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/dcache.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/dcache.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h)
+write.o: write.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/swap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pagemap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/file.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sunrpc/clnt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_mount.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_flushd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nfs_page.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nfs/v3.h)

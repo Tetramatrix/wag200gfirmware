@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+#	ALGs 
+
+
+$IPTABLES -N ALGS 2> /dev/null
+#$IPTABLES -F ALGS
+$IPTABLES -A ALGS -j ACCEPT
+
+
+SYSLOG "MSN messenager"
+if [ "$MSN" = "YES" -o "$MSN" = "yes" ]; then
+	# server 1863 file 6891 appshare 1503 phone 7001
+	$IPTABLES -I FORWARD_TCP -m multiport -p tcp --sport 6901,1863,6891,1503,7001 -j ALGS
+	# SIP passthrough
+	#$IPTABLES -I FORWARD_UDP -p udp --sport 5060 -j ALGS
+	$IPTABLES -I FORWARD_UDP -m multiport -p udp --sport 6901,5060 -j ALGS
+fi
+
+
+SYSLOG "Yahoo messenager"
+if [ "$Yahoo" = "YES" -o "$Yahoo" = "yes" ]; then
+	$IPTABLES -I FORWARD_TCP -p tcp --sport 80 -j ALGS
+fi
+
+
+SYSLOG "ICQ"
+if [ "$ICQ" = "YES" -o "$ICQ" = "yes" ]; then
+	$IPTABLES -I FORWARD_TCP -p tcp --sport 6701 -j ALGS
+fi
+
+
+SYSLOG "Netmeeting"
+if [ "$Netmeeting" = "YES" -o "$Netmeeting" = "yes" ]; then
+	$IPTABLES -I FORWARD_TCP -m multiport -p tcp --sport 389,522,1503,1720,1731 -j ALGS
+fi

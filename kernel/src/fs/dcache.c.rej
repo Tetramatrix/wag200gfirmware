@@ -1,0 +1,28 @@
+***************
+*** 501,511 ****
+  		struct list_head *tmp = next;
+  		struct dentry *dentry = list_entry(tmp, struct dentry, d_child);
+  		next = tmp->next;
+  		if (!atomic_read(&dentry->d_count)) {
+- 			list_del(&dentry->d_lru);
+  			list_add(&dentry->d_lru, dentry_unused.prev);
+  			found++;
+  		}
+  		/*
+  		 * Descend a level if the d_subdirs list is non-empty.
+  		 */
+--- 532,545 ----
+  		struct list_head *tmp = next;
+  		struct dentry *dentry = list_entry(tmp, struct dentry, d_child);
+  		next = tmp->next;
++ 
++ 		list_del_init(&dentry->d_lru);
++ 		spin_lock(&dentry->d_lock);
+  		if (!atomic_read(&dentry->d_count)) {
+  			list_add(&dentry->d_lru, dentry_unused.prev);
+  			found++;
+  		}
++ 		spin_unlock(&dentry->d_lock);
+  		/*
+  		 * Descend a level if the d_subdirs list is non-empty.
+  		 */

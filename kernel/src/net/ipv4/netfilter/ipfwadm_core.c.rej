@@ -1,0 +1,17 @@
+***************
+*** 20,26 ****
+   *	license in recognition of the original copyright.
+   *				-- Alan Cox.
+   *
+-  *	2.4.18.patch,v 1.1 2002/02/22 12:37:47 laforge Exp
+   *
+   *	Ported from BSD to Linux,
+   *		Alan Cox 22/Nov/1994.
+--- 20,26 ----
+   *	license in recognition of the original copyright.
+   *				-- Alan Cox.
+   *
++  *	2.4.18.patch,v 1.1 2002/02/22 12:37:47 laforge Exp
+   *
+   *	Ported from BSD to Linux,
+   *		Alan Cox 22/Nov/1994.

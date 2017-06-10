@@ -1,0 +1,610 @@
+diff -urN linux-2.4.17.orig/Documentation/Configure.help linux/Documentation/Configure.help
+--- linux-2.4.17.orig/Documentation/Configure.help	Mon Apr  8 11:31:53 2002
++++ linux/Documentation/Configure.help	Fri Apr 26 09:00:10 2002
+@@ -24237,6 +24237,26 @@
+   would like kernel messages to be formatted into GDB $O packets so
+   that GDB prints them as program output, say 'Y'.
+ 
++Early printk support
++NO_CONFIG_EARLY_CONSOLE
++  If you are not doing early kernel devolopment NONE is what you want.
++  The other will add a early console for you (in i386)
++  This will allow you see prink output before console_init is called.
++  This is handy if you need to debug the kernel before this point.
++  
++  VGA will give you a VGA console, your screen.
++  SERIAL will give you out put on your serial line.
++    
++Location of serial port
++CONFIG_EARLY_CONSOLE_SERIAL_PORT
++   0x3F8 == COMM 1
++   0x3E8 == COMM 2
++
++Baud rate
++CONFIG_EARLY_CONSOLE_SERIAL_BAUD
++  Set the the Baud of your serial console.
++
++
+ #
+ # A couple of things I keep forgetting:
+ #   capitalize: AppleTalk, Ethernet, DOS, DMA, FAT, FTP, Internet,
+diff -urN linux-2.4.17.orig/arch/i386/config.in linux/arch/i386/config.in
+--- linux-2.4.17.orig/arch/i386/config.in	Mon Apr  8 11:31:46 2002
++++ linux/arch/i386/config.in	Fri Apr 26 08:58:24 2002
+@@ -413,6 +413,15 @@
+    bool '  Magic SysRq key' CONFIG_MAGIC_SYSRQ
+    bool '  Spinlock debugging' CONFIG_DEBUG_SPINLOCK
+    bool '  Verbose BUG() reporting (adds 70K)' CONFIG_DEBUG_BUGVERBOSE
++   choice 'Early printk support'  \
++		"NONE               NO_CONFIG_EARLY_CONSOLE \
++		 VGA                CONFIG_EARLY_CONSOLE_VGA \
++                 Serial_PORT       CONFIG_EARLY_CONSOLE_SERIAL\
++                 Bochs_0xE9_hack    CONFIG_EARLY_CONSOLE_BOCHS_E9_HACK " NONE
++    if [ "$CONFIG_EARLY_CONSOLE_SERIAL" = "y" ]; then
++	hex "Location of serial port " CONFIG_EARLY_CONSOLE_SERIAL_PORT 0x3F8
++	int "Baud rate " CONFIG_EARLY_CONSOLE_SERIAL_BAUD  38400
++    fi
+ fi
+ 
+ endmenu
+diff -urN linux-2.4.17.orig/arch/i386/kernel/Makefile linux/arch/i386/kernel/Makefile
+--- linux-2.4.17.orig/arch/i386/kernel/Makefile	Mon Apr  8 11:31:46 2002
++++ linux/arch/i386/kernel/Makefile	Fri Apr 26 08:57:23 2002
+@@ -18,7 +18,8 @@
+ 
+ obj-y	:= process.o semaphore.o signal.o entry.o traps.o irq.o vm86.o \
+ 		ptrace.o i8259.o ioport.o ldt.o setup.o time.o sys_i386.o \
+-		pci-dma.o i386_ksyms.o i387.o bluesmoke.o dmi_scan.o
++		pci-dma.o i386_ksyms.o i387.o bluesmoke.o dmi_scan.o \
++               early_consoles.o
+ 
+ 
+ ifdef CONFIG_PCI
+diff -urN linux-2.4.17.orig/arch/i386/kernel/early_consoles.c linux/arch/i386/kernel/early_consoles.c
+--- linux-2.4.17.orig/arch/i386/kernel/early_consoles.c	Wed Dec 31 16:00:00 1969
++++ linux/arch/i386/kernel/early_consoles.c	Fri Apr 26 08:57:23 2002
+@@ -0,0 +1,417 @@
++/*
++ * Early console drivers.
++ * (C) Nov 2001, William Irwin, IBM
++ *
++ * These are low-level pseudodrivers to enable early console output
++ * to aid in debugging during early boot.
++ *
++ * They are crude, but hopefully effective. They rely on the fact
++ * that consoles are largely unused prior to the true console_init(),
++ * and that printk() uses the ->write callback and that callback
++ * only during its operation.
++ *
++ * Serial port routines are derived from Linux serial.c, and
++ * vga_putc() is derived from vsta, (C) Andrew Valencia.
++ */
++
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <linux/serial_reg.h>
++#include <asm/io.h>
++
++/*
++ * I/O ports are not linearly mapped on all architectures.
++ * On IA64 in particular, port I/O is just reading/writing from
++ * an uncached address, but ioremap there requires ia64_io_base
++ * to be initialized, which does not happen until the middle of
++ * setup_arch(). So a port remapping macro is provided here.
++ *
++ * The IA64 case is not handled here, although the port remapping
++ * is demonstrated for the purposes of understanding its necessity.
++ * The IO_BASE is taken from Lion systems; in general, this varies.
++ * True handling for IA64 will be merged in given testing.
++ */
++
++#ifdef CONFIG_IA64
++
++#define IO_BASE   0xC0000FFFFC000000UL
++#define MK_PORT(port) ((char *)(IO_BASE|(((port)>>2)<<12)|((port) & 0xFFF)))
++
++#else
++
++/*
++ * This works for i386, but not everywhere.
++ * Other architectures with port I/O mapping needs will need to
++ * add to the preprocessor case analysis above.
++ */
++
++#define MK_PORT(port) (port)
++
++#endif
++
++#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
++
++
++/*
++ * This serial output driver derived from the one appearing
++ * in serial.c
++ *
++ * It is a simple "bitbanging" style output routine, with
++ * initialization performed at every call.
++ */
++
++#ifdef CONFIG_EARLY_CONSOLE_SERIAL
++#define MAX_BAUD 115200
++#define BAUD_MSB (MAX_BAUD/CONFIG_EARLY_CONSOLE_SERIAL_BAUD)/0xFF
++#define BAUD_LSB (MAX_BAUD/CONFIG_EARLY_CONSOLE_SERIAL_BAUD)%0xFF
++
++static inline __init void wait_for_readiness(unsigned port)
++{
++	unsigned retries;
++	unsigned char status;
++
++	/*
++	 * Wait for transmitter holding and shift registers to empty,
++	 * which is required for output to succeed. If the retries are
++	 * exceeded, this deliberately fails to ensure termination.
++	 */
++	for(retries = 0; retries < 65536; ++retries) {
++		status = inb(MK_PORT(port + 5));
++		if((status & BOTH_EMPTY) == BOTH_EMPTY)
++			break;
++	}
++}
++
++static int serial_init = 0; 
++
++static void init_serial_io_port(unsigned port)
++{
++	serial_init = 1;
++
++	wait_for_readiness(port);
++
++        /*
++         * Disable interrupts.
++         */
++        outb(0x0, MK_PORT(port + 1));
++
++        /*
++         * Set the baud rate divisor's LSB.
++         */
++        outb(BAUD_MSB, MK_PORT(port + 3));
++
++        /*
++         * Set the baud rate divisor's MSB.
++         */
++        outb(BAUD_LSB, MK_PORT(port));
++
++        /*
++         * Set no parity, 8 bits, 1 stop bit, and select
++         * interrupt enable register.
++         */
++        outb(0x3, MK_PORT(port + 3));
++}
++
++
++static void __init write_serial_io_port(unsigned port,
++					const char *s,
++					unsigned n)
++{
++	unsigned k;
++	
++	if (serial_init==0)
++	{
++		init_serial_io_port(port);
++	}
++
++	/*
++	 * Set data terminal ready and request to send.
++	 */
++
++	for(k = 0; k < n; ++k) {
++		wait_for_readiness(port);
++		outb(s[k], MK_PORT(port));
++		if(s[k] == '\n') {
++			wait_for_readiness(port);
++			outb('\r', MK_PORT(port));
++		}
++	}
++}
++
++
++
++/*
++ * On Intel-derived architectures it is customary for onboard serial
++ * ports to have I/O ports at these two port addresses.
++ */
++
++static void __init write_serial(struct console *c, const char *s, unsigned n)
++{
++	write_serial_io_port(CONFIG_EARLY_CONSOLE_SERIAL_PORT, s, n);
++}
++
++static struct console __initdata early_console_serial =
++{
++	write: write_serial
++};
++#endif
++
++
++#ifdef CONFIG_EARLY_CONSOLE_VGA
++
++/*
++ * This should work for a variety of Intel-derived architectures,
++ * as it is customary for VGA memory to reside in this address range.
++ * vga_putc() is derived from vsta sources, (C) Andrew Valencia.
++ *
++ * Several forms of functionality are intentionally omitted in the
++ * interest of robustness, in particular, cursor movement and cursor
++ * position determination.
++ */
++
++#define VGA_MAXCOL 80
++#define VGA_MAXROW 25
++#define VGA_SCRNSZ (VGA_MAXCOL * VGA_MAXROW)
++#define VGA_REG_PORT 0x3D4
++#define VGA_VAL_PORT 0x3D5
++#define VGA_TEXT_BUFFER 0xB8000
++
++#define VGA_CHAR(_row_, _col_) vga_mem[(_row_)*VGA_MAXCOL + (_col_)].c
++
++struct vga_char_desc
++{
++	unsigned char c;
++	unsigned char color;
++};
++
++static struct vga_char_desc * __initdata vga_mem = 
++	(struct vga_char_desc *)(VGA_TEXT_BUFFER + PAGE_OFFSET);
++
++/*
++ ** The screen position can actually be determined by port I/O,
++ ** but in the interest of robustness, these are always initialized
++ ** to the (0, 0) position. These position indices must always be
++ ** strictly less than the bounds VGA_MAXROW and VGA_MAXCOL.
++ **/
++static unsigned short __initdata row;
++static unsigned short __initdata col;
++	
++
++/*from martin bligh's early_printk */
++static inline void __init update_cursor(void)
++{
++        int pos = (col + VGA_MAXCOL*row) *2;
++   
++       	outb_p(14, VGA_REG_PORT);
++        outb_p(0xff & (pos >> 9), VGA_VAL_PORT);
++        outb_p(15, VGA_REG_PORT);
++        outb_p(0xff & (pos >> 1), VGA_VAL_PORT);
++}
++
++
++void __init clear_vga_mem(void)
++{
++        int x, y;
++
++        for (x = 0; x < 80; x++) {
++                for (y = 0; y < 25; y++) {
++                        VGA_CHAR(y,x) = ' ';
++                }
++        }
++	row =0;
++	col =0;
++	update_cursor();
++}
++
++
++	
++
++/*
++ * The characters displayed at a screen position can be discerned by
++ * reading from the corresponding memory location. This can be used
++ * to simulate scrolling movement. Line blanking is simulated by
++ * overwriting the displayed characters with the space character.
++ *
++ * In the interest of robustness, cursor movement is also omitted.
++ */
++static inline void __init vga_scroll_up(void)
++{
++	unsigned k;
++
++	for(k = 0; k < (VGA_SCRNSZ - VGA_MAXCOL); ++k)
++		vga_mem[k].c = vga_mem[k + VGA_MAXCOL].c;
++
++	for(k = VGA_SCRNSZ - VGA_MAXCOL; k < VGA_SCRNSZ; ++k)
++		vga_mem[k].c = ' ';
++}
++
++
++/*
++ * Line advancement must preserve the invariant that the row and
++ * column indices are in-bounds. The semantics of this mean that
++ * when line advancement "beyond" the last line results in scrolling.
++ */
++static inline void __init vga_line_advance(void)
++{
++	++row;
++
++	if(row >= VGA_MAXROW) {
++		row = VGA_MAXROW - 1;
++		vga_scroll_up();
++	}
++}
++
++
++/*
++ * Character advancement must once again preserve the in-bounds
++ * invariants, and in so doing line wrapping and advancement may occur.
++ */
++static inline void __init vga_char_advance(void)
++{
++	++col;
++
++	if(col >= VGA_MAXCOL) {
++		col = 0;
++		vga_line_advance();
++	}
++}
++
++
++/*
++ * Derived from vsta sources (C) Andrew Valencia.
++ * Here the interpretation of several common special characters occurs,
++ * namely linefeeds, newlines, tabs, and backspaces. The position
++ * indices are updated using the vga_char_advance() and vga_line_advance()
++ * routines, and a vga_char_advance() is triggered on the printing of
++ * each ordinary character. The special characters have specialized
++ * position update semantics in order to be faithful to their customary
++ * cursor movement effects, although the cursor position is not updated.
++ */
++static void __init vga_putc(char c)
++{
++	unsigned k;
++	switch(c) {
++		case '\t':
++			for(k = 0; k < 8; ++k) {
++				VGA_CHAR(row, col) = ' ';
++				vga_char_advance();
++			}
++			break;
++
++		case '\r':
++			col = 0;
++			break;
++
++		case '\n':
++			col = 0;
++			vga_line_advance();
++			break;
++
++		case '\b':
++			if(col > 0) {
++				--col;
++				VGA_CHAR(row, col) = ' ';
++			}
++			break;
++
++		default:
++			VGA_CHAR(row, col) = c;
++			vga_char_advance();
++			break;
++	}
++}
++
++
++/*
++ * write_vga(), given a NUL-terminated character array, writes
++ * characters to VGA space in bulk, and is the callback used for the
++ * driver structure.
++ */
++static void __init write_vga(struct console *c, const char *s, unsigned n)
++{
++	unsigned k;
++
++	for(k = 0; k < n; ++k)
++	{	
++		vga_putc(s[k]);
++		update_cursor();
++	}
++}
++
++static struct console __initdata early_console_vga =
++{
++	write: write_vga
++};
++
++#endif /*END CONFIG_EARLY_CONSOLE_VGA*/ 
++
++
++
++/*
++ * The bochs x86 simulator has an optional feature for enabling
++ * debugging output through a normally unused ISA I/O port. The
++ * protocol for communicating with the simulated device is simply
++ * using port I/O writes to write a stream of characters to the
++ * device, and these are then relayed by the simulator to the
++ * controlling terminal of the simulator process.
++ */
++#ifdef CONFIG_EARLY_CONSOLE_BOCHS_E9_HACK
++static void __init write_bochs(struct console *c, const char *s, unsigned n)
++{
++	unsigned k;
++
++	for(k = 0; k < n; ++k)
++		outb(s[k], MK_PORT(0xE9));
++}
++
++static struct console __initdata early_console_bochs =
++{
++	write: write_bochs
++};
++#endif /* CONFIG_EARLY_CONSOLE_BOCHS_E9_HACK */
++
++
++/*
++ * In order to minimize the number of #ifdefs whch must
++ * appear in-line, this direct-mapped, NULL-terminated table
++ * of console entries is used to provide a configuration-independent
++ * structure which may be traversed to discover all of the available
++ * early console devices for registration and unregistration.
++ *
++ * This is the ugliest part of the code, thanks to #ifdef
++ */
++static struct console * __initdata early_console_table[] =
++	{
++#ifdef CONFIG_EARLY_CONSOLE_SERIAL
++		&early_console_serial,
++#endif
++#ifdef CONFIG_EARLY_CONSOLE_VGA
++		&early_console_vga,
++#endif 
++#ifdef CONFIG_EARLY_CONSOLE_BOCHS_E9_HACK
++		&early_console_bochs,
++#endif
++		NULL
++	};
++
++
++/*
++ * The above implementations are quite far from complete console
++ * devices, but printk() only requires the ->write callback, so this is
++ * somewhat deceptive, but still cleaner than editing printk.c itself.
++ */
++void __init add_early_consoles(void)
++{
++	
++	struct console **c = early_console_table;
++	while(*c)
++	{
++		register_early_console(*c++);
++		printk ("consoled added!\n\n");
++	}
++#ifdef CONFIG_EARLY_CONSOLE_VGA
++	clear_vga_mem();
++#endif 
++
++}
++
+diff -urN linux-2.4.17.orig/arch/i386/kernel/setup.c linux/arch/i386/kernel/setup.c
+--- linux-2.4.17.orig/arch/i386/kernel/setup.c	Mon Apr  8 11:31:46 2002
++++ linux/arch/i386/kernel/setup.c	Fri Apr 26 08:57:23 2002
+@@ -784,7 +784,9 @@
+ 	unsigned long bootmap_size, low_mem_size;
+ 	unsigned long start_pfn, max_pfn, max_low_pfn;
+ 	int i;
+-
++	
++	add_early_consoles();
++	
+ #ifdef CONFIG_VISWS
+ 	visws_get_board_type_and_rev();
+ #endif
+diff -urN linux-2.4.17.orig/drivers/char/console.c linux/drivers/char/console.c
+--- linux-2.4.17.orig/drivers/char/console.c	Mon Apr  8 11:31:59 2002
++++ linux/drivers/char/console.c	Fri Apr 26 08:57:23 2002
+@@ -2442,7 +2442,8 @@
+ {
+ 	const char *display_desc = NULL;
+ 	unsigned int currcons = 0;
+-
++	int removed =0;
++	
+ 	if (conswitchp)
+ 		display_desc = conswitchp->con_startup();
+ 	if (!display_desc) {
+@@ -2518,10 +2519,14 @@
+ 		display_desc, video_num_columns, video_num_lines);
+ 	printable = 1;
+ 	printk("\n");
+-
++	
++	/*clear any early consoles*/
++	removed = clear_early_consoles();
++	
+ #ifdef CONFIG_VT_CONSOLE
+ 	register_console(&vt_console_driver);
+ #endif
++	printk ("removed %d early consoles \n",removed);
+ }
+ 
+ #ifndef VT_SINGLE_DRIVER
+diff -urN linux-2.4.17.orig/include/linux/console.h linux/include/linux/console.h
+--- linux-2.4.17.orig/include/linux/console.h	Mon Apr  8 11:32:18 2002
++++ linux/include/linux/console.h	Fri Apr 26 08:57:23 2002
+@@ -90,7 +90,7 @@
+ #define CON_PRINTBUFFER	(1)
+ #define CON_CONSDEV	(2) /* Last on the command line */
+ #define CON_ENABLED	(4)
+-
++#define EARLY_CONSOLE   (8) /* Early flag. Remove in con_init  */
+ struct console
+ {
+ 	char	name[8];
+@@ -106,6 +106,7 @@
+ 	struct	 console *next;
+ };
+ 
++
+ extern void register_console(struct console *);
+ extern int unregister_console(struct console *);
+ extern struct console *console_drivers;
+@@ -113,6 +114,9 @@
+ extern void release_console_sem(void);
+ extern void console_conditional_schedule(void);
+ extern void console_unblank(void);
++extern int clear_early_consoles(void);
++extern void register_early_console(struct console *);
++
+ 
+ /* VESA Blanking Levels */
+ #define VESA_NO_BLANKING        0
+diff -urN linux-2.4.17.orig/kernel/printk.c linux/kernel/printk.c
+--- linux-2.4.17.orig/kernel/printk.c	Mon Apr  8 11:32:25 2002
++++ linux/kernel/printk.c	Fri Apr 26 08:57:23 2002
+@@ -668,6 +668,50 @@
+ }
+ EXPORT_SYMBOL(unregister_console);
+ 	
++/* This will clear any and all console_drivers that 
++   use only in con_init to remove any consoles that setup_arch
++   may have added for early console support  
++ */
++int clear_early_consoles(void)
++{
++        struct console *a, *b;
++        int removed = 0;
++	
++	if(console_drivers)
++	{
++	acquire_console_sem();
++	
++	
++	for (a=console_drivers->next, b=console_drivers; a; b=a,a=b->next)
++	{
++		if (a->flags & EARLY_CONSOLE)
++                {
++		        b->next = a->next;        	
++		        removed++;
++		}
++	}
++
++	if (console_drivers->flags & EARLY_CONSOLE)
++	{
++		console_drivers=console_drivers->next;
++		removed++;
++	
++	}
++
++	if (console_drivers == NULL)
++		preferred_console = -1;
++
++	release_console_sem();
++	}
++	return removed;
++}
++
++void register_early_console(struct console *early_con)
++{
++        early_con->flags |= EARLY_CONSOLE;
++	register_console(early_con);
++}
++
+ /**
+  * tty_write_message - write a message to a certain tty, not just the console.
+  *

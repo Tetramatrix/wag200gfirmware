@@ -1,0 +1,119 @@
+#!/bin/sh
+
+SYSLOG "# --------- [ TC ] -------------- #"
+
+I=/usr/sbin/iptables
+
+##############################
+##### MANGLE POSTROUTING #####
+
+## Pakete markieren für Bandbreitenmanagement
+
+## Standardmarkierung
+$I -t mangle -A POSTROUTING -o ppp0 -j MARK -set-mark 30
+
+# non tcp
+$I -t mangle -A POSTROUTING -o ppp0 -p ! tcp -j MARK --set-mark 10
+
+## Klassifizierung anhand TOS-Tabelle
+$I -t mangle -A POSTROUTING -o ppp0 -m tos --tos 0x00 -j MARK --set-mark 30 #Normal
+$I -t mangle -A POSTROUTING -o ppp0 -m tos --tos 0x02 -j MARK --set-mark 40 #Minimale Kosten
+$I -t mangle -A POSTROUTING -o ppp0 -m tos --tos 0x04 -j MARK --set-mark 30 #Maximale Zuverlässigkeit
+$I -t mangle -A POSTROUTING -o ppp0 -m tos --tos 0x08 -j MARK --set-mark 10 #Maximaler Durchsatz
+$I -t mangle -A POSTROUTING -o ppp0 -m tos --tos 0x10 -j MARK --set-mark 10 #Minimale Verzögerung
+
+#icmp
+$I -t mangle -A POSTROUTING -o ppp0 -p icmp -j MARK --set-mark 10
+
+#tcp/ACK Pakete
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp -m length --length 0:128 -j MARK --set-mark 10
+
+# Bittorrent bremsen (vermutlich die Datenpackete)
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 1025:65535 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 1025:65535 -j MARK --set-mark 40
+
+# packets > 1024 bytes (??? wofür)
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp -m length --length 1024: -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p udp -m length --length 1024: -j MARK --set-mark 40
+
+# Jedes xte Paket aber höher priorisieren
+torrentlimit=`/usr/sbin/nvram get torrentlimit | awk 'BEGIN{FS="=";}{print $2;}'`
+torrentburst=`/usr/sbin/nvram get torrentburst | awk 'BEGIN{FS="=";}{print $2;}'`
+
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 1025:65535 -m limit --limit $torrentlimit/s --limit-burst $torrentburst -j MARK --set-mark 30
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 1025:65535 -m limit --limit $torrentlimit/s --limit-burst $torrentburst -j MARK --set-mark 30
+
+
+## Klassifizierung anhand Ports
+
+#DNS
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --dport 53 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --sport 53 -j MARK --set-mark 10
+
+#HTTP
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 80 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 80 -j MARK --set-mark 10
+
+#SHTTP
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 443 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 443 -j MARK --set-mark 10
+
+#FTP
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 21 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 21 -j MARK --set-mark 10
+
+#SSH
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 23 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 23 -j MARK --set-mark 10
+
+# enemy-territory
+$I -t mangle -A FORWARD -p tcp --dport 27960 -j MARK --set-mark 10
+$I -t mangle -A OUTPUT -p tcp --dport 27960 -j MARK --set-mark 10
+
+# ntp
+$I -t mangle -A FORWARD -p tcp --dport 123 -j MARK --set-mark 10
+$I -t mangle -A OUTPUT -p tcp --dport 123 -j MARK --set-mark 10
+
+# Bittorrent udp
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --dport 4444 -j MARK --set-mark 30
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --sport 4444 -j MARK --set-mark 30
+
+
+
+# Games
+
+# CS:S
+$I -t mangle -A POSTROUTING -p tcp --dport 27015:27020 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -p tcp --sport 27015:27020 -j MARK --set-mark 10
+
+# WoW
+$I -t mangle -A POSTROUTING -p tcp --dport 3724 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -p tcp --sport 3724 -j MARK --set-mark 10
+
+# Warcraft III
+$I -t mangle -A POSTROUTING -p tcp --dport 6112 -j MARK --set-mark 10
+$I -t mangle -A POSTROUTING -p tcp --sport 6112 -j MARK --set-mark 10
+
+# Emule bremsen
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 4661 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 4662 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --dport 4665 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --dport 4672 -j MARK --set-mark 40
+
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 4661 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 4662 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --sport 4665 -j MARK --set-mark 40
+$I -t mangle -A POSTROUTING -o ppp0 -p udp --sport 4672 -j MARK --set-mark 40
+
+# Bittorrent bremsen (vermutlich die Verwaltungspackete)
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --dport 6881:6999 -j MARK --set-mark 30
+$I -t mangle -A POSTROUTING -o ppp0 -p tcp --sport 6881:6999 -j MARK --set-mark 30
+
+# Increase txqueuelen
+ifconfig eth0 txqueuelen 1000
+ifconfig ppp0 txqueuelen 1000
+ifconfig br0 txqueuelen 1000
+ifconfig nas0 txqueuelen 1000
+ifconfig wlan0 txqueuelen 1000
+
+

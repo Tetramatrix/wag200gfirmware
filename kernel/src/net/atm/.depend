@@ -1,0 +1,362 @@
+addr.o: addr.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   signaling.h $(dep_signaling.h) \
+   addr.h $(dep_addr.h)
+dep_addr.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h)
+atm_misc.o: atm_misc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sonet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sonet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/errno.h)
+br2684.o: br2684.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/list.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/rtnetlink.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmbr2684.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmbr2684.h) \
+   ipcommon.h $(dep_ipcommon.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/wb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/wb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/br2684/ipfilter.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/br2684/fast/trans.h)
+clip.o: clip.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/notifier.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/notifier.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmarp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmarp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/icmp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   common.h $(dep_common.h) \
+   resources.h $(dep_resources.h) \
+   ipcommon.h $(dep_ipcommon.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/clip/no/icmp.h)
+common.o: common.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmarp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmarp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sonet.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sonet.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/capability.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/capability.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/poll.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/ioctls.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/ioctls.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/lane.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/lane/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h) \
+   lec.h $(dep_lec.h) \
+   lec_arpc.h $(dep_lec_arpc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/mpoa.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/mpoa/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h) \
+   mpc.h $(dep_mpc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/tcp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/tcp/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm_tcp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm_tcp.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pppoatm.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pppoatm/module.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/br2684.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/br2684/module.h) \
+   resources.h $(dep_resources.h) \
+   common.h $(dep_common.h) \
+   protocols.h $(dep_protocols.h) \
+   addr.h $(dep_addr.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/clip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h) \
+   signaling.h $(dep_signaling.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bridge.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bridge/module.h)
+dep_common.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/poll.h)
+ipcommon.o: ipcommon.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h) \
+   common.h $(dep_common.h) \
+   ipcommon.h $(dep_ipcommon.h)
+dep_ipcommon.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h)
+lec.o: lec.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/tr.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/trdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/trdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bridge.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bridge/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_bridge.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_bridge.h) \
+   ../bridge/br_private.h $(dep_../bridge/br_private.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   lec.h $(dep_lec.h) \
+   lec_arpc.h $(dep_lec_arpc.h) \
+   resources.h $(dep_resources.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/inetdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/route.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/route.h)
+dep_lec.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bridge.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bridge/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_bridge.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_bridge.h)
+dep_lec_arpc.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h)
+mpc.o: mpc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ether.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/byteorder.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/checksum.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/checksum.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/dst.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmlec.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   lec.h $(dep_lec.h) \
+   mpc.h $(dep_mpc.h) \
+   resources.h $(dep_resources.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+dep_mpc.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/spinlock.h) \
+   mpoa_caches.h $(dep_mpoa_caches.h)
+mpoa_caches.o: mpoa_caches.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h) \
+   mpoa_caches.h $(dep_mpoa_caches.h) \
+   mpc.h $(dep_mpc.h)
+dep_mpoa_caches.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h)
+mpoa_proc.o: mpoa_proc.c \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/time.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmmpc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   mpc.h $(dep_mpc.h) \
+   mpoa_caches.h $(dep_mpoa_caches.h)
+pppoatm.o: pppoatm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ppp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_ppp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_channel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_channel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmppp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmppp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/udp.h)
+proc.o: proc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmarp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmarp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/if_arp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/atomic.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/param.h) \
+   resources.h $(dep_resources.h) \
+   common.h $(dep_common.h) \
+   signaling.h $(dep_signaling.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/clip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h) \
+   ipcommon.h $(dep_ipcommon.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/lane.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/lane/module.h) \
+   lec.h $(dep_lec.h) \
+   lec_arpc.h $(dep_lec_arpc.h)
+pvc.o: pvc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmclip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atm/clip.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/atmclip.h) \
+   resources.h $(dep_resources.h) \
+   common.h $(dep_common.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mips/avalanche/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+raw.o: raw.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   common.h $(dep_common.h) \
+   protocols.h $(dep_protocols.h)
+resources.o: resources.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   common.h $(dep_common.h) \
+   resources.h $(dep_resources.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h)
+dep_resources.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/proc/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/proc_fs.h)
+signaling.o: signaling.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsvc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsvc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   resources.h $(dep_resources.h) \
+   signaling.h $(dep_signaling.h)
+dep_signaling.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsvc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsvc.h)
+svc.o: svc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/net.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fcntl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsap.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsvc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmsvc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/atmdev.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/bitops.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/net/sock.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   resources.h $(dep_resources.h) \
+   common.h $(dep_common.h) \
+   signaling.h $(dep_signaling.h) \
+   addr.h $(dep_addr.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/smp_lock.h)

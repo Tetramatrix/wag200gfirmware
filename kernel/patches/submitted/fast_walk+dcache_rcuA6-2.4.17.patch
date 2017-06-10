@@ -1,0 +1,1007 @@
+diff -Nru -X dontdiff linux-2.4.17/fs/autofs4/expire.c linux-fastwalk/fs/autofs4/expire.c
+--- linux-2.4.17/fs/autofs4/expire.c	Mon Jun 11 19:15:27 2001
++++ linux-fastwalk/fs/autofs4/expire.c	Tue May  7 10:56:31 2002
+@@ -84,6 +84,7 @@
+ 	struct list_head *next;
+ 	int count;
+ 
++	spin_lock(&top->d_lock);
+ 	count = atomic_read(&top->d_count);
+ 	
+ 	DPRINTK(("is_tree_busy: top=%p initial count=%d\n", 
+@@ -107,6 +108,7 @@
+ 						   d_child);
+ 		next = next->next;
+ 
++		spin_lock(&dentry->d_lock);
+ 		count += atomic_read(&dentry->d_count) - 1;
+ 
+ 		if (d_mountpoint(dentry))
+@@ -121,6 +123,7 @@
+ 		count -= adj;
+ 
+ 		if (!list_empty(&dentry->d_subdirs)) {
++			spin_unlock(&dentry->d_lock);
+ 			this_parent = dentry;
+ 			goto repeat;
+ 		}
+@@ -128,8 +131,10 @@
+ 		if (atomic_read(&dentry->d_count) != adj) {
+ 			DPRINTK(("is_tree_busy: busy leaf (d_count=%d adj=%d)\n",
+ 				 atomic_read(&dentry->d_count), adj));
++			spin_unlock(&dentry->d_lock);
+ 			return 1;
+ 		}
++		spin_unlock(&dentry->d_lock);
+ 	}
+ 
+ 	/* All done at this level ... ascend and resume the search. */
+@@ -137,7 +142,8 @@
+ 		next = this_parent->d_child.next; 
+ 		this_parent = this_parent->d_parent;
+ 		goto resume;
+-	}
++	}	
++	spin_unlock(&top->d_lock);
+ 
+ 	DPRINTK(("is_tree_busy: count=%d\n", count));
+ 	return count != 0; /* remaining users? */
+diff -Nru -X dontdiff linux-2.4.17/fs/autofs4/root.c linux-fastwalk/fs/autofs4/root.c
+--- linux-2.4.17/fs/autofs4/root.c	Mon Oct 23 21:57:38 2000
++++ linux-fastwalk/fs/autofs4/root.c	Tue May  7 10:56:31 2002
+@@ -403,7 +403,7 @@
+ 		spin_unlock(&dcache_lock);
+ 		return -ENOTEMPTY;
+ 	}
+-	list_del_init(&dentry->d_hash);
++	dentry_unhash(dentry);
+ 	spin_unlock(&dcache_lock);
+ 
+ 	dput(ino->dentry);
+diff -Nru -X dontdiff linux-2.4.17/fs/dcache.c linux-fastwalk/fs/dcache.c
+--- linux-2.4.17/fs/dcache.c	Fri Dec 21 09:41:55 2001
++++ linux-fastwalk/fs/dcache.c	Tue May  7 11:32:35 2002
+@@ -25,6 +25,7 @@
+ #include <linux/module.h>
+ 
+ #include <asm/uaccess.h>
++#include <linux/rcupdate.h>
+ 
+ #define DCACHE_PARANOIA 1
+ /* #define DCACHE_DEBUG 1 */
+@@ -55,14 +56,19 @@
+ /* Statistics gathering. */
+ struct dentry_stat_t dentry_stat = {0, 0, 45, 0,};
+ 
+-/* no dcache_lock, please */
++static void d_callback(void *arg)
++{
++	struct dentry * dentry = (struct dentry *)arg;
++	if (dname_external(dentry)) 
++		kfree((void *) dentry->d_name.name);
++	kmem_cache_free(dentry_cache, dentry); 
++}
++
+ static inline void d_free(struct dentry *dentry)
+ {
+ 	if (dentry->d_op && dentry->d_op->d_release)
+ 		dentry->d_op->d_release(dentry);
+-	if (dname_external(dentry)) 
+-		kfree(dentry->d_name.name);
+-	kmem_cache_free(dentry_cache, dentry); 
++	call_rcu(&dentry->d_rcu, d_callback, dentry);
+ 	dentry_stat.nr_dentry--;
+ }
+ 
+@@ -119,14 +125,18 @@
+ {
+ 	if (!dentry)
+ 		return;
+-
+ repeat:
+-	if (!atomic_dec_and_lock(&dentry->d_count, &dcache_lock))
++	if (!atomic_dec_and_lock(&dentry->d_count, &dcache_lock)) {
+ 		return;
++	}
++
++	spin_lock(&dentry->d_lock);
++	if (atomic_read(&dentry->d_count)) {
++		spin_unlock(&dentry->d_lock);
++		spin_unlock(&dcache_lock);
++		return;
++	}
+ 
+-	/* dput on a free dentry? */
+-	if (!list_empty(&dentry->d_lru))
+-		BUG();
+ 	/*
+ 	 * AV: ->d_delete() is _NOT_ allowed to block now.
+ 	 */
+@@ -137,16 +147,26 @@
+ 	/* Unreachable? Get rid of it */
+ 	if (list_empty(&dentry->d_hash))
+ 		goto kill_it;
+-	list_add(&dentry->d_lru, &dentry_unused);
+-	dentry_stat.nr_unused++;
++
++	if (list_empty(&dentry->d_lru)) {
++		dentry->d_vfs_flags &= ~DCACHE_REFERENCED;
++		list_add(&dentry->d_lru, &dentry_unused);
++		dentry_stat.nr_unused++;
++	}
++	spin_unlock(&dentry->d_lock);
+ 	spin_unlock(&dcache_lock);
+ 	return;
+ 
+ unhash_it:
+-	list_del_init(&dentry->d_hash);
++	__dentry_unhash(dentry);
+ 
+ kill_it: {
+ 		struct dentry *parent;
++		spin_unlock(&dentry->d_lock);
++		if (!list_empty(&dentry->d_lru)) {
++			list_del(&dentry->d_lru);
++			dentry_stat.nr_unused--;
++		}
+ 		list_del(&dentry->d_child);
+ 		/* drops the lock, at that point nobody can reach this dentry */
+ 		dentry_iput(dentry);
+@@ -201,21 +221,24 @@
+ 	 * we might still populate it if it was a
+ 	 * working directory or similar).
+ 	 */
++	spin_lock(&dentry->d_lock);
+ 	if (atomic_read(&dentry->d_count) > 1) {
+ 		if (dentry->d_inode && S_ISDIR(dentry->d_inode->i_mode)) {
++			spin_unlock(&dentry->d_lock);
+ 			spin_unlock(&dcache_lock);
+ 			return -EBUSY;
+ 		}
+ 	}
+-
+-	list_del_init(&dentry->d_hash);
++	__dentry_unhash(dentry);
++	spin_unlock(&dentry->d_lock);
+ 	spin_unlock(&dcache_lock);
++
+ 	return 0;
+ }
+ 
+ /* This should be called _only_ with dcache_lock held */
+-
+-static inline struct dentry * __dget_locked(struct dentry *dentry)
++ 
++struct dentry * __dget_locked(struct dentry *dentry)
+ {
+ 	atomic_inc(&dentry->d_count);
+ 	if (atomic_read(&dentry->d_count) == 1) {
+@@ -227,7 +250,7 @@
+ 
+ struct dentry * dget_locked(struct dentry *dentry)
+ {
+-	return __dget_locked(dentry);
++	return dget(dentry);
+ }
+ 
+ /**
+@@ -253,7 +276,7 @@
+ 		next = tmp->next;
+ 		alias = list_entry(tmp, struct dentry, d_alias);
+ 		if (!list_empty(&alias->d_hash)) {
+-			__dget_locked(alias);
++			dget(alias);
+ 			spin_unlock(&dcache_lock);
+ 			return alias;
+ 		}
+@@ -263,7 +286,7 @@
+ }
+ 
+ /*
+- *	Try to kill dentries associated with this inode.
++ * Try to kill dentries associated with this inode.
+  * WARNING: you must own a reference to inode.
+  */
+ void d_prune_aliases(struct inode *inode)
+@@ -274,13 +297,16 @@
+ 	tmp = head;
+ 	while ((tmp = tmp->next) != head) {
+ 		struct dentry *dentry = list_entry(tmp, struct dentry, d_alias);
++		spin_lock(&dentry->d_lock);
+ 		if (!atomic_read(&dentry->d_count)) {
+-			__dget_locked(dentry);
++			__dget(dentry);
++			__dentry_unhash(dentry);
++			spin_unlock(&dentry->d_lock);
+ 			spin_unlock(&dcache_lock);
+-			d_drop(dentry);
+ 			dput(dentry);
+ 			goto restart;
+ 		}
++		spin_unlock(&dentry->d_lock);
+ 	}
+ 	spin_unlock(&dcache_lock);
+ }
+@@ -295,7 +321,8 @@
+ {
+ 	struct dentry * parent;
+ 
+-	list_del_init(&dentry->d_hash);
++	__dentry_unhash(dentry);
++	spin_unlock(&dentry->d_lock);
+ 	list_del(&dentry->d_child);
+ 	dentry_iput(dentry);
+ 	parent = dentry->d_parent;
+@@ -330,19 +357,20 @@
+ 		if (tmp == &dentry_unused)
+ 			break;
+ 		list_del_init(tmp);
++		dentry_stat.nr_unused--;
+ 		dentry = list_entry(tmp, struct dentry, d_lru);
+-
++		
++		spin_lock(&dentry->d_lock);
+ 		/* If the dentry was recently referenced, don't free it. */
+ 		if (dentry->d_vfs_flags & DCACHE_REFERENCED) {
+ 			dentry->d_vfs_flags &= ~DCACHE_REFERENCED;
+-			list_add(&dentry->d_lru, &dentry_unused);
++			if (!atomic_read(&dentry->d_count)) {
++				list_add(&dentry->d_lru, &dentry_unused);
++				dentry_stat.nr_unused++;
++			}
++			spin_unlock(&dentry->d_lock);
+ 			continue;
+ 		}
+-		dentry_stat.nr_unused--;
+-
+-		/* Unused dentry with a count? */
+-		if (atomic_read(&dentry->d_count))
+-			BUG();
+ 
+ 		prune_one_dentry(dentry);
+ 		if (!--count)
+@@ -405,8 +433,11 @@
+ 		dentry = list_entry(tmp, struct dentry, d_lru);
+ 		if (dentry->d_sb != sb)
+ 			continue;
+-		if (atomic_read(&dentry->d_count))
++		spin_lock(&dentry->d_lock);
++		if (atomic_read(&dentry->d_count)) {
++			spin_unlock(&dentry->d_lock);
+ 			continue;
++		}
+ 		dentry_stat.nr_unused--;
+ 		list_del_init(tmp);
+ 		prune_one_dentry(dentry);
+@@ -488,11 +519,14 @@
+ 		struct list_head *tmp = next;
+ 		struct dentry *dentry = list_entry(tmp, struct dentry, d_child);
+ 		next = tmp->next;
++
++		list_del_init(&dentry->d_lru);
++		spin_lock(&dentry->d_lock);
+ 		if (!atomic_read(&dentry->d_count)) {
+-			list_del(&dentry->d_lru);
+ 			list_add(&dentry->d_lru, dentry_unused.prev);
+ 			found++;
+ 		}
++		spin_unlock(&dentry->d_lock);
+ 		/*
+ 		 * Descend a level if the d_subdirs list is non-empty.
+ 		 */
+@@ -608,8 +642,10 @@
+ 	atomic_set(&dentry->d_count, 1);
+ 	dentry->d_vfs_flags = 0;
+ 	dentry->d_flags = 0;
++	dentry->d_lock = SPIN_LOCK_UNLOCKED;
+ 	dentry->d_inode = NULL;
+ 	dentry->d_parent = NULL;
++	dentry->d_nexthash = NULL;
+ 	dentry->d_sb = NULL;
+ 	dentry->d_name.name = str;
+ 	dentry->d_name.len = name->len;
+@@ -701,21 +737,25 @@
+  * finished using it. %NULL is returned on failure.
+  */
+  
+-struct dentry * d_lookup(struct dentry * parent, struct qstr * name)
++struct dentry * d_lookup(struct dentry * parent, struct qstr * name)  
+ {
++
+ 	unsigned int len = name->len;
+ 	unsigned int hash = name->hash;
+ 	const unsigned char *str = name->name;
+ 	struct list_head *head = d_hash(parent,hash);
+ 	struct list_head *tmp;
++	struct dentry * found = NULL;
+ 
+-	spin_lock(&dcache_lock);
+ 	tmp = head->next;
+ 	for (;;) {
+ 		struct dentry * dentry = list_entry(tmp, struct dentry, d_hash);
+ 		if (tmp == head)
+ 			break;
+-		tmp = tmp->next;
++		if (dentry->d_vfs_flags & DCACHE_UNLINKED)
++			tmp = &(dentry->d_nexthash->d_hash);
++		else
++			tmp = tmp->next;
+ 		if (dentry->d_name.hash != hash)
+ 			continue;
+ 		if (dentry->d_parent != parent)
+@@ -729,13 +769,14 @@
+ 			if (memcmp(dentry->d_name.name, str, len))
+ 				continue;
+ 		}
+-		__dget_locked(dentry);
+-		dentry->d_vfs_flags |= DCACHE_REFERENCED;
+-		spin_unlock(&dcache_lock);
+-		return dentry;
++		spin_lock(&dentry->d_lock);
++		if (!(dentry->d_vfs_flags & DCACHE_UNLINKED)) {
++			found = __dget(dentry);
++		}
++		spin_unlock(&dentry->d_lock);
++		return found;
+ 	}
+-	spin_unlock(&dcache_lock);
+-	return NULL;
++	return found;
+ }
+ 
+ /**
+@@ -774,7 +815,7 @@
+ 	lhp = base = d_hash(dparent, dentry->d_name.hash);
+ 	while ((lhp = lhp->next) != base) {
+ 		if (dentry == list_entry(lhp, struct dentry, d_hash)) {
+-			__dget_locked(dentry);
++			dget(dentry);
+ 			spin_unlock(&dcache_lock);
+ 			return 1;
+ 		}
+@@ -909,7 +950,7 @@
+ 	list_add(&dentry->d_hash, &target->d_hash);
+ 
+ 	/* Unhash the target: dput() will then get rid of it */
+-	list_del_init(&target->d_hash);
++	dentry_unhash(target);
+ 
+ 	list_del(&dentry->d_child);
+ 	list_del(&target->d_child);
+diff -Nru -X dontdiff linux-2.4.17/fs/exec.c linux-fastwalk/fs/exec.c
+--- linux-2.4.17/fs/exec.c	Fri Dec 21 09:41:55 2001
++++ linux-fastwalk/fs/exec.c	Tue May  7 10:56:25 2002
+@@ -343,8 +343,7 @@
+ 	struct file *file;
+ 	int err = 0;
+ 
+-	if (path_init(name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd))
+-		err = path_walk(name, &nd);
++	err = path_lookup(name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
+ 	file = ERR_PTR(err);
+ 	if (!err) {
+ 		inode = nd.dentry->d_inode;
+diff -Nru -X dontdiff linux-2.4.17/fs/namei.c linux-fastwalk/fs/namei.c
+--- linux-2.4.17/fs/namei.c	Wed Oct 17 14:46:29 2001
++++ linux-fastwalk/fs/namei.c	Tue May  7 11:30:22 2002
+@@ -262,8 +262,41 @@
+ static struct dentry * cached_lookup(struct dentry * parent, struct qstr * name, int flags)
+ {
+ 	struct dentry * dentry = d_lookup(parent, name);
++	
++	if (dentry && dentry->d_op && dentry->d_op->d_revalidate) {
++		if (!dentry->d_op->d_revalidate(dentry, flags) && !d_invalidate(dentry)) {
++			dput(dentry);
++			dentry = NULL;
++		}
++	}
++	return dentry;
++}
+ 
++/*for fastwalking*/
++static inline void undo_locked(struct nameidata *nd)
++{
++	if(nd->flags & LOOKUP_LOCKED){
++		__dget_locked(nd->dentry);
++		mntget(nd->mnt);
++		spin_unlock(&dcache_lock);
++		nd->flags &= ~LOOKUP_LOCKED;
++	}
++}
++
++/*
++ * For fast path lookup while holding the dcache_lock. 
++ * SMP-safe
++ */
++static struct dentry * cached_lookup_nd(struct nameidata * nd, struct qstr * name, int flags)
++{
++	struct dentry * dentry = NULL;
++	if(!(nd->flags & LOOKUP_LOCKED))
++		return cached_lookup(nd->dentry, name, flags);
++	
++	dentry = d_lookup(nd->dentry, name);
++	
+ 	if (dentry && dentry->d_op && dentry->d_op->d_revalidate) {
++		undo_locked(nd);
+ 		if (!dentry->d_op->d_revalidate(dentry, flags) && !d_invalidate(dentry)) {
+ 			dput(dentry);
+ 			dentry = NULL;
+@@ -273,6 +306,34 @@
+ }
+ 
+ /*
++ * Short-cut version of permission(), for calling by
++ * path_walk(), when dcache lock is held.  Combines parts
++ * of permission() and vfs_permission(), and tests ONLY for
++ * MAY_EXEC permission.
++ *
++ * If appropriate, check DAC only.  If not appropriate, or
++ * short-cut DAC fails, then call permission() to do more
++ * complete permission check.
++ */
++static inline int exec_permission_lite(struct inode *inode)
++{
++	umode_t	mode = inode->i_mode;
++
++	if ((inode->i_op && inode->i_op->permission))
++		return -EACCES;
++
++	if (current->fsuid == inode->i_uid)
++		mode >>= 6;
++	else if (in_group_p(inode->i_gid))
++		mode >>= 3;
++
++	if (mode & MAY_EXEC)
++		return 0;
++
++	return -EACCES;
++}
++
++/*
+  * This is called when everything else fails, and we actually have
+  * to go to the low-level filesystem to find out what we should do..
+  *
+@@ -466,7 +527,11 @@
+ 		struct qstr this;
+ 		unsigned int c;
+ 
+-		err = permission(inode, MAY_EXEC);
++		err = exec_permission_lite(inode);
++		if(err){
++			undo_locked(nd);
++			err = permission(inode, MAY_EXEC);
++		}
+ 		dentry = ERR_PTR(err);
+  		if (err)
+ 			break;
+@@ -501,6 +566,7 @@
+ 			case 2:	
+ 				if (this.name[1] != '.')
+ 					break;
++				undo_locked(nd);
+ 				follow_dotdot(nd);
+ 				inode = nd->dentry->d_inode;
+ 				/* fallthrough */
+@@ -517,16 +583,20 @@
+ 				break;
+ 		}
+ 		/* This does the actual lookups.. */
+-		dentry = cached_lookup(nd->dentry, &this, LOOKUP_CONTINUE);
++		dentry = cached_lookup_nd(nd, &this, LOOKUP_CONTINUE);
+ 		if (!dentry) {
++			undo_locked(nd);
+ 			dentry = real_lookup(nd->dentry, &this, LOOKUP_CONTINUE);
+ 			err = PTR_ERR(dentry);
+ 			if (IS_ERR(dentry))
+ 				break;
+ 		}
+ 		/* Check mountpoints.. */
+-		while (d_mountpoint(dentry) && __follow_down(&nd->mnt, &dentry))
+-			;
++		if(d_mountpoint(dentry)){
++			undo_locked(nd);
++			while (d_mountpoint(dentry) && __follow_down(&nd->mnt, &dentry))
++				;
++		}
+ 
+ 		err = -ENOENT;
+ 		inode = dentry->d_inode;
+@@ -537,6 +607,7 @@
+ 			goto out_dput;
+ 
+ 		if (inode->i_op->follow_link) {
++			undo_locked(nd);
+ 			err = do_follow_link(dentry, nd);
+ 			dput(dentry);
+ 			if (err)
+@@ -549,7 +620,8 @@
+ 			if (!inode->i_op)
+ 				break;
+ 		} else {
+-			dput(nd->dentry);
++			if (!(nd->flags & LOOKUP_LOCKED))
++				dput(nd->dentry);
+ 			nd->dentry = dentry;
+ 		}
+ 		err = -ENOTDIR; 
+@@ -569,6 +641,7 @@
+ 			case 2:	
+ 				if (this.name[1] != '.')
+ 					break;
++				undo_locked(nd);
+ 				follow_dotdot(nd);
+ 				inode = nd->dentry->d_inode;
+ 				/* fallthrough */
+@@ -580,7 +653,8 @@
+ 			if (err < 0)
+ 				break;
+ 		}
+-		dentry = cached_lookup(nd->dentry, &this, 0);
++		dentry = cached_lookup_nd(nd, &this, 0);
++		undo_locked(nd); 
+ 		if (!dentry) {
+ 			dentry = real_lookup(nd->dentry, &this, 0);
+ 			err = PTR_ERR(dentry);
+@@ -625,11 +699,14 @@
+ 		else if (this.len == 2 && this.name[1] == '.')
+ 			nd->last_type = LAST_DOTDOT;
+ return_base:
++		undo_locked(nd);
+ 		return 0;
+ out_dput:
++		undo_locked(nd);
+ 		dput(dentry);
+ 		break;
+ 	}
++	undo_locked(nd);
+ 	path_release(nd);
+ return_err:
+ 	return err;
+@@ -736,6 +813,36 @@
+ 	return 1;
+ }
+ 
++int path_lookup(const char *name, unsigned int flags, struct nameidata *nd)
++{
++	nd->last_type = LAST_ROOT; /* if there are only slashes... */
++	nd->flags = flags;
++	if (*name=='/'){
++		read_lock(&current->fs->lock);
++		if (current->fs->altroot && !(nd->flags & LOOKUP_NOALT)) {
++			nd->mnt = mntget(current->fs->altrootmnt);
++			nd->dentry = dget(current->fs->altroot);
++			read_unlock(&current->fs->lock);
++			if (__emul_lookup_dentry(name,nd))
++				return 0;
++			read_lock(&current->fs->lock);
++		}
++		spin_lock(&dcache_lock); /*to avoid cacheline bouncing with d_count*/
++		nd->mnt = current->fs->rootmnt;
++		nd->dentry = current->fs->root;
++		read_unlock(&current->fs->lock);
++	}
++	else{
++		read_lock(&current->fs->lock);
++		spin_lock(&dcache_lock);
++		nd->mnt = current->fs->pwdmnt;
++		nd->dentry = current->fs->pwd;
++		read_unlock(&current->fs->lock);
++	}
++	nd->flags |= LOOKUP_LOCKED;
++	return (path_walk(name, nd));
++}
++
+ /*
+  * Restricted form of lookup. Doesn't follow links, single-component only,
+  * needs parent already locked. Doesn't follow mounts.
+@@ -828,8 +935,7 @@
+ 	err = PTR_ERR(tmp);
+ 	if (!IS_ERR(tmp)) {
+ 		err = 0;
+-		if (path_init(tmp, flags, nd))
+-			err = path_walk(tmp, nd);
++		err = path_lookup(tmp, flags, nd);
+ 		putname(tmp);
+ 	}
+ 	return err;
+@@ -983,8 +1089,7 @@
+ 	 * The simplest case - just a plain lookup.
+ 	 */
+ 	if (!(flag & O_CREAT)) {
+-		if (path_init(pathname, lookup_flags(flag), nd))
+-			error = path_walk(pathname, nd);
++		error = path_lookup(pathname, lookup_flags(flag), nd);
+ 		if (error)
+ 			return error;
+ 		dentry = nd->dentry;
+@@ -994,8 +1099,7 @@
+ 	/*
+ 	 * Create - we need to know the parent.
+ 	 */
+-	if (path_init(pathname, LOOKUP_PARENT, nd))
+-		error = path_walk(pathname, nd);
++	error = path_lookup(pathname, LOOKUP_PARENT, nd);
+ 	if (error)
+ 		return error;
+ 
+@@ -1247,8 +1351,7 @@
+ 	if (IS_ERR(tmp))
+ 		return PTR_ERR(tmp);
+ 
+-	if (path_init(tmp, LOOKUP_PARENT, &nd))
+-		error = path_walk(tmp, &nd);
++	error = path_lookup(tmp, LOOKUP_PARENT, &nd);
+ 	if (error)
+ 		goto out;
+ 	dentry = lookup_create(&nd, 0);
+@@ -1316,8 +1419,7 @@
+ 		struct dentry *dentry;
+ 		struct nameidata nd;
+ 
+-		if (path_init(tmp, LOOKUP_PARENT, &nd))
+-			error = path_walk(tmp, &nd);
++		error = path_lookup(tmp, LOOKUP_PARENT, &nd);
+ 		if (error)
+ 			goto out;
+ 		dentry = lookup_create(&nd, 1);
+@@ -1411,8 +1513,7 @@
+ 	if(IS_ERR(name))
+ 		return PTR_ERR(name);
+ 
+-	if (path_init(name, LOOKUP_PARENT, &nd))
+-		error = path_walk(name, &nd);
++	error = path_lookup(name, LOOKUP_PARENT, &nd);
+ 	if (error)
+ 		goto exit;
+ 
+@@ -1480,8 +1581,7 @@
+ 	if(IS_ERR(name))
+ 		return PTR_ERR(name);
+ 
+-	if (path_init(name, LOOKUP_PARENT, &nd))
+-		error = path_walk(name, &nd);
++	error = path_lookup(name, LOOKUP_PARENT, &nd);
+ 	if (error)
+ 		goto exit;
+ 	error = -EISDIR;
+@@ -1552,8 +1652,7 @@
+ 		struct dentry *dentry;
+ 		struct nameidata nd;
+ 
+-		if (path_init(to, LOOKUP_PARENT, &nd))
+-			error = path_walk(to, &nd);
++		error = path_lookup(to, LOOKUP_PARENT, &nd);
+ 		if (error)
+ 			goto out;
+ 		dentry = lookup_create(&nd, 0);
+@@ -1636,12 +1735,10 @@
+ 		struct nameidata nd, old_nd;
+ 
+ 		error = 0;
+-		if (path_init(from, LOOKUP_POSITIVE, &old_nd))
+-			error = path_walk(from, &old_nd);
++		error = path_lookup(from, LOOKUP_POSITIVE, &old_nd);
+ 		if (error)
+ 			goto exit;
+-		if (path_init(to, LOOKUP_PARENT, &nd))
+-			error = path_walk(to, &nd);
++		error = path_lookup(to, LOOKUP_PARENT, &nd);
+ 		if (error)
+ 			goto out;
+ 		error = -EXDEV;
+@@ -1841,14 +1938,11 @@
+ 	struct dentry * old_dentry, *new_dentry;
+ 	struct nameidata oldnd, newnd;
+ 
+-	if (path_init(oldname, LOOKUP_PARENT, &oldnd))
+-		error = path_walk(oldname, &oldnd);
+-
++	error = path_lookup(oldname, LOOKUP_PARENT, &oldnd);
+ 	if (error)
+ 		goto exit;
+ 
+-	if (path_init(newname, LOOKUP_PARENT, &newnd))
+-		error = path_walk(newname, &newnd);
++	error = path_lookup(newname, LOOKUP_PARENT, &newnd);
+ 	if (error)
+ 		goto exit1;
+ 
+diff -Nru -X dontdiff linux-2.4.17/fs/namespace.c linux-fastwalk/fs/namespace.c
+--- linux-2.4.17/fs/namespace.c	Fri Dec 21 09:41:55 2001
++++ linux-fastwalk/fs/namespace.c	Tue May  7 10:56:25 2002
+@@ -375,8 +375,7 @@
+ 	if (IS_ERR(kname))
+ 		goto out;
+ 	retval = 0;
+-	if (path_init(kname, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &nd))
+-		retval = path_walk(kname, &nd);
++	retval = path_lookup(kname, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &nd); 
+ 	putname(kname);
+ 	if (retval)
+ 		goto out;
+@@ -505,8 +504,7 @@
+ 		return err;
+ 	if (!old_name || !*old_name)
+ 		return -EINVAL;
+-	if (path_init(old_name, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &old_nd))
+-		err = path_walk(old_name, &old_nd);
++	err = path_lookup(old_name, LOOKUP_POSITIVE|LOOKUP_FOLLOW, &old_nd);
+ 	if (err)
+ 		return err;
+ 
+@@ -669,8 +667,7 @@
+ 	flags &= ~(MS_NOSUID|MS_NOEXEC|MS_NODEV);
+ 
+ 	/* ... and get the mountpoint */
+-	if (path_init(dir_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd))
+-		retval = path_walk(dir_name, &nd);
++	retval = path_lookup(dir_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
+ 	if (retval)
+ 		return retval;
+ 
+@@ -780,8 +777,7 @@
+ 	if (IS_ERR(name))
+ 		goto out0;
+ 	error = 0;
+-	if (path_init(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &new_nd))
+-		error = path_walk(name, &new_nd);
++	error = path_lookup(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &new_nd);
+ 	putname(name);
+ 	if (error)
+ 		goto out0;
+@@ -794,8 +790,7 @@
+ 	if (IS_ERR(name))
+ 		goto out1;
+ 	error = 0;
+-	if (path_init(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &old_nd))
+-		error = path_walk(name, &old_nd);
++	error = path_lookup(name, LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY, &old_nd);
+ 	putname(name);
+ 	if (error)
+ 		goto out1;
+@@ -985,8 +980,7 @@
+ 	old_rootmnt = mntget(current->fs->rootmnt);
+ 	read_unlock(&current->fs->lock);
+ 	/*  First unmount devfs if mounted  */
+-	if (path_init("/dev", LOOKUP_FOLLOW|LOOKUP_POSITIVE, &devfs_nd))
+-		error = path_walk("/dev", &devfs_nd);
++	error = path_lookup("/dev", LOOKUP_FOLLOW|LOOKUP_POSITIVE, &devfs_nd);
+ 	if (!error) {
+ 		if (devfs_nd.mnt->mnt_sb->s_magic == DEVFS_SUPER_MAGIC &&
+ 		    devfs_nd.dentry == devfs_nd.mnt->mnt_root) {
+@@ -1009,8 +1003,7 @@
+ 	 * Get the new mount directory
+ 	 */
+ 	error = 0;
+-	if (path_init(put_old, LOOKUP_FOLLOW|LOOKUP_POSITIVE|LOOKUP_DIRECTORY, &nd))
+-		error = path_walk(put_old, &nd);
++	error = path_lookup(put_old, LOOKUP_FOLLOW|LOOKUP_POSITIVE|LOOKUP_DIRECTORY, &nd);
+ 	if (error) {
+ 		int blivet;
+ 		struct block_device *ramdisk = old_rootmnt->mnt_sb->s_bdev;
+diff -Nru -X dontdiff linux-2.4.17/fs/open.c linux-fastwalk/fs/open.c
+--- linux-2.4.17/fs/open.c	Fri Oct 12 13:48:42 2001
++++ linux-fastwalk/fs/open.c	Tue May  7 10:56:25 2002
+@@ -368,8 +368,7 @@
+ 		goto out;
+ 
+ 	error = 0;
+-	if (path_init(name,LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY,&nd))
+-		error = path_walk(name, &nd);
++	error = path_lookup(name,LOOKUP_POSITIVE|LOOKUP_FOLLOW|LOOKUP_DIRECTORY,&nd);
+ 	putname(name);
+ 	if (error)
+ 		goto out;
+@@ -427,9 +426,8 @@
+ 	if (IS_ERR(name))
+ 		goto out;
+ 
+-	path_init(name, LOOKUP_POSITIVE | LOOKUP_FOLLOW |
++	error = path_lookup(name, LOOKUP_POSITIVE | LOOKUP_FOLLOW |
+ 		      LOOKUP_DIRECTORY | LOOKUP_NOALT, &nd);
+-	error = path_walk(name, &nd);	
+ 	putname(name);
+ 	if (error)
+ 		goto out;
+diff -Nru -X dontdiff linux-2.4.17/fs/super.c linux-fastwalk/fs/super.c
+--- linux-2.4.17/fs/super.c	Fri Dec 21 09:42:03 2001
++++ linux-fastwalk/fs/super.c	Tue May  7 10:56:25 2002
+@@ -548,8 +548,7 @@
+ 	/* What device it is? */
+ 	if (!dev_name || !*dev_name)
+ 		return ERR_PTR(-EINVAL);
+-	if (path_init(dev_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd))
+-		error = path_walk(dev_name, &nd);
++	error = path_lookup(dev_name, LOOKUP_FOLLOW|LOOKUP_POSITIVE, &nd);
+ 	if (error)
+ 		return ERR_PTR(error);
+ 	inode = nd.dentry->d_inode;
+diff -Nru -X dontdiff linux-2.4.17/include/linux/dcache.h linux-fastwalk/include/linux/dcache.h
+--- linux-2.4.17/include/linux/dcache.h	Thu Nov 22 11:46:18 2001
++++ linux-fastwalk/include/linux/dcache.h	Tue May  7 11:31:13 2002
+@@ -5,6 +5,8 @@
+ 
+ #include <asm/atomic.h>
+ #include <linux/mount.h>
++#include <linux/rcupdate.h>
++#include <asm/system.h>
+ 
+ /*
+  * linux/include/linux/dcache.h
+@@ -65,11 +67,14 @@
+ 
+ struct dentry {
+ 	atomic_t d_count;
++	spinlock_t d_lock;		/* lock for d_count & d_vfs_flags */
++	unsigned long d_vfs_flags;	/* moved here to be on same cacheline */
+ 	unsigned int d_flags;
+ 	struct inode  * d_inode;	/* Where the name belongs to - NULL is negative */
+ 	struct dentry * d_parent;	/* parent directory */
++	struct dentry * d_nexthash;	/* next on the hash list*/
+ 	struct list_head d_hash;	/* lookup hash list */
+-	struct list_head d_lru;		/* d_count = 0 LRU list */
++	struct list_head d_lru;		/* LRU list */
+ 	struct list_head d_child;	/* child of parent list */
+ 	struct list_head d_subdirs;	/* our children */
+ 	struct list_head d_alias;	/* inode alias list */
+@@ -78,8 +83,8 @@
+ 	unsigned long d_time;		/* used by d_revalidate */
+ 	struct dentry_operations  *d_op;
+ 	struct super_block * d_sb;	/* The root of the dentry tree */
+-	unsigned long d_vfs_flags;
+ 	void * d_fsdata;		/* fs-specific data */
++	struct rcu_head d_rcu;
+ 	unsigned char d_iname[DNAME_INLINE_LEN]; /* small names */
+ };
+ 
+@@ -123,39 +128,16 @@
+ 					 * s_nfsd_free_path semaphore will be down
+ 					 */
+ #define DCACHE_REFERENCED	0x0008  /* Recently used, don't discard. */
++#define DCACHE_UNLINKED	0x0010	/* Marked for deferred freeing */
+ 
+ extern spinlock_t dcache_lock;
+ 
+-/**
+- * d_drop - drop a dentry
+- * @dentry: dentry to drop
+- *
+- * d_drop() unhashes the entry from the parent
+- * dentry hashes, so that it won't be found through
+- * a VFS lookup any more. Note that this is different
+- * from deleting the dentry - d_delete will try to
+- * mark the dentry negative if possible, giving a
+- * successful _negative_ lookup, while d_drop will
+- * just make the cache lookup fail.
+- *
+- * d_drop() is used mainly for stuff that wants
+- * to invalidate a dentry for some reason (NFS
+- * timeouts or autofs deletes).
+- */
+-
+-static __inline__ void d_drop(struct dentry * dentry)
+-{
+-	spin_lock(&dcache_lock);
+-	list_del(&dentry->d_hash);
+-	INIT_LIST_HEAD(&dentry->d_hash);
+-	spin_unlock(&dcache_lock);
+-}
+-
+ static __inline__ int dname_external(struct dentry *d)
+ {
+ 	return d->d_name.name != d->d_iname; 
+ }
+ 
++
+ /*
+  * These are the low-level FS interfaces to the dcache..
+  */
+@@ -227,6 +209,50 @@
+   
+ /* Allocation counts.. */
+ 
++extern struct dentry * dget_locked(struct dentry *);
++extern struct dentry * __dget_locked(struct dentry *);
++
++static inline void __dentry_unhash(struct dentry *d)
++{
++	d->d_vfs_flags |= DCACHE_UNLINKED;
++	wmb();
++	d->d_nexthash = list_entry(d->d_hash.next, struct dentry, d_hash);
++	wmb();
++	list_del_init(&d->d_hash);
++	wmb();
++}
++
++static inline void dentry_unhash(struct dentry *d)
++{
++	spin_lock(&d->d_lock);
++	__dentry_unhash(d);
++	spin_unlock(&d->d_lock);
++}
++
++/**
++ * d_drop - drop a dentry
++ * @dentry: dentry to drop
++ *
++ * d_drop() unhashes the entry from the parent
++ * dentry hashes, so that it won't be found through
++ * a VFS lookup any more. Note that this is different
++ * from deleting the dentry - d_delete will try to
++ * mark the dentry negative if possible, giving a
++ * successful _negative_ lookup, while d_drop will
++ * just make the cache lookup fail.
++ *
++ * d_drop() is used mainly for stuff that wants
++ * to invalidate a dentry for some reason (NFS
++ * timeouts or autofs deletes).
++ */
++
++static inline void d_drop(struct dentry * dentry)
++{
++	spin_lock(&dcache_lock);
++	dentry_unhash(dentry);
++	spin_unlock(&dcache_lock);
++}
++
+ /**
+  *	dget, dget_locked	-	get a reference to a dentry
+  *	@dentry: dentry to get a reference to
+@@ -240,17 +266,25 @@
+  *	and call dget_locked() instead of dget().
+  */
+  
+-static __inline__ struct dentry * dget(struct dentry *dentry)
++static inline struct dentry * dget(struct dentry *dentry)
+ {
+ 	if (dentry) {
+-		if (!atomic_read(&dentry->d_count))
+-			BUG();
++		spin_lock(&dentry->d_lock);
+ 		atomic_inc(&dentry->d_count);
++		dentry->d_vfs_flags |= DCACHE_REFERENCED;
++		spin_unlock(&dentry->d_lock);
+ 	}
+ 	return dentry;
+ }
+ 
+-extern struct dentry * dget_locked(struct dentry *);
++static __inline__ struct dentry * __dget(struct dentry *dentry)
++{
++	if (dentry) {
++		atomic_inc(&dentry->d_count);
++		dentry->d_vfs_flags |= DCACHE_REFERENCED;
++	}
++	return dentry;
++}
+ 
+ /**
+  *	d_unhashed -	is dentry hashed
+diff -Nru -X dontdiff linux-2.4.17/include/linux/fs.h linux-fastwalk/include/linux/fs.h
+--- linux-2.4.17/include/linux/fs.h	Fri Dec 21 09:42:03 2001
++++ linux-fastwalk/include/linux/fs.h	Tue May  7 10:56:25 2002
+@@ -1270,6 +1270,7 @@
+  *  - require a directory
+  *  - ending slashes ok even for nonexistent files
+  *  - internal "there are more path compnents" flag
++ *  - locked when lookup done with dcache_lock held
+  */
+ #define LOOKUP_FOLLOW		(1)
+ #define LOOKUP_DIRECTORY	(2)
+@@ -1277,6 +1278,8 @@
+ #define LOOKUP_POSITIVE		(8)
+ #define LOOKUP_PARENT		(16)
+ #define LOOKUP_NOALT		(32)
++#define LOOKUP_LOCKED		(64)
++
+ /*
+  * Type of the last component on LOOKUP_PARENT
+  */
+@@ -1306,6 +1309,7 @@
+ extern int FASTCALL(__user_walk(const char *, unsigned, struct nameidata *));
+ extern int FASTCALL(path_init(const char *, unsigned, struct nameidata *));
+ extern int FASTCALL(path_walk(const char *, struct nameidata *));
++extern int FASTCALL(path_lookup(const char *, unsigned, struct nameidata *));
+ extern int FASTCALL(link_path_walk(const char *, struct nameidata *));
+ extern void path_release(struct nameidata *);
+ extern int follow_down(struct vfsmount **, struct dentry **);

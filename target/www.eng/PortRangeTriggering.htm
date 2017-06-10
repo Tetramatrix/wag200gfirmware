@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Port Range Triggering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+
+<!-- hide script from old browsers
+function Check(num)
+{
+    var msg = msg_invalid_portnumber;
+    var cf = document.forms[0];
+    var name,in_sp,in_ep,out_sp,out_ep,Enable;
+    switch(num)
+    {
+    case 1:
+        name = cf.app1_name.value;
+        in_sp = cf.app1_src_start.value;
+        in_ep = cf.app1_src_finish.value;
+        out_sp= cf.app1_dest_start.value;
+        Enable= cf.app1_enable.checked;
+        out_ep= cf.app1_dest_finish.value; break;
+    case 2:
+        name = cf.app2_name.value;
+        in_sp = cf.app2_src_start.value;
+        in_ep = cf.app2_src_finish.value;
+        out_sp= cf.app2_dest_start.value;
+        Enable= cf.app2_enable.checked;
+        out_ep= cf.app2_dest_finish.value; break;
+    case 3:
+        name = cf.app3_name.value;
+        in_sp = cf.app3_src_start.value;
+        in_ep = cf.app3_src_finish.value;
+        out_sp= cf.app3_dest_start.value;
+        Enable= cf.app3_enable.checked;
+        out_ep= cf.app3_dest_finish.value; break;
+    case 4:
+        name = cf.app4_name.value;
+        in_sp = cf.app4_src_start.value;
+        in_ep = cf.app4_src_finish.value;
+        out_sp= cf.app4_dest_start.value;
+        Enable= cf.app4_enable.checked;
+        out_ep= cf.app4_dest_finish.value; break;
+    case 5:
+        name = cf.app5_name.value;
+        in_sp = cf.app5_src_start.value;
+        in_ep = cf.app5_src_finish.value;
+        out_sp= cf.app5_dest_start.value;
+        Enable= cf.app5_enable.checked;
+        out_ep= cf.app5_dest_finish.value; break;
+    case 6:
+        name = cf.app6_name.value;
+        in_sp = cf.app6_src_start.value;
+        in_ep = cf.app6_src_finish.value;
+        out_sp= cf.app6_dest_start.value;
+        Enable= cf.app6_enable.checked;
+        out_ep= cf.app6_dest_finish.value; break;
+    case 7:
+        name = cf.app7_name.value;
+        in_sp = cf.app7_src_start.value;
+        in_ep = cf.app7_src_finish.value;
+        out_sp= cf.app7_dest_start.value;
+        Enable= cf.app7_enable.checked;
+        out_ep= cf.app7_dest_finish.value; break;
+    case 8:
+        name = cf.app8_name.value;
+        in_sp = cf.app8_src_start.value;
+        in_ep = cf.app8_src_finish.value;
+        out_sp= cf.app8_dest_start.value;
+        Enable= cf.app8_enable.checked;
+        out_ep= cf.app8_dest_finish.value; break;
+    case 9:
+        name = cf.app9_name.value;
+        in_sp = cf.app9_src_start.value;
+        in_ep = cf.app9_src_finish.value;
+        out_sp= cf.app9_dest_start.value;
+        Enable= cf.app9_enable.checked;
+        out_ep= cf.app9_dest_finish.value; break;
+    case 10:
+        name = cf.app10_name.value;
+        in_sp = cf.app10_src_start.value;
+        in_ep = cf.app10_src_finish.value;
+        out_sp= cf.app10_dest_start.value;
+        Enable= cf.app10_enable.checked;
+        out_ep= cf.app10_dest_finish.value; break;
+    }
+    
+    if( Enable && name.length<1 )
+    {
+        alert(msg_nameNULL);
+        return false;
+    }
+    else if( name.length==0 )
+    {
+        return true;
+    }
+    
+    
+    
+    if( isInteger(in_sp,1,65534,false)==false )
+    {
+        alert(msg);
+        return false;
+    }
+
+    if( isInteger(in_ep,1,65534,false)==false )
+     {
+        alert(msg);
+        return false;
+    }
+        
+    if( isInteger(out_sp,1,65534,false)==false )
+    {
+        alert(msg);
+        return false;
+    }
+
+    if( isInteger(out_ep,1,65534,false)==false ) 
+    {
+        alert(msg);
+        return false;
+    }
+        
+    if( parseInt(in_sp)>parseInt(in_ep) || parseInt(out_sp)>parseInt(out_ep) )
+    {
+        alert(msg_portbigger);
+        return false;
+    }    
+        
+    return true;
+}
+
+
+function checkData()
+{
+    var cf=document.forms[0];
+    for(var i=1;i<=10;i++)
+    {
+        if( Check(i)==false )
+        {
+            return false;
+        }
+    }
+	dataToHidden(cf);
+    return true;
+}
+
+// 
+//-->
+
+</script>
+</head>
+
+<body link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="dataToVisible(document.forms[0]);">
+<form name="portrangetrigering" method="POST" action="setup.cgi">
+	<div align="center">
+	    
+	    <table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#6666CC">
+		<!-- header 1 -->
+		<tr>
+		    <td width="164"><img border="0" src="UI_Linksys.gif" width="164" height="57"></TD>
+		    <td width="646" colspan="2" valign="bottom" class="fwv">Firmware Version: @fw_version# </TD>
+		
+</TR>
+		<!-- header 2 -->
+		<tr>
+		    <td colspan="3" height="11"><img border="0" src="UI_10.gif" width="810" height="11"></TD>
+
+		</TR>
+		<!-- header 3 -->
+		<tr>
+		    <td rowspan="4" width="164" align="center" class="bighead">Applications &amp; Gaming</TD>
+		    <td width="556" align="right" height="33" class="pname">@product_descrip#</TD>
+		    <td width="90" height="12" align="center" class="mname">@product_name#</TD>
+		
+</TR>
+		
+		<!-- header 3 -->
+		<tr>
+		    <td colspan="2" height="2" width="646" bgcolor="#000000"> </TD>
+		
+</TR>
+		
+		<!-- main menu-->
+		<tr>
+		    <td height="42" colspan="2" width="646">
+			<table border="0" cellspacing="0" width="646" height="100%">
+			    <tr>
+				<td height="10" colspan="4" background="UI_06.gif"></TD>
+				<td height="10" background="UI_07.gif"></TD>
+				<td height="10" colspan="2" background="UI_06.gif"></TD>
+
+			    </TR>
+			    <tr>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Setup.htm">Setup</a></TD>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Wireless.htm">Wireless</a></TD>
+				<td class="menucell" width="83"><a class="mainmenu" href="setup.cgi?next_file=Security.htm">Security</a></TD>
+				<td class="menucell" width="103"><a class="mainmenu" href="setup.cgi?next_file=AccessRes.htm">Access<br>Restrictions</a></TD>
+				<td class="thistab" width="103">Applications &amp;<br>Gaming</TD>
+				<td class="menucell" width="105"><a class="mainmenu" href="setup.cgi?next_file=Administration.htm">Administration</a></TD>
+				<td class="menucell" width="86"><a class="mainmenu" href="setup.cgi?next_file=Status.htm">Status</a></TD>
+			    
+</TR>
+			</table>
+		    </TD>
+		
+</TR>
+		
+		<!-- sub menu--> 
+		<tr>
+		    <td height="21" colspan="2" width="646"> &nbsp; &nbsp;
+			<a class="submenu" href="setup.cgi?next_file=SingleForwarding.htm">Single Port Forwarding</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=AppGaming.htm">Port Range Forwarding</a><b class="separator">|</b>&nbsp;&nbsp;
+			<span class="current">Port Range Triggering</span><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=DMZ.htm">DMZ</a><b class="separator">|</b>&nbsp;&nbsp;
+			<a class="submenu" href="setup.cgi?next_file=QoS.htm">QoS</a>&nbsp;&nbsp;
+		    </TD>
+	    
+</TR>
+</table>		
+		
+		<!-- data table--> 
+		
+		<table border="0" cellpadding="0" cellspacing="0" width="810" bgcolor="#ffffff">
+		    <tr>
+			<td width="164" height="15" bgColor="#e7e7e7" colspan="2" align="right"><img border="0" src="UI_03.gif" width="8" height="15"></TD>
+			<td width="646" height="14" colspan="2"><img border="0" src="UI_02.gif" width="646" height="15"></TD>
+
+		    </TR>
+		    
+		    
+		    <tr>
+			<td width="164" height="24" colspan="2" class="bwhead">Port Range Triggering</TD>
+			<td width="454">&nbsp;  </TD>
+			<td width="192" valign="bottom" bgcolor="#6666CC" background="rh_bg.gif"><SPAN 
+     >&nbsp;&nbsp; <A href="help/h_PTriggering.htm" class="submenu"
+      target="_blank">Help...</a></span></TD>
+		    
+</TR>
+		    
+		    <tr>
+			<td width="156" valign="top" bgColor="#e7e7e7" class="boldhead"> </TD>
+			<td width="8" background="UI_04.gif"> </TD>
+			<td valign="top">
+			    <table align="center" border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border-bottom-width:0" bordercolor="#ffffff" width="95%" bordercolordark="#ffffff" bordercolorlight="#ffffff">
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center" bgColor="#cccccc">
+					<p></TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff" bgColor="#cccccc">
+					<b>Triggered Range</b></TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center" bgColor="#cccccc">
+					<b>Forwarded Range</b></TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center" bgColor="#cccccc">
+				    </TD>
+				
+</TR>
+
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center" bgColor="#cccccc">
+					<p><b>Application Name</b></TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff" bgColor="#cccccc">
+					<b>Start Port &nbsp; End Port</b></TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center" bgColor="#cccccc">
+					<b>Start Port &nbsp; End Port</b></TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center" bgColor="#cccccc">
+				    <b>Enabled</b></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app1_name" value="@app1_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app1_src_start" value="@app1_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app1_src_finish" value="@app1_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app1_dest_start" value="@app1_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app1_dest_finish" value="@app1_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app1_enable" value="app1_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app2_name" value="@app2_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app2_src_start" value="@app2_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app2_src_finish" value="@app2_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app2_dest_start" value="@app2_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app2_dest_finish" value="@app2_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app2_enable" value="app2_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app3_name" value="@app3_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app3_src_start" value="@app3_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app3_src_finish" value="@app3_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app3_dest_start" value="@app3_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app3_dest_finish" value="@app3_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app3_enable" value="app3_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app4_name" value="@app4_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app4_src_start" value="@app4_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app4_src_finish" value="@app4_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app4_dest_start" value="@app4_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app4_dest_finish" value="@app4_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app4_enable" value="app4_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app5_name" value="@app5_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app5_src_start" value="@app5_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app5_src_finish" value="@app5_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app5_dest_start" value="@app5_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app5_dest_finish" value="@app5_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app5_enable" value="app5_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app6_name" value="@app6_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app6_src_start" value="@app6_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app6_src_finish" value="@app6_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app6_dest_start" value="@app6_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app6_dest_finish" value="@app6_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app6_enable" value="app6_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app7_name" value="@app7_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app7_src_start" value="@app7_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app7_src_finish" value="@app7_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app7_dest_start" value="@app7_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app7_dest_finish" value="@app7_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app7_enable" value="app7_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app8_name" value="@app8_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app8_src_start" value="@app8_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app8_src_finish" value="@app8_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app8_dest_start" value="@app8_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app8_dest_finish" value="@app8_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app8_enable" value="app8_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app9_name" value="@app9_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app9_src_start" value="@app9_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app9_src_finish" value="@app9_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app9_dest_start" value="@app9_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app9_dest_finish" value="@app9_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app9_enable" value="app9_enable"></TD>
+				
+</TR>
+				
+				<tr>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"> 
+				    <input type="text" maxlength="44" size="18"  name="app10_name" value="@app10_name#"></TD>
+				    <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center"  bordercolor="#ffffff">
+					<input type="text" class="num" maxLength="5" size="5"  name="app10_src_start" value="@app10_src_start#">
+					~ <input type="text" class="num" maxLength="5" size="5"  name="app10_src_finish" value="@app10_src_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+					&nbsp; <input type="text" class="num" maxLength="5" size="5"  name="app10_dest_start" value="@app10_dest_start#"> ~
+					<input type="text" class="num" maxLength="5" size="5"  name="app10_dest_finish" value="@app10_dest_finish#">
+					</TD> <td nowrap bordercolorlight="#ffffff" bordercolordark="#ffffff" height="25" align="center">
+				    <input type="checkbox" name="app10_enable" value="app10_enable"></TD>
+				
+</TR>
+				
+			    </table>
+			    <br>
+			</TD>
+			<td valign="bottom" rowspan="99" bgcolor="#6666CC" background="rh_bg.gif"><img src="rh_cisco.gif" width="192" height="64" alt="Cisco Logo" border="0"></TD>
+		    
+</TR>
+		    
+		    
+		    
+		    <tr>
+			<td colspan="2" bgcolor="#000000">&nbsp;  </TD>
+			<td class="footer" bgcolor="#6666cc" height="33" align="right">
+			<input type="SUBMIT" class="stdbutton" name="save" value="Save Settings" onClick="return checkData();">
+			<input type="button" name="cancel" value="Cancel Changes" class="stdbutton" onClick="location.href='setup.cgi?next_file=PortRangeTriggering.htm'"> &nbsp;  &nbsp; </TD>
+		    
+</TR>
+		    
+		    
+		</table>
+</div>
+
+
+
+<input type="hidden" name="h_app1_enable" value="@h_app1_enable#">
+<input type="hidden" name="h_app2_enable" value="@h_app2_enable#">
+<input type="hidden" name="h_app3_enable" value="@h_app3_enable#">
+<input type="hidden" name="h_app4_enable" value="@h_app4_enable#">
+<input type="hidden" name="h_app5_enable" value="@h_app5_enable#">
+<input type="hidden" name="h_app6_enable" value="@h_app6_enable#">
+<input type="hidden" name="h_app7_enable" value="@h_app7_enable#">
+<input type="hidden" name="h_app8_enable" value="@h_app8_enable#">
+<input type="hidden" name="h_app9_enable" value="@h_app9_enable#">
+<input type="hidden" name="h_app10_enable" value="@h_app10_enable#">
+
+<input type="hidden" name="todo" value="save">
+<input type="hidden" name="this_file" value="PortRangeTriggering.htm">
+<input type="hidden" name="next_file" value="PortRangeTriggering.htm">
+<input type="hidden" name="message" value="@msg_text#">
+
+</form>     
+</body>
+</html>

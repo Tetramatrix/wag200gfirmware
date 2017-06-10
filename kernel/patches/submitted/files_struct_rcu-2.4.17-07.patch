@@ -1,0 +1,887 @@
+diff -urN linux-2.4.17/arch/ia64/ia32/sys_ia32.c linux-2.4.17-files_struct_rcu-07/arch/ia64/ia32/sys_ia32.c
+--- linux-2.4.17/arch/ia64/ia32/sys_ia32.c	Sat Nov 10 03:56:17 2001
++++ linux-2.4.17-files_struct_rcu-07/arch/ia64/ia32/sys_ia32.c	Thu Feb  7 15:00:48 2002
+@@ -1549,7 +1549,9 @@
+ 		}
+ 		/* Bump the usage count and install the file. */
+ 		get_file(fp[i]);
++ 		spin_lock(&current->files->file_lock);
+ 		current->files->fd[new_fd] = fp[i];
++ 		spin_unlock(&current->files->file_lock);
+ 	}
+ 
+ 	if (i > 0) {
+diff -urN linux-2.4.17/arch/mips/kernel/irixioctl.c linux-2.4.17-files_struct_rcu-07/arch/mips/kernel/irixioctl.c
+--- linux-2.4.17/arch/mips/kernel/irixioctl.c	Mon Jul 10 10:48:15 2000
++++ linux-2.4.17-files_struct_rcu-07/arch/mips/kernel/irixioctl.c	Thu Feb  7 15:00:48 2002
+@@ -34,7 +34,6 @@
+ 	struct file *filp;
+ 	struct tty_struct *ttyp = NULL;
+ 
+-	read_lock(&current->files->file_lock);
+ 	filp = fcheck(fd);
+ 	if(filp && filp->private_data) {
+ 		ttyp = (struct tty_struct *) filp->private_data;
+@@ -42,7 +41,6 @@
+ 		if(ttyp->magic != TTY_MAGIC)
+ 			ttyp =NULL;
+ 	}
+-	read_unlock(&current->files->file_lock);
+ 	return ttyp;
+ }
+ 
+diff -urN linux-2.4.17/arch/sparc64/solaris/ioctl.c linux-2.4.17-files_struct_rcu-07/arch/sparc64/solaris/ioctl.c
+--- linux-2.4.17/arch/sparc64/solaris/ioctl.c	Wed Nov 29 11:23:44 2000
++++ linux-2.4.17-files_struct_rcu-07/arch/sparc64/solaris/ioctl.c	Thu Feb  7 15:00:48 2002
+@@ -288,11 +288,14 @@
+ static inline int solaris_sockmod(unsigned int fd, unsigned int cmd, u32 arg)
+ {
+ 	struct inode *ino;
++	struct file *filp;
++       
+ 	/* I wonder which of these tests are superfluous... --patrik */
+-	if (! current->files->fd[fd] ||
+-	    ! current->files->fd[fd]->f_dentry ||
+-	    ! (ino = current->files->fd[fd]->f_dentry->d_inode) ||
+-	    ! ino->i_sock)
++	 * safer to use fcheck()
++	 */
++	filp = fcheck(fd);
++	if (! filep || ! filep->f_dentry ||
++	    ! (ino = filep->f_dentry->d_inode) || ! ino->i_sock)
+ 		return TBADF;
+ 	
+ 	switch (cmd & 0xff) {
+diff -urN linux-2.4.17/arch/sparc64/solaris/timod.c linux-2.4.17-files_struct_rcu-07/arch/sparc64/solaris/timod.c
+--- linux-2.4.17/arch/sparc64/solaris/timod.c	Fri Dec 21 23:11:53 2001
++++ linux-2.4.17-files_struct_rcu-07/arch/sparc64/solaris/timod.c	Thu Feb  7 15:00:48 2002
+@@ -147,9 +147,14 @@
+ static void timod_wake_socket(unsigned int fd)
+ {
+ 	struct socket *sock;
++	struct file *filp; 
+ 
+ 	SOLD("wakeing socket");
+-	sock = &current->files->fd[fd]->f_dentry->d_inode->u.socket_i;
++	if (!( filp = fcheck(fd))) {
++		SOLD("BAD FD");
++		return;
++	}
++	sock = filp->f_dentry->d_inode->u.socket_i;
+ 	wake_up_interruptible(&sock->wait);
+ 	read_lock(&sock->sk->callback_lock);
+ 	if (sock->fasync_list && !test_bit(SOCK_ASYNC_WAITDATA, &sock->flags))
+@@ -161,9 +166,14 @@
+ static void timod_queue(unsigned int fd, struct T_primsg *it)
+ {
+ 	struct sol_socket_struct *sock;
++	struct file *filp; 
+ 
+ 	SOLD("queuing primsg");
+-	sock = (struct sol_socket_struct *)current->files->fd[fd]->private_data;
++	if (!( filp = fcheck(fd))) {
++		SOLD("BAD FD");
++		return;
++	}
++	sock = (struct sol_socket_struct *)filp->private_data;
+ 	it->next = sock->pfirst;
+ 	sock->pfirst = it;
+ 	if (!sock->plast)
+@@ -175,9 +185,14 @@
+ static void timod_queue_end(unsigned int fd, struct T_primsg *it)
+ {
+ 	struct sol_socket_struct *sock;
++	struct file *filp; 
+ 
+ 	SOLD("queuing primsg at end");
+-	sock = (struct sol_socket_struct *)current->files->fd[fd]->private_data;
++	if (!( filp = fcheck(fd))) {
++		SOLD("BAD FD");
++		return;
++	}
++	sock = (struct sol_socket_struct *)filp->private_data;
+ 	it->next = NULL;
+ 	if (sock->plast)
+ 		sock->plast->next = it;
+@@ -355,7 +370,10 @@
+ 		(int (*)(int, unsigned long *))SYS(socketcall);
+ 	int (*sys_sendto)(int, void *, size_t, unsigned, struct sockaddr *, int) =
+ 		(int (*)(int, void *, size_t, unsigned, struct sockaddr *, int))SYS(sendto);
+-	filp = current->files->fd[fd];
++
++	if (!(filp = fcheck(fd)))
++		return -EBADF;
++
+ 	ino = filp->f_dentry->d_inode;
+ 	sock = (struct sol_socket_struct *)filp->private_data;
+ 	SOLD("entry");
+@@ -636,7 +654,10 @@
+ 	
+ 	SOLD("entry");
+ 	SOLDD(("%u %p %d %p %p %d %p %d\n", fd, ctl_buf, ctl_maxlen, ctl_len, data_buf, data_maxlen, data_len, *flags_p));
+-	filp = current->files->fd[fd];
++
++	if (!(filp = fcheck(fd)))
++		return -EBADF;
++
+ 	ino = filp->f_dentry->d_inode;
+ 	sock = (struct sol_socket_struct *)filp->private_data;
+ 	SOLDD(("%p %p\n", sock->pfirst, sock->pfirst ? sock->pfirst->next : NULL));
+@@ -847,7 +868,7 @@
+ 	lock_kernel();
+ 	if(fd >= NR_OPEN) goto out;
+ 
+-	filp = current->files->fd[fd];
++	filp = fcheck(fd);
+ 	if(!filp) goto out;
+ 
+ 	ino = filp->f_dentry->d_inode;
+@@ -914,7 +935,7 @@
+ 	lock_kernel();
+ 	if(fd >= NR_OPEN) goto out;
+ 
+-	filp = current->files->fd[fd];
++	filp = fcheck(fd);
+ 	if(!filp) goto out;
+ 
+ 	ino = filp->f_dentry->d_inode;
+diff -urN linux-2.4.17/drivers/char/tty_io.c linux-2.4.17-files_struct_rcu-07/drivers/char/tty_io.c
+--- linux-2.4.17/drivers/char/tty_io.c	Fri Dec 21 23:11:54 2001
++++ linux-2.4.17-files_struct_rcu-07/drivers/char/tty_io.c	Thu Feb  7 15:00:48 2002
+@@ -1847,7 +1847,6 @@
+ 		}
+ 		task_lock(p);
+ 		if (p->files) {
+-			read_lock(&p->files->file_lock);
+ 			for (i=0; i < p->files->max_fds; i++) {
+ 				filp = fcheck_files(p->files, i);
+ 				if (filp && (filp->f_op == &tty_fops) &&
+@@ -1856,7 +1855,6 @@
+ 					break;
+ 				}
+ 			}
+-			read_unlock(&p->files->file_lock);
+ 		}
+ 		task_unlock(p);
+ 	}
+diff -urN linux-2.4.17/fs/exec.c linux-2.4.17-files_struct_rcu-07/fs/exec.c
+--- linux-2.4.17/fs/exec.c	Fri Dec 21 23:11:55 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/exec.c	Thu Feb  7 15:00:48 2002
+@@ -483,7 +483,7 @@
+ {
+ 	long j = -1;
+ 
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	for (;;) {
+ 		unsigned long set, i;
+ 
+@@ -495,16 +495,16 @@
+ 		if (!set)
+ 			continue;
+ 		files->close_on_exec->fds_bits[j] = 0;
+-		write_unlock(&files->file_lock);
++		spin_unlock(&files->file_lock);
+ 		for ( ; set ; i++,set >>= 1) {
+ 			if (set & 1) {
+ 				sys_close(i);
+ 			}
+ 		}
+-		write_lock(&files->file_lock);
++		spin_lock(&files->file_lock);
+ 
+ 	}
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ }
+ 
+ /*
+diff -urN linux-2.4.17/fs/fcntl.c linux-2.4.17-files_struct_rcu-07/fs/fcntl.c
+--- linux-2.4.17/fs/fcntl.c	Tue Sep 18 01:46:30 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/fcntl.c	Thu Feb  7 15:00:48 2002
+@@ -64,7 +64,7 @@
+ 	int error;
+ 	int start;
+ 
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	
+ repeat:
+ 	/*
+@@ -110,7 +110,7 @@
+ {
+ 	FD_SET(fd, files->open_fds);
+ 	FD_CLR(fd, files->close_on_exec);
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	fd_install(fd, file);
+ }
+ 
+@@ -126,7 +126,7 @@
+ 	return ret;
+ 
+ out_putf:
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	fput(file);
+ 	return ret;
+ }
+@@ -137,7 +137,7 @@
+ 	struct file * file, *tofree;
+ 	struct files_struct * files = current->files;
+ 
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	if (!(file = fcheck(oldfd)))
+ 		goto out_unlock;
+ 	err = newfd;
+@@ -166,9 +166,10 @@
+ 		goto out_fput;
+ 
+ 	files->fd[newfd] = file;
++	wmb();
+ 	FD_SET(newfd, files->open_fds);
+ 	FD_CLR(newfd, files->close_on_exec);
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 
+ 	if (tofree)
+ 		filp_close(tofree, files);
+@@ -176,11 +177,11 @@
+ out:
+ 	return err;
+ out_unlock:
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	goto out;
+ 
+ out_fput:
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	fput(file);
+ 	goto out;
+ }
+diff -urN linux-2.4.17/fs/file.c linux-2.4.17-files_struct_rcu-07/fs/file.c
+--- linux-2.4.17/fs/file.c	Sat Feb 10 00:59:44 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/file.c	Thu Feb  7 15:00:48 2002
+@@ -13,7 +13,20 @@
+ #include <linux/vmalloc.h>
+ 
+ #include <asm/bitops.h>
++#include <linux/rcupdate.h>
+ 
++struct rcu_fd_array {
++	struct rcu_head rh;
++	struct file **array;   
++	int nfds;
++};
++
++struct rcu_fd_set {
++	struct rcu_head rh;
++	fd_set *openset;
++	fd_set *execset;
++	int nfds;
++};
+ 
+ /*
+  * Allocate an fd array, using kmalloc or vmalloc.
+@@ -48,6 +61,13 @@
+ 		vfree(array);
+ }
+ 
++static void fd_array_callback(void *arg) 
++{
++	struct rcu_fd_array *a = (struct rcu_fd_array *) arg; 
++	free_fd_array(a->array, a->nfds);
++	kfree(arg); 
++}
++
+ /*
+  * Expand the fd array in the files_struct.  Called with the files
+  * spinlock held for write.
+@@ -55,8 +75,9 @@
+ 
+ int expand_fd_array(struct files_struct *files, int nr)
+ {
+-	struct file **new_fds;
+-	int error, nfds;
++	struct file **new_fds = NULL;
++	int error, nfds = 0;
++	struct rcu_fd_array *arg = NULL;
+ 
+ 	
+ 	error = -EMFILE;
+@@ -64,7 +85,7 @@
+ 		goto out;
+ 
+ 	nfds = files->max_fds;
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 
+ 	/* 
+ 	 * Expand to the max in easy steps, and keep expanding it until
+@@ -88,18 +109,17 @@
+ 
+ 	error = -ENOMEM;
+ 	new_fds = alloc_fd_array(nfds);
+-	write_lock(&files->file_lock);
+-	if (!new_fds)
++	arg = (struct rcu_fd_array *) kmalloc(sizeof(*arg), GFP_ATOMIC);
++
++	spin_lock(&files->file_lock);
++	if (!new_fds || !arg)
+ 		goto out;
+ 
+ 	/* Copy the existing array and install the new pointer */
+ 
+ 	if (nfds > files->max_fds) {
+-		struct file **old_fds;
+-		int i;
+-		
+-		old_fds = xchg(&files->fd, new_fds);
+-		i = xchg(&files->max_fds, nfds);
++		struct file **old_fds = files->fd;
++		int i = files->max_fds;
+ 
+ 		/* Don't copy/clear the array if we are creating a new
+ 		   fd array for fork() */
+@@ -108,19 +128,34 @@
+ 			/* clear the remainder of the array */
+ 			memset(&new_fds[i], 0,
+ 			       (nfds-i) * sizeof(struct file *)); 
+-
+-			write_unlock(&files->file_lock);
+-			free_fd_array(old_fds, i);
+-			write_lock(&files->file_lock);
+ 		}
++
++		wmb();
++		files->fd = new_fds;
++		wmb();
++		files->max_fds = nfds;
++		
++		if (i) {
++			arg->array = old_fds;
++			arg->nfds = i;
++			call_rcu(&arg->rh, fd_array_callback, arg);
++		} else 
++			kfree(arg);
+ 	} else {
+ 		/* Somebody expanded the array while we slept ... */
+-		write_unlock(&files->file_lock);
++		spin_unlock(&files->file_lock);
+ 		free_fd_array(new_fds, nfds);
+-		write_lock(&files->file_lock);
++		kfree(arg);
++		spin_lock(&files->file_lock);
+ 	}
+-	error = 0;
++
++	return 0;
+ out:
++	if (new_fds)
++		free_fd_array(new_fds, nfds);
++	if (arg)
++		kfree(arg);
++
+ 	return error;
+ }
+ 
+@@ -157,6 +192,14 @@
+ 		vfree(array);
+ }
+ 
++static void fd_set_callback (void *arg)
++{
++	struct rcu_fd_set *a = (struct rcu_fd_set *) arg; 
++	free_fdset(a->openset, a->nfds);
++	free_fdset(a->execset, a->nfds);
++	kfree(arg);
++}
++
+ /*
+  * Expand the fdset in the files_struct.  Called with the files spinlock
+  * held for write.
+@@ -165,13 +208,14 @@
+ {
+ 	fd_set *new_openset = 0, *new_execset = 0;
+ 	int error, nfds = 0;
++	struct rcu_fd_set *arg = NULL;
+ 
+ 	error = -EMFILE;
+ 	if (files->max_fdset >= NR_OPEN || nr >= NR_OPEN)
+ 		goto out;
+ 
+ 	nfds = files->max_fdset;
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 
+ 	/* Expand to the max in easy steps */
+ 	do {
+@@ -187,46 +231,56 @@
+ 	error = -ENOMEM;
+ 	new_openset = alloc_fdset(nfds);
+ 	new_execset = alloc_fdset(nfds);
+-	write_lock(&files->file_lock);
+-	if (!new_openset || !new_execset)
++	arg = (struct rcu_fd_set *) kmalloc(sizeof(*arg), GFP_ATOMIC);
++	spin_lock(&files->file_lock);
++	if (!new_openset || !new_execset || !arg)
+ 		goto out;
+ 
+ 	error = 0;
+ 	
+ 	/* Copy the existing tables and install the new pointers */
+ 	if (nfds > files->max_fdset) {
+-		int i = files->max_fdset / (sizeof(unsigned long) * 8);
+-		int count = (nfds - files->max_fdset) / 8;
++		fd_set * old_openset = files->open_fds;
++		fd_set * old_execset = files->close_on_exec;
++		int old_nfds = files->max_fdset;
++		int i = old_nfds / (sizeof(unsigned long) * 8);
++		int count = (nfds - old_nfds) / 8;
+ 		
+ 		/* 
+ 		 * Don't copy the entire array if the current fdset is
+ 		 * not yet initialised.  
+ 		 */
+ 		if (i) {
+-			memcpy (new_openset, files->open_fds, files->max_fdset/8);
+-			memcpy (new_execset, files->close_on_exec, files->max_fdset/8);
++			memcpy (new_openset, old_openset, old_nfds/8);
++			memcpy (new_execset, old_execset, old_nfds/8);
+ 			memset (&new_openset->fds_bits[i], 0, count);
+ 			memset (&new_execset->fds_bits[i], 0, count);
+ 		}
+ 		
+-		nfds = xchg(&files->max_fdset, nfds);
+-		new_openset = xchg(&files->open_fds, new_openset);
+-		new_execset = xchg(&files->close_on_exec, new_execset);
+-		write_unlock(&files->file_lock);
+-		free_fdset (new_openset, nfds);
+-		free_fdset (new_execset, nfds);
+-		write_lock(&files->file_lock);
++		wmb();
++		files->open_fds =  new_openset;
++		files->close_on_exec = new_execset;
++		wmb();
++		files->max_fdset = nfds;
++
++		arg->openset = old_openset;
++		arg->execset = old_execset;
++		arg->nfds = nfds;
++		call_rcu(&arg->rh, fd_set_callback, arg);
++
+ 		return 0;
+ 	} 
+ 	/* Somebody expanded the array while we slept ... */
+ 
+ out:
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	if (new_openset)
+ 		free_fdset(new_openset, nfds);
+ 	if (new_execset)
+ 		free_fdset(new_execset, nfds);
+-	write_lock(&files->file_lock);
++	if (arg)
++		kfree(arg);
++	spin_lock(&files->file_lock);
+ 	return error;
+ }
+ 
+diff -urN linux-2.4.17/fs/file_table.c linux-2.4.17-files_struct_rcu-07/fs/file_table.c
+--- linux-2.4.17/fs/file_table.c	Tue Sep 18 01:46:30 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/file_table.c	Thu Feb  7 15:00:48 2002
+@@ -129,13 +129,22 @@
+ struct file * fget(unsigned int fd)
+ {
+ 	struct file * file;
+-	struct files_struct *files = current->files;
+ 
+-	read_lock(&files->file_lock);
+ 	file = fcheck(fd);
+-	if (file)
++	if (file) {
+ 		get_file(file);
+-	read_unlock(&files->file_lock);
++
++        	/* before returning check again if someone (as of now sys_close)
++                 * has nullified the fd_array entry, if yes then we might have 
++                 * failed fput call for him by doing get_file() so do the 
++                 * favour of doing fput for him.
++                 */
++
++        	if (!(fcheck(fd))) {
++                	fput(file);      
++			return NULL;
++		}
++	}                                               
+ 	return file;
+ }
+ 
+diff -urN linux-2.4.17/fs/open.c linux-2.4.17-files_struct_rcu-07/fs/open.c
+--- linux-2.4.17/fs/open.c	Sat Oct 13 02:18:42 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/open.c	Thu Feb  7 15:00:48 2002
+@@ -719,7 +719,7 @@
+ 	int fd, error;
+ 
+   	error = -EMFILE;
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 
+ repeat:
+  	fd = find_next_zero_bit(files->open_fds, 
+@@ -768,7 +768,7 @@
+ 	error = fd;
+ 
+ out:
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	return error;
+ }
+ 
+@@ -849,20 +849,22 @@
+ 	struct file * filp;
+ 	struct files_struct *files = current->files;
+ 
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	if (fd >= files->max_fds)
+ 		goto out_unlock;
+ 	filp = files->fd[fd];
+ 	if (!filp)
+ 		goto out_unlock;
+-	files->fd[fd] = NULL;
++	files->fd[fd] = NULL;	
++	/* Need to make it conistent with open_fds in __put_unused_fd() */
++	wmb();
+ 	FD_CLR(fd, files->close_on_exec);
+ 	__put_unused_fd(files, fd);
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	return filp_close(filp, files);
+ 
+ out_unlock:
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ 	return -EBADF;
+ }
+ 
+diff -urN linux-2.4.17/fs/proc/base.c linux-2.4.17-files_struct_rcu-07/fs/proc/base.c
+--- linux-2.4.17/fs/proc/base.c	Thu Oct 11 12:12:47 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/proc/base.c	Thu Feb  7 15:00:48 2002
+@@ -754,12 +754,10 @@
+ 	task_unlock(task);
+ 	if (!files)
+ 		goto out_unlock;
+-	read_lock(&files->file_lock);
+ 	file = inode->u.proc_i.file = fcheck_files(files, fd);
+ 	if (!file)
+ 		goto out_unlock2;
+ 	get_file(file);
+-	read_unlock(&files->file_lock);
+ 	put_files_struct(files);
+ 	inode->i_op = &proc_pid_link_inode_operations;
+ 	inode->i_size = 64;
+@@ -775,7 +773,6 @@
+ 
+ out_unlock2:
+ 	put_files_struct(files);
+-	read_unlock(&files->file_lock);
+ out_unlock:
+ 	iput(inode);
+ out:
+diff -urN linux-2.4.17/fs/select.c linux-2.4.17-files_struct_rcu-07/fs/select.c
+--- linux-2.4.17/fs/select.c	Tue Sep 11 01:34:33 2001
++++ linux-2.4.17-files_struct_rcu-07/fs/select.c	Thu Feb  7 15:00:48 2002
+@@ -115,13 +115,16 @@
+ static int max_select_fd(unsigned long n, fd_set_bits *fds)
+ {
+ 	unsigned long *open_fds;
++	fd_set *open_fdset;
+ 	unsigned long set;
+ 	int max;
+ 
+ 	/* handle last in-complete long-word first */
+ 	set = ~(~0UL << (n & (__NFDBITS-1)));
+ 	n /= __NFDBITS;
+-	open_fds = current->files->open_fds->fds_bits+n;
++	open_fdset = current->files->open_fds;
++	rmb();		/* change to read_barrier_depends() */
++	open_fds = open_fdset->fds_bits+n;
+ 	max = 0;
+ 	if (set) {
+ 		set &= BITS(fds, n);
+@@ -167,9 +170,7 @@
+ 	int retval, i, off;
+ 	long __timeout = *timeout;
+ 
+- 	read_lock(&current->files->file_lock);
+ 	retval = max_select_fd(n, fds);
+-	read_unlock(&current->files->file_lock);
+ 
+ 	if (retval < 0)
+ 		return retval;
+diff -urN linux-2.4.17/include/linux/file.h linux-2.4.17-files_struct_rcu-07/include/linux/file.h
+--- linux-2.4.17/include/linux/file.h	Wed Aug 23 23:52:26 2000
++++ linux-2.4.17-files_struct_rcu-07/include/linux/file.h	Thu Feb  7 15:00:48 2002
+@@ -12,29 +12,34 @@
+ {
+ 	struct files_struct *files = current->files;
+ 	int res;
+-	read_lock(&files->file_lock);
+-	res = FD_ISSET(fd, files->close_on_exec);
+-	read_unlock(&files->file_lock);
++	fd_set *close_on_exec = files->close_on_exec;
++	rmb();		/* change to read_barrier_depends() */
++	res = FD_ISSET(fd, close_on_exec);
+ 	return res;
+ }
+ 
+ static inline void set_close_on_exec(unsigned int fd, int flag)
+ {
+ 	struct files_struct *files = current->files;
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	if (flag)
+ 		FD_SET(fd, files->close_on_exec);
+ 	else
+ 		FD_CLR(fd, files->close_on_exec);
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ }
+ 
+ static inline struct file * fcheck_files(struct files_struct *files, unsigned int fd)
+ {
+ 	struct file * file = NULL;
+-
+-	if (fd < files->max_fds)
+-		file = files->fd[fd];
++	
++	if (fd < files->max_fds) {
++		struct file ** fd_array;
++		rmb();
++	       	fd_array = files->fd;
++		rmb(); 		/* change to read_barrier_depends() */
++		file = fd_array[fd];
++	}
+ 	return file;
+ }
+ 
+@@ -46,8 +51,13 @@
+ 	struct file * file = NULL;
+ 	struct files_struct *files = current->files;
+ 
+-	if (fd < files->max_fds)
+-		file = files->fd[fd];
++	if (fd < files->max_fds) {
++		struct file ** fd_array;
++		rmb();
++	       	fd_array = files->fd;
++		rmb();		/* change to read_barrier_depends() */
++		file = fd_array[fd];
++	}
+ 	return file;
+ }
+ 
+@@ -66,9 +76,9 @@
+ {
+ 	struct files_struct *files = current->files;
+ 
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	__put_unused_fd(files, fd);
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ }
+ 
+ /*
+@@ -88,11 +98,11 @@
+ {
+ 	struct files_struct *files = current->files;
+ 	
+-	write_lock(&files->file_lock);
++	spin_lock(&files->file_lock);
+ 	if (files->fd[fd])
+ 		BUG();
+ 	files->fd[fd] = file;
+-	write_unlock(&files->file_lock);
++	spin_unlock(&files->file_lock);
+ }
+ 
+ void put_files_struct(struct files_struct *fs);
+diff -urN linux-2.4.17/include/linux/sched.h linux-2.4.17-files_struct_rcu-07/include/linux/sched.h
+--- linux-2.4.17/include/linux/sched.h	Fri Dec 21 23:12:03 2001
++++ linux-2.4.17-files_struct_rcu-07/include/linux/sched.h	Thu Feb  7 15:00:48 2002
+@@ -171,7 +171,7 @@
+  */
+ struct files_struct {
+ 	atomic_t count;
+-	rwlock_t file_lock;	/* Protects all the below members.  Nests inside tsk->alloc_lock */
++	spinlock_t file_lock;	/* Protects all the below members.  Nests inside tsk->alloc_lock */
+ 	int max_fds;
+ 	int max_fdset;
+ 	int next_fd;
+@@ -186,7 +186,7 @@
+ #define INIT_FILES \
+ { 							\
+ 	count:		ATOMIC_INIT(1), 		\
+-	file_lock:	RW_LOCK_UNLOCKED, 		\
++	file_lock:	SPIN_LOCK_UNLOCKED, 		\
+ 	max_fds:	NR_OPEN_DEFAULT, 		\
+ 	max_fdset:	__FD_SETSIZE, 			\
+ 	next_fd:	0, 				\
+diff -urN linux-2.4.17/kernel/fork.c linux-2.4.17-files_struct_rcu-07/kernel/fork.c
+--- linux-2.4.17/kernel/fork.c	Wed Nov 21 23:48:42 2001
++++ linux-2.4.17-files_struct_rcu-07/kernel/fork.c	Thu Feb  7 15:00:48 2002
+@@ -404,10 +404,12 @@
+ static int count_open_files(struct files_struct *files, int size)
+ {
+ 	int i;
+-	
++	fd_set *open_fds = files->open_fds;
++
++	rmb();		/* change to read_barrier_depends() */
+ 	/* Find the last open fd */
+ 	for (i = size/(8*sizeof(long)); i > 0; ) {
+-		if (files->open_fds->fds_bits[--i])
++		if (open_fds->fds_bits[--i])
+ 			break;
+ 	}
+ 	i = (i+1) * 8 * sizeof(long);
+@@ -432,6 +434,11 @@
+ 		goto out;
+ 	}
+ 
++	/* We don't yet have the oldf readlock, but even if the old
++           fdset gets grown now, we'll only copy up to "size" fds */
++	size = oldf->max_fdset;
++	rmb(); 
++
+ 	tsk->files = NULL;
+ 	error = -ENOMEM;
+ 	newf = kmem_cache_alloc(files_cachep, SLAB_KERNEL);
+@@ -440,7 +447,7 @@
+ 
+ 	atomic_set(&newf->count, 1);
+ 
+-	newf->file_lock	    = RW_LOCK_UNLOCKED;
++	newf->file_lock     = SPIN_LOCK_UNLOCKED; 
+ 	newf->next_fd	    = 0;
+ 	newf->max_fds	    = NR_OPEN_DEFAULT;
+ 	newf->max_fdset	    = __FD_SETSIZE;
+@@ -448,18 +455,14 @@
+ 	newf->open_fds	    = &newf->open_fds_init;
+ 	newf->fd	    = &newf->fd_array[0];
+ 
+-	/* We don't yet have the oldf readlock, but even if the old
+-           fdset gets grown now, we'll only copy up to "size" fds */
+-	size = oldf->max_fdset;
+ 	if (size > __FD_SETSIZE) {
+ 		newf->max_fdset = 0;
+-		write_lock(&newf->file_lock);
++		spin_lock(&newf->file_lock);
+ 		error = expand_fdset(newf, size-1);
+-		write_unlock(&newf->file_lock);
++		spin_unlock(&newf->file_lock);
+ 		if (error)
+ 			goto out_release;
+ 	}
+-	read_lock(&oldf->file_lock);
+ 
+ 	open_files = count_open_files(oldf, size);
+ 
+@@ -470,18 +473,17 @@
+ 	 */
+ 	nfds = NR_OPEN_DEFAULT;
+ 	if (open_files > nfds) {
+-		read_unlock(&oldf->file_lock);
+ 		newf->max_fds = 0;
+-		write_lock(&newf->file_lock);
++		spin_lock(&newf->file_lock);
+ 		error = expand_fd_array(newf, open_files-1);
+-		write_unlock(&newf->file_lock);
++		spin_unlock(&newf->file_lock);
+ 		if (error) 
+ 			goto out_release;
+ 		nfds = newf->max_fds;
+-		read_lock(&oldf->file_lock);
+ 	}
+ 
+ 	old_fds = oldf->fd;
++	rmb(); 		/* change to read_barrier_depends() */
+ 	new_fds = newf->fd;
+ 
+ 	memcpy(newf->open_fds->fds_bits, oldf->open_fds->fds_bits, open_files/8);
+@@ -493,7 +495,6 @@
+ 			get_file(f);
+ 		*new_fds++ = f;
+ 	}
+-	read_unlock(&oldf->file_lock);
+ 
+ 	/* compute the remainder to be cleared */
+ 	size = (newf->max_fds - open_files) * sizeof(struct file *);
+diff -urN linux-2.4.17/kernel/kmod.c linux-2.4.17-files_struct_rcu-07/kernel/kmod.c
+--- linux-2.4.17/kernel/kmod.c	Wed Jul 18 06:53:50 2001
++++ linux-2.4.17-files_struct_rcu-07/kernel/kmod.c	Thu Feb  7 15:00:48 2002
+@@ -88,6 +88,8 @@
+ {
+ 	int i;
+ 	struct task_struct *curtask = current;
++	int max_fds;
++	struct file **fd_array;
+ 
+ 	curtask->session = 1;
+ 	curtask->pgrp = 1;
+@@ -107,9 +109,12 @@
+ 	recalc_sigpending(curtask);
+ 	spin_unlock_irq(&curtask->sigmask_lock);
+ 
+-	for (i = 0; i < curtask->files->max_fds; i++ ) {
+-		if (curtask->files->fd[i]) close(i);
+-	}
++	max_fds = curtask->files->max_fds;
++	rmb();
++	fd_array = curtask->files->fd;
++	rmb();		/* change to read_barrier_depends() */
++	for (i = 0; i < max_fds; i++ ) 
++		if (fd_array[i]) close(i);
+ 
+ 	/* Drop the "current user" thing */
+ 	{
+diff -urN linux-2.4.17/net/ipv4/netfilter/ipt_owner.c linux-2.4.17-files_struct_rcu-07/net/ipv4/netfilter/ipt_owner.c
+--- linux-2.4.17/net/ipv4/netfilter/ipt_owner.c	Mon Oct  1 00:56:08 2001
++++ linux-2.4.17-files_struct_rcu-07/net/ipv4/netfilter/ipt_owner.c	Thu Feb  7 15:00:49 2002
+@@ -25,16 +25,13 @@
+ 	task_lock(p);
+ 	files = p->files;
+ 	if(files) {
+-		read_lock(&files->file_lock);
+ 		for (i=0; i < files->max_fds; i++) {
+ 			if (fcheck_files(files, i) == skb->sk->socket->file) {
+-				read_unlock(&files->file_lock);
+ 				task_unlock(p);
+ 				read_unlock(&tasklist_lock);
+ 				return 1;
+ 			}
+ 		}
+-		read_unlock(&files->file_lock);
+ 	}
+ 	task_unlock(p);
+ out:
+@@ -58,14 +55,12 @@
+ 		task_lock(p);
+ 		files = p->files;
+ 		if (files) {
+-			read_lock(&files->file_lock);
+ 			for (i=0; i < files->max_fds; i++) {
+ 				if (fcheck_files(files, i) == file) {
+ 					found = 1;
+ 					break;
+ 				}
+ 			}
+-			read_unlock(&files->file_lock);
+ 		}
+ 		task_unlock(p);
+ 		if(found)

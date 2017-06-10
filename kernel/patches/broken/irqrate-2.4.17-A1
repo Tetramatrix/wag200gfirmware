@@ -1,0 +1,996 @@
+--- linux/kernel/ksyms.c.orig	Sat Dec 22 10:05:16 2001
++++ linux/kernel/ksyms.c	Sat Dec 22 10:05:23 2001
+@@ -539,8 +539,6 @@
+ EXPORT_SYMBOL(strsep);
+ 
+ /* software interrupts */
+-EXPORT_SYMBOL(tasklet_hi_vec);
+-EXPORT_SYMBOL(tasklet_vec);
+ EXPORT_SYMBOL(bh_task_vec);
+ EXPORT_SYMBOL(init_bh);
+ EXPORT_SYMBOL(remove_bh);
+@@ -548,10 +546,10 @@
+ EXPORT_SYMBOL(tasklet_kill);
+ EXPORT_SYMBOL(__run_task_queue);
+ EXPORT_SYMBOL(do_softirq);
+-EXPORT_SYMBOL(raise_softirq);
+-EXPORT_SYMBOL(cpu_raise_softirq);
+ EXPORT_SYMBOL(__tasklet_schedule);
+ EXPORT_SYMBOL(__tasklet_hi_schedule);
++EXPORT_SYMBOL(tasklet_enable);
++EXPORT_SYMBOL(tasklet_hi_enable);
+ 
+ /* init task, for moving kthread roots - ought to export a function ?? */
+ 
+--- linux/kernel/softirq.c.orig	Sat Dec 22 10:05:12 2001
++++ linux/kernel/softirq.c	Sat Dec 22 10:05:39 2001
+@@ -44,26 +44,11 @@
+ 
+ static struct softirq_action softirq_vec[32] __cacheline_aligned;
+ 
+-/*
+- * we cannot loop indefinitely here to avoid userspace starvation,
+- * but we also don't want to introduce a worst case 1/HZ latency
+- * to the pending events, so lets the scheduler to balance
+- * the softirq load for us.
+- */
+-static inline void wakeup_softirqd(unsigned cpu)
+-{
+-	struct task_struct * tsk = ksoftirqd_task(cpu);
+-
+-	if (tsk && tsk->state != TASK_RUNNING)
+-		wake_up_process(tsk);
+-}
+-
+ asmlinkage void do_softirq()
+ {
+ 	int cpu = smp_processor_id();
+ 	__u32 pending;
+ 	long flags;
+-	__u32 mask;
+ 
+ 	if (in_interrupt())
+ 		return;
+@@ -75,7 +60,6 @@
+ 	if (pending) {
+ 		struct softirq_action *h;
+ 
+-		mask = ~pending;
+ 		local_bh_disable();
+ restart:
+ 		/* Reset the pending bitmask before enabling irqs */
+@@ -95,152 +79,130 @@
+ 		local_irq_disable();
+ 
+ 		pending = softirq_pending(cpu);
+-		if (pending & mask) {
+-			mask &= ~pending;
++		if (pending)
+ 			goto restart;
+-		}
+ 		__local_bh_enable();
+-
+-		if (pending)
+-			wakeup_softirqd(cpu);
+ 	}
+ 
+ 	local_irq_restore(flags);
+ }
+ 
+-/*
+- * This function must run with irq disabled!
+- */
+-inline void cpu_raise_softirq(unsigned int cpu, unsigned int nr)
++void open_softirq(int nr, void (*action)(struct softirq_action*), void *data)
++{
++	softirq_vec[nr].data = data;
++	softirq_vec[nr].action = action;
++}
++
++/* Tasklets */
++
++static struct tasklet_head tasklet_vec[NR_CPUS] __cacheline_aligned;
++static struct tasklet_head tasklet_hi_vec[NR_CPUS] __cacheline_aligned;
++
++static inline void __tasklet_enable(struct tasklet_struct *t,
++					struct tasklet_head *vec, int softirq)
+ {
+-	__cpu_raise_softirq(cpu, nr);
++	int cpu = smp_processor_id();
+ 
++	smp_mb__before_atomic_dec();
++	if (!atomic_dec_and_test(&t->count))
++		return;
++
++	local_irq_disable();
+ 	/*
+-	 * If we're in an interrupt or bh, we're done
+-	 * (this also catches bh-disabled code). We will
+-	 * actually run the softirq once we return from
+-	 * the irq or bh.
+-	 *
+-	 * Otherwise we wake up ksoftirqd to make sure we
+-	 * schedule the softirq soon.
++	 * Being able to clear the SCHED bit from 1 to 0 means
++	 * we got the right to handle this tasklet.
++	 * Setting it from 0 to 1 means we can queue it.
+ 	 */
+-	if (!(local_irq_count(cpu) | local_bh_count(cpu)))
+-		wakeup_softirqd(cpu);
++	if (test_and_clear_bit(TASKLET_STATE_SCHED, &t->state) && !t->next) {
++		if (!test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
++
++			t->next = (vec + cpu)->list;
++			(vec + cpu)->list = t;
++			__cpu_raise_softirq(cpu, softirq);
++		}
++	}
++	local_irq_enable();
++	rerun_softirqs(cpu);
+ }
+ 
+-void raise_softirq(unsigned int nr)
++void tasklet_enable(struct tasklet_struct *t)
+ {
+-	long flags;
+-
+-	local_irq_save(flags);
+-	cpu_raise_softirq(smp_processor_id(), nr);
+-	local_irq_restore(flags);
++	__tasklet_enable(t, tasklet_vec, TASKLET_SOFTIRQ);
+ }
+ 
+-void open_softirq(int nr, void (*action)(struct softirq_action*), void *data)
++void tasklet_hi_enable(struct tasklet_struct *t)
+ {
+-	softirq_vec[nr].data = data;
+-	softirq_vec[nr].action = action;
++	__tasklet_enable(t, tasklet_hi_vec, HI_SOFTIRQ);
+ }
+ 
+-
+-/* Tasklets */
+-
+-struct tasklet_head tasklet_vec[NR_CPUS] __cacheline_aligned;
+-struct tasklet_head tasklet_hi_vec[NR_CPUS] __cacheline_aligned;
+-
+-void __tasklet_schedule(struct tasklet_struct *t)
++static inline void __tasklet_sched(struct tasklet_struct *t,
++					struct tasklet_head *vec, int softirq)
+ {
+ 	int cpu = smp_processor_id();
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
+-	t->next = tasklet_vec[cpu].list;
+-	tasklet_vec[cpu].list = t;
+-	cpu_raise_softirq(cpu, TASKLET_SOFTIRQ);
++	t->next = (vec + cpu)->list;
++	(vec + cpu)->list = t;
++	__cpu_raise_softirq(cpu, softirq);
+ 	local_irq_restore(flags);
++	rerun_softirqs(cpu);
+ }
+ 
+-void __tasklet_hi_schedule(struct tasklet_struct *t)
++void __tasklet_schedule(struct tasklet_struct *t)
+ {
+-	int cpu = smp_processor_id();
+-	unsigned long flags;
++	__tasklet_sched(t, tasklet_vec, TASKLET_SOFTIRQ);
++}
+ 
+-	local_irq_save(flags);
+-	t->next = tasklet_hi_vec[cpu].list;
+-	tasklet_hi_vec[cpu].list = t;
+-	cpu_raise_softirq(cpu, HI_SOFTIRQ);
+-	local_irq_restore(flags);
++void __tasklet_hi_schedule(struct tasklet_struct *t)
++{
++	__tasklet_sched(t, tasklet_hi_vec, HI_SOFTIRQ);
+ }
+ 
+-static void tasklet_action(struct softirq_action *a)
++static inline void __tasklet_action(struct softirq_action *a,
++					struct tasklet_head *vec)
+ {
+ 	int cpu = smp_processor_id();
+ 	struct tasklet_struct *list;
+ 
+ 	local_irq_disable();
+-	list = tasklet_vec[cpu].list;
+-	tasklet_vec[cpu].list = NULL;
++	list = (vec + cpu)->list;
++	(vec + cpu)->list = NULL;
+ 	local_irq_enable();
+ 
+ 	while (list) {
+ 		struct tasklet_struct *t = list;
+ 
+ 		list = list->next;
++		t->next = NULL;
+ 
+-		if (tasklet_trylock(t)) {
+-			if (!atomic_read(&t->count)) {
+-				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
+-					BUG();
+-				t->func(t->data);
+-				tasklet_unlock(t);
+-				continue;
+-			}
++repeat:
++		if (!tasklet_trylock(t))
++			continue;
++		if (atomic_read(&t->count)) {
+ 			tasklet_unlock(t);
++			continue;
+ 		}
+-
+-		local_irq_disable();
+-		t->next = tasklet_vec[cpu].list;
+-		tasklet_vec[cpu].list = t;
+-		__cpu_raise_softirq(cpu, TASKLET_SOFTIRQ);
+-		local_irq_enable();
++		if (test_and_clear_bit(TASKLET_STATE_SCHED, &t->state)) {
++			t->func(t->data);
++			tasklet_unlock(t);
++			if (test_bit(TASKLET_STATE_SCHED, &t->state))
++				goto repeat;
++			continue;
++		}
++		tasklet_unlock(t);
+ 	}
+ }
+ 
+-static void tasklet_hi_action(struct softirq_action *a)
++static void tasklet_action(struct softirq_action *a)
+ {
+-	int cpu = smp_processor_id();
+-	struct tasklet_struct *list;
+-
+-	local_irq_disable();
+-	list = tasklet_hi_vec[cpu].list;
+-	tasklet_hi_vec[cpu].list = NULL;
+-	local_irq_enable();
+-
+-	while (list) {
+-		struct tasklet_struct *t = list;
+-
+-		list = list->next;
+-
+-		if (tasklet_trylock(t)) {
+-			if (!atomic_read(&t->count)) {
+-				if (!test_and_clear_bit(TASKLET_STATE_SCHED, &t->state))
+-					BUG();
+-				t->func(t->data);
+-				tasklet_unlock(t);
+-				continue;
+-			}
+-			tasklet_unlock(t);
+-		}
+-
+-		local_irq_disable();
+-		t->next = tasklet_hi_vec[cpu].list;
+-		tasklet_hi_vec[cpu].list = t;
+-		__cpu_raise_softirq(cpu, HI_SOFTIRQ);
+-		local_irq_enable();
+-	}
++	__tasklet_action(a, tasklet_vec);
+ }
+ 
++static void tasklet_hi_action(struct softirq_action *a)
++{
++	__tasklet_action(a, tasklet_hi_vec);
++}
+ 
+ void tasklet_init(struct tasklet_struct *t,
+ 		  void (*func)(unsigned long), unsigned long data)
+@@ -268,8 +230,6 @@
+ 	clear_bit(TASKLET_STATE_SCHED, &t->state);
+ }
+ 
+-
+-
+ /* Old style BHs */
+ 
+ static void (*bh_base[32])(void);
+@@ -325,7 +285,7 @@
+ {
+ 	int i;
+ 
+-	for (i=0; i<32; i++)
++	for (i = 0; i < 32; i++)
+ 		tasklet_init(bh_task_vec+i, bh_action, i);
+ 
+ 	open_softirq(TASKLET_SOFTIRQ, tasklet_action, NULL);
+@@ -358,61 +318,3 @@
+ 			f(data);
+ 	}
+ }
+-
+-static int ksoftirqd(void * __bind_cpu)
+-{
+-	int bind_cpu = (int) (long) __bind_cpu;
+-	int cpu = cpu_logical_map(bind_cpu);
+-
+-	daemonize();
+-	current->nice = 19;
+-	sigfillset(&current->blocked);
+-
+-	/* Migrate to the right CPU */
+-	current->cpus_allowed = 1UL << cpu;
+-	while (smp_processor_id() != cpu)
+-		schedule();
+-
+-	sprintf(current->comm, "ksoftirqd_CPU%d", bind_cpu);
+-
+-	__set_current_state(TASK_INTERRUPTIBLE);
+-	mb();
+-
+-	ksoftirqd_task(cpu) = current;
+-
+-	for (;;) {
+-		if (!softirq_pending(cpu))
+-			schedule();
+-
+-		__set_current_state(TASK_RUNNING);
+-
+-		while (softirq_pending(cpu)) {
+-			do_softirq();
+-			if (current->need_resched)
+-				schedule();
+-		}
+-
+-		__set_current_state(TASK_INTERRUPTIBLE);
+-	}
+-}
+-
+-static __init int spawn_ksoftirqd(void)
+-{
+-	int cpu;
+-
+-	for (cpu = 0; cpu < smp_num_cpus; cpu++) {
+-		if (kernel_thread(ksoftirqd, (void *) (long) cpu,
+-				  CLONE_FS | CLONE_FILES | CLONE_SIGNAL) < 0)
+-			printk("spawn_ksoftirqd() failed for cpu %d\n", cpu);
+-		else {
+-			while (!ksoftirqd_task(cpu_logical_map(cpu))) {
+-				current->policy |= SCHED_YIELD;
+-				schedule();
+-			}
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-__initcall(spawn_ksoftirqd);
+--- linux/kernel/timer.c.orig	Sat Dec 22 10:05:09 2001
++++ linux/kernel/timer.c	Sat Dec 22 10:05:23 2001
+@@ -674,6 +674,7 @@
+ void do_timer(struct pt_regs *regs)
+ {
+ 	(*(unsigned long *)&jiffies)++;
++	irq_rate_check(regs);
+ #ifndef CONFIG_SMP
+ 	/* SMP process accounting uses the local APIC timer */
+ 
+--- linux/include/linux/netdevice.h.orig	Sat Dec 22 10:05:12 2001
++++ linux/include/linux/netdevice.h	Sat Dec 22 10:07:04 2001
+@@ -494,8 +494,9 @@
+ 		local_irq_save(flags);
+ 		dev->next_sched = softnet_data[cpu].output_queue;
+ 		softnet_data[cpu].output_queue = dev;
+-		cpu_raise_softirq(cpu, NET_TX_SOFTIRQ);
++		__cpu_raise_softirq(cpu, NET_TX_SOFTIRQ);
+ 		local_irq_restore(flags);
++		rerun_softirqs(cpu);
+ 	}
+ }
+ 
+@@ -543,8 +544,9 @@
+ 		local_irq_save(flags);
+ 		skb->next = softnet_data[cpu].completion_queue;
+ 		softnet_data[cpu].completion_queue = skb;
+-		cpu_raise_softirq(cpu, NET_TX_SOFTIRQ);
++		__cpu_raise_softirq(cpu, NET_TX_SOFTIRQ);
+ 		local_irq_restore(flags);
++		rerun_softirqs(cpu);
+ 	}
+ }
+ 
+--- linux/include/linux/interrupt.h.orig	Sat Dec 22 10:05:06 2001
++++ linux/include/linux/interrupt.h	Sat Dec 22 10:07:00 2001
+@@ -74,9 +74,15 @@
+ asmlinkage void do_softirq(void);
+ extern void open_softirq(int nr, void (*action)(struct softirq_action*), void *data);
+ extern void softirq_init(void);
+-#define __cpu_raise_softirq(cpu, nr) do { softirq_pending(cpu) |= 1UL << (nr); } while (0)
+-extern void FASTCALL(cpu_raise_softirq(unsigned int cpu, unsigned int nr));
+-extern void FASTCALL(raise_softirq(unsigned int nr));
++extern void show_stack(unsigned long* esp);
++#define __cpu_raise_softirq(cpu, nr) \
++		do { softirq_pending(cpu) |= 1UL << (nr); } while (0)
++
++#define rerun_softirqs(cpu) 					\
++do {								\
++	if (!(local_irq_count(cpu) | local_bh_count(cpu)))	\
++		do_softirq();					\
++} while (0);
+ 
+ 
+ 
+@@ -127,9 +133,6 @@
+ 	struct tasklet_struct *list;
+ } __attribute__ ((__aligned__(SMP_CACHE_BYTES)));
+ 
+-extern struct tasklet_head tasklet_vec[NR_CPUS];
+-extern struct tasklet_head tasklet_hi_vec[NR_CPUS];
+-
+ #ifdef CONFIG_SMP
+ static inline int tasklet_trylock(struct tasklet_struct *t)
+ {
+@@ -182,18 +185,8 @@
+ 	smp_mb();
+ }
+ 
+-static inline void tasklet_enable(struct tasklet_struct *t)
+-{
+-	smp_mb__before_atomic_dec();
+-	atomic_dec(&t->count);
+-}
+-
+-static inline void tasklet_hi_enable(struct tasklet_struct *t)
+-{
+-	smp_mb__before_atomic_dec();
+-	atomic_dec(&t->count);
+-}
+-
++extern void tasklet_enable(struct tasklet_struct *t);
++extern void tasklet_hi_enable(struct tasklet_struct *t);
+ extern void tasklet_kill(struct tasklet_struct *t);
+ extern void tasklet_init(struct tasklet_struct *t,
+ 			 void (*func)(unsigned long), unsigned long data);
+@@ -263,5 +256,8 @@
+ extern unsigned long probe_irq_on(void);	/* returns 0 on failure */
+ extern int probe_irq_off(unsigned long);	/* returns 0 or negative on failure */
+ extern unsigned int probe_irq_mask(unsigned long);	/* returns mask of ISA interrupts */
++extern void irq_rate_check(struct pt_regs *regs);
++
++#define irq_overload(irq) (irq_desc[irq].status & IRQ_MITIGATED)
+ 
+ #endif
+--- linux/include/linux/irq.h.orig	Sat Dec 22 10:05:06 2001
++++ linux/include/linux/irq.h	Sat Dec 22 10:07:00 2001
+@@ -31,6 +31,7 @@
+ #define IRQ_LEVEL	64	/* IRQ level triggered */
+ #define IRQ_MASKED	128	/* IRQ masked - shouldn't be seen again */
+ #define IRQ_PER_CPU	256	/* IRQ is per CPU */
++#define IRQ_MITIGATED	512	/* IRQ got rate-limited */
+ 
+ /*
+  * Interrupt controller descriptor. This is all we need
+@@ -62,6 +63,8 @@
+ 	struct irqaction *action;	/* IRQ action list */
+ 	unsigned int depth;		/* nested irq disables */
+ 	spinlock_t lock;
++	unsigned int irq_contexts;
++	unsigned int total_contexts;
+ } ____cacheline_aligned irq_desc_t;
+ 
+ extern irq_desc_t irq_desc [NR_IRQS];
+--- linux/include/linux/irq_cpustat.h.orig	Tue Aug 21 14:26:21 2001
++++ linux/include/linux/irq_cpustat.h	Sat Dec 22 10:07:00 2001
+@@ -30,7 +30,6 @@
+ #define local_irq_count(cpu)	__IRQ_STAT((cpu), __local_irq_count)
+ #define local_bh_count(cpu)	__IRQ_STAT((cpu), __local_bh_count)
+ #define syscall_count(cpu)	__IRQ_STAT((cpu), __syscall_count)
+-#define ksoftirqd_task(cpu)	__IRQ_STAT((cpu), __ksoftirqd_task)
+   /* arch dependent irq_stat fields */
+ #define nmi_count(cpu)		__IRQ_STAT((cpu), __nmi_count)		/* i386, ia64 */
+ 
+--- linux/include/asm-i386/irq.h.orig	Sat Dec 22 10:05:06 2001
++++ linux/include/asm-i386/irq.h	Sat Dec 22 10:07:00 2001
+@@ -33,6 +33,7 @@
+ extern void disable_irq(unsigned int);
+ extern void disable_irq_nosync(unsigned int);
+ extern void enable_irq(unsigned int);
++extern void set_irq_rate(unsigned int irq, unsigned int rate);
+ 
+ #ifdef CONFIG_X86_LOCAL_APIC
+ #define ARCH_HAS_NMI_WATCHDOG		/* See include/linux/nmi.h */
+--- linux/include/asm-i386/hardirq.h.orig	Sat Dec 22 10:05:14 2001
++++ linux/include/asm-i386/hardirq.h	Sat Dec 22 10:07:00 2001
+@@ -11,7 +11,8 @@
+ 	unsigned int __local_irq_count;
+ 	unsigned int __local_bh_count;
+ 	unsigned int __syscall_count;
+-	struct task_struct * __ksoftirqd_task; /* waitqueue is too large */
++	unsigned int __irq_context_stat;
++	unsigned int __total_context_stat;
+ 	unsigned int __nmi_count;	/* arch dependent */
+ } ____cacheline_aligned irq_cpustat_t;
+ 
+--- linux/include/asm-mips/softirq.h.orig	Sat Dec 22 10:05:06 2001
++++ linux/include/asm-mips/softirq.h	Sat Dec 22 10:05:23 2001
+@@ -40,6 +40,4 @@
+ 
+ #define in_softirq() (local_bh_count(smp_processor_id()) != 0)
+ 
+-#define __cpu_raise_softirq(cpu, nr)	set_bit(nr, &softirq_pending(cpu))
+-
+ #endif /* _ASM_SOFTIRQ_H */
+--- linux/include/asm-mips64/softirq.h.orig	Sat Dec 22 10:05:06 2001
++++ linux/include/asm-mips64/softirq.h	Sat Dec 22 10:05:23 2001
+@@ -39,19 +39,4 @@
+ 
+ #define in_softirq() (local_bh_count(smp_processor_id()) != 0)
+ 
+-extern inline void __cpu_raise_softirq(int cpu, int nr)
+-{
+-	unsigned int *m = (unsigned int *) &softirq_pending(cpu);
+-	unsigned int temp;
+-
+-	__asm__ __volatile__(
+-		"1:\tll\t%0, %1\t\t\t# __cpu_raise_softirq\n\t"
+-		"or\t%0, %2\n\t"
+-		"sc\t%0, %1\n\t"
+-		"beqz\t%0, 1b"
+-		: "=&r" (temp), "=m" (*m)
+-		: "ir" (1UL << nr), "m" (*m)
+-		: "memory");
+-}
+-
+ #endif /* _ASM_SOFTIRQ_H */
+--- linux/net/core/dev.c.orig	Sat Dec 22 10:05:15 2001
++++ linux/net/core/dev.c	Sat Dec 22 10:05:23 2001
+@@ -1237,8 +1237,9 @@
+ 			dev_hold(skb->dev);
+ 			__skb_queue_tail(&queue->input_pkt_queue,skb);
+ 			/* Runs from irqs or BH's, no need to wake BH */
+-			cpu_raise_softirq(this_cpu, NET_RX_SOFTIRQ);
++			__cpu_raise_softirq(this_cpu, NET_RX_SOFTIRQ);
+ 			local_irq_restore(flags);
++			rerun_softirqs(this_cpu);
+ #ifndef OFFLINE_SAMPLE
+ 			get_sample_stats(this_cpu);
+ #endif
+@@ -1548,8 +1549,9 @@
+ 	local_irq_disable();
+ 	netdev_rx_stat[this_cpu].time_squeeze++;
+ 	/* This already runs in BH context, no need to wake up BH's */
+-	cpu_raise_softirq(this_cpu, NET_RX_SOFTIRQ);
++	__cpu_raise_softirq(this_cpu, NET_RX_SOFTIRQ);
+ 	local_irq_enable();
++	rerun_softirqs(this_cpu);
+ 
+ 	NET_PROFILE_LEAVE(softnet_process);
+ 	return;
+--- linux/arch/i386/kernel/irq.c.orig	Sat Dec 22 10:05:11 2001
++++ linux/arch/i386/kernel/irq.c	Sat Dec 22 10:05:23 2001
+@@ -1,7 +1,7 @@
+ /*
+  *	linux/arch/i386/kernel/irq.c
+  *
+- *	Copyright (C) 1992, 1998 Linus Torvalds, Ingo Molnar
++ *	Copyright (C) 1992, 1998, 2001 Linus Torvalds, Ingo Molnar
+  *
+  * This file contains the code used by various IRQ handling routines:
+  * asking for different IRQ's should be done through these routines
+@@ -18,6 +18,7 @@
+  */
+ 
+ #include <linux/config.h>
++#include <linux/compiler.h>
+ #include <linux/ptrace.h>
+ #include <linux/errno.h>
+ #include <linux/signal.h>
+@@ -66,9 +67,14 @@
+  * Controller mappings for all interrupt sources:
+  */
+ irq_desc_t irq_desc[NR_IRQS] __cacheline_aligned =
+-	{ [0 ... NR_IRQS-1] = { 0, &no_irq_type, NULL, 0, SPIN_LOCK_UNLOCKED}};
++	{ [0 ... NR_IRQS-1] = { 0, &no_irq_type, NULL, 0, SPIN_LOCK_UNLOCKED }};
+ 
+-static void register_irq_proc (unsigned int irq);
++/*
++ * Print warnings only once.
++ */
++static unsigned int rate_warning [NR_IRQS] = { [0 ... NR_IRQS-1] = 1 };
++
++static void register_irq_proc(unsigned int irq);
+ 
+ /*
+  * Special irq handlers.
+@@ -230,35 +236,8 @@
+ 	show_stack(NULL);
+ 	printk("\n");
+ }
+-	
+-#define MAXCOUNT 100000000
+-
+-/*
+- * I had a lockup scenario where a tight loop doing
+- * spin_unlock()/spin_lock() on CPU#1 was racing with
+- * spin_lock() on CPU#0. CPU#0 should have noticed spin_unlock(), but
+- * apparently the spin_unlock() information did not make it
+- * through to CPU#0 ... nasty, is this by design, do we have to limit
+- * 'memory update oscillation frequency' artificially like here?
+- *
+- * Such 'high frequency update' races can be avoided by careful design, but
+- * some of our major constructs like spinlocks use similar techniques,
+- * it would be nice to clarify this issue. Set this define to 0 if you
+- * want to check whether your system freezes.  I suspect the delay done
+- * by SYNC_OTHER_CORES() is in correlation with 'snooping latency', but
+- * i thought that such things are guaranteed by design, since we use
+- * the 'LOCK' prefix.
+- */
+-#define SUSPECTED_CPU_OR_CHIPSET_BUG_WORKAROUND 0
+ 
+-#if SUSPECTED_CPU_OR_CHIPSET_BUG_WORKAROUND
+-# define SYNC_OTHER_CORES(x) udelay(x+1)
+-#else
+-/*
+- * We have to allow irqs to arrive between __sti and __cli
+- */
+-# define SYNC_OTHER_CORES(x) __asm__ __volatile__ ("nop")
+-#endif
++#define MAXCOUNT 100000000
+ 
+ static inline void wait_on_irq(int cpu)
+ {
+@@ -276,7 +255,7 @@
+ 				break;
+ 
+ 		/* Duh, we have to loop. Release the lock to avoid deadlocks */
+-		clear_bit(0,&global_irq_lock);
++		clear_bit(0, &global_irq_lock);
+ 
+ 		for (;;) {
+ 			if (!--count) {
+@@ -284,7 +263,8 @@
+ 				count = ~0;
+ 			}
+ 			__sti();
+-			SYNC_OTHER_CORES(cpu);
++			/* Allow irqs to arrive */
++			__asm__ __volatile__ ("nop");
+ 			__cli();
+ 			if (irqs_running())
+ 				continue;
+@@ -467,6 +447,13 @@
+  * controller lock. 
+  */
+  
++inline void __disable_irq(irq_desc_t *desc, unsigned int irq)
++{
++	if (!desc->depth++) {
++		desc->status |= IRQ_DISABLED;
++		desc->handler->disable(irq);
++	}
++}
+ /**
+  *	disable_irq_nosync - disable an irq without waiting
+  *	@irq: Interrupt to disable
+@@ -485,10 +472,7 @@
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&desc->lock, flags);
+-	if (!desc->depth++) {
+-		desc->status |= IRQ_DISABLED;
+-		desc->handler->disable(irq);
+-	}
++	__disable_irq(desc, irq);
+ 	spin_unlock_irqrestore(&desc->lock, flags);
+ }
+ 
+@@ -517,23 +501,8 @@
+ 	}
+ }
+ 
+-/**
+- *	enable_irq - enable handling of an irq
+- *	@irq: Interrupt to enable
+- *
+- *	Undoes the effect of one call to disable_irq().  If this
+- *	matches the last disable, processing of interrupts on this
+- *	IRQ line is re-enabled.
+- *
+- *	This function may be called from IRQ context.
+- */
+- 
+-void enable_irq(unsigned int irq)
++static inline void __enable_irq(irq_desc_t *desc, unsigned int irq)
+ {
+-	irq_desc_t *desc = irq_desc + irq;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&desc->lock, flags);
+ 	switch (desc->depth) {
+ 	case 1: {
+ 		unsigned int status = desc->status & ~IRQ_DISABLED;
+@@ -552,10 +521,96 @@
+ 		printk("enable_irq(%u) unbalanced from %p\n", irq,
+ 		       __builtin_return_address(0));
+ 	}
++}
++
++/**
++ *	enable_irq - enable handling of an irq
++ *	@irq: Interrupt to enable
++ *
++ *	Undoes the effect of one call to disable_irq().  If this
++ *	matches the last disable, processing of interrupts on this
++ *	IRQ line is re-enabled.
++ *
++ *	This function may be called from IRQ context.
++ */
++ 
++void enable_irq(unsigned int irq)
++{
++	irq_desc_t *desc = irq_desc + irq;
++	unsigned long flags;
++
++	spin_lock_irqsave(&desc->lock, flags);
++	__enable_irq(desc, irq);
+ 	spin_unlock_irqrestore(&desc->lock, flags);
+ }
+ 
+ /*
++ * This function, provided by every architecture, resets
++ * the irq-limit counters in every jiffy, and restarts
++ * pending IRQ handlers if necessery.
++ *
++ * Overhead is fairly small in the normal case, since it
++ * gets the irq-descriptor spinlock only if the IRQ got
++ * mitigated.
++ */
++
++void irq_rate_check(struct pt_regs *regs)
++{
++	unsigned long flags;
++	irq_desc_t *desc;
++	int i;
++
++	__save_flags(flags);
++	__cli();
++	for (i = 0; i < NR_IRQS; i++) {
++		struct irqaction * action;
++
++		desc = irq_desc + i;
++		desc->irq_contexts = 0;
++		desc->total_contexts = 0;
++		/*
++		 * quick lockless test.
++		 */
++		if (!(desc->status & IRQ_MITIGATED))
++			continue;
++		/*
++		 * From this point on we re-execute pending IRQ
++		 * handlers. This is necessery for IRQ controllers
++		 * that are neither capable of recording pending
++		 * interrupts, nor are capable of injecting IRQs
++		 * artificially via hw_resend_irq(). So we are
++		 * restarting them by hand - fortunately we are in
++		 * an IRQ context already.
++		 */
++		action = NULL;
++		spin_lock(&desc->lock);
++		if (desc->status & IRQ_MITIGATED) {
++			desc->status &= ~IRQ_MITIGATED;
++			if (!(desc->status & IRQ_INPROGRESS) &&
++							(desc->depth == 1)) {
++				action = desc->action;
++				desc->status |= IRQ_INPROGRESS; 
++			}
++		}
++		if (action) {
++			for (;;) {
++				desc->status &= ~IRQ_PENDING;
++				spin_unlock(&desc->lock);
++				handle_IRQ_event(i, regs, action);
++				spin_lock(&desc->lock);
++				if (!(desc->status & IRQ_PENDING))
++					break;
++			}
++			desc->status &= ~IRQ_INPROGRESS;
++		}
++		desc->status |= IRQ_REPLAY;
++		__enable_irq(desc, i);
++		spin_unlock(&desc->lock);
++	}
++	__restore_flags(flags);
++}
++
++/*
+  * do_IRQ handles all normal device IRQ's (the special
+  * SMP cross-CPU interrupts have their own specific
+  * handlers).
+@@ -576,7 +631,7 @@
+ 	int cpu = smp_processor_id();
+ 	irq_desc_t *desc = irq_desc + irq;
+ 	struct irqaction * action;
+-	unsigned int status;
++	unsigned int status, user_stat;
+ 
+ 	kstat.irqs[cpu][irq]++;
+ 	spin_lock(&desc->lock);
+@@ -586,6 +641,19 @@
+ 	   WAITING is used by probe to mark irqs that are being tested
+ 	   */
+ 	status = desc->status & ~(IRQ_REPLAY | IRQ_WAITING);
++	/*
++	 * Our 'interrup load' estimator. The estimator counts the number
++	 * of times we interrupt IRQ contexts (hardirqs, softirqs), as
++	 * opposed to non-IRQ contexts (syscalls, user-space, idle task).
++	 *
++	 * If the ratio of irq-contexts goes above a certain limit then we
++	 * go into 'overload mode' that involves the disabling of this
++	 * interrupt source until the next timer tick.
++	 */
++	desc->total_contexts++;
++	if (0 && unlikely(in_interrupt()))
++		goto mitigate_irqload;
++normal_irqpath:
+ 	status |= IRQ_PENDING; /* we _want_ to handle it */
+ 
+ 	/*
+@@ -640,6 +708,39 @@
+ 	if (softirq_pending(cpu))
+ 		do_softirq();
+ 	return 1;
++
++mitigate_irqload:
++	/*
++	 * avoid false positives due to statistical fluctuations.
++	 * We need at least 10 interrupts in this jiffy for
++	 * mitigation to happen.
++	 */
++	#define MIN_RATE (1000/HZ + 10)
++
++	desc->irq_contexts++;
++	if (desc->total_contexts <= MIN_RATE)
++		goto normal_irqpath;
++	user_stat = desc->total_contexts - desc->irq_contexts;
++	/*
++	 * Mitigate if less than 3% of contexts are
++	 * non-irq contexts:
++	 */
++	if (user_stat >= (desc->total_contexts >> 5))
++		goto normal_irqpath;
++	if (rate_warning[irq]) {
++		printk(KERN_WARNING "Possible IRQ overload: maximum irq load of 97%% exceeded for IRQ%d!\nThrottling IRQ%d.\n", irq, irq);
++		rate_warning[irq] = 0;
++	}
++	if (status & IRQ_MITIGATED)
++		goto out;
++	/*
++	 * Disable interrupt source. It will be re-enabled
++	 * by the next timer interrupt - and possibly be
++	 * restarted if needed.
++	 */
++	desc->status |= IRQ_MITIGATED|IRQ_PENDING;
++	__disable_irq(desc, irq);
++	goto out;
+ }
+ 
+ /**
+@@ -812,7 +913,7 @@
+ 	 * something may have generated an irq long ago and we want to
+ 	 * flush such a longstanding irq before considering it as spurious. 
+ 	 */
+-	for (i = NR_IRQS-1; i > 0; i--)  {
++	for (i = NR_IRQS-1; i > 0; i--) {
+ 		desc = irq_desc + i;
+ 
+ 		spin_lock_irq(&desc->lock);
+@@ -1035,7 +1136,7 @@
+ 
+ #define HEX_DIGITS 8
+ 
+-static unsigned int parse_hex_value (const char *buffer,
++static unsigned int parse_hex_value(const char *buffer,
+ 		unsigned long count, unsigned long *ret)
+ {
+ 	unsigned char hexnum [HEX_DIGITS];
+@@ -1074,18 +1175,17 @@
+ 
+ #if CONFIG_SMP
+ 
+-static struct proc_dir_entry * smp_affinity_entry [NR_IRQS];
+-
+ static unsigned long irq_affinity [NR_IRQS] = { [0 ... NR_IRQS-1] = ~0UL };
+-static int irq_affinity_read_proc (char *page, char **start, off_t off,
++
++static int irq_affinity_read_proc(char *page, char **start, off_t off,
+ 			int count, int *eof, void *data)
+ {
+-	if (count < HEX_DIGITS+1)
++	if (count <= HEX_DIGITS)
+ 		return -EINVAL;
+ 	return sprintf (page, "%08lx\n", irq_affinity[(long)data]);
+ }
+ 
+-static int irq_affinity_write_proc (struct file *file, const char *buffer,
++static int irq_affinity_write_proc(struct file *file, const char *buffer,
+ 					unsigned long count, void *data)
+ {
+ 	int irq = (long) data, full_count = count, err;
+@@ -1112,16 +1212,16 @@
+ 
+ #endif
+ 
+-static int prof_cpu_mask_read_proc (char *page, char **start, off_t off,
++static int prof_cpu_mask_read_proc(char *page, char **start, off_t off,
+ 			int count, int *eof, void *data)
+ {
+ 	unsigned long *mask = (unsigned long *) data;
+-	if (count < HEX_DIGITS+1)
++	if (count <= HEX_DIGITS)
+ 		return -EINVAL;
+ 	return sprintf (page, "%08lx\n", *mask);
+ }
+ 
+-static int prof_cpu_mask_write_proc (struct file *file, const char *buffer,
++static int prof_cpu_mask_write_proc(struct file *file, const char *buffer,
+ 					unsigned long count, void *data)
+ {
+ 	unsigned long *mask = (unsigned long *) data, full_count = count, err;
+@@ -1137,8 +1237,11 @@
+ 
+ #define MAX_NAMELEN 10
+ 
+-static void register_irq_proc (unsigned int irq)
++static void register_irq_proc(unsigned int irq)
+ {
++#if CONFIG_SMP
++	struct proc_dir_entry *entry;
++#endif
+ 	char name [MAX_NAMELEN];
+ 
+ 	if (!root_irq_dir || (irq_desc[irq].handler == &no_irq_type) ||
+@@ -1152,27 +1255,21 @@
+ 	irq_dir[irq] = proc_mkdir(name, root_irq_dir);
+ 
+ #if CONFIG_SMP
+-	{
+-		struct proc_dir_entry *entry;
+-
+-		/* create /proc/irq/1234/smp_affinity */
+-		entry = create_proc_entry("smp_affinity", 0600, irq_dir[irq]);
++	/* create /proc/irq/1234/smp_affinity */
++	entry = create_proc_entry("smp_affinity", 0600, irq_dir[irq]);
+ 
+-		if (entry) {
+-			entry->nlink = 1;
+-			entry->data = (void *)(long)irq;
+-			entry->read_proc = irq_affinity_read_proc;
+-			entry->write_proc = irq_affinity_write_proc;
+-		}
+-
+-		smp_affinity_entry[irq] = entry;
++	if (entry) {
++		entry->nlink = 1;
++		entry->data = (void *)(long)irq;
++		entry->read_proc = irq_affinity_read_proc;
++		entry->write_proc = irq_affinity_write_proc;
+ 	}
+ #endif
+ }
+ 
+ unsigned long prof_cpu_mask = -1;
+ 
+-void init_irq_proc (void)
++void init_irq_proc(void)
+ {
+ 	struct proc_dir_entry *entry;
+ 	int i;
+@@ -1184,7 +1281,7 @@
+ 	entry = create_proc_entry("prof_cpu_mask", 0600, root_irq_dir);
+ 
+ 	if (!entry)
+-	    return;
++		return;
+ 
+ 	entry->nlink = 1;
+ 	entry->data = (void *)&prof_cpu_mask;

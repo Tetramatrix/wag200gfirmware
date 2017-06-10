@@ -1,0 +1,17 @@
+***************
+*** 185,191 ****
+  	if (ret != NF_DROP && ret != NF_STOLEN
+  	    && ((*pskb)->nh.iph->saddr != saddr
+  		|| (*pskb)->nh.iph->daddr != daddr))
+- 		return ip_route_me_harder(pskb) == 0 ? ret : NF_DROP;
+  	return ret;
+  }
+  
+--- 213,219 ----
+  	if (ret != NF_DROP && ret != NF_STOLEN
+  	    && ((*pskb)->nh.iph->saddr != saddr
+  		|| (*pskb)->nh.iph->daddr != daddr))
++ 		return route_me_harder(*pskb) == 0 ? ret : NF_DROP;
+  	return ret;
+  }
+  

@@ -1,0 +1,102 @@
+dep_atyfb.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pmac/pbook.h)
+atyfb_base.o: atyfb_base.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vt_kern.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vt_kern.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb24.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb24.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h) \
+   mach64.h $(dep_mach64.h) \
+   atyfb.h $(dep_atyfb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/macmodes.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/macmodes.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/adb/pmu.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/adb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/adb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pmu.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pmu.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/bootx/text.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/nvram.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/nvram.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/nvram.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/compat/xpmac.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pmac/backlight.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/atari.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ppc.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/xpert98.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/aty/gx.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/fb/aty/ct.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pmac/pbook.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/chip/id.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/stat0.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/stat1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+mach64_accel.o: mach64_accel.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb24.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb24.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h) \
+   mach64.h $(dep_mach64.h) \
+   atyfb.h $(dep_atyfb.h)
+mach64_ct.o: mach64_ct.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   mach64.h $(dep_mach64.h) \
+   atyfb.h $(dep_atyfb.h)
+mach64_cursor.o: mach64_cursor.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/uaccess.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   mach64.h $(dep_mach64.h) \
+   atyfb.h $(dep_atyfb.h)
+mach64_gx.o: mach64_gx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   mach64.h $(dep_mach64.h) \
+   atyfb.h $(dep_atyfb.h)
+xlinit.o: xlinit.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vmalloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/vt_kern.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/vt_kern.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kd.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kd.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   mach64.h $(dep_mach64.h) \
+   atyfb.h $(dep_atyfb.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/stat0.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/cntl.h)

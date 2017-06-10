@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# This little script will create the minix FS on a /dev/mtdblock/5 
+# flash partition. If the partition is not the 256KB, or there is
+# already a minix FS on it - the script will exit without any changes.
+#
+
+echo " "
+echo "This command will ERASE your /dev/mtdblock/5 flash partition."
+echo "This partition is normally used for the different language versions"
+echo "of the WWW management interface."
+echo " "
+echo "Do you want to continue ? (y/n):"
+read answer
+
+if [ "$answer" = "y" ]
+ then
+  
+  echo "Checking for mounted partitions ..."
+  ISMOUNTED=`mount | grep /dev/mtdblock/5 | awk '{print $2;}'`
+ 
+  if [ "$ISMOUNTED" = "on" ]
+   then
+    echo "ERROR: /dev/mtdblock/5 is a mounted filesystem !"
+    echo "The filesystem will not be created. Goodbye."  
+    exit
+   fi
+ 
+  echo "Checking for old minix filesystem on /dev/mtdblock/5 ..."
+  ISMINIX=`fsck.minix -fs /dev/mtdblock/5 | grep "256 blocks" | awk '{print $1}'`
+  
+  if [ "$ISMINIX" -eq 256 ]
+   then
+    echo "ERROR: You already have a minix filesystem on /dev/mtdblock/5 !"
+    echo "The filesystem will not be created. Goodbye."
+    exit
+   fi
+ 
+  echo "OK. Currently there's no minix FS on the /dev/mtdblock/5"
+  
+  echo "Checking size of the /dev/mtdblock/5 ..."
+  SIZE=`cat /proc/partitions | grep mtdblockf | awk '{print $3}'`
+  
+  if [ "$SIZE" -eq 256 ]
+   then 
+    echo "Size is OK ( 256 KB )."
+    echo " "
+    echo "Making new filesystem on /dev/mtdblock5 ..."
+    echo " "
+     /sbin/mkfs.minix /dev/mtdblock/5
+    echo " "
+    echo "This is the end of the script."
+    echo "Enable automounting of your new FS from the WWW interface."
+    echo "The FS will then be mounted on /mnt/mtd5 "
+   else
+    echo "ERROR: The size of the /dev/mtdblock/5 is not 256KB!"
+    echo "The filesystem will not be created. Goodbye."
+  fi 
+  
+ else
+  echo "Your answer was negative. The filesystem will not be created."
+  echo "Goodbye."
+ fi

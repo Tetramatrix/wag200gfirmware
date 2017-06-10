@@ -1,0 +1,17 @@
+***************
+*** 261,267 ****
+  		if (!(iph->tos == e->rt_info.tos
+  		      && iph->daddr == e->rt_info.daddr
+  		      && iph->saddr == e->rt_info.saddr))
+- 			return ip_route_me_harder(&e->skb);
+  	}
+  	return 0;
+  }
+--- 287,293 ----
+  		if (!(iph->tos == e->rt_info.tos
+  		      && iph->daddr == e->rt_info.daddr
+  		      && iph->saddr == e->rt_info.saddr))
++ 			return route_me_harder(e->skb);
+  	}
+  	return 0;
+  }

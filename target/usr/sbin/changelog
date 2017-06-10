@@ -1,0 +1,111 @@
+Changelog:
+
+2008.04.27
+
+- Busybox 1.2.2.1
+- Linux ATM 2.5
+- Bridge-Utils 1.2
+- dropbear-0.51
+- iptables-1.3.6
+- iproute2-2.6.23 (tc 2.6.23)
+- syslogd from Busysbox
+- klogd from Busybox
+- crond from Busybox (not verified)
+- etherdump-2.01 (linked to tcpdump, try tcpdump -i <interface> to listen to incoming packets)
+- ctorrent-dnh3.3 (not working...:( )
+- ipt_recent (Portknocking, etc.)
+- ipt_Trigger (Porttriggering with iptables, I don't trust linksys proprietary version so much)
+- ipt_connlimit
+- ipt_dstlimit
+
+Kernel Patches
+++++++++++++++
+
+00_2.4.18.patch (kernel patches)
+004-exec_pagesize.patch
+004-iproute2-2.6.9-overhead-htb.patch
+06_2.4.23_core_changes.patch
+080222_passwd_patch.c (woytekm patch. Thank you!)
+080405_0000_ipt_dstlimit.patch (to make dstlimit working with linksys kernel)
+080405_0000_list.h.patch
+080405_0000_seq_file.h.patch
+080416_ans.c.patch
+080408_1800_qemu_mtd.patch (woytekm patch. to make image working with qemu)
+080416_ans.c.patch
+106-mppe_mppc.patch (add MPPE/MPPC MS-Compression Support to kernel, not activated)
+107-cifs.patch (add cifs support to kernel, nice if only ctorrent would be running)
+10_rawio-vary-io-1.patch
+115-branch_emul_fix.patch
+212-htb_time_fix.patch
+213-htb_disable_hysteresis.patch
+225-string_lib_useful_exports.patch
+231-mini_fo.patch
+2.4.17-pre8-2ndchance
+59_ip_nat_h-unused-var.patch
+604-netfilter_maxconn.patch
+609-netfilter_string.patch
+60_ecn_raw_unclone.patch
+61_nulldev_alignment.patch
+62_masquerade-oif.patch
+64_masquerade-sameip-noflush.patch
+75_selective_cleanup.patch
+76_conntrack_bucket_sysctl.patch
+800-debug_hotplug.patch
+bkl_rollup-2.4.17-6.patch
+br2684ctl.patch
+busybox-cpu-endless.loop (from the infamous german ip-phone forum)
+conntrack_unconfirmed.patch
+fast_walk+dcache_rcuA6-2.4.17.patch
+files_struct_rcu-2.4.17-07.patch
+htb2_2.4.17.diff
+htb3.6_2.4.17.diff
+kernel-2.4.29-overhead-all.patch
+kernel-2.4.29-overhead-htb.patch
+linux-2.4.17-seekdir.dif
+linux-2.4.18-flock.patch
+linux-2.4-do_mremap.patch
+mmap_exploit.diff
+notify_change-bkl_removal-2.4.17-2.patch
+PAGESIZE_io-2.4.17.patch
+patch.max_sectors.2417
+ppp_async_headroom.patch
+ppp_Cleanup file_count usage.patch
+ppp-disconnect.patch
+ppp_filter-memleak.diff
+PPPOE-memory-leak-when-socket-is-release.patch
+push-bkl-llseek-2-rml-2.4.17-2.patch
+rcu_poll-2.4.17.patch
+remote-linux-DoS-on-ppp-servers.patch
+rt_rcu-2.4.17-1.patch
+uClibc-0.9.19-dn_expand.patch
+uClibc-0.9.19-dn_expand.patch-1
+uClibc-0.9.19-dn_expand.patch-2
+ppp-driver is now version 2.4.2 (did by hand)
+
+
+Patch-O-Matic
++++++++++++++
+
+44_backport_ah_esp_fixes
+54_ip_nat-macro-args
+60_nat_tftp-remove-warning
+74_nat-range-fix
+40_nf-log
+55_ipt_unclean-tcp-flag-table
+59_ip_nat_h-unused-var
+ip_ct_refresh_optimization
+61-remove-memsets
+64_masquerade-sameip-noflush
+75_selective_cleanup
+90_fw_compat_local-nullbinding
+60_ecn_raw_unclone
+HL-ipv6
+iprange
+IPV4OPTSSTRIP
+NETLINK
+psd
+random
+REJECT-ipv6
+SAME
+TTL
+

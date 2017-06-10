@@ -1,0 +1,2396 @@
+diff -urN iptables-1.3.0/Makefile iptables-1.3.1/Makefile
+--- iptables-1.3.0/Makefile	2005-02-12 21:59:48.000000000 +0100
++++ iptables-1.3.1/Makefile	2005-03-07 15:02:23.000000000 +0100
+@@ -14,8 +14,8 @@
+ ifndef KERNEL_DIR
+ KERNEL_DIR=/usr/src/linux
+ endif
+-IPTABLES_VERSION:=1.3.0
+-OLD_IPTABLES_VERSION:=1.2.11
++IPTABLES_VERSION:=1.3.1
++OLD_IPTABLES_VERSION:=1.3.0
+ 
+ PREFIX:=/usr/local
+ LIBDIR:=$(PREFIX)/lib
+diff -urN iptables-1.3.0/extensions/libip6t_LOG.c iptables-1.3.1/extensions/libip6t_LOG.c
+--- iptables-1.3.0/extensions/libip6t_LOG.c	2004-10-10 11:56:25.000000000 +0200
++++ iptables-1.3.1/extensions/libip6t_LOG.c	2005-02-19 20:19:17.000000000 +0100
+@@ -42,8 +42,6 @@
+ 
+ 	loginfo->level = LOG_DEFAULT_LEVEL;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ struct ip6t_log_names {
+diff -urN iptables-1.3.0/extensions/libip6t_REJECT.c iptables-1.3.1/extensions/libip6t_REJECT.c
+--- iptables-1.3.0/extensions/libip6t_REJECT.c	2005-02-01 16:17:09.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_REJECT.c	2005-02-19 20:19:17.000000000 +0100
+@@ -79,8 +79,6 @@
+ 	/* default */
+ 	reject->with = IP6T_ICMP6_PORT_UNREACH;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Function which parses command options; returns true if it
+diff -urN iptables-1.3.0/extensions/libip6t_condition.c iptables-1.3.1/extensions/libip6t_condition.c
+--- iptables-1.3.0/extensions/libip6t_condition.c	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.1/extensions/libip6t_condition.c	2005-02-19 20:19:17.000000000 +0100
+@@ -24,14 +24,6 @@
+ 	{ .name = 0 }
+ };
+ 
+-
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+-
+ static int
+ parse(int c, char **argv, int invert, unsigned int *flags,
+       const struct ip6t_entry *entry, unsigned int *nfcache,
+@@ -99,7 +91,6 @@
+ 	.size = IP6T_ALIGN(sizeof(struct condition6_info)),
+ 	.userspacesize = IP6T_ALIGN(sizeof(struct condition6_info)),
+ 	.help = &help,
+-	.init = &init,
+ 	.parse = &parse,
+ 	.final_check = &final_check,
+ 	.print = &print,
+diff -urN iptables-1.3.0/extensions/libip6t_eui64.c iptables-1.3.1/extensions/libip6t_eui64.c
+--- iptables-1.3.0/extensions/libip6t_eui64.c	2005-02-01 16:20:13.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_eui64.c	2005-02-19 20:19:17.000000000 +0100
+@@ -26,14 +26,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -71,7 +63,6 @@
+ 	.size		= IP6T_ALIGN(sizeof(int)),
+ 	.userspacesize	= IP6T_ALIGN(sizeof(int)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libip6t_fuzzy.c iptables-1.3.1/extensions/libip6t_fuzzy.c
+--- iptables-1.3.0/extensions/libip6t_fuzzy.c	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.1/extensions/libip6t_fuzzy.c	2005-02-19 20:19:17.000000000 +0100
+@@ -44,8 +44,6 @@
+ init(struct ip6t_entry_match *m, unsigned int *nfcache)
+ {
+ 	struct ip6t_fuzzy_info *presentinfo = (struct ip6t_fuzzy_info *)(m)->data;
+-	*nfcache |= NFC_UNKNOWN;
+-
+ 	/*
+ 	 * Default rates ( I'll improve this very soon with something based
+ 	 * on real statistics of the running machine ) .
+diff -urN iptables-1.3.0/extensions/libip6t_hl.c iptables-1.3.1/extensions/libip6t_hl.c
+--- iptables-1.3.0/extensions/libip6t_hl.c	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.1/extensions/libip6t_hl.c	2005-02-19 20:19:17.000000000 +0100
+@@ -25,12 +25,6 @@
+ , IPTABLES_VERSION);
+ }
+ 
+-static void init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	/* caching not yet implemented */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static int parse(int c, char **argv, int invert, unsigned int *flags,
+ 		const struct ip6t_entry *entry, unsigned int *nfcache,
+ 		struct ip6t_entry_match **match)
+@@ -141,7 +135,6 @@
+ 	.size          = IP6T_ALIGN(sizeof(struct ip6t_hl_info)),
+ 	.userspacesize = IP6T_ALIGN(sizeof(struct ip6t_hl_info)),
+ 	.help          = &help,
+-	.init          = &init,
+ 	.parse         = &parse,
+ 	.final_check   = &final_check,
+ 	.print         = &print,
+diff -urN iptables-1.3.0/extensions/libip6t_icmpv6.c iptables-1.3.1/extensions/libip6t_icmpv6.c
+--- iptables-1.3.0/extensions/libip6t_icmpv6.c	2005-02-01 16:22:43.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_icmpv6.c	2005-02-19 20:19:17.000000000 +0100
+@@ -90,7 +90,7 @@
+ 	{0}
+ };
+ 
+-static unsigned int
++static void
+ parse_icmpv6(const char *icmpv6type, u_int8_t *type, u_int8_t code[])
+ {
+ 	unsigned int limit = sizeof(icmpv6_codes)/sizeof(struct icmpv6_names);
+@@ -141,10 +141,6 @@
+ 			code[1] = 0xFF;
+ 		}
+ 	}
+-
+-	if (code[0] == 0 && code[1] == 0xFF)
+-		return NFC_IP6_SRC_PT;
+-	else return NFC_IP6_SRC_PT | NFC_IP6_DST_PT;
+ }
+ 
+ /* Initialize the match. */
+@@ -169,9 +165,8 @@
+ 	switch (c) {
+ 	case '1':
+ 		check_inverse(optarg, &invert, &optind, 0);
+-		*nfcache |= parse_icmpv6(argv[optind-1],
+-				       &icmpv6info->type,
+-				       icmpv6info->code);
++		parse_icmpv6(argv[optind-1], &icmpv6info->type, 
++			     icmpv6info->code);
+ 		if (invert)
+ 			icmpv6info->invflags |= IP6T_ICMP_INV;
+ 		break;
+diff -urN iptables-1.3.0/extensions/libip6t_ipv6header.c iptables-1.3.1/extensions/libip6t_ipv6header.c
+--- iptables-1.3.0/extensions/libip6t_ipv6header.c	2005-02-01 16:23:33.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_ipv6header.c	2005-02-19 20:19:17.000000000 +0100
+@@ -162,8 +162,6 @@
+ 	info->matchflags = 0x00;
+ 	info->invflags = 0x00;
+ 	info->modeflag = 0x00;
+-	/* No caching (yet) */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ static unsigned int
+diff -urN iptables-1.3.0/extensions/libip6t_length.c iptables-1.3.1/extensions/libip6t_length.c
+--- iptables-1.3.0/extensions/libip6t_length.c	2005-02-01 16:24:27.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_length.c	2005-02-19 20:19:17.000000000 +0100
+@@ -26,13 +26,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static u_int16_t
+ parse_length(const char *s)
+ {
+@@ -146,7 +139,6 @@
+ 	.size		= IP6T_ALIGN(sizeof(struct ip6t_length_info)),
+ 	.userspacesize	= IP6T_ALIGN(sizeof(struct ip6t_length_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libip6t_limit.c iptables-1.3.1/extensions/libip6t_limit.c
+--- iptables-1.3.0/extensions/libip6t_limit.c	2005-02-01 16:25:21.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_limit.c	2005-02-19 20:19:17.000000000 +0100
+@@ -81,8 +81,6 @@
+ 	parse_rate(IP6T_LIMIT_AVG, &r->avg);
+ 	r->burst = IP6T_LIMIT_BURST;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* FIXME: handle overflow:
+diff -urN iptables-1.3.0/extensions/libip6t_mac.c iptables-1.3.1/extensions/libip6t_mac.c
+--- iptables-1.3.0/extensions/libip6t_mac.c	2005-02-01 16:26:13.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_mac.c	2005-02-19 20:19:17.000000000 +0100
+@@ -28,14 +28,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void
+ parse_mac(const char *mac, struct ip6t_mac_info *info)
+ {
+@@ -134,7 +126,6 @@
+ 	.size		= IP6T_ALIGN(sizeof(struct ip6t_mac_info)),
+ 	.userspacesize	= IP6T_ALIGN(sizeof(struct ip6t_mac_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libip6t_mark.c iptables-1.3.1/extensions/libip6t_mark.c
+--- iptables-1.3.0/extensions/libip6t_mark.c	2005-02-01 16:27:09.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_mark.c	2005-02-19 20:19:17.000000000 +0100
+@@ -25,14 +25,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -137,7 +129,6 @@
+ 	.size		= IP6T_ALIGN(sizeof(struct ip6t_mark_info)),
+ 	.userspacesize	= IP6T_ALIGN(sizeof(struct ip6t_mark_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libip6t_multiport.c iptables-1.3.1/extensions/libip6t_multiport.c
+--- iptables-1.3.0/extensions/libip6t_multiport.c	2005-02-01 16:38:05.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_multiport.c	2005-02-19 20:19:17.000000000 +0100
+@@ -117,7 +117,6 @@
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+ 		multiinfo->flags = IP6T_MULTIPORT_SOURCE;
+-		*nfcache |= NFC_IP6_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -126,7 +125,6 @@
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+ 		multiinfo->flags = IP6T_MULTIPORT_DESTINATION;
+-		*nfcache |= NFC_IP6_DST_PT;
+ 		break;
+ 
+ 	case '3':
+@@ -135,7 +133,6 @@
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+ 		multiinfo->flags = IP6T_MULTIPORT_EITHER;
+-		*nfcache |= NFC_IP6_SRC_PT | NFC_IP6_DST_PT;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libip6t_nth.c iptables-1.3.1/extensions/libip6t_nth.c
+--- iptables-1.3.0/extensions/libip6t_nth.c	2005-02-01 16:28:48.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_nth.c	2005-02-19 20:19:17.000000000 +0100
+@@ -50,13 +50,6 @@
+ 	{ 0 }
+ };
+ 
+-/* Initialize the target. */
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ #define IP6T_NTH_OPT_EVERY	0x01
+ #define IP6T_NTH_OPT_NOT_EVERY	0x02
+ #define IP6T_NTH_OPT_START	0x04
+@@ -223,7 +216,6 @@
+ 	.size		= IP6T_ALIGN(sizeof(struct ip6t_nth_info)),
+ 	.userspacesize	= IP6T_ALIGN(sizeof(struct ip6t_nth_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libip6t_owner.c iptables-1.3.1/extensions/libip6t_owner.c
+--- iptables-1.3.0/extensions/libip6t_owner.c	2005-02-01 16:29:37.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_owner.c	2005-02-19 20:19:17.000000000 +0100
+@@ -47,14 +47,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ip6t_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -243,7 +235,6 @@
+ 	.size		= IP6T_ALIGN(sizeof(struct ip6t_owner_info)),
+ 	.userspacesize	= IP6T_ALIGN(sizeof(struct ip6t_owner_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libip6t_random.c iptables-1.3.1/extensions/libip6t_random.c
+--- iptables-1.3.0/extensions/libip6t_random.c	2005-02-01 16:31:19.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_random.c	2005-02-19 20:19:17.000000000 +0100
+@@ -52,7 +52,6 @@
+ init(struct ip6t_entry_match *m, unsigned int *nfcache)
+ {
+ 	struct ip6t_rand_info *randinfo = (struct ip6t_rand_info *)(m)->data;
+-	*nfcache |= NFC_UNKNOWN;
+ 
+ 	/* We assign the average to be 50 which is our default value */
+ 	/* 50 * 2.55 = 128 */
+@@ -140,7 +139,7 @@
+ 	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+-	.print		= &print
++	.print		= &print,
+ 	.save		= &save,
+ 	.extra_opts	= opts,
+ };
+diff -urN iptables-1.3.0/extensions/libip6t_tcp.c iptables-1.3.1/extensions/libip6t_tcp.c
+--- iptables-1.3.0/extensions/libip6t_tcp.c	2005-02-01 16:38:57.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_tcp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -187,7 +187,6 @@
+ 		if (invert)
+ 			tcpinfo->invflags |= IP6T_TCP_INV_SRCPT;
+ 		*flags |= TCP_SRC_PORTS;
+-		*nfcache |= NFC_IP6_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -199,7 +198,6 @@
+ 		if (invert)
+ 			tcpinfo->invflags |= IP6T_TCP_INV_DSTPT;
+ 		*flags |= TCP_DST_PORTS;
+-		*nfcache |= NFC_IP6_DST_PT;
+ 		break;
+ 
+ 	case '3':
+@@ -209,7 +207,6 @@
+ 				   " allowed");
+ 		parse_tcp_flags(tcpinfo, "SYN,RST,ACK", "SYN", invert);
+ 		*flags |= TCP_FLAGS;
+-		*nfcache |= NFC_IP6_TCPFLAGS;
+ 		break;
+ 
+ 	case '4':
+@@ -228,7 +225,6 @@
+ 				invert);
+ 		optind++;
+ 		*flags |= TCP_FLAGS;
+-		*nfcache |= NFC_IP6_TCPFLAGS;
+ 		break;
+ 
+ 	case '5':
+@@ -240,7 +236,6 @@
+ 		if (invert)
+ 			tcpinfo->invflags |= IP6T_TCP_INV_OPTION;
+ 		*flags |= TCP_OPTION;
+-		*nfcache |= NFC_IP6_PROTO_UNKNOWN;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libip6t_udp.c iptables-1.3.1/extensions/libip6t_udp.c
+--- iptables-1.3.0/extensions/libip6t_udp.c	2005-02-01 16:34:51.000000000 +0100
++++ iptables-1.3.1/extensions/libip6t_udp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -109,7 +109,6 @@
+ 		if (invert)
+ 			udpinfo->invflags |= IP6T_UDP_INV_SRCPT;
+ 		*flags |= UDP_SRC_PORTS;
+-		*nfcache |= NFC_IP6_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -121,7 +120,6 @@
+ 		if (invert)
+ 			udpinfo->invflags |= IP6T_UDP_INV_DSTPT;
+ 		*flags |= UDP_DST_PORTS;
+-		*nfcache |= NFC_IP6_DST_PT;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libipt_BALANCE.c iptables-1.3.1/extensions/libipt_BALANCE.c
+--- iptables-1.3.0/extensions/libipt_BALANCE.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_BALANCE.c	2005-02-19 20:19:17.000000000 +0100
+@@ -35,8 +35,6 @@
+ 	/* Actually, it's 0, but it's ignored at the moment. */
+ 	mr->rangesize = 1;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Parses range of IPs */
+diff -urN iptables-1.3.0/extensions/libipt_CLUSTERIP.c iptables-1.3.1/extensions/libipt_CLUSTERIP.c
+--- iptables-1.3.0/extensions/libipt_CLUSTERIP.c	2005-02-01 16:49:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_CLUSTERIP.c	2005-03-07 15:00:35.000000000 +0100
+@@ -7,6 +7,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <getopt.h>
++#include <stddef.h>
+ 
+ #if defined(__GLIBC__) && __GLIBC__ == 2
+ #include <net/ethernet.h>
+@@ -16,7 +17,7 @@
+ 
+ #include <iptables.h>
+ #include <linux/netfilter_ipv4/ip_tables.h>
+-#include <linux/netfilter_ipv4/ipt_CLUSTERIP.h>
++#include "../include/linux/netfilter_ipv4/ipt_CLUSTERIP.h"
+ 
+ static void
+ help(void)
+@@ -242,7 +243,7 @@
+ 	.name		= "CLUSTERIP",
+ 	.version	= IPTABLES_VERSION,
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_clusterip_tgt_info)),
+-	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_clusterip_tgt_info)),
++	.userspacesize	= offsetof(struct ipt_clusterip_tgt_info, config),
+  	.help		= &help,
+ 	.init		= &init,
+ 	.parse		= &parse,
+diff -urN iptables-1.3.0/extensions/libipt_CONNMARK.c iptables-1.3.1/extensions/libipt_CONNMARK.c
+--- iptables-1.3.0/extensions/libipt_CONNMARK.c	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_CONNMARK.c	2005-02-19 20:19:17.000000000 +0100
+@@ -26,7 +26,7 @@
+ 
+ #include <iptables.h>
+ #include <linux/netfilter_ipv4/ip_tables.h>
+-#include <linux/netfilter_ipv4/ipt_CONNMARK.h>
++#include "../include/linux/netfilter_ipv4/ipt_CONNMARK.h"
+ 
+ #if 0
+ struct markinfo {
+@@ -72,14 +72,25 @@
+ 	struct ipt_connmark_target_info *markinfo
+ 		= (struct ipt_connmark_target_info *)(*target)->data;
+ 
++#ifdef KERNEL_64_USERSPACE_32
++	markinfo->mask = ~0ULL;
++#else
++	markinfo->mask = ~0UL;
++#endif
++
+ 	switch (c) {
+ 		char *end;
+ 	case '1':
+ 		markinfo->mode = IPT_CONNMARK_SET;
+-		markinfo->mask = ~0;
++#ifdef KERNEL_64_USERSPACE_32
++		markinfo->mark = strtoull(optarg, &end, 0);
++		if (*end == '/' && end[1] != '\0')
++		    markinfo->mask = strtoull(end+1, &end, 0);
++#else
+ 		markinfo->mark = strtoul(optarg, &end, 0);
+ 		if (*end == '/' && end[1] != '\0')
+ 		    markinfo->mask = strtoul(end+1, &end, 0);
++#endif
+ 		if (*end != '\0' || end == optarg)
+ 			exit_error(PARAMETER_PROBLEM, "Bad MARK value `%s'", optarg);
+ 		if (*flags)
+@@ -89,7 +100,6 @@
+ 		break;
+ 	case '2':
+ 		markinfo->mode = IPT_CONNMARK_SAVE;
+-		markinfo->mask = ~0;
+ 		if (*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "CONNMARK target: Can't specify --save-mark twice");
+@@ -97,7 +107,6 @@
+ 		break;
+ 	case '3':
+ 		markinfo->mode = IPT_CONNMARK_RESTORE;
+-		markinfo->mask = ~0;
+ 		if (*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "CONNMARK target: Can't specify --restore-mark twice");
+@@ -107,9 +116,13 @@
+ 		if (!*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "CONNMARK target: Can't specify --mask without a operation");
+-		markinfo->mark = strtoul(optarg, &end, 0);
++#ifdef KERNEL_64_USERSPACE_32
++		markinfo->mask = strtoull(optarg, &end, 0);
++#else
++		markinfo->mask = strtoul(optarg, &end, 0);
++#endif
+ 		if (*end != '\0' || end == optarg)
+-			exit_error(PARAMETER_PROBLEM, "Bad MARK value `%s'", optarg);
++			exit_error(PARAMETER_PROBLEM, "Bad MASK value `%s'", optarg);
+ 		break;
+ 	default:
+ 		return 0;
+@@ -126,6 +139,37 @@
+ 		           "CONNMARK target: No operation specified");
+ }
+ 
++#ifdef KERNEL_64_USERSPACE_32
++static void
++print_mark(unsigned long long mark)
++{
++	printf("0x%llx", mark);
++}
++
++static void
++print_mask(const char *text, unsigned long long mask)
++{
++	if (mask != ~0ULL)
++		printf("%s%llx", text, mask);
++}
++
++#else
++
++static void
++print_mark(unsigned long mark)
++{
++	printf("0x%lx", mark);
++}
++
++static void
++print_mask(const char *text, unsigned long mask)
++{
++	if (mask != ~0UL)
++		printf("%s%lx", text, mask);
++}
++#endif
++
++
+ /* Prints out the target info. */
+ static void
+ print(const struct ipt_ip *ip,
+@@ -136,21 +180,19 @@
+ 		(const struct ipt_connmark_target_info *)target->data;
+ 	switch (markinfo->mode) {
+ 	case IPT_CONNMARK_SET:
+-	    printf("CONNMARK set 0x%lx", markinfo->mark);
+-	    if (markinfo->mask != ~0)
+-		printf("/0x%lx", markinfo->mask);
++	    printf("CONNMARK set ");
++	    print_mark(markinfo->mark);
++	    print_mask("/", markinfo->mask);
+ 	    printf(" ");
+ 	    break;
+ 	case IPT_CONNMARK_SAVE:
+ 	    printf("CONNMARK save ");
+-	    if (markinfo->mask != ~0)
+-		printf("mask 0x%lx", markinfo->mask);
++	    print_mask("mask ", markinfo->mask);
+ 	    printf(" ");
+ 	    break;
+ 	case IPT_CONNMARK_RESTORE:
+ 	    printf("CONNMARK restore ");
+-	    if (markinfo->mask != ~0)
+-		printf("mask 0x%lx", markinfo->mask);
++	    print_mask("mask ", markinfo->mask);
+ 	    break;
+ 	default:
+ 	    printf("ERROR: UNKNOWN CONNMARK MODE ");
+@@ -167,20 +209,18 @@
+ 
+ 	switch (markinfo->mode) {
+ 	case IPT_CONNMARK_SET:
+-	    printf("--set-mark 0x%lx", markinfo->mark);
+-	    if (markinfo->mask != ~0)
+-		printf("/0x%lx", markinfo->mask);
++	    printf("--set-mark ");
++	    print_mark(markinfo->mark);
++	    print_mask("/", markinfo->mask);
+ 	    printf(" ");
+ 	    break;
+ 	case IPT_CONNMARK_SAVE:
+ 	    printf("--save-mark ");
+-	    if (markinfo->mask != ~0)
+-		printf("--mask 0x%lx", markinfo->mask);
++	    print_mask("--mask ", markinfo->mask);
+ 	    break;
+ 	case IPT_CONNMARK_RESTORE:
+ 	    printf("--restore-mark ");
+-	    if (markinfo->mask != ~0)
+-		printf("--mask 0x%lx", markinfo->mask);
++	    print_mask("--mask ", markinfo->mask);
+ 	    break;
+ 	default:
+ 	    printf("ERROR: UNKNOWN CONNMARK MODE ");
+diff -urN iptables-1.3.0/extensions/libipt_DNAT.c iptables-1.3.1/extensions/libipt_DNAT.c
+--- iptables-1.3.0/extensions/libipt_DNAT.c	2005-02-01 13:51:01.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_DNAT.c	2005-02-19 20:19:17.000000000 +0100
+@@ -33,14 +33,6 @@
+ 	{ 0 }
+ };
+ 
+-/* Initialize the target. */
+-static void
+-init(struct ipt_entry_target *t, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static struct ipt_natinfo *
+ append_range(struct ipt_natinfo *info, const struct ip_nat_range *range)
+ {
+@@ -236,7 +228,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ip_nat_multi_range)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ip_nat_multi_range)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_IPMARK.c iptables-1.3.1/extensions/libipt_IPMARK.c
+--- iptables-1.3.0/extensions/libipt_IPMARK.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_IPMARK.c	2005-02-19 20:19:17.000000000 +0100
+@@ -53,7 +53,6 @@
+ 	ipmarkinfo->andmask=0xffffffff;
+ 	ipmarkinfo->ormask=0;
+ 
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Function which parses command options; returns true if it
+diff -urN iptables-1.3.0/extensions/libipt_IPV4OPTSSTRIP.c iptables-1.3.1/extensions/libipt_IPV4OPTSSTRIP.c
+--- iptables-1.3.0/extensions/libipt_IPV4OPTSSTRIP.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_IPV4OPTSSTRIP.c	2005-02-19 20:19:17.000000000 +0100
+@@ -13,11 +13,6 @@
+ #include <iptables.h>
+ #include <linux/netfilter_ipv4/ip_tables.h>
+ 
+-static void init(struct ipt_entry_target *t, unsigned int *nfcache) 
+-{
+-        *nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void help(void) 
+ {
+ 	printf("IPV4OPTSSTRIP v%s target takes no option !! Make sure you use it in the mangle table.\n",
+@@ -66,7 +61,6 @@
+ 	.size		= IPT_ALIGN(0),
+ 	.userspacesize	= IPT_ALIGN(0),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_LOG.c iptables-1.3.1/extensions/libipt_LOG.c
+--- iptables-1.3.0/extensions/libipt_LOG.c	2005-01-14 10:01:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_LOG.c	2005-02-19 20:19:17.000000000 +0100
+@@ -50,8 +50,6 @@
+ 
+ 	loginfo->level = LOG_DEFAULT_LEVEL;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ struct ipt_log_names {
+diff -urN iptables-1.3.0/extensions/libipt_MASQUERADE.c iptables-1.3.1/extensions/libipt_MASQUERADE.c
+--- iptables-1.3.0/extensions/libipt_MASQUERADE.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_MASQUERADE.c	2005-02-19 20:19:17.000000000 +0100
+@@ -33,8 +33,6 @@
+ 	/* Actually, it's 0, but it's ignored at the moment. */
+ 	mr->rangesize = 1;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Parses ports */
+diff -urN iptables-1.3.0/extensions/libipt_NETLINK.c iptables-1.3.1/extensions/libipt_NETLINK.c
+--- iptables-1.3.0/extensions/libipt_NETLINK.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_NETLINK.c	2005-02-19 20:19:17.000000000 +0100
+@@ -32,7 +32,6 @@
+ 	
+ 	nld->flags=0;
+ 	
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Parse command options */
+diff -urN iptables-1.3.0/extensions/libipt_NETMAP.c iptables-1.3.1/extensions/libipt_NETMAP.c
+--- iptables-1.3.0/extensions/libipt_NETMAP.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_NETMAP.c	2005-02-19 20:19:17.000000000 +0100
+@@ -63,8 +63,6 @@
+ 	/* Actually, it's 0, but it's ignored at the moment. */
+ 	mr->rangesize = 1;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Parses network address */
+diff -urN iptables-1.3.0/extensions/libipt_POOL.c iptables-1.3.1/extensions/libipt_POOL.c
+--- iptables-1.3.0/extensions/libipt_POOL.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_POOL.c	2005-02-19 20:19:17.000000000 +0100
+@@ -51,8 +51,6 @@
+ 	ipi->src = ipi->dst = IP_POOL_NONE;
+ 	ipi->flags = 0;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Function which parses command options; returns true if it
+diff -urN iptables-1.3.0/extensions/libipt_REDIRECT.c iptables-1.3.1/extensions/libipt_REDIRECT.c
+--- iptables-1.3.0/extensions/libipt_REDIRECT.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_REDIRECT.c	2005-02-19 20:19:17.000000000 +0100
+@@ -33,8 +33,6 @@
+ 	/* Actually, it's 0, but it's ignored at the moment. */
+ 	mr->rangesize = 1;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Parses ports */
+diff -urN iptables-1.3.0/extensions/libipt_REJECT.c iptables-1.3.1/extensions/libipt_REJECT.c
+--- iptables-1.3.0/extensions/libipt_REJECT.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_REJECT.c	2005-02-19 20:19:17.000000000 +0100
+@@ -94,8 +94,6 @@
+ 	/* default */
+ 	reject->with = IPT_ICMP_PORT_UNREACHABLE;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Function which parses command options; returns true if it
+diff -urN iptables-1.3.0/extensions/libipt_SAME.c iptables-1.3.1/extensions/libipt_SAME.c
+--- iptables-1.3.0/extensions/libipt_SAME.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_SAME.c	2005-02-19 20:19:17.000000000 +0100
+@@ -43,8 +43,6 @@
+ 	mr->info = 0;
+ 	mr->ipnum = 0;
+ 	
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Parses range of IPs */
+diff -urN iptables-1.3.0/extensions/libipt_SET.c iptables-1.3.1/extensions/libipt_SET.c
+--- iptables-1.3.0/extensions/libipt_SET.c	2004-12-14 13:57:01.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_SET.c	2005-02-19 20:19:17.000000000 +0100
+@@ -51,8 +51,6 @@
+ 	info->add_set.index =
+ 	info->del_set.index = IP_SET_INVALID_ID;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ static void
+diff -urN iptables-1.3.0/extensions/libipt_SNAT.c iptables-1.3.1/extensions/libipt_SNAT.c
+--- iptables-1.3.0/extensions/libipt_SNAT.c	2005-02-01 13:51:01.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_SNAT.c	2005-02-19 20:19:17.000000000 +0100
+@@ -33,14 +33,6 @@
+ 	{ 0 }
+ };
+ 
+-/* Initialize the target. */
+-static void
+-init(struct ipt_entry_target *t, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static struct ipt_natinfo *
+ append_range(struct ipt_natinfo *info, const struct ip_nat_range *range)
+ {
+@@ -236,7 +228,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ip_nat_multi_range)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ip_nat_multi_range)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_TARPIT.c iptables-1.3.1/extensions/libipt_TARPIT.c
+--- iptables-1.3.0/extensions/libipt_TARPIT.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_TARPIT.c	2005-02-19 20:19:17.000000000 +0100
+@@ -15,13 +15,6 @@
+ 	{ 0 }
+ };
+ 
+-static void
+-init(struct ipt_entry_target *t, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static int
+ parse(int c, char **argv, int invert, unsigned int *flags,
+       const struct ipt_entry *entry,
+@@ -52,7 +45,6 @@
+ 	.size		= IPT_ALIGN(0),
+ 	.userspacesize	= IPT_ALIGN(0),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_TCPLAG.c iptables-1.3.1/extensions/libipt_TCPLAG.c
+--- iptables-1.3.0/extensions/libipt_TCPLAG.c	2004-10-10 11:56:25.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_TCPLAG.c	2005-02-19 20:19:17.000000000 +0100
+@@ -70,18 +70,6 @@
+  * our own private data structure (which is at t->data).
+  * Probably we could fiddle with t->tflags too but there is
+  * no great advantage in doing so.
+- * 
+- * TODO: Find documentation for the above flags which
+- *       can be ored into nfcache...
+- *
+- * NFC_IP6_DST_PT
+- * NFC_IP6_PROTO_UNKNOWN
+- * NFC_IP6_SRC_PT
+- * NFC_IP6_TCPFLAGS
+- * NFC_IP_DST_PT
+- * NFC_IP_SRC_PT
+- * NFC_IP_TOS
+- * NFC_UNKNOWN             -- This one seems safest
+  */
+ static void init( struct ipt_entry_target *t, unsigned int *nfcache )
+ {
+@@ -89,7 +77,6 @@
+ 	memset( el, 0, sizeof( struct ipt_tcplag ));
+ 	el->level = 4; /* Default to warning level */
+ 	strcpy( el->prefix, "TCPLAG:" ); /* Give a reasonable default prefix */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /*
+diff -urN iptables-1.3.0/extensions/libipt_ULOG.c iptables-1.3.1/extensions/libipt_ULOG.c
+--- iptables-1.3.0/extensions/libipt_ULOG.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_ULOG.c	2005-02-19 20:19:17.000000000 +0100
+@@ -60,8 +60,6 @@
+ 	loginfo->nl_group = ULOG_DEFAULT_NLGROUP;
+ 	loginfo->qthreshold = ULOG_DEFAULT_QTHRESHOLD;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ #define IPT_LOG_OPT_NLGROUP 0x01
+diff -urN iptables-1.3.0/extensions/libipt_account.c iptables-1.3.1/extensions/libipt_account.c
+--- iptables-1.3.0/extensions/libipt_account.c	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_account.c	2005-02-19 20:19:17.000000000 +0100
+@@ -168,7 +168,6 @@
+ 	
+ 	struct t_ipt_account_info *info = (struct t_ipt_account_info *)(match)->data;
+ 
+-	*nfcache |= NFC_UNKNOWN;
+ 
+ 	/* set default table name to DEFAULT */
+ 	strncpy(info->name, "DEFAULT", IPT_ACCOUNT_NAME_LEN);
+diff -urN iptables-1.3.0/extensions/libipt_addrtype.c iptables-1.3.1/extensions/libipt_addrtype.c
+--- iptables-1.3.0/extensions/libipt_addrtype.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_addrtype.c	2005-02-19 20:19:17.000000000 +0100
+@@ -48,12 +48,6 @@
+ 	help_types();
+ }
+ 
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* caching not yet implemented */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static int
+ parse_type(const char *name, size_t strlen, u_int16_t *mask)
+ {
+@@ -199,7 +193,6 @@
+ 	.size 		= IPT_ALIGN(sizeof(struct ipt_addrtype_info)),
+ 	.userspacesize 	= IPT_ALIGN(sizeof(struct ipt_addrtype_info)),
+ 	.help 		= &help,
+-	.init 		= &init,
+ 	.parse 		= &parse,
+ 	.final_check 	= &final_check,
+ 	.print 		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_childlevel.c iptables-1.3.1/extensions/libipt_childlevel.c
+--- iptables-1.3.0/extensions/libipt_childlevel.c	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_childlevel.c	2005-02-19 20:19:17.000000000 +0100
+@@ -39,12 +39,6 @@
+ 	{ .name = 0 }
+ };
+ 
+-/* Initialize the match. */
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it ate an option */
+ static int parse(int c, char **argv, int invert, unsigned int *flags,
+       const struct ipt_entry *entry, unsigned int *nfcache,
+@@ -108,7 +102,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_childlevel_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_childlevel_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_comment.c iptables-1.3.1/extensions/libipt_comment.c
+--- iptables-1.3.0/extensions/libipt_comment.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_comment.c	2005-02-19 20:19:17.000000000 +0100
+@@ -29,13 +29,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void
+ parse_comment(const unsigned char *s, struct ipt_comment_info *info)
+ {	
+@@ -113,7 +106,6 @@
+     .size 		= IPT_ALIGN(sizeof(struct ipt_comment_info)),
+     .userspacesize	= IPT_ALIGN(sizeof(struct ipt_comment_info)),
+     .help		= &help,
+-    .init 		= &init,
+     .parse 		= &parse,
+     .final_check 	= &final_check,
+     .print 		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_condition.c iptables-1.3.1/extensions/libipt_condition.c
+--- iptables-1.3.0/extensions/libipt_condition.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_condition.c	2005-02-19 20:19:17.000000000 +0100
+@@ -24,14 +24,6 @@
+ 	{ .name = 0 }
+ };
+ 
+-
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+-
+ static int
+ parse(int c, char **argv, int invert, unsigned int *flags,
+       const struct ipt_entry *entry, unsigned int *nfcache,
+@@ -99,7 +91,6 @@
+ 	.size 		= IPT_ALIGN(sizeof(struct condition_info)),
+ 	.userspacesize 	= IPT_ALIGN(sizeof(struct condition_info)),
+ 	.help 		= &help,
+-	.init 		= &init,
+ 	.parse 		= &parse,
+ 	.final_check	= &final_check,
+ 	.print 		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_connbytes.c iptables-1.3.1/extensions/libipt_connbytes.c
+--- iptables-1.3.0/extensions/libipt_connbytes.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_connbytes.c	2005-02-19 20:19:17.000000000 +0100
+@@ -27,14 +27,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void
+ parse_range(const char *arg, struct ipt_connbytes_info *si)
+ {
+@@ -199,7 +191,6 @@
+ 	.size 		= IPT_ALIGN(sizeof(struct ipt_connbytes_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_connbytes_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_connlimit.c iptables-1.3.1/extensions/libipt_connlimit.c
+--- iptables-1.3.0/extensions/libipt_connlimit.c	2005-01-04 11:38:33.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_connlimit.c	2005-02-19 20:19:17.000000000 +0100
+@@ -26,14 +26,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -127,7 +119,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_connlimit_info)),
+ 	.userspacesize 	= offsetof(struct ipt_connlimit_info,data),
+ 	.help		= help,
+-	.init		= init,
+ 	.parse 		= parse,
+ 	.final_check	= final_check,
+ 	.print		= print,
+diff -urN iptables-1.3.0/extensions/libipt_connmark.c iptables-1.3.1/extensions/libipt_connmark.c
+--- iptables-1.3.0/extensions/libipt_connmark.c	2004-10-10 11:56:24.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_connmark.c	2005-02-19 20:19:17.000000000 +0100
+@@ -26,7 +26,7 @@
+ #include <getopt.h>
+ 
+ #include <iptables.h>
+-#include <linux/netfilter_ipv4/ipt_connmark.h>
++#include "../include/linux/netfilter_ipv4/ipt_connmark.h"
+ 
+ /* Function which prints out usage message. */
+ static void
+@@ -66,11 +66,17 @@
+ 		char *end;
+ 	case '1':
+ 		check_inverse(optarg, &invert, &optind, 0);
++#ifdef KERNEL_64_USERSPACE_32
++		markinfo->mark = strtoull(optarg, &end, 0);
++		markinfo->mask = ~0ULL;
++		if (*end == '/')
++			markinfo->mask = strtoull(end+1, &end, 0);
++#else
+ 		markinfo->mark = strtoul(optarg, &end, 0);
+-		if (*end == '/') {
++		markinfo->mask = ~0UL;
++		if (*end == '/')
+ 			markinfo->mask = strtoul(end+1, &end, 0);
+-		} else
+-			markinfo->mask = ~0;
++#endif
+ 		if (*end != '\0' || end == optarg)
+ 			exit_error(PARAMETER_PROBLEM, "Bad MARK value `%s'", optarg);
+ 		if (invert)
+@@ -84,14 +90,25 @@
+ 	return 1;
+ }
+ 
++#ifdef KERNEL_64_USERSPACE_32
++static void
++print_mark(unsigned long long mark, unsigned long long mask, int numeric)
++{
++	if(mask != ~0ULL)
++		printf("0x%llx/0x%llx ", mark, mask);
++	else
++		printf("0x%llx ", mark);
++}
++#else
+ static void
+ print_mark(unsigned long mark, unsigned long mask, int numeric)
+ {
+-	if(mask != ~0)
++	if(mask != ~0UL)
+ 		printf("0x%lx/0x%lx ", mark, mask);
+ 	else
+ 		printf("0x%lx ", mark);
+ }
++#endif
+ 
+ /* Final check; must have specified --mark. */
+ static void
+diff -urN iptables-1.3.0/extensions/libipt_connrate.c iptables-1.3.1/extensions/libipt_connrate.c
+--- iptables-1.3.0/extensions/libipt_connrate.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_connrate.c	2005-02-19 20:19:17.000000000 +0100
+@@ -34,14 +34,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* caching not yet implemented */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static u_int32_t
+ parse_value(const char *arg, u_int32_t def)
+ {
+@@ -174,7 +166,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_connrate_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_connrate_info)),
+ 	.help 		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_conntrack.c iptables-1.3.1/extensions/libipt_conntrack.c
+--- iptables-1.3.0/extensions/libipt_conntrack.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_conntrack.c	2005-02-19 20:19:17.000000000 +0100
+@@ -56,14 +56,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static int
+ parse_state(const char *state, size_t strlen, struct ipt_conntrack_info *sinfo)
+ {
+@@ -538,7 +530,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_conntrack_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_conntrack_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_dscp.c iptables-1.3.1/extensions/libipt_dscp.c
+--- iptables-1.3.0/extensions/libipt_dscp.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_dscp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -24,11 +24,6 @@
+ /* This is evil, but it's my code - HW*/
+ #include "libipt_dscp_helper.c"
+ 
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache) 
+-{
+-	*nfcache |= NFC_IP_TOS;
+-}
+-
+ static void help(void) 
+ {
+ 	printf(
+@@ -164,7 +159,6 @@
+ 	.size 		= IPT_ALIGN(sizeof(struct ipt_dscp_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_dscp_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_dstlimit.c iptables-1.3.1/extensions/libipt_dstlimit.c
+--- iptables-1.3.0/extensions/libipt_dstlimit.c	2005-01-22 14:45:26.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_dstlimit.c	2005-02-19 20:19:17.000000000 +0100
+@@ -105,8 +105,6 @@
+ 	r->cfg.gc_interval = IPT_DSTLIMIT_GCINTERVAL;
+ 	r->cfg.expire = IPT_DSTLIMIT_EXPIRE;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ #define PARAM_LIMIT		0x00000001
+diff -urN iptables-1.3.0/extensions/libipt_ecn.c iptables-1.3.1/extensions/libipt_ecn.c
+--- iptables-1.3.0/extensions/libipt_ecn.c	2004-10-10 11:56:27.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_ecn.c	2005-02-19 20:19:17.000000000 +0100
+@@ -16,11 +16,6 @@
+ #include <linux/netfilter_ipv4/ip_tables.h>
+ #include <linux/netfilter_ipv4/ipt_ecn.h>
+ 
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache) 
+-{
+-	*nfcache |= NFC_IP_TOS;
+-}
+-
+ static void help(void) 
+ {
+ 	printf(
+@@ -163,7 +158,6 @@
+     .size          = IPT_ALIGN(sizeof(struct ipt_ecn_info)),
+     .userspacesize = IPT_ALIGN(sizeof(struct ipt_ecn_info)),
+     .help          = &help,
+-    .init          = &init,
+     .parse         = &parse,
+     .final_check   = &final_check,
+     .print         = &print,
+diff -urN iptables-1.3.0/extensions/libipt_fuzzy.c iptables-1.3.1/extensions/libipt_fuzzy.c
+--- iptables-1.3.0/extensions/libipt_fuzzy.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_fuzzy.c	2005-02-19 20:19:17.000000000 +0100
+@@ -43,7 +43,6 @@
+ init(struct ipt_entry_match *m, unsigned int *nfcache)
+ {
+ 	struct ipt_fuzzy_info *presentinfo = (struct ipt_fuzzy_info *)(m)->data;
+-	*nfcache |= NFC_UNKNOWN;
+ 
+ 	/*
+ 	 * Default rates ( I'll improve this very soon with something based 
+diff -urN iptables-1.3.0/extensions/libipt_hashlimit.c iptables-1.3.1/extensions/libipt_hashlimit.c
+--- iptables-1.3.0/extensions/libipt_hashlimit.c	2005-02-12 21:03:28.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_hashlimit.c	2005-02-19 20:19:17.000000000 +0100
+@@ -104,8 +104,6 @@
+ 	r->cfg.gc_interval = IPT_HASHLIMIT_GCINTERVAL;
+ 	r->cfg.expire = IPT_HASHLIMIT_EXPIRE;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ 
+diff -urN iptables-1.3.0/extensions/libipt_helper.c iptables-1.3.1/extensions/libipt_helper.c
+--- iptables-1.3.0/extensions/libipt_helper.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_helper.c	2005-02-19 20:19:17.000000000 +0100
+@@ -24,14 +24,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -96,7 +88,6 @@
+ 	.version	= IPTABLES_VERSION,
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_helper_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_icmp.c iptables-1.3.1/extensions/libipt_icmp.c
+--- iptables-1.3.0/extensions/libipt_icmp.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_icmp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -114,7 +114,7 @@
+ 	{0}
+ };
+ 
+-static unsigned int
++static void 
+ parse_icmp(const char *icmptype, u_int8_t *type, u_int8_t code[])
+ {
+ 	unsigned int limit = sizeof(icmp_codes)/sizeof(struct icmp_names);
+@@ -165,10 +165,6 @@
+ 			code[1] = 0xFF;
+ 		}
+ 	}
+-
+-	if (code[0] == 0 && code[1] == 0xFF)
+-		return NFC_IP_SRC_PT;
+-	else return NFC_IP_SRC_PT | NFC_IP_DST_PT;
+ }
+ 
+ /* Initialize the match. */
+@@ -194,9 +190,8 @@
+ 	switch (c) {
+ 	case '1':
+ 		check_inverse(optarg, &invert, &optind, 0);
+-		*nfcache |= parse_icmp(argv[optind-1],
+-				       &icmpinfo->type,
+-				       icmpinfo->code);
++		parse_icmp(argv[optind-1], &icmpinfo->type, 
++			   icmpinfo->code);
+ 		if (invert)
+ 			icmpinfo->invflags |= IPT_ICMP_INV;
+ 		break;
+diff -urN iptables-1.3.0/extensions/libipt_iprange.c iptables-1.3.1/extensions/libipt_iprange.c
+--- iptables-1.3.0/extensions/libipt_iprange.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_iprange.c	2005-02-19 20:19:17.000000000 +0100
+@@ -26,14 +26,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void
+ parse_iprange(char *arg, struct ipt_iprange *range)
+ {
+@@ -180,7 +172,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_iprange_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_iprange_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_ipv4options.c iptables-1.3.1/extensions/libipt_ipv4options.c
+--- iptables-1.3.0/extensions/libipt_ipv4options.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_ipv4options.c	2005-02-19 20:19:17.000000000 +0100
+@@ -35,14 +35,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* caching not yet implemented */
+-        *nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -306,7 +298,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_ipv4options_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_ipv4options_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_length.c iptables-1.3.1/extensions/libipt_length.c
+--- iptables-1.3.0/extensions/libipt_length.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_length.c	2005-02-19 20:19:17.000000000 +0100
+@@ -25,13 +25,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static u_int16_t
+ parse_length(const char *s)
+ {
+@@ -145,7 +138,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_length_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_length_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_limit.c iptables-1.3.1/extensions/libipt_limit.c
+--- iptables-1.3.0/extensions/libipt_limit.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_limit.c	2005-02-19 20:19:17.000000000 +0100
+@@ -81,8 +81,6 @@
+ 	parse_rate(IPT_LIMIT_AVG, &r->avg);
+ 	r->burst = IPT_LIMIT_BURST;
+ 
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* FIXME: handle overflow:
+diff -urN iptables-1.3.0/extensions/libipt_mac.c iptables-1.3.1/extensions/libipt_mac.c
+--- iptables-1.3.0/extensions/libipt_mac.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_mac.c	2005-02-19 20:19:17.000000000 +0100
+@@ -28,14 +28,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void
+ parse_mac(const char *mac, struct ipt_mac_info *info)
+ {
+@@ -135,7 +127,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_mac_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_mac_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_mark.c iptables-1.3.1/extensions/libipt_mark.c
+--- iptables-1.3.0/extensions/libipt_mark.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_mark.c	2005-02-19 20:19:17.000000000 +0100
+@@ -25,14 +25,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -138,7 +130,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_mark_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_mark_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_mport.c iptables-1.3.1/extensions/libipt_mport.c
+--- iptables-1.3.0/extensions/libipt_mport.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_mport.c	2005-02-19 20:19:17.000000000 +0100
+@@ -140,7 +140,6 @@
+ 		proto = check_proto(entry);
+ 		parse_multi_ports(argv[optind-1], minfo, proto);
+ 		minfo->flags = IPT_MPORT_SOURCE;
+-		*nfcache |= NFC_IP_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -148,7 +147,6 @@
+ 		proto = check_proto(entry);
+ 		parse_multi_ports(argv[optind-1], minfo, proto);
+ 		minfo->flags = IPT_MPORT_DESTINATION;
+-		*nfcache |= NFC_IP_DST_PT;
+ 		break;
+ 
+ 	case '3':
+@@ -156,7 +154,6 @@
+ 		proto = check_proto(entry);
+ 		parse_multi_ports(argv[optind-1], minfo, proto);
+ 		minfo->flags = IPT_MPORT_EITHER;
+-		*nfcache |= NFC_IP_SRC_PT | NFC_IP_DST_PT;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libipt_multiport.c iptables-1.3.1/extensions/libipt_multiport.c
+--- iptables-1.3.0/extensions/libipt_multiport.c	2005-02-12 21:03:28.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_multiport.c	2005-02-19 20:19:17.000000000 +0100
+@@ -179,7 +179,6 @@
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+ 		multiinfo->flags = IPT_MULTIPORT_SOURCE;
+-		*nfcache |= NFC_IP_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -188,7 +187,6 @@
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+ 		multiinfo->flags = IPT_MULTIPORT_DESTINATION;
+-		*nfcache |= NFC_IP_DST_PT;
+ 		break;
+ 
+ 	case '3':
+@@ -197,7 +195,6 @@
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+ 		multiinfo->flags = IPT_MULTIPORT_EITHER;
+-		*nfcache |= NFC_IP_SRC_PT | NFC_IP_DST_PT;
+ 		break;
+ 
+ 	default:
+@@ -231,7 +228,6 @@
+ 		proto = check_proto(entry);
+ 		parse_multi_ports_v1(argv[optind-1], multiinfo, proto);
+ 		multiinfo->flags = IPT_MULTIPORT_SOURCE;
+-		*nfcache |= NFC_IP_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -239,7 +235,6 @@
+ 		proto = check_proto(entry);
+ 		parse_multi_ports_v1(argv[optind-1], multiinfo, proto);
+ 		multiinfo->flags = IPT_MULTIPORT_DESTINATION;
+-		*nfcache |= NFC_IP_DST_PT;
+ 		break;
+ 
+ 	case '3':
+@@ -247,7 +242,6 @@
+ 		proto = check_proto(entry);
+ 		parse_multi_ports_v1(argv[optind-1], multiinfo, proto);
+ 		multiinfo->flags = IPT_MULTIPORT_EITHER;
+-		*nfcache |= NFC_IP_SRC_PT | NFC_IP_DST_PT;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libipt_nth.c iptables-1.3.1/extensions/libipt_nth.c
+--- iptables-1.3.0/extensions/libipt_nth.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_nth.c	2005-02-19 20:19:17.000000000 +0100
+@@ -50,13 +50,6 @@
+ 	{ 0 }
+ };
+ 
+-/* Initialize the target. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ #define IPT_NTH_OPT_EVERY	0x01
+ #define IPT_NTH_OPT_NOT_EVERY	0x02
+ #define IPT_NTH_OPT_START	0x04
+@@ -224,7 +217,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_nth_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_nth_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_osf.c iptables-1.3.1/extensions/libipt_osf.c
+--- iptables-1.3.0/extensions/libipt_osf.c	2004-10-10 11:56:27.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_osf.c	2005-02-19 20:19:17.000000000 +0100
+@@ -54,13 +54,6 @@
+ 	{ .name = 0 }
+ };
+ 
+-
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+-
+ static void parse_string(const unsigned char *s, struct ipt_osf_info *info)
+ {
+ 	if (strlen(s) < MAXGENRELEN) 
+@@ -142,7 +135,6 @@
+     .size          = IPT_ALIGN(sizeof(struct ipt_osf_info)),
+     .userspacesize = IPT_ALIGN(sizeof(struct ipt_osf_info)),
+     .help          = &help,
+-    .init          = &init,
+     .parse         = &parse,
+     .final_check   = &final_check,
+     .print         = &print,
+diff -urN iptables-1.3.0/extensions/libipt_owner.c iptables-1.3.1/extensions/libipt_owner.c
+--- iptables-1.3.0/extensions/libipt_owner.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_owner.c	2005-02-19 20:19:17.000000000 +0100
+@@ -49,14 +49,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -245,7 +237,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_owner_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_owner_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_pkttype.c iptables-1.3.1/extensions/libipt_pkttype.c
+--- iptables-1.3.0/extensions/libipt_pkttype.c	2005-01-04 11:38:33.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_pkttype.c	2005-02-19 20:19:17.000000000 +0100
+@@ -69,11 +69,6 @@
+ 	{0}
+ };
+ 
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static void parse_pkttype(const char *pkttype, struct ipt_pkttype_info *info)
+ {
+ 	unsigned int	i;
+@@ -159,7 +154,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_pkttype_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_pkttype_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse, 
+ 	.final_check	= &final_check, 
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_pool.c iptables-1.3.1/extensions/libipt_pool.c
+--- iptables-1.3.0/extensions/libipt_pool.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_pool.c	2005-02-19 20:19:17.000000000 +0100
+@@ -43,8 +43,6 @@
+ 	info->src = IP_POOL_NONE;
+ 	info->dst = IP_POOL_NONE;
+ 	info->flags = 0;
+-	/* Can't cache this - XXX */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Function which parses command options; returns true if it ate an option */
+diff -urN iptables-1.3.0/extensions/libipt_psd.c iptables-1.3.1/extensions/libipt_psd.c
+--- iptables-1.3.0/extensions/libipt_psd.c	2005-01-04 11:38:38.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_psd.c	2005-02-19 20:19:17.000000000 +0100
+@@ -56,8 +56,6 @@
+ 	psdinfo->delay_threshold = SCAN_DELAY_THRESHOLD;
+ 	psdinfo->lo_ports_weight = PORT_WEIGHT_PRIV;
+ 	psdinfo->hi_ports_weight = PORT_WEIGHT_HIGH;
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ 
+diff -urN iptables-1.3.0/extensions/libipt_quota.c iptables-1.3.1/extensions/libipt_quota.c
+--- iptables-1.3.0/extensions/libipt_quota.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_quota.c	2005-02-19 20:19:17.000000000 +0100
+@@ -24,14 +24,6 @@
+                " --quota quota			quota (bytes)\n" "\n");
+ }
+ 
+-/* initialise match */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-        /* no can cache */
+-        *nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* print matchinfo */
+ static void
+ print(const struct ipt_ip *ip, const struct ipt_entry_match *match, int numeric)
+@@ -100,7 +92,6 @@
+ 	.size		= IPT_ALIGN(sizeof (struct ipt_quota_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof (struct ipt_quota_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_random.c iptables-1.3.1/extensions/libipt_random.c
+--- iptables-1.3.0/extensions/libipt_random.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_random.c	2005-02-19 20:19:17.000000000 +0100
+@@ -51,7 +51,6 @@
+ init(struct ipt_entry_match *m, unsigned int *nfcache)
+ {
+ 	struct ipt_rand_info *randinfo = (struct ipt_rand_info *)(m)->data;
+-	*nfcache |= NFC_UNKNOWN;
+ 
+ 	/* We assign the average to be 50 which is our default value */
+ 	/* 50 * 2.55 = 128 */
+diff -urN iptables-1.3.0/extensions/libipt_realm.c iptables-1.3.1/extensions/libipt_realm.c
+--- iptables-1.3.0/extensions/libipt_realm.c	2005-02-12 21:03:29.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_realm.c	2005-02-19 20:19:17.000000000 +0100
+@@ -28,14 +28,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -49,7 +41,7 @@
+ 	switch (c) {
+ 		char *end;
+ 	case '1':
+-		check_inverse(argv[optind], &invert, &optind, 0);
++		check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		optarg = argv[optind-1];
+ 		realminfo->id = strtoul(optarg, &end, 0);
+ 		if (*end == '/') {
+@@ -122,7 +114,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_realm_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_realm_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_recent.c iptables-1.3.1/extensions/libipt_recent.c
+--- iptables-1.3.0/extensions/libipt_recent.c	2004-10-10 11:56:25.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_recent.c	2005-02-19 20:19:17.000000000 +0100
+@@ -72,7 +72,6 @@
+ {
+ 	struct ipt_recent_info *info = (struct ipt_recent_info *)(match)->data;
+ 
+-	*nfcache |= NFC_UNKNOWN;
+ 
+ 	strncpy(info->name,"DEFAULT",IPT_RECENT_NAME_LEN);
+ 	/* eventhough IPT_RECENT_NAME_LEN is currently defined as 200,
+diff -urN iptables-1.3.0/extensions/libipt_record_rpc.c iptables-1.3.1/extensions/libipt_record_rpc.c
+--- iptables-1.3.0/extensions/libipt_record_rpc.c	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_record_rpc.c	2005-02-19 20:19:17.000000000 +0100
+@@ -16,14 +16,6 @@
+ 	{0}
+ };
+ 
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -53,19 +45,18 @@
+ }
+ 
+ static
+-struct iptables_match record_rpc
+-= { NULL,
+-    "record_rpc",
+-    IPTABLES_VERSION,
+-    IPT_ALIGN(0),
+-    IPT_ALIGN(0),
+-    &help,
+-    &init,
+-    &parse,
+-    &final_check,
+-    &print,
+-    &save,
+-    opts
++struct iptables_match record_rpc = { 
++	.next		= NULL,
++	.name 		= "record_rpc",
++	.version	= IPTABLES_VERSION,
++	.size		= IPT_ALIGN(0),
++	.userspacesize	= IPT_ALIGN(0),
++	.help		= &help,
++	.parse		= &parse,
++	.final_check	= &final_check,
++	.print		= &print,
++	.save		= &save,
++	.extra_opts	= opts
+ };
+ 
+ void _init(void)
+diff -urN iptables-1.3.0/extensions/libipt_rpc.c iptables-1.3.1/extensions/libipt_rpc.c
+--- iptables-1.3.0/extensions/libipt_rpc.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_rpc.c	2005-02-19 20:19:17.000000000 +0100
+@@ -180,8 +180,6 @@
+ 	struct ipt_rpc_info *rpcinfo = ((struct ipt_rpc_info *)match->data);
+ 
+ 
+-	/* caching not yet implemented */
+-        *nfcache |= NFC_UNKNOWN;
+ 
+ 	/* initialise those funky user vars */
+ 	rpcinfo->i_procs = -1;
+diff -urN iptables-1.3.0/extensions/libipt_sctp.c iptables-1.3.1/extensions/libipt_sctp.c
+--- iptables-1.3.0/extensions/libipt_sctp.c	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_sctp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -293,7 +293,6 @@
+ 		if (invert)
+ 			einfo->invflags |= IPT_SCTP_SRC_PORTS;
+ 		*flags |= IPT_SCTP_SRC_PORTS;
+-		*nfcache |= NFC_IP_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -306,7 +305,6 @@
+ 		if (invert)
+ 			einfo->invflags |= IPT_SCTP_DEST_PORTS;
+ 		*flags |= IPT_SCTP_DEST_PORTS;
+-		*nfcache |= NFC_IP_DST_PT;
+ 		break;
+ 
+ 	case '3':
+diff -urN iptables-1.3.0/extensions/libipt_set.c iptables-1.3.1/extensions/libipt_set.c
+--- iptables-1.3.0/extensions/libipt_set.c	2004-12-14 13:57:00.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_set.c	2005-02-19 20:19:17.000000000 +0100
+@@ -47,8 +47,6 @@
+ 
+ 	memset(info, 0, sizeof(struct ipt_set_info_match));
+ 
+-	/* Can't cache this - XXX */
+-	*nfcache |= NFC_UNKNOWN;
+ }
+ 
+ /* Function which parses command options; returns true if it ate an option */
+diff -urN iptables-1.3.0/extensions/libipt_state.c iptables-1.3.1/extensions/libipt_state.c
+--- iptables-1.3.0/extensions/libipt_state.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_state.c	2005-02-19 20:19:17.000000000 +0100
+@@ -28,14 +28,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static int
+ parse_state(const char *state, size_t strlen, struct ipt_state_info *sinfo)
+ {
+@@ -158,7 +150,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_state_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_state_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_string.c iptables-1.3.1/extensions/libipt_string.c
+--- iptables-1.3.0/extensions/libipt_string.c	2004-10-10 11:56:26.000000000 +0200
++++ iptables-1.3.1/extensions/libipt_string.c	2005-02-19 20:19:17.000000000 +0100
+@@ -44,15 +44,6 @@
+ 	{ .name = 0 }
+ };
+ 
+-
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+-
+ static void
+ parse_string(const unsigned char *s, struct ipt_string_info *info)
+ {	
+@@ -279,7 +270,6 @@
+     .size          = IPT_ALIGN(sizeof(struct ipt_string_info)),
+     .userspacesize = IPT_ALIGN(sizeof(struct ipt_string_info)),
+     .help          = &help,
+-    .init          = &init,
+     .parse         = &parse,
+     .final_check   = &final_check,
+     .print         = &print,
+diff -urN iptables-1.3.0/extensions/libipt_tcp.c iptables-1.3.1/extensions/libipt_tcp.c
+--- iptables-1.3.0/extensions/libipt_tcp.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_tcp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -187,7 +187,6 @@
+ 		if (invert)
+ 			tcpinfo->invflags |= IPT_TCP_INV_SRCPT;
+ 		*flags |= TCP_SRC_PORTS;
+-		*nfcache |= NFC_IP_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -199,7 +198,6 @@
+ 		if (invert)
+ 			tcpinfo->invflags |= IPT_TCP_INV_DSTPT;
+ 		*flags |= TCP_DST_PORTS;
+-		*nfcache |= NFC_IP_DST_PT;
+ 		break;
+ 
+ 	case '3':
+@@ -209,7 +207,6 @@
+ 				   " allowed");
+ 		parse_tcp_flags(tcpinfo, "SYN,RST,ACK", "SYN", invert);
+ 		*flags |= TCP_FLAGS;
+-		*nfcache |= NFC_IP_TCPFLAGS;
+ 		break;
+ 
+ 	case '4':
+@@ -228,7 +225,6 @@
+ 				invert);
+ 		optind++;
+ 		*flags |= TCP_FLAGS;
+-		*nfcache |= NFC_IP_TCPFLAGS;
+ 		break;
+ 
+ 	case '5':
+@@ -240,7 +236,6 @@
+ 		if (invert)
+ 			tcpinfo->invflags |= IPT_TCP_INV_OPTION;
+ 		*flags |= TCP_OPTION;
+-		*nfcache |= NFC_IP_PROTO_UNKNOWN;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libipt_tcpmss.c iptables-1.3.1/extensions/libipt_tcpmss.c
+--- iptables-1.3.0/extensions/libipt_tcpmss.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_tcpmss.c	2005-02-19 20:19:17.000000000 +0100
+@@ -24,13 +24,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_IP_PROTO_UNKNOWN;
+-}
+-
+ static u_int16_t
+ parse_tcp_mssvalue(const char *mssvalue)
+ {
+@@ -146,7 +139,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_tcpmss_match_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_tcpmss_match_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_time.c iptables-1.3.1/extensions/libipt_time.c
+--- iptables-1.3.0/extensions/libipt_time.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_time.c	2005-02-19 20:19:17.000000000 +0100
+@@ -57,8 +57,6 @@
+ {
+ 	struct ipt_time_info *info = (struct ipt_time_info *)m->data;
+ 	globaldays = 0;
+-	/* caching not yet implemented */
+-        *nfcache |= NFC_UNKNOWN;
+         /* By default, we match on everyday */
+ 	info->days_match = 127;
+ 	/* By default, we match on every hour:min of the day */
+diff -urN iptables-1.3.0/extensions/libipt_tos.c iptables-1.3.1/extensions/libipt_tos.c
+--- iptables-1.3.0/extensions/libipt_tos.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_tos.c	2005-02-19 20:19:17.000000000 +0100
+@@ -47,13 +47,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_IP_TOS;
+-}
+-
+ static void
+ parse_tos(const unsigned char *s, struct ipt_tos_info *info)
+ {
+@@ -166,7 +159,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_tos_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_tos_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_ttl.c iptables-1.3.1/extensions/libipt_ttl.c
+--- iptables-1.3.0/extensions/libipt_ttl.c	2005-01-04 11:38:35.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_ttl.c	2005-02-19 20:19:17.000000000 +0100
+@@ -1,7 +1,7 @@
+ /* Shared library add-on to iptables to add TTL matching support 
+  * (C) 2000 by Harald Welte <laforge@gnumonks.org>
+  *
+- * $Id: libipt_ttl.c 3507 2004-12-28 13:11:59Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=rusty/emailAddress=rusty@netfilter.org $
++ * $Id: libipt_ttl.c 3687 2005-02-14 13:13:04Z /C=DE/ST=Berlin/L=Berlin/O=Netfilter Project/OU=Development/CN=kaber/emailAddress=kaber@netfilter.org $
+  *
+  * This program is released under the terms of GNU GPL */
+ 
+@@ -24,12 +24,6 @@
+ , IPTABLES_VERSION);
+ }
+ 
+-static void init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* caching not yet implemented */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ static int parse(int c, char **argv, int invert, unsigned int *flags,
+ 		const struct ipt_entry *entry, unsigned int *nfcache,
+ 		struct ipt_entry_match **match)
+@@ -156,7 +150,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_ttl_info)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_ttl_info)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_u32.c iptables-1.3.1/extensions/libipt_u32.c
+--- iptables-1.3.0/extensions/libipt_u32.c	2005-01-04 11:38:36.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_u32.c	2005-02-19 20:19:17.000000000 +0100
+@@ -37,13 +37,6 @@
+ 	{ 0 }
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* shared printing code */
+ static void print_u32(struct ipt_u32 *data)
+ {
+@@ -257,7 +250,6 @@
+ 	.size		= IPT_ALIGN(sizeof(struct ipt_u32)),
+ 	.userspacesize	= IPT_ALIGN(sizeof(struct ipt_u32)),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= &print,
+diff -urN iptables-1.3.0/extensions/libipt_udp.c iptables-1.3.1/extensions/libipt_udp.c
+--- iptables-1.3.0/extensions/libipt_udp.c	2005-01-04 11:38:37.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_udp.c	2005-02-19 20:19:17.000000000 +0100
+@@ -109,7 +109,6 @@
+ 		if (invert)
+ 			udpinfo->invflags |= IPT_UDP_INV_SRCPT;
+ 		*flags |= UDP_SRC_PORTS;
+-		*nfcache |= NFC_IP_SRC_PT;
+ 		break;
+ 
+ 	case '2':
+@@ -121,7 +120,6 @@
+ 		if (invert)
+ 			udpinfo->invflags |= IPT_UDP_INV_DSTPT;
+ 		*flags |= UDP_DST_PORTS;
+-		*nfcache |= NFC_IP_DST_PT;
+ 		break;
+ 
+ 	default:
+diff -urN iptables-1.3.0/extensions/libipt_unclean.c iptables-1.3.1/extensions/libipt_unclean.c
+--- iptables-1.3.0/extensions/libipt_unclean.c	2005-01-04 11:38:34.000000000 +0100
++++ iptables-1.3.1/extensions/libipt_unclean.c	2005-02-19 20:19:17.000000000 +0100
+@@ -17,14 +17,6 @@
+ 	{0}
+ };
+ 
+-/* Initialize the match. */
+-static void
+-init(struct ipt_entry_match *m, unsigned int *nfcache)
+-{
+-	/* Can't cache this. */
+-	*nfcache |= NFC_UNKNOWN;
+-}
+-
+ /* Function which parses command options; returns true if it
+    ate an option */
+ static int
+@@ -49,7 +41,6 @@
+ 	.size		= IPT_ALIGN(0),
+ 	.userspacesize	= IPT_ALIGN(0),
+ 	.help		= &help,
+-	.init		= &init,
+ 	.parse		= &parse,
+ 	.final_check	= &final_check,
+ 	.print		= NULL,
+diff -urN iptables-1.3.0/include/linux/netfilter_ipv4/ipt_CLUSTERIP.h iptables-1.3.1/include/linux/netfilter_ipv4/ipt_CLUSTERIP.h
+--- iptables-1.3.0/include/linux/netfilter_ipv4/ipt_CLUSTERIP.h	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.1/include/linux/netfilter_ipv4/ipt_CLUSTERIP.h	2005-03-07 15:00:35.000000000 +0100
+@@ -0,0 +1,37 @@
++#ifndef _IPT_CLUSTERIP_H_target
++#define _IPT_CLUSTERIP_H_target
++
++enum clusterip_hashmode {
++    CLUSTERIP_HASHMODE_SIP = 0,
++    CLUSTERIP_HASHMODE_SIP_SPT,
++    CLUSTERIP_HASHMODE_SIP_SPT_DPT,
++};
++
++#define CLUSTERIP_HASHMODE_MAX CLUSTERIP_HASHMODE_SIP_SPT_DPT
++
++#define CLUSTERIP_MAX_NODES 16
++
++#define CLUSTERIP_FLAG_NEW 0x00000001
++
++struct clusterip_config;
++
++struct ipt_clusterip_tgt_info {
++
++	u_int32_t flags;
++	
++	/* only relevant for new ones */
++	u_int8_t clustermac[6];
++	u_int16_t num_total_nodes;
++	u_int16_t num_local_nodes;
++	u_int16_t local_nodes[CLUSTERIP_MAX_NODES];
++	enum clusterip_hashmode hash_mode;
++	u_int32_t hash_initval;
++	
++#ifdef KERNEL_64_USERSPACE_32
++	u_int64_t config;
++#else
++	struct clusterip_config *config;
++#endif
++};
++
++#endif /*_IPT_CLUSTERIP_H_target*/
+diff -urN iptables-1.3.0/include/linux/netfilter_ipv4/ipt_CONNMARK.h iptables-1.3.1/include/linux/netfilter_ipv4/ipt_CONNMARK.h
+--- iptables-1.3.0/include/linux/netfilter_ipv4/ipt_CONNMARK.h	2004-10-10 11:56:23.000000000 +0200
++++ iptables-1.3.1/include/linux/netfilter_ipv4/ipt_CONNMARK.h	2005-02-19 20:19:17.000000000 +0100
+@@ -17,8 +17,13 @@
+ };
+ 
+ struct ipt_connmark_target_info {
++#ifdef KERNEL_64_USERSPACE_32
++	unsigned long long mark;
++	unsigned long long mask;
++#else
+ 	unsigned long mark;
+ 	unsigned long mask;
++#endif
+ 	u_int8_t mode;
+ };
+ 
+diff -urN iptables-1.3.0/include/linux/netfilter_ipv4/ipt_connmark.h iptables-1.3.1/include/linux/netfilter_ipv4/ipt_connmark.h
+--- iptables-1.3.0/include/linux/netfilter_ipv4/ipt_connmark.h	2004-10-10 11:56:23.000000000 +0200
++++ iptables-1.3.1/include/linux/netfilter_ipv4/ipt_connmark.h	2005-02-19 20:19:17.000000000 +0100
+@@ -11,7 +11,11 @@
+  */
+ 
+ struct ipt_connmark_info {
++#ifdef KERNEL_64_USERSPACE_32
++	unsigned long long mark, mask;
++#else
+ 	unsigned long mark, mask;
++#endif
+ 	u_int8_t invert;
+ };
+ 
+diff -urN iptables-1.3.0/ip6tables.c iptables-1.3.1/ip6tables.c
+--- iptables-1.3.0/ip6tables.c	2005-01-04 11:38:39.000000000 +0100
++++ iptables-1.3.1/ip6tables.c	2005-02-19 20:19:17.000000000 +0100
+@@ -1887,7 +1887,6 @@
+ 			    && (fw.ipv6.invflags & IP6T_INV_PROTO))
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "rule would never match protocol");
+-			fw.nfcache |= NFC_IP6_PROTO;
+ 			break;
+ 
+ 		case 's':
+@@ -1895,7 +1894,6 @@
+ 			set_option(&options, OPT_SOURCE, &fw.ipv6.invflags,
+ 				   invert);
+ 			shostnetworkmask = argv[optind-1];
+-			fw.nfcache |= NFC_IP6_SRC;
+ 			break;
+ 
+ 		case 'd':
+@@ -1903,7 +1901,6 @@
+ 			set_option(&options, OPT_DESTINATION, &fw.ipv6.invflags,
+ 				   invert);
+ 			dhostnetworkmask = argv[optind-1];
+-			fw.nfcache |= NFC_IP6_DST;
+ 			break;
+ 
+ 		case 'j':
+@@ -1935,7 +1932,6 @@
+ 			parse_interface(argv[optind-1],
+ 					fw.ipv6.iniface,
+ 					fw.ipv6.iniface_mask);
+-			fw.nfcache |= NFC_IP6_IF_IN;
+ 			break;
+ 
+ 		case 'o':
+@@ -1945,7 +1941,6 @@
+ 			parse_interface(argv[optind-1],
+ 					fw.ipv6.outiface,
+ 					fw.ipv6.outiface_mask);
+-			fw.nfcache |= NFC_IP6_IF_OUT;
+ 			break;
+ 
+ 		case 'v':
+diff -urN iptables-1.3.0/iptables.c iptables-1.3.1/iptables.c
+--- iptables-1.3.0/iptables.c	2005-01-04 11:38:38.000000000 +0100
++++ iptables-1.3.1/iptables.c	2005-02-19 20:19:17.000000000 +0100
+@@ -1987,7 +1987,6 @@
+ 			    && (fw.ip.invflags & IPT_INV_PROTO))
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "rule would never match protocol");
+-			fw.nfcache |= NFC_IP_PROTO;
+ 			break;
+ 
+ 		case 's':
+@@ -1995,7 +1994,6 @@
+ 			set_option(&options, OPT_SOURCE, &fw.ip.invflags,
+ 				   invert);
+ 			shostnetworkmask = argv[optind-1];
+-			fw.nfcache |= NFC_IP_SRC;
+ 			break;
+ 
+ 		case 'd':
+@@ -2003,7 +2001,6 @@
+ 			set_option(&options, OPT_DESTINATION, &fw.ip.invflags,
+ 				   invert);
+ 			dhostnetworkmask = argv[optind-1];
+-			fw.nfcache |= NFC_IP_DST;
+ 			break;
+ 
+ 		case 'j':
+@@ -2024,7 +2021,8 @@
+ 				strcpy(target->t->u.user.name, jumpto);
+ 				set_revision(target->t->u.user.name,
+ 					     target->revision);
+-				target->init(target->t, &fw.nfcache);
++				if (target->init != NULL)
++					target->init(target->t, &fw.nfcache);
+ 				opts = merge_options(opts, target->extra_opts, &target->option_offset);
+ 			}
+ 			break;
+@@ -2037,7 +2035,6 @@
+ 			parse_interface(argv[optind-1],
+ 					fw.ip.iniface,
+ 					fw.ip.iniface_mask);
+-			fw.nfcache |= NFC_IP_IF_IN;
+ 			break;
+ 
+ 		case 'o':
+@@ -2047,14 +2044,12 @@
+ 			parse_interface(argv[optind-1],
+ 					fw.ip.outiface,
+ 					fw.ip.outiface_mask);
+-			fw.nfcache |= NFC_IP_IF_OUT;
+ 			break;
+ 
+ 		case 'f':
+ 			set_option(&options, OPT_FRAGMENT, &fw.ip.invflags,
+ 				   invert);
+ 			fw.ip.flags |= IPT_F_FRAG;
+-			fw.nfcache |= NFC_IP_FRAG;
+ 			break;
+ 
+ 		case 'v':
+@@ -2078,7 +2073,8 @@
+ 			m->m->u.match_size = size;
+ 			strcpy(m->m->u.user.name, m->name);
+ 			set_revision(m->m->u.user.name, m->revision);
+-			m->init(m->m, &fw.nfcache);
++			if (m->init != NULL)
++				m->init(m->m, &fw.nfcache);
+ 			opts = merge_options(opts, m->extra_opts, &m->option_offset);
+ 		}
+ 		break;
+@@ -2221,7 +2217,8 @@
+ 					strcpy(m->m->u.user.name, m->name);
+ 					set_revision(m->m->u.user.name,
+ 						     m->revision);
+-					m->init(m->m, &fw.nfcache);
++					if (m->init != NULL)
++						m->init(m->m, &fw.nfcache);
+ 
+ 					opts = merge_options(opts,
+ 					    m->extra_opts, &m->option_offset);
+@@ -2349,7 +2346,8 @@
+ 			target->t->u.target_size = size;
+ 			strcpy(target->t->u.user.name, jumpto);
+ 			set_revision(target->t->u.user.name, target->revision);
+-			target->init(target->t, &fw.nfcache);
++			if (target->init != NULL)
++				target->init(target->t, &fw.nfcache);
+ 		}
+ 
+ 		if (!target) {
+diff -urN iptables-1.3.0/libiptc/libip4tc.c iptables-1.3.1/libiptc/libip4tc.c
+--- iptables-1.3.0/libiptc/libip4tc.c	2004-12-16 16:44:11.000000000 +0100
++++ iptables-1.3.1/libiptc/libip4tc.c	2005-02-19 20:19:17.000000000 +0100
+@@ -149,17 +149,6 @@
+ 	printf("Cache: %08X ", e->nfcache);
+ 	if (e->nfcache & NFC_ALTERED) printf("ALTERED ");
+ 	if (e->nfcache & NFC_UNKNOWN) printf("UNKNOWN ");
+-	if (e->nfcache & NFC_IP_SRC) printf("IP_SRC ");
+-	if (e->nfcache & NFC_IP_DST) printf("IP_DST ");
+-	if (e->nfcache & NFC_IP_IF_IN) printf("IP_IF_IN ");
+-	if (e->nfcache & NFC_IP_IF_OUT) printf("IP_IF_OUT ");
+-	if (e->nfcache & NFC_IP_TOS) printf("IP_TOS ");
+-	if (e->nfcache & NFC_IP_PROTO) printf("IP_PROTO ");
+-	if (e->nfcache & NFC_IP_OPTIONS) printf("IP_OPTIONS ");
+-	if (e->nfcache & NFC_IP_TCPFLAGS) printf("IP_TCPFLAGS ");
+-	if (e->nfcache & NFC_IP_SRC_PT) printf("IP_SRC_PT ");
+-	if (e->nfcache & NFC_IP_DST_PT) printf("IP_DST_PT ");
+-	if (e->nfcache & NFC_IP_PROTO_UNKNOWN) printf("IP_PROTO_UNKNOWN ");
+ 	printf("\n");
+ 
+ 	IPT_MATCH_ITERATE(e, print_match);
+diff -urN iptables-1.3.0/libiptc/libip6tc.c iptables-1.3.1/libiptc/libip6tc.c
+--- iptables-1.3.0/libiptc/libip6tc.c	2004-12-16 16:44:11.000000000 +0100
++++ iptables-1.3.1/libiptc/libip6tc.c	2005-02-19 20:19:17.000000000 +0100
+@@ -180,17 +180,6 @@
+ 	printf("Cache: %08X ", e->nfcache);
+ 	if (e->nfcache & NFC_ALTERED) printf("ALTERED ");
+ 	if (e->nfcache & NFC_UNKNOWN) printf("UNKNOWN ");
+-	if (e->nfcache & NFC_IP6_SRC) printf("IP6_SRC ");
+-	if (e->nfcache & NFC_IP6_DST) printf("IP6_DST ");
+-	if (e->nfcache & NFC_IP6_IF_IN) printf("IP6_IF_IN ");
+-	if (e->nfcache & NFC_IP6_IF_OUT) printf("IP6_IF_OUT ");
+-	if (e->nfcache & NFC_IP6_TOS) printf("IP6_TOS ");
+-	if (e->nfcache & NFC_IP6_PROTO) printf("IP6_PROTO ");
+-	if (e->nfcache & NFC_IP6_OPTIONS) printf("IP6_OPTIONS ");
+-	if (e->nfcache & NFC_IP6_TCPFLAGS) printf("IP6_TCPFLAGS ");
+-	if (e->nfcache & NFC_IP6_SRC_PT) printf("IP6_SRC_PT ");
+-	if (e->nfcache & NFC_IP6_DST_PT) printf("IP6_DST_PT ");
+-	if (e->nfcache & NFC_IP6_PROTO_UNKNOWN) printf("IP6_PROTO_UNKNOWN ");
+ 	printf("\n");
+ 	
+ 	IP6T_MATCH_ITERATE(e, print_match);
+diff -urN iptables-1.3.0/libiptc/libiptc.c iptables-1.3.1/libiptc/libiptc.c
+--- iptables-1.3.0/libiptc/libiptc.c	2005-02-12 21:05:32.000000000 +0100
++++ iptables-1.3.1/libiptc/libiptc.c	2005-03-07 14:50:22.000000000 +0100
+@@ -1,4 +1,4 @@
+-/* Library which manipulates firewall rules.  Version $Revision: 3652 $ */
++/* Library which manipulates firewall rules.  Version $Revision: 3756 $ */
+ 
+ /* Architecture of firewall rules is as follows:
+  *
+@@ -396,10 +396,13 @@
+ {
+ 	struct chain_head *tmp;
+ 
+-	list_for_each_entry(tmp, &h->chains, list) {
+-		if (strcmp(c->name, tmp->name) <= 0) {
+-			list_add(&c->list, tmp->list.prev);
+-			return;
++	/* sort only user defined chains */
++	if (!c->hooknum) {
++		list_for_each_entry(tmp, &h->chains, list) {
++			if (strcmp(c->name, tmp->name) <= 0) {
++				list_add(&c->list, tmp->list.prev);
++				return;
++			}
+ 		}
+ 	}
+ 
+diff -urN iptables-1.3.0/linux/netfilter_ipv4/ipt_CLUSTERIP.h iptables-1.3.1/linux/netfilter_ipv4/ipt_CLUSTERIP.h
+--- iptables-1.3.0/linux/netfilter_ipv4/ipt_CLUSTERIP.h	1970-01-01 01:00:00.000000000 +0100
++++ iptables-1.3.1/linux/netfilter_ipv4/ipt_CLUSTERIP.h	2005-03-07 15:00:32.000000000 +0100
+@@ -0,0 +1,37 @@
++#ifndef _IPT_CLUSTERIP_H_target
++#define _IPT_CLUSTERIP_H_target
++
++enum clusterip_hashmode {
++    CLUSTERIP_HASHMODE_SIP = 0,
++    CLUSTERIP_HASHMODE_SIP_SPT,
++    CLUSTERIP_HASHMODE_SIP_SPT_DPT,
++};
++
++#define CLUSTERIP_HASHMODE_MAX CLUSTERIP_HASHMODE_SIP_SPT_DPT
++
++#define CLUSTERIP_MAX_NODES 16
++
++#define CLUSTERIP_FLAG_NEW 0x00000001
++
++struct clusterip_config;
++
++struct ipt_clusterip_tgt_info {
++
++	u_int32_t flags;
++	
++	/* only relevant for new ones */
++	u_int8_t clustermac[6];
++	u_int16_t num_total_nodes;
++	u_int16_t num_local_nodes;
++	u_int16_t local_nodes[CLUSTERIP_MAX_NODES];
++	enum clusterip_hashmode hash_mode;
++	u_int32_t hash_initval;
++	
++#ifdef KERNEL_64_USERSPACE_32
++	u_int64_t config;
++#else
++	struct clusterip_config *config;
++#endif
++};
++
++#endif /*_IPT_CLUSTERIP_H_target*/

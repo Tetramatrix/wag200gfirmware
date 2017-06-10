@@ -1,0 +1,208 @@
+addrtoa.o: addrtoa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+addrtot.o: addrtot.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+addrtypeof.o: addrtypeof.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+anyaddr.o: anyaddr.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+atoaddr.o: atoaddr.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+atoasr.o: atoasr.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+atosa.o: atosa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+atosubnet.o: atosubnet.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+atoul.o: atoul.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+copyright.o: copyright.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+datatot.o: datatot.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+dep_freeswan.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/nat/traversal.h)
+goodmask.o: goodmask.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+initaddr.o: initaddr.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+initsaid.o: initsaid.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+initsubnet.o: initsubnet.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+dep_internal.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/socket.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/in.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h)
+keyblobtoid.o: keyblobtoid.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+optionsfrom.o: optionsfrom.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+pfkey_v2_build.o: pfkey_v2_build.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   ../ipsec_kversion.h $(dep_../ipsec_kversion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipv6.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipv6/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ipv6.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ipv6.h) \
+   freeswan.h $(dep_freeswan.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   freeswan.h $(dep_freeswan.h) \
+   pfkeyv2.h $(dep_pfkeyv2.h) \
+   pfkey.h $(dep_pfkey.h) \
+   ../radij.h $(dep_../radij.h) \
+   ../ipsec_encap.h $(dep_../ipsec_encap.h) \
+   ../ipsec_netlink.h $(dep_../ipsec_netlink.h)
+pfkey_v2_debug.o: pfkey_v2_debug.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   ../ipsec_kversion.h $(dep_../ipsec_kversion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   freeswan.h $(dep_freeswan.h) \
+   pfkeyv2.h $(dep_pfkeyv2.h) \
+   pfkey.h $(dep_pfkey.h)
+pfkey_v2_ext_bits.o: pfkey_v2_ext_bits.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   ../ipsec_kversion.h $(dep_../ipsec_kversion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipv6.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipv6/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ipv6.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ipv6.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   freeswan.h $(dep_freeswan.h) \
+   pfkeyv2.h $(dep_pfkeyv2.h) \
+   pfkey.h $(dep_pfkey.h)
+pfkey_v2_parse.o: pfkey_v2_parse.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   ../ipsec_kversion.h $(dep_../ipsec_kversion.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/malloc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/etherdevice.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ip.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipv6.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipv6/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ipv6.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ipv6.h) \
+   freeswan.h $(dep_freeswan.h) \
+   ../ipsec_encap.h $(dep_../ipsec_encap.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   freeswan.h $(dep_freeswan.h) \
+   pfkeyv2.h $(dep_pfkeyv2.h) \
+   pfkey.h $(dep_pfkey.h) \
+   ../radij.h $(dep_../radij.h) \
+   ../ipsec_encap.h $(dep_../ipsec_encap.h) \
+   ../ipsec_netlink.h $(dep_../ipsec_netlink.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/ipsec/ipcomp.h)
+portof.o: portof.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+prng.o: prng.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+rangetoa.o: rangetoa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+rangetosubnet.o: rangetosubnet.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+sameaddr.o: sameaddr.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+satoa.o: satoa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+satot.o: satot.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+subnetof.o: subnetof.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+subnettoa.o: subnettoa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+subnettot.o: subnettot.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+subnettypeof.o: subnettypeof.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ttoaddr.o: ttoaddr.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ttodata.o: ttodata.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ttoprotoport.o: ttoprotoport.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ttosa.o: ttosa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ttosubnet.o: ttosubnet.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ttoul.o: ttoul.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ultoa.o: ultoa.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+ultot.o: ultot.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+version.o: version.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)
+version.in.o: version.in.c \
+   internal.h $(dep_internal.h) \
+   freeswan.h $(dep_freeswan.h)

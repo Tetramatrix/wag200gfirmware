@@ -1,0 +1,41 @@
+This is a 2.4 backport of a linux-2.6 change by Florian Zumbiehl.
+(commit 202a03acf9994076055df40ae093a5c5474ad0bd)
+
+CVE-2007-2525 was assigned for this issue. It has been compile tested-only.
+
+Commit log from 2.6 follows.
+
+  below you find a patch that fixes a memory leak when a PPPoE socket is
+  release()d after it has been connect()ed, but before the PPPIOCGCHAN ioctl
+  ever has been called on it.
+
+  This is somewhat of a security problem, too, since PPPoE sockets can be
+  created by any user, so any user can easily allocate all the machine's
+  RAM to non-swappable address space and thus DoS the system.
+
+  Is there any specific reason for PPPoE sockets being available to any
+  unprivileged process, BTW? After all, you need a packet socket for the
+  discovery stage anyway, so it's unlikely that any unprivileged process
+  will ever need to create a PPPoE socket, no? Allocating all session IDs
+  for a known AC is a kind of DoS, too, after all - with Juniper ERXes,
+  this is really easy, actually, since they don't ever assign session ids
+  above 8000 ...
+
+Signed-off-by: dann frazier <dannf@hp.com>
+---
+ drivers/net/pppox.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+diff --git a/drivers/net/pppox.c b/drivers/net/pppox.c
+index 7830e4d..4883c0f 100644
+--- a/drivers/net/pppox.c
++++ b/drivers/net/pppox.c
+@@ -67,7 +67,7 @@ void pppox_unbind_sock(struct sock *sk)
+ {
+ 	/* Clear connection to ppp device, if attached. */
+ 
+-	if (sk->state & (PPPOX_BOUND|PPPOX_ZOMBIE)) {
++	if (sk->state & (PPPOX_BOUND | PPPOX_CONNECTED | PPPOX_ZOMBIE)) {
+ 		ppp_unregister_channel(&sk->protinfo.pppox->chan);
+ 		sk->state = PPPOX_DEAD;
+ 	}
+

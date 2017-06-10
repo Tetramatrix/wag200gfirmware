@@ -1,0 +1,33 @@
+***************
+*** 19,25 ****
+   * PPP driver, written by Michael Callahan and Al Longyear, and
+   * subsequently hacked by Paul Mackerras.
+   *
+-  * ==FILEVERSION 20020217==
+   */
+  
+  #include <linux/config.h>
+--- 19,25 ----
+   * PPP driver, written by Michael Callahan and Al Longyear, and
+   * subsequently hacked by Paul Mackerras.
+   *
++  * ==FILEVERSION 20040509==
+   */
+  
+  #include <linux/config.h>
+***************
+*** 102,107 ****
+  	spinlock_t	rlock;		/* lock for receive side 58 */
+  	spinlock_t	wlock;		/* lock for transmit side 5c */
+  	int		mru;		/* max receive unit 60 */
+  	unsigned int	flags;		/* control bits 64 */
+  	unsigned int	xstate;		/* transmit state bits 68 */
+  	unsigned int	rstate;		/* receive state bits 6c */
+--- 102,108 ----
+  	spinlock_t	rlock;		/* lock for receive side 58 */
+  	spinlock_t	wlock;		/* lock for transmit side 5c */
+  	int		mru;		/* max receive unit 60 */
++ 	int		mru_alloc;	/* MAX(1500,MRU) for dev_alloc_skb() */
+  	unsigned int	flags;		/* control bits 64 */
+  	unsigned int	xstate;		/* transmit state bits 68 */
+  	unsigned int	rstate;		/* receive state bits 6c */

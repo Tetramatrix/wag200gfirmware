@@ -1,0 +1,172 @@
+#
+#	WAG200G serial product makefile 
+#	Usage:  make [TARGET] [ANNEX] [VER] [MODULE] [HW_ID] [UR2]
+#
+include Rules.mak
+
+# Environment Variables
+TARGET_HOME = $(shell pwd)
+#FATHER_HOME = $(shell cd ../$(TARGET_HOME))
+APPS_DIR  = $(TARGET_HOME)/apps
+LOADER_DIR = $(TARGET_HOME)/bootloader
+DRIVER_DIR   = $(TARGET_HOME)/driver
+KERNEL_DIR = $(TARGET_HOME)/kernel
+FS_DIR  = $(TARGET_HOME)/target
+FIRMWARE_DIR =$(TARGET_HOME)/tools/makeimage
+TOOLS_DIR  = $(TARGET_HOME)/tools
+IMAGE_DIR  = $(TARGET_HOME)/image
+KERNEL_SRC = $(KERNEL_DIR)/src
+
+FUNC = 00
+#TOOL_CHAIN_DIR = $(TARGET_HOME)/tools/mipsel-linux-uclibc/bin:$(TARGET_HOME)/../toolchain/hardhat/devkit/mips/fp_le/bin
+TOOL_CHAIN_DIR = /home/chi/Software/Archiv/uclibc-crosstools_gcc-3.4.2_uclibc-20050502/bin
+
+7ZIP_DIR = $(TARGET_HOME)/../toolchain/
+ 
+export TARGET_HOME 
+export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin:$(TOOL_CHAIN_DIR)
+export LD_LIBRARY_PATH=$(TARGET_HOME)/../toolchain/libstdc++-libc6.2-2.so.3
+
+# filename of each binary file
+# 
+
+LOADER = $(LOADER_DIR)/loader.bin
+DOWNLOADER =$(LOADER_DIR)/download.bin
+KERNEL=$(KERNEL_DIR)/src/ram_zimage_pad.bin
+
+
+ifeq    ($(ANNEX),B)
+	FS_NAME=$(IMAGE_DIR)/fsb.bin
+ifeq ($(DEBUG),1)
+	IMG_NAME=$(IMAGE_DIR)/$(HW_ID)_$(ANNEX)_$(VER)_$(LANG).debug$(DEBUG_VER).img
+else
+	IMG_NAME=$(IMAGE_DIR)/$(HW_ID)_$(ANNEX)_$(VER)_$(LANG).img
+endif
+	VERSION=B$(VER)
+else
+	FS_NAME=$(IMAGE_DIR)/fsa.bin
+
+ifeq ($(DEBUG),1)
+	IMG_NAME=$(IMAGE_DIR)/$(HW_ID)_$(ANNEX)_$(VER)_$(LANG).debug$(DEBUG_VER).img
+else
+	IMG_NAME=$(IMAGE_DIR)/$(HW_ID)_$(ANNEX)_$(VER)_$(LANG).img
+endif
+	VERSION=A$(VER)
+endif 
+
+
+
+PID=$(FIRMWARE_DIR)/PID_$(VERSION)
+
+all: mktools mkimgdir make_links build_image make_new_firmware results
+
+mkimgdir:
+	@echo "make image directory!\n"
+	@if [ ! -d $(TARGET_HOME)/image ] ;then mkdir -p $(TARGET_HOME)/image; fi
+
+build_target:
+	tar  xvfz $(TARGET_HOME)/target.tgz
+
+	echo $(HW_ID) > $(FS_DIR)/usr/etc/hw_id
+	$(MAKE) -C $(TOOLS_DIR)
+	$(MAKE) -C $(APPS_DIR)
+	$(MAKE) -C $(APPS_DIR) install
+ifeq ($(DEBUG),1)
+	echo $(VERSION).debug$(DEBUG_VER) > $(FS_DIR)/usr/etc/version	
+else
+	echo $(VERSION) > $(FS_DIR)/usr/etc/version	
+endif
+
+pid:
+ifeq ($(BRIDGE),1)
+	FUNC = 01
+endif
+
+ifeq ($(MULTI_PVC),1)
+	FUNC = 03
+endif
+	$(FIRMWARE_DIR)/make_PID $(HW_ID) $(VERSION) $(COMPANY) $(FUNC) 
+	mv PID_$(VERSION) $(FIRMWARE_DIR)/
+
+fs: 
+ifeq ($(CPU_7200),1)
+	cp -f $(DRIVER_DIR)/atm/tiatm_V3.o $(FS_DIR)/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/drivers/atm/tiatm.o
+else
+	cp -f $(DRIVER_DIR)/atm/tiatm.o $(FS_DIR)/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/drivers/atm/tiatm.o
+endif
+
+ifeq ($(USB),1)
+	cp -f $(DRIVER_DIR)/usb/avalanche_usb.o $(FS_DIR)/lib/modules/avalanche_usb.o
+endif
+
+ifeq ($(WIFI),1)
+ifeq ($(APDK_56),1)
+	cp -f $(DRIVER_DIR)/wifi/tiap.o $(FS_DIR)/lib/modules/
+
+	cp -f $(DRIVER_DIR)/wifi/wlan_init $(FS_DIR)/usr/sbin/
+	cp -f $(DRIVER_DIR)/wifi/wpa_authenticator $(FS_DIR)/usr/sbin/wpa_auth
+#	cp -f $(DRIVER_DIR)/wifi/cli $(FS_DIR)/usr/sbin/
+else
+	cp -f $(DRIVER_DIR)/wifi/tiwlan.o $(FS_DIR)/lib/modules/
+	cp -f $(DRIVER_DIR)/wifi/user_drv $(FS_DIR)/usr/sbin/
+	cp -f $(DRIVER_DIR)/wifi/wifi_watchdog $(FS_DIR)/usr/sbin/
+endif
+endif
+
+ifeq ($(ANNEX),B)
+	cp -f $(DRIVER_DIR)/atm/annex_b/ar0700db.bin $(FS_DIR)/lib/modules/ar0700xx.bin
+else
+
+ifeq ($(CPU_7200),1)
+	cp -f $(DRIVER_DIR)/atm/annex_a/ar0700mp.bin.5.00.02 $(FS_DIR)/lib/modules/ar0700xx.bin
+else
+	cp -f $(DRIVER_DIR)/atm/annex_a/ar0700mp.bin $(FS_DIR)/lib/modules/ar0700xx.bin
+endif
+
+endif
+
+	$(FIRMWARE_DIR)/mksquashfs $(FS_DIR) $(FS_NAME) -b 32768 -noappend
+	#$(FIRMWARE_DIR)/mkcramfs $(FS_DIR) $(FS_NAME) 
+
+
+rmcvs:
+	@echo "remove CVS in target directory!\n"
+	find $(FS_DIR)/ -name CVS | xargs rm -rf
+	
+mktools:
+	@echo "Make build environment!"
+	if [ ! -d ../toolchain/hardhat ]; then tar -xzf ../toolchain/toolchain.tar.gz -C ../toolchain/; fi
+	@echo "PATH=$(PATH)"
+	cd $(KERNEL_SRC); rm -f .hdepend; find . -name ".depend" | xargs rm -f
+	$(MAKE) -C $(KERNEL_SRC)
+	$(MAKE) -C $(KERNEL_SRC) ram_zimage_pad
+
+results:
+	@echo "Make Results!"
+	if [ ! -d Results ]; then mkdir Results; fi
+	cp $(IMAGE_DIR)/WAG200G_A_1.01.06_EN.img Results/WAG200G_A_1.01.06.bin
+	@echo "Make succeed!"
+
+build_image: clean tool_chain build_target rmcvs pid fs
+	$(FIRMWARE_DIR)/makeImage_4M $(IMG_NAME) $(LOADER) $(DOWNLOADER) $(KERNEL) $(FS_NAME) $(PID)
+	rm -f $(FS_NAME)
+
+make_new_firmware:
+	$(MAKE) -C $(IMAGE_DIR)
+
+clean:
+	rm -rf $(TARGET_HOME)/target
+	$(MAKE) -C $(APPS_DIR) clean
+	$(MAKE) -C $(TOOLS_DIR) clean
+	$(MAKE) -C $(TOOLS_DIR)/uClibc-0.9.19 clean
+
+clean_all: clean
+	$(MAKE) -C $(IMAGE_DIR) clean
+
+tool_chain:
+	$(MAKE) -C $(TOOLS_DIR) mipsel-linux-uclibc
+
+make_links:
+	@echo "make links"
+	./mklinks
+

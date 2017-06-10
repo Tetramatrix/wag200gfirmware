@@ -1,0 +1,559 @@
+amd7930.o: amd7930.c \
+   hisax.h $(dep_hisax.h) \
+   ../../sbus/audio/amd7930.h $(dep_../../sbus/audio/amd7930.h) \
+   isac.h $(dep_isac.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   rawhdlc.h $(dep_rawhdlc.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+arcofi.o: arcofi.c \
+   hisax.h $(dep_hisax.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   isac.h $(dep_isac.h) \
+   arcofi.h $(dep_arcofi.h)
+asuscom.o: asuscom.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   ipac.h $(dep_ipac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+avm_a1.o: avm_a1.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+avm_a1p.o: avm_a1p.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+avm_pci.o: avm_pci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/apus.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+bkm_a4t.o: bkm_a4t.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   jade.h $(dep_jade.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   bkm_ax.h $(dep_bkm_ax.h) \
+   jade_irq.c $(dep_jade_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+bkm_a8.o: bkm_a8.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   ipac.h $(dep_ipac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   bkm_ax.h $(dep_bkm_ax.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+callc.o: callc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   ../avmb1/capicmd.h $(dep_../avmb1/capicmd.h)
+cert.o: cert.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h)
+config.o: config.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/stddef.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/stddef.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel_stat.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tqueue.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/elsa.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/avm/a1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/avm/a1/pcmcia.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/fritzpci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/16/3.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/s0box.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/16/0.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/telespci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/ix1micror2.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/diehldiva.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/asuscom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/teleint.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/sedlbauer.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/sportster.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/mic.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/netjet.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hfcs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hfc/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hfc/sx.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/amd7930.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/niccy.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/isurf.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hstsaphir.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/bkm/a4t.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/sct/quadro.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/gazel.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/w6692.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/netjet/u.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/1tr6.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/ni1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/euro.h) \
+   hisax_if.h $(dep_hisax_if.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/quadro.h)
+diva.o: diva.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   ipac.h $(dep_ipac.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   hscx_irq.c $(dep_hscx_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+elsa.o: elsa.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   arcofi.h $(dep_arcofi.h) \
+   isac.h $(dep_isac.h) \
+   ipac.h $(dep_ipac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   elsa_ser.c $(dep_elsa_ser.c) \
+   hscx_irq.c $(dep_hscx_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+elsa_cs.o: elsa_cs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs_types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs_types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cistpl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cistpl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cisreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cisreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/ds.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/ds.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/bus_ops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/bus_ops.h)
+elsa_ser.o: elsa_ser.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/serial/nopause/io.h)
+fsm.o: fsm.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h)
+dep_fsm.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h)
+gazel.o: gazel.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   ipac.h $(dep_ipac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   hscx_irq.c $(dep_hscx_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+hfc_2bds0.o: hfc_2bds0.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hfc_2bds0.h $(dep_hfc_2bds0.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+hfc_2bs0.o: hfc_2bs0.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hfc_2bs0.h $(dep_hfc_2bs0.h) \
+   isac.h $(dep_isac.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+hfc_pci.o: hfc_pci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hfc_pci.h $(dep_hfc_pci.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+hfc_sx.o: hfc_sx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hfc_sx.h $(dep_hfc_sx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+hfcscard.o: hfcscard.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hfc_2bds0.h $(dep_hfc_2bds0.h) \
+   isdnl1.h $(dep_isdnl1.h)
+dep_hisax.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/major.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/segment.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/signal.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mman.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/wait.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isdnif.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/serial_reg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/euro.h) \
+   l3dss1.h $(dep_l3dss1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/ni1.h) \
+   l3ni1.h $(dep_l3ni1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/testemu.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/16/0.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/16/3.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/telespci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/avm/a1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/avm/a1/pcmcia.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/fritzpci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/elsa.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/ix1micror2.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/diehldiva.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/asuscom.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/teleint.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/sedlbauer.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/sportster.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/mic.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/netjet.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hfcs.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hfc/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hfc/sx.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/amd7930.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/niccy.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/isurf.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/s0box.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/hstsaphir.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/bkm/a4t.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/sct/quadro.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/gazel.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/w6692.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/netjet/u.h)
+dep_hisax_debug.h += \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/debug.h)
+hisax_fcpcipnp.o: hisax_fcpcipnp.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/isapnp.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/isapnp.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kmod.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   hisax_fcpcipnp.h $(dep_hisax_fcpcipnp.h) \
+   hisax_debug.h $(dep_hisax_debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hotplug.h)
+dep_hisax_fcpcipnp.h += \
+   hisax_if.h $(dep_hisax_if.h) \
+   hisax_isac.h $(dep_hisax_isac.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h)
+dep_hisax_if.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h)
+hisax_isac.o: hisax_isac.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   hisax_isac.h $(dep_hisax_isac.h) \
+   hisax_debug.h $(dep_hisax_debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/debug.h)
+dep_hisax_isac.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   fsm.h $(dep_fsm.h) \
+   hisax_if.h $(dep_hisax_if.h)
+hscx.o: hscx.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hscx.h $(dep_hscx.h) \
+   isac.h $(dep_isac.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+icc.o: icc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   icc.h $(dep_icc.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+isac.o: isac.c \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   arcofi.h $(dep_arcofi.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h)
+isar.o: isar.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isar.h $(dep_isar.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+isdnl1.o: isdnl1.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isdnl1.h $(dep_isdnl1.h)
+isdnl2.o: isdnl2.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isdnl2.h $(dep_isdnl2.h)
+isdnl3.o: isdnl3.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isdnl3.h $(dep_isdnl3.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/euro.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/ni1.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/1tr6.h)
+isurf.o: isurf.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   isar.h $(dep_isar.h) \
+   isdnl1.h $(dep_isdnl1.h)
+ix1_micro.o: ix1_micro.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+jade.o: jade.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   hscx.h $(dep_hscx.h) \
+   jade.h $(dep_jade.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h)
+l3_1tr6.o: l3_1tr6.c \
+   hisax.h $(dep_hisax.h) \
+   l3_1tr6.h $(dep_l3_1tr6.h) \
+   isdnl3.h $(dep_isdnl3.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h)
+l3dss1.o: l3dss1.c \
+   hisax.h $(dep_hisax.h) \
+   isdnl3.h $(dep_isdnl3.h) \
+   l3dss1.h $(dep_l3dss1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/no/keypad.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/no/sendcomplete.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/no/llc.h)
+l3ni1.o: l3ni1.c \
+   hisax.h $(dep_hisax.h) \
+   isdnl3.h $(dep_isdnl3.h) \
+   l3ni1.h $(dep_l3ni1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ctype.h)
+lmgr.o: lmgr.c \
+   hisax.h $(dep_hisax.h)
+mic.o: mic.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+netjet.o: netjet.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   netjet.h $(dep_netjet.h)
+niccy.o: niccy.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   hscx_irq.c $(dep_hscx_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+nj_s.o: nj_s.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   netjet.h $(dep_netjet.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+nj_u.o: nj_u.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   icc.h $(dep_icc.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   netjet.h $(dep_netjet.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+q931.o: q931.c \
+   hisax.h $(dep_hisax.h) \
+   l3_1tr6.h $(dep_l3_1tr6.h)
+rawhdlc.o: rawhdlc.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ppp_defs.h) \
+   rawhdlc.h $(dep_rawhdlc.h)
+s0box.o: s0box.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+saphir.o: saphir.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+sedlbauer.o: sedlbauer.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   ipac.h $(dep_ipac.h) \
+   hscx.h $(dep_hscx.h) \
+   isar.h $(dep_isar.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   hscx_irq.c $(dep_hscx_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+sedlbauer_cs.o: sedlbauer_cs.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/sched.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ptrace.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/timer.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/ioport.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/io.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/asm/system.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs_types.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs_types.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cs.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cistpl.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cistpl.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cisreg.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/cisreg.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/ds.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/ds.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/bus_ops.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/pcmcia/bus_ops.h)
+sportster.o: sportster.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+dep_st5481.h += \
+   st5481_hdlc.h $(dep_st5481_hdlc.h) \
+   fsm.h $(dep_fsm.h) \
+   hisax_if.h $(dep_hisax_if.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/skbuff.h) \
+   hisax_debug.h $(dep_hisax_debug.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/debug.h)
+st5481_b.o: st5481_b.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   st5481.h $(dep_st5481.h)
+st5481_d.o: st5481_d.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/netdevice.h) \
+   st5481.h $(dep_st5481.h)
+st5481_hdlc.o: st5481_hdlc.c \
+   st5481_hdlc.h $(dep_st5481_hdlc.h)
+st5481_init.o: st5481_init.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/version.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   st5481.h $(dep_st5481.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/hisax/debug.h)
+st5481_usb.o: st5481_usb.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/usb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   st5481.h $(dep_st5481.h)
+tei.o: tei.c \
+   hisax.h $(dep_hisax.h) \
+   isdnl2.h $(dep_isdnl2.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/random.h)
+teleint.o: teleint.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hfc_2bs0.h $(dep_hfc_2bs0.h) \
+   isdnl1.h $(dep_isdnl1.h)
+teles0.o: teles0.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+teles3.o: teles3.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   hscx_irq.c $(dep_hscx_irq.c)
+telespci.o: telespci.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   isac.h $(dep_isac.h) \
+   hscx.h $(dep_hscx.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   hscx_irq.c $(dep_hscx_irq.c) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+w6692.o: w6692.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   hisax.h $(dep_hisax.h) \
+   w6692.h $(dep_w6692.h) \
+   isdnl1.h $(dep_isdnl1.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/interrupt.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)

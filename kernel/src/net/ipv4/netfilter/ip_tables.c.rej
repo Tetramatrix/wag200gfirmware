@@ -1,0 +1,17 @@
+***************
+*** 1760,1766 ****
+  	}
+  #endif
+  
+- 	printk("ip_tables: (c)2000 Netfilter core team\n");
+  	return 0;
+  }
+  
+--- 1782,1788 ----
+  	}
+  #endif
+  
++ 	printk("ip_tables: (C) 2000-2002 Netfilter core team\n");
+  	return 0;
+  }
+  

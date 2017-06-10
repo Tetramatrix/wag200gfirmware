@@ -1,0 +1,4854 @@
+diff -Nurw bridge/Makefile bridge-test/bridge/Makefile
+--- bridge/Makefile	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/Makefile	Mon Mar 11 21:25:23 2002
+@@ -1,16 +1,9 @@
+-#
+-# Makefile for the IEEE 802.1d ethernet bridging layer.
+-#
+-# Note! Dependencies are done automagically by 'make dep', which also
+-# removes any old dependencies. DON'T put your own dependencies here
+-# unless it's something special (ie not a .c file).
+-#
+-# Note 2! The CFLAGS definition is now in the main makefile...
+-
+-O_TARGET	:= bridge.o
+ obj-y		:= br.o br_device.o br_fdb.o br_forward.o br_if.o br_input.o \
+-			br_ioctl.o br_notify.o br_stp.o br_stp_bpdu.o \
++			br_ioctl.o br_notify.o br_stp.o br_stp_bpdu.o br_filter.o\
+ 			br_stp_if.o br_stp_timer.o
+-obj-m		:= $(O_TARGET)
+ 
+-include $(TOPDIR)/Rules.make
++CC=/usr/local/bin/gcc
++CFLAGS=-D__KERNEL__ -DMODULE -DMODVERSIONS -include $(LNX_SRCDIR)/$(SPEC)/include/linux/modversions.h -I$(LNX_SRCDIR)/$(SPEC)/include -O2 -fomit-frame-pointer -fno-strict-aliasing
++
++bridge.o: $(obj-y)
++	ld -r -o $@ $^
+diff -Nurw bridge/RCS/br.c,v bridge-test/bridge/RCS/br.c,v
+--- bridge/RCS/br.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br.c,v	Wed May 22 16:49:05 2002
+@@ -0,0 +1,106 @@
++head	1.1;
++access;
++symbols;
++locks; strict;
++comment	@ * @;
++
++
++1.1
++date	2002.05.22.20.49.05;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@/*
++ *	Generic parts
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br.c,v 1.46.2.1 2001/12/24 00:56:13 davem Exp $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/miscdevice.h>
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <linux/init.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++#include <asm/uaccess.h>
++#include "br_private.h"
++
++#if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
++#include "../atm/lec.h"
++#endif
++
++void br_dec_use_count()
++{
++	MOD_DEC_USE_COUNT;
++}
++
++void br_inc_use_count()
++{
++	MOD_INC_USE_COUNT;
++}
++
++static int __init br_init(void)
++{
++	printk(KERN_INFO "NET4: Ethernet Bridge 008 for NET4.0\n");
++
++	br_handle_frame_hook = br_handle_frame;
++	br_ioctl_hook = br_ioctl_deviceless_stub;
++	port_lock = RW_LOCK_UNLOCKED;
++#if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
++	br_fdb_get_hook = br_fdb_get;
++	br_fdb_put_hook = br_fdb_put;
++#endif
++	register_netdevice_notifier(&br_device_notifier);
++
++	return 0;
++}
++
++static void __br_clear_frame_hook(void)
++{
++	br_handle_frame_hook = NULL;
++}
++
++static void __br_clear_ioctl_hook(void)
++{
++	br_ioctl_hook = NULL;
++}
++
++static void __exit br_deinit(void)
++{
++	unregister_netdevice_notifier(&br_device_notifier);
++	br_call_ioctl_atomic(__br_clear_ioctl_hook);
++	net_call_rx_atomic(__br_clear_frame_hook);
++#if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
++	br_fdb_get_hook = NULL;
++	br_fdb_put_hook = NULL;
++#endif
++}
++
++EXPORT_NO_SYMBOLS;
++
++module_init(br_init)
++module_exit(br_deinit)
++MODULE_LICENSE("GPL");
++@
+diff -Nurw bridge/RCS/br_device.c,v bridge-test/bridge/RCS/br_device.c,v
+--- bridge/RCS/br_device.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_device.c,v	Tue Jun 11 04:19:26 2002
+@@ -0,0 +1,249 @@
++head	1.4;
++access;
++symbols;
++locks
++	ktrivedi:1.4; strict;
++comment	@ * @;
++
++
++1.4
++date	2002.06.11.08.19.26;	author ktrivedi;	state Exp;
++branches;
++next	1.3;
++
++1.3
++date	2002.05.24.14.24.13;	author ktrivedi;	state Exp;
++branches;
++next	1.2;
++
++1.2
++date	2002.05.23.17.49.46;	author ktrivedi;	state Exp;
++branches;
++next	1.1;
++
++1.1
++date	2002.05.22.20.41.43;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.4
++log
++@Almost Final
++@
++text
++@/*
++ *	Device handling code
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br_device.c,v 1.3 2002/05/24 14:24:13 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/netdevice.h>
++/*#include <linux/if_bridge.h>*/
++#include <asm/uaccess.h>
++#include "afs_if_bridge.h"
++#include "br_private.h"
++
++static int br_dev_do_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
++{
++	unsigned long args[4];
++	unsigned long *data;
++
++	if (cmd != SIOCDEVPRIVATE)
++		return -EOPNOTSUPP;
++
++	data = (unsigned long *)rq->ifr_data;
++	if (copy_from_user(args, data, 4*sizeof(unsigned long)))
++		return -EFAULT;
++
++	return br_ioctl(dev->priv, args[0], args[1], args[2], args[3]);
++}
++
++static struct net_device_stats *br_dev_get_stats(struct net_device *dev)
++{
++	struct net_bridge *br;
++
++	br = dev->priv;
++
++	return &br->statistics;
++}
++
++static int __br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
++{
++	struct net_bridge *br;
++	unsigned char *dest;
++	struct net_bridge_fdb_entry *dst;
++
++	br = dev->priv;
++	br->statistics.tx_packets++;
++	br->statistics.tx_bytes += skb->len;
++
++	dest = skb->mac.raw = skb->data;
++	skb_pull(skb, ETH_HLEN);
++
++	/*dst = NULL;
++	if(!strncmp(skb->dev->name, "eth2",4) || !strncmp(skb->dev->name, "eth3",4))
++		dst = user_port;
++	else if(!strncmp(skb->dev->name, "eth1",4))
++		dst = net_port;
++	if(!memcmp(skb->dev->dev_addr, net_port->addr.addr,ETH_ALEN) ||
++			!memcmp(skb->dev->dev_addr, filter_port->addr.addr, ETH_ALEN))
++		dst = user_port;
++	else if(!memcmp(skb->dev->dev_addr, user_port->addr.addr, ETH_ALEN))
++		dst = net_port;*/
++
++	dst = NULL;
++	if (dest[0] & 1) {
++		br_flood_deliver(br, skb, 0);
++		return 0;
++	}
++
++	//if ((dst = br_fdb_get(br,dest)) != NULL) {
++	if (dst != NULL) {
++		br_deliver(dst->dst, skb);
++		br_fdb_put(dst);
++		return 0;
++	}
++
++	br_flood_deliver(br, skb, 0);
++	return 0;
++}
++
++int br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
++{
++	struct net_bridge *br;
++	int ret;
++
++	br = dev->priv;
++	read_lock(&br->lock);
++	ret = __br_dev_xmit(skb, dev);
++	read_unlock(&br->lock);
++
++	return ret;
++}
++
++static int br_dev_open(struct net_device *dev)
++{
++	struct net_bridge *br;
++
++	netif_start_queue(dev);
++
++	br = dev->priv;
++	read_lock(&br->lock);
++	br_stp_enable_bridge(br);
++	read_unlock(&br->lock);
++
++	return 0;
++}
++
++static void br_dev_set_multicast_list(struct net_device *dev)
++{
++}
++
++static int br_dev_stop(struct net_device *dev)
++{
++	struct net_bridge *br;
++
++	br = dev->priv;
++	read_lock(&br->lock);
++	br_stp_disable_bridge(br);
++	read_unlock(&br->lock);
++
++	netif_stop_queue(dev);
++
++	return 0;
++}
++
++static int br_dev_accept_fastpath(struct net_device *dev, struct dst_entry *dst)
++{
++	return -1;
++}
++
++void br_dev_setup(struct net_device *dev)
++{
++	memset(dev->dev_addr, 0, ETH_ALEN);
++
++	dev->do_ioctl = br_dev_do_ioctl;
++	dev->get_stats = br_dev_get_stats;
++	dev->hard_start_xmit = br_dev_xmit;
++	dev->open = br_dev_open;
++	dev->set_multicast_list = br_dev_set_multicast_list;
++	dev->stop = br_dev_stop;
++	dev->accept_fastpath = br_dev_accept_fastpath;
++	dev->tx_queue_len = 0;
++	dev->set_mac_address = NULL;
++}
++@
++
++
++1.3
++log
++@*** empty log message ***
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_device.c,v 1.2 2002/05/23 17:49:46 ktrivedi Exp ktrivedi $
++d60 2
++a61 2
++	dst = NULL;
++	/*if(!strncmp(skb->dev->name, "eth2",4) || !strncmp(skb->dev->name, "eth3",4))
++d64 1
++a64 1
++		dst = net_port;*/
++d69 1
++a69 1
++		dst = net_port;
++d71 1
++d77 1
++d80 1
++a80 1
++		/*br_fdb_put(dst);*/
++@
++
++
++1.2
++log
++@memcmp instead of strncmp
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_device.c,v 1.1 2002/05/22 20:41:43 ktrivedi Exp ktrivedi $
++d66 1
++a66 1
++			!memcmp(skb->dev_addr, filter_port->addr.addr, ETH_ALEN))
++@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_device.c,v 1.5.2.1 2001/12/24 00:59:27 davem Exp $
++d60 2
++a61 2
++	/*dst = NULL;
++	if(!strncmp(skb->dev->name, "eth2",4) || !strncmp(skb->dev->name, "eth3",4))
++d65 5
++d76 1
++a76 1
++	if ((dst = br_fdb_get(br, dest))  != NULL) {
++@
+diff -Nurw bridge/RCS/br_fdb.c,v bridge-test/bridge/RCS/br_fdb.c,v
+--- bridge/RCS/br_fdb.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_fdb.c,v	Wed May 22 16:47:05 2002
+@@ -0,0 +1,345 @@
++head	1.1;
++access;
++symbols;
++locks; strict;
++comment	@ * @;
++
++
++1.1
++date	2002.05.22.20.47.05;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@/*
++ *	Forwarding database
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br_fdb.c,v 1.5.2.1 2002/01/17 00:59:01 davem Exp $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/spinlock.h>
++/*#include <linux/if_bridge.h>*/
++#include <asm/atomic.h>
++#include <asm/uaccess.h>
++#include "afs_if_bridge.h"
++#include "br_private.h"
++
++static __inline__ unsigned long __timeout(struct net_bridge *br)
++{
++	unsigned long timeout;
++
++	timeout = jiffies - br->ageing_time;
++	if (br->topology_change)
++		timeout = jiffies - br->forward_delay;
++
++	return timeout;
++}
++
++static __inline__ int has_expired(struct net_bridge *br,
++				  struct net_bridge_fdb_entry *fdb)
++{
++	if (!fdb->is_static &&
++	    time_before_eq(fdb->ageing_timer, __timeout(br)))
++		return 1;
++
++	return 0;
++}
++
++static __inline__ void copy_fdb(struct __fdb_entry *ent, struct net_bridge_fdb_entry *f)
++{
++	memset(ent, 0, sizeof(struct __fdb_entry));
++	memcpy(ent->mac_addr, f->addr.addr, ETH_ALEN);
++	ent->port_no = f->dst?f->dst->port_no:0;
++	ent->is_local = f->is_local;
++	ent->ageing_timer_value = 0;
++	if (!f->is_static)
++		ent->ageing_timer_value = jiffies - f->ageing_timer;
++}
++
++static __inline__ int br_mac_hash(unsigned char *mac)
++{
++	unsigned long x;
++
++	x = mac[0];
++	x = (x << 2) ^ mac[1];
++	x = (x << 2) ^ mac[2];
++	x = (x << 2) ^ mac[3];
++	x = (x << 2) ^ mac[4];
++	x = (x << 2) ^ mac[5];
++
++	x ^= x >> 8;
++
++	return x & (BR_HASH_SIZE - 1);
++}
++
++static __inline__ void __hash_link(struct net_bridge *br,
++				   struct net_bridge_fdb_entry *ent,
++				   int hash)
++{
++	ent->next_hash = br->hash[hash];
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = &ent->next_hash;
++	br->hash[hash] = ent;
++	ent->pprev_hash = &br->hash[hash];
++}
++
++static __inline__ void __hash_unlink(struct net_bridge_fdb_entry *ent)
++{
++	*(ent->pprev_hash) = ent->next_hash;
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = ent->pprev_hash;
++	ent->next_hash = NULL;
++	ent->pprev_hash = NULL;
++}
++
++
++
++void br_fdb_changeaddr(struct net_bridge_port *p, unsigned char *newaddr)
++{
++	struct net_bridge *br;
++	int i;
++
++	br = p->br;
++	write_lock_bh(&br->hash_lock);
++	for (i=0;i<BR_HASH_SIZE;i++) {
++		struct net_bridge_fdb_entry *f;
++
++		f = br->hash[i];
++		while (f != NULL) {
++			if (f->dst == p && f->is_local) {
++				__hash_unlink(f);
++				memcpy(f->addr.addr, newaddr, ETH_ALEN);
++				__hash_link(br, f, br_mac_hash(newaddr));
++				write_unlock_bh(&br->hash_lock);
++				return;
++			}
++			f = f->next_hash;
++		}
++	}
++	write_unlock_bh(&br->hash_lock);
++}
++
++void br_fdb_cleanup(struct net_bridge *br)
++{
++	int i;
++	unsigned long timeout;
++
++	timeout = __timeout(br);
++
++	write_lock_bh(&br->hash_lock);
++	for (i=0;i<BR_HASH_SIZE;i++) {
++		struct net_bridge_fdb_entry *f;
++
++		f = br->hash[i];
++		while (f != NULL) {
++			struct net_bridge_fdb_entry *g;
++
++			g = f->next_hash;
++			if (!f->is_static &&
++			    time_before_eq(f->ageing_timer, timeout)) {
++				__hash_unlink(f);
++				br_fdb_put(f);
++			}
++			f = g;
++		}
++	}
++	write_unlock_bh(&br->hash_lock);
++}
++
++void br_fdb_delete_by_port(struct net_bridge *br, struct net_bridge_port *p)
++{
++	int i;
++
++	write_lock_bh(&br->hash_lock);
++	for (i=0;i<BR_HASH_SIZE;i++) {
++		struct net_bridge_fdb_entry *f;
++
++		f = br->hash[i];
++		while (f != NULL) {
++			struct net_bridge_fdb_entry *g;
++
++			g = f->next_hash;
++			if (f->dst == p) {
++				__hash_unlink(f);
++				br_fdb_put(f);
++			}
++			f = g;
++		}
++	}
++	write_unlock_bh(&br->hash_lock);
++}
++
++struct net_bridge_fdb_entry *br_fdb_get(struct net_bridge *br, unsigned char *addr)
++{
++	struct net_bridge_fdb_entry *fdb;
++
++	read_lock_bh(&br->hash_lock);
++	fdb = br->hash[br_mac_hash(addr)];
++	while (fdb != NULL) {
++		if (!memcmp(fdb->addr.addr, addr, ETH_ALEN)) {
++			if (!has_expired(br, fdb)) {
++				atomic_inc(&fdb->use_count);
++				read_unlock_bh(&br->hash_lock);
++				return fdb;
++			}
++
++			read_unlock_bh(&br->hash_lock);
++			return NULL;
++		}
++
++		fdb = fdb->next_hash;
++	}
++
++	read_unlock_bh(&br->hash_lock);
++	return NULL;
++}
++
++void br_fdb_put(struct net_bridge_fdb_entry *ent)
++{
++	if (atomic_dec_and_test(&ent->use_count))
++		kfree(ent);
++}
++
++int br_fdb_get_entries(struct net_bridge *br,
++		       unsigned char *_buf,
++		       int maxnum,
++		       int offset)
++{
++	int i;
++	int num;
++	struct __fdb_entry *walk;
++
++	num = 0;
++	walk = (struct __fdb_entry *)_buf;
++
++	read_lock_bh(&br->hash_lock);
++	for (i=0;i<BR_HASH_SIZE;i++) {
++		struct net_bridge_fdb_entry *f;
++
++		f = br->hash[i];
++		while (f != NULL && num < maxnum) {
++			struct __fdb_entry ent;
++			int err;
++			struct net_bridge_fdb_entry *g;
++			struct net_bridge_fdb_entry **pp; 
++
++			if (has_expired(br, f)) {
++				f = f->next_hash;
++				continue;
++			}
++
++			if (offset) {
++				offset--;
++				f = f->next_hash;
++				continue;
++			}
++
++			copy_fdb(&ent, f);
++
++			atomic_inc(&f->use_count);
++			read_unlock_bh(&br->hash_lock);
++			err = copy_to_user(walk, &ent, sizeof(struct __fdb_entry));
++			read_lock_bh(&br->hash_lock);
++
++			g = f->next_hash;
++			pp = f->pprev_hash;
++			br_fdb_put(f);
++
++			if (err)
++				goto out_fault;
++
++			if (g == NULL && pp == NULL)
++				goto out_disappeared;
++
++			num++;
++			walk++;
++
++			f = g;
++		}
++	}
++
++ out:
++	read_unlock_bh(&br->hash_lock);
++	return num;
++
++ out_disappeared:
++	num = -EAGAIN;
++	goto out;
++
++ out_fault:
++	num = -EFAULT;
++	goto out;
++}
++
++static __inline__ void __fdb_possibly_replace(struct net_bridge_fdb_entry *fdb,
++					      struct net_bridge_port *source,
++					      int is_local)
++{
++	if (!fdb->is_static || is_local) {
++		fdb->dst = source;
++		fdb->is_local = is_local;
++		fdb->is_static = is_local;
++		fdb->ageing_timer = jiffies;
++	}
++}
++
++void br_fdb_insert(struct net_bridge *br,
++		   struct net_bridge_port *source,
++		   unsigned char *addr,
++		   int is_local)
++{
++	struct net_bridge_fdb_entry *fdb;
++	int hash;
++
++	hash = br_mac_hash(addr);
++
++	write_lock_bh(&br->hash_lock);
++	fdb = br->hash[hash];
++	while (fdb != NULL) {
++		if (!fdb->is_local &&
++		    !memcmp(fdb->addr.addr, addr, ETH_ALEN)) {
++			__fdb_possibly_replace(fdb, source, is_local);
++			write_unlock_bh(&br->hash_lock);
++			return;
++		}
++
++		fdb = fdb->next_hash;
++	}
++
++	fdb = kmalloc(sizeof(*fdb), GFP_ATOMIC);
++	if (fdb == NULL) {
++		write_unlock_bh(&br->hash_lock);
++		return;
++	}
++
++	memcpy(fdb->addr.addr, addr, ETH_ALEN);
++	atomic_set(&fdb->use_count, 1);
++	fdb->dst = source;
++	fdb->is_local = is_local;
++	fdb->is_static = is_local;
++	fdb->ageing_timer = jiffies;
++
++	__hash_link(br, fdb, hash);
++
++	write_unlock_bh(&br->hash_lock);
++}
++@
+diff -Nurw bridge/RCS/br_filter.c,v bridge-test/bridge/RCS/br_filter.c,v
+--- bridge/RCS/br_filter.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_filter.c,v	Wed Jun  5 03:19:07 2002
+@@ -0,0 +1,439 @@
++head	1.2;
++access;
++symbols;
++locks
++	ktrivedi:1.2; strict;
++comment	@ * @;
++
++
++1.2
++date	2002.06.05.07.19.07;	author ktrivedi;	state Exp;
++branches;
++next	1.1;
++
++1.1
++date	2002.05.22.20.46.58;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.2
++log
++@*** empty log message ***
++@
++text
++@/*
++ *	Mac filtering database
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Christian Welzel		<Sir_Gawain@@gmx.de>
++ *  
++ *  Lock initialization problem resolved:  Kunal Trivedi
++ *
++ *	$Id: br_filter.c,v 1.1 2002/05/22 20:46:58 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/spinlock.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++#include <asm/atomic.h>
++#include <asm/uaccess.h>
++#include "br_private.h"
++
++// calculates the hash for a mac
++// fertig
++static __inline__ int br_mac_hash(unsigned char *mac)
++{
++	unsigned long x;
++
++	x = mac[0];
++	x = (x << 2) ^ mac[1];
++	x = (x << 2) ^ mac[2];
++	x = (x << 2) ^ mac[3];
++	x = (x << 2) ^ mac[4];
++	x = (x << 2) ^ mac[5];
++
++	x ^= x >> 8;
++
++	return x & (BR_HASH_SIZE - 1);
++}
++
++// Calculates hash for the protocol
++static __inline__ int br_protocol_hash(unsigned int filt_protocol)
++{
++	filt_protocol ^= filt_protocol >> 8;
++	return filt_protocol & (BR_HASH_SIZE-1);
++}
++
++// links diabled macs into hash
++// fertig
++static __inline__ void __disabled_macs_link(struct net_bridge *br,
++				   struct net_bridge_ftdb_entry *ent,
++				   int hash)
++{
++	ent->next_hash = br->disabled_macs[hash];
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = &ent->next_hash;
++	br->disabled_macs[hash] = ent;
++	ent->pprev_hash = &br->disabled_macs[hash];
++}
++
++// links protocol into hash
++static __inline__ void __filt_protocols_link(struct net_bridge *br,
++				   struct net_bridge_ftpdb_entry *ent,
++				   int hash)
++{
++	ent->next_hash = br->filt_protocols[hash];
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = &ent->next_hash;
++	br->filt_protocols[hash] = ent;
++	ent->pprev_hash = &br->filt_protocols[hash];
++}
++
++// unlinks disabled macs from hash (no further disabled)
++// fertig
++static __inline__ void __disabled_macs_unlink(struct net_bridge_ftdb_entry *ent)
++{
++	*(ent->pprev_hash) = ent->next_hash;
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = ent->pprev_hash;
++	ent->next_hash = NULL;
++	ent->pprev_hash = NULL;
++}
++
++// unlinks protocols from hash
++static __inline__ void __filt_protocols_unlink(struct net_bridge_ftpdb_entry *ent)
++{
++	*(ent->pprev_hash) = ent->next_hash;
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = ent->pprev_hash;
++	ent->next_hash = NULL;
++	ent->pprev_hash = NULL;
++}
++
++// tests if mac is unused -> delete it
++// fertig
++void br_ftdb_delete(struct net_bridge_ftdb_entry *ent)
++{
++	if (atomic_dec_and_test(&ent->use_count))
++		kfree(ent);
++}
++
++// tests if protocol -> delete it
++void br_ftpdb_delete(struct net_bridge_ftpdb_entry *ent)
++{
++	if (atomic_dec_and_test(&ent->use_count))
++		kfree(ent);
++}
++
++// removes a mac from hash (no further disabled)
++// fertig
++void br_ftdb_remove(struct net_bridge *br, unsigned char *addr)
++{
++	struct net_bridge_ftdb_entry *f;
++
++	write_lock_bh(&br->disabled_macs_lock);
++	f = br->disabled_macs[br_mac_hash(addr)];
++
++	while (f != NULL) {
++	        if (!memcmp(f->addr.addr, addr, ETH_ALEN)) {
++		        __disabled_macs_unlink(f);
++		        br_ftdb_delete(f);
++		}
++		f = f->next_hash;
++	}
++	write_unlock_bh(&br->disabled_macs_lock);
++}
++
++// removes a protocol from hash
++void br_ftpdb_remove(struct net_bridge *br, unsigned int fprot)
++{
++	struct net_bridge_ftpdb_entry *f;
++
++	write_lock_bh(&br->filt_protocols_lock);
++	f = br->filt_protocols[br_protocol_hash(fprot)];
++
++	while (f != NULL) {
++	        if (f->fprot==fprot) {
++		        __filt_protocols_unlink(f);
++		        br_ftpdb_delete(f);
++		}
++		f = f->next_hash;
++	}
++	write_unlock_bh(&br->filt_protocols_lock);
++}
++
++// returns pointer==1 if mac is disabled
++// fertig
++int br_ftdb_get(struct net_bridge *br, unsigned char *addr)
++{
++	struct net_bridge_ftdb_entry *ftdb;
++
++	read_lock_bh(&br->disabled_macs_lock);
++	ftdb = br->disabled_macs[br_mac_hash(addr)];
++	while (ftdb != NULL) {
++		if (!memcmp(ftdb->addr.addr, addr, ETH_ALEN)) {
++		        read_unlock_bh(&br->disabled_macs_lock);
++		        return 1;
++		}
++
++		ftdb = ftdb->next_hash;
++	}
++
++	read_unlock_bh(&br->disabled_macs_lock);
++	return 0;
++}
++
++// returns pointer==1 if protocol is in the list
++int br_ftpdb_get(struct net_bridge *br, unsigned int fprot)
++{
++	struct net_bridge_ftpdb_entry *ftpdb;
++
++	read_lock_bh(&br->filt_protocols_lock);
++	ftpdb = br->filt_protocols[br_protocol_hash(fprot)];
++	while (ftpdb != NULL) {
++		if (ftpdb->fprot==fprot) {
++		        read_unlock_bh(&br->filt_protocols_lock);
++		        return 1;
++		}
++
++		ftpdb = ftpdb->next_hash;
++	}
++
++	read_unlock_bh(&br->filt_protocols_lock);
++	return 0;
++}
++
++// returns all macs in hash
++// fertig
++int br_ftdb_get_entries(struct net_bridge *br,
++		       unsigned char *_buf,
++		       int maxnum,
++		       int offset)
++{
++	int i;
++	int num;
++	struct __ftdb_entry *walk;
++
++	num = 0;
++	walk = (struct __ftdb_entry *)_buf;
++
++	read_lock_bh(&br->disabled_macs_lock);
++	for (i=0;i<BR_HASH_SIZE;i++) {
++		struct net_bridge_ftdb_entry *f;
++
++		f = br->disabled_macs[i];
++		while (f != NULL && num < maxnum) {
++			struct __ftdb_entry ent;
++			int err;
++			struct net_bridge_ftdb_entry *g;
++			struct net_bridge_ftdb_entry **pp; 
++
++			if (offset) {
++				offset--;
++				f = f->next_hash;
++				continue;
++			}
++
++			memset(&ent, 0, sizeof(struct __ftdb_entry));
++			memcpy(ent.mac_addr, f->addr.addr, ETH_ALEN);
++
++			atomic_inc(&f->use_count);
++			read_unlock_bh(&br->disabled_macs_lock);
++			err = copy_to_user(walk, &ent, sizeof(struct __ftdb_entry));
++			read_lock_bh(&br->disabled_macs_lock);
++
++			g = f->next_hash;
++			pp = f->pprev_hash;
++			br_ftdb_delete(f);
++
++			if (err)
++				goto out_fault;
++
++			if (g == NULL && pp == NULL)
++				goto out_disappeared;
++
++			num++;
++			walk++;
++
++			f = g;
++		}
++	}
++
++ out:
++	read_unlock_bh(&br->disabled_macs_lock);
++	return num;
++
++ out_disappeared:
++	num = -EAGAIN;
++	goto out;
++
++ out_fault:
++	num = -EFAULT;
++	goto out;
++}
++
++// returns all protocols in hash
++int br_ftpdb_get_entries(struct net_bridge *br,
++                   unsigned char *_buf,
++                   int maxnum,
++                   int offset)
++{
++       int i;
++       int num;
++       struct __ftpdb_entry *walk;
++
++       num = 0;
++       walk = (struct __ftpdb_entry *)_buf;
++
++       read_lock_bh(&br->filt_protocols_lock);
++       for (i=0;i<BR_HASH_SIZE;i++) {
++               struct net_bridge_ftpdb_entry *f;
++
++               f = br->filt_protocols[i];
++               while (f != NULL && num < maxnum) {
++                       struct __ftpdb_entry ent;
++                       int err;
++                       struct net_bridge_ftpdb_entry *g;
++                       struct net_bridge_ftpdb_entry **pp;
++
++                       if (offset) {
++                               offset--;
++                               f = f->next_hash;
++                               continue;
++                       }
++
++                       ent.filt_protocol=f->fprot; 
++
++                      atomic_inc(&f->use_count);
++                       read_unlock_bh(&br->filt_protocols_lock);
++                       err = copy_to_user(walk, &ent, sizeof(struct __ftpdb_entry));
++		       read_lock_bh(&br->filt_protocols_lock);
++
++                       g = f->next_hash;
++                       pp = f->pprev_hash;
++                       br_ftpdb_delete(f);
++  
++                       if (err)
++		               goto out_fault;
++		       if (g == NULL && pp == NULL)
++		               goto out_disappeared;
++                       num++;
++                       walk++;
++		     
++                       f = g;
++               }
++	}
++out:
++	read_unlock_bh(&br->filt_protocols_lock);
++        return num;
++
++out_disappeared:
++	num = -EAGAIN;
++	goto out;
++
++out_fault:
++        num = -EFAULT;
++        goto out;
++}
++
++// inserts a mac into hash
++// fertig
++void br_ftdb_insert(struct net_bridge *br,
++		    unsigned char *addr)
++{
++	struct net_bridge_ftdb_entry *ftdb;
++	int hash;
++
++	hash = br_mac_hash(addr);
++
++	write_lock_bh(&br->disabled_macs_lock);
++	ftdb = br->disabled_macs[hash];
++	while (ftdb != NULL) {
++		if (!memcmp(ftdb->addr.addr, addr, ETH_ALEN)) {
++			write_unlock_bh(&br->disabled_macs_lock);
++			return;
++		}
++
++		ftdb = ftdb->next_hash;
++	}
++
++	ftdb = kmalloc(sizeof(*ftdb), GFP_ATOMIC);
++	if (ftdb == NULL) {
++		write_unlock_bh(&br->disabled_macs_lock);
++		return;
++	}
++
++	memcpy(ftdb->addr.addr, addr, ETH_ALEN);
++	atomic_set(&ftdb->use_count, 1);
++
++	__disabled_macs_link(br, ftdb, hash);
++
++	write_unlock_bh(&br->disabled_macs_lock);
++}
++
++// inserts a protocol into hash
++void br_ftpdb_insert(struct net_bridge *br,
++		    unsigned int fprot)
++{
++	struct net_bridge_ftpdb_entry *ftpdb;
++	int hash;
++
++	hash = br_protocol_hash(fprot);
++
++	write_lock_bh(&br->filt_protocols_lock);
++	ftpdb = br->filt_protocols[hash];
++	while (ftpdb != NULL) {
++		if (ftpdb->fprot==fprot) {
++			write_unlock_bh(&br->filt_protocols_lock);
++			return;
++		}
++
++		ftpdb = ftpdb->next_hash;
++	}
++
++	ftpdb = kmalloc(sizeof(*ftpdb), GFP_ATOMIC);
++	if (ftpdb == NULL) {
++		write_unlock_bh(&br->filt_protocols_lock);
++		return;
++	}
++
++	ftpdb->fprot=fprot;
++	atomic_set(&ftpdb->use_count, 1);
++
++	__filt_protocols_link(br, ftpdb, hash);
++
++	write_unlock_bh(&br->filt_protocols_lock);
++}
++@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@d10 1
++a10 1
++ *	$Id: dismacs-against-kernel2.4.3.diff,v 1.1.1.1 2001/08/30 11:11:13 kwagner Exp $
++d25 1
++d44 6
++d64 12
++d87 10
++d105 7
++d131 18
++d170 19
++d259 64
++d356 34
++@
+diff -Nurw bridge/RCS/br_forward.c,v bridge-test/bridge/RCS/br_forward.c,v
+--- bridge/RCS/br_forward.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_forward.c,v	Tue Jun 11 04:19:44 2002
+@@ -0,0 +1,195 @@
++head	1.2;
++access;
++symbols;
++locks
++	ktrivedi:1.2; strict;
++comment	@ * @;
++
++
++1.2
++date	2002.06.11.08.19.44;	author ktrivedi;	state Exp;
++branches;
++next	1.1;
++
++1.1
++date	2002.05.22.20.46.31;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.2
++log
++@Almost Final
++@
++text
++@/*
++ *	Forwarding decision
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br_forward.c,v 1.1 2002/05/22 20:46:31 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/netdevice.h>
++#include <linux/inetdevice.h>
++#include <linux/skbuff.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++#include <linux/netfilter_bridge.h>
++#include "br_private.h"
++
++static inline int should_deliver(struct net_bridge_port *p, struct sk_buff *skb)
++{
++	if (skb->dev == p->dev ||
++	    p->state != BR_STATE_FORWARDING)
++		return 0;
++
++	return 1;
++}
++
++static int __dev_queue_push_xmit(struct sk_buff *skb)
++{
++	skb_push(skb, ETH_HLEN);
++	dev_queue_xmit(skb);
++
++	return 0;
++}
++
++static int __br_forward_finish(struct sk_buff *skb)
++{
++	NF_HOOK(PF_BRIDGE, NF_BR_POST_ROUTING, skb, NULL, skb->dev,
++			__dev_queue_push_xmit);
++
++	return 0;
++}
++
++static void __br_deliver(struct net_bridge_port *to, struct sk_buff *skb)
++{
++	struct net_device *indev;
++
++	indev = skb->dev;
++	skb->dev = to->dev;
++
++
++	NF_HOOK(PF_BRIDGE, NF_BR_LOCAL_OUT, skb, indev, skb->dev,
++			__br_forward_finish);
++}
++
++static void __br_forward(struct net_bridge_port *to, struct sk_buff *skb)
++{
++	struct net_device *indev;
++
++	indev = skb->dev;
++	skb->dev = to->dev;
++
++	NF_HOOK(PF_BRIDGE, NF_BR_FORWARD, skb, indev, skb->dev,
++			__br_forward_finish);
++}
++
++/* called under bridge lock */
++void br_deliver(struct net_bridge_port *to, struct sk_buff *skb)
++{
++	if (should_deliver(to, skb)) {
++		__br_deliver(to, skb);
++		return;
++	}
++
++	kfree_skb(skb);
++}
++
++/* called under bridge lock */
++void br_forward(struct net_bridge_port *to, struct sk_buff *skb)
++{
++	if (should_deliver(to, skb)) {
++		__br_forward(to, skb);
++		return;
++	}
++
++	kfree_skb(skb);
++}
++
++/* called under bridge lock */
++static void br_flood(struct net_bridge *br, struct sk_buff *skb, int clone,
++	void (*__packet_hook)(struct net_bridge_port *p, struct sk_buff *skb))
++{
++	struct net_bridge_port *p;
++	struct net_bridge_port *prev;
++
++	if (clone) {
++		struct sk_buff *skb2;
++
++		if ((skb2 = skb_clone(skb, GFP_ATOMIC)) == NULL) {
++			br->statistics.tx_dropped++;
++			return;
++		}
++
++		skb = skb2;
++	}
++
++	prev = NULL;
++
++	p = br->port_list;
++	while (p != NULL) {
++		if (should_deliver(p, skb)) {
++			if (prev != NULL) {
++				struct sk_buff *skb2;
++
++				if ((skb2 = skb_clone(skb, GFP_ATOMIC)) == NULL) {
++					br->statistics.tx_dropped++;
++					kfree_skb(skb);
++					return;
++				}
++
++				__packet_hook(prev, skb2);
++			}
++
++			prev = p;
++		}
++
++		p = p->next;
++	}
++
++	if (prev != NULL) {
++		__packet_hook(prev, skb);
++		return;
++	}
++
++	kfree_skb(skb);
++}
++
++/* called under bridge lock */
++void br_flood_deliver(struct net_bridge *br, struct sk_buff *skb, int clone)
++{
++	br_flood(br, skb, clone, __br_deliver);
++}
++
++/* called under bridge lock */
++void br_flood_forward(struct net_bridge *br, struct sk_buff *skb, int clone)
++{
++	br_flood(br, skb, clone, __br_forward);
++}
++@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_forward.c,v 1.4 2001/08/14 22:05:57 davem Exp $
++d56 1
++@
+diff -Nurw bridge/RCS/br_if.c,v bridge-test/bridge/RCS/br_if.c,v
+--- bridge/RCS/br_if.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_if.c,v	Tue Jun 11 04:19:35 2002
+@@ -0,0 +1,494 @@
++head	1.4;
++access;
++symbols;
++locks
++	ktrivedi:1.4; strict;
++comment	@ * @;
++
++
++1.4
++date	2002.06.11.08.19.35;	author ktrivedi;	state Exp;
++branches;
++next	1.3;
++
++1.3
++date	2002.05.30.05.51.54;	author ktrivedi;	state Exp;
++branches;
++next	1.2;
++
++1.2
++date	2002.05.30.00.51.03;	author ktrivedi;	state Exp;
++branches;
++next	1.1;
++
++1.1
++date	2002.05.22.20.46.38;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.4
++log
++@Almost Final
++@
++text
++@/*
++ *	Userspace interface
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br_if.c,v 1.3 2002/05/30 05:51:54 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/if_arp.h>
++/*#include <linux/if_bridge.h>*/
++#include <linux/inetdevice.h>
++#include <linux/rtnetlink.h>
++#include <asm/uaccess.h>
++#include "afs_if_bridge.h"
++#include "br_private.h"
++
++static struct net_bridge *bridge_list;
++
++static int br_initial_port_cost(struct net_device *dev)
++{
++	if (!strncmp(dev->name, "lec", 3))
++		return 7;
++
++	if (!strncmp(dev->name, "eth", 3))
++		return 100;			/* FIXME handle 100Mbps */
++
++	if (!strncmp(dev->name, "plip", 4))
++		return 2500;
++
++	return 100;
++}
++
++/* called under bridge lock */
++static int __br_del_if(struct net_bridge *br, struct net_device *dev)
++{
++	struct net_bridge_port *p, **prev;
++	struct net_bridge_port **pptr;
++
++	if ((p = dev->br_port) == NULL)
++		return -EINVAL;
++
++	p = br->port_list;
++	if(!p) 
++		return -EINVAL;
++	while(p) {
++		if(! strcmp(p->dev->name, dev->name))
++			break;
++		p = p->next;
++	}
++
++	br_stp_disable_port(p);
++
++#ifndef CMU_BRIDGE
++	dev_set_promiscuity(dev, -1);
++	dev->br_port = NULL;
++
++	pptr = &br->port_list;
++	while (*pptr != NULL) {
++		if (*pptr == p) {
++			*pptr = p->next;
++			break;
++		}
++
++		pptr = &((*pptr)->next);
++	}
++
++	br_fdb_delete_by_port(br, p);
++	kfree(p);
++	dev_put(dev);
++#else
++	/* Delete the node from link list */
++	prev = &dev->br_port;
++	while(*prev) {
++		if(*prev == p) {
++			*prev = p->common_next;
++			 break;
++		}
++		prev = &((*prev)->common_next);
++	}
++
++	if(! dev->br_port) {
++		dev_set_promiscuity(dev, -1);
++	}
++	
++	pptr = &br->port_list;
++	while (*pptr != NULL) {
++		if (*pptr == p) {
++			*pptr = p->next;
++			break;
++		}
++
++		pptr = &((*pptr)->next);
++	}
++
++	br_fdb_delete_by_port(br, p);
++	kfree(p);
++	if(! dev->br_port) {
++		dev_put(dev);
++	}
++#endif
++
++	return 0;
++}
++
++static struct net_bridge **__find_br(char *name)
++{
++	struct net_bridge **b;
++	struct net_bridge *br;
++
++	b = &bridge_list;
++	while ((br = *b) != NULL) {
++		if (!strncmp(br->dev.name, name, IFNAMSIZ))
++			return b;
++
++		b = &(br->next);
++	}
++
++	return NULL;
++}
++
++static void del_ifs(struct net_bridge *br)
++{
++	write_lock_bh(&br->lock);
++	while (br->port_list != NULL)
++		__br_del_if(br, br->port_list->dev);
++	write_unlock_bh(&br->lock);
++}
++
++static struct net_bridge *new_nb(char *name)
++{
++	struct net_bridge *br;
++	struct net_device *dev;
++
++	if ((br = kmalloc(sizeof(*br), GFP_KERNEL)) == NULL)
++		return NULL;
++
++	memset(br, 0, sizeof(*br));
++	dev = &br->dev;
++
++	strncpy(dev->name, name, IFNAMSIZ);
++	dev->priv = br;
++	ether_setup(dev);
++	br_dev_setup(dev);
++
++	/* This has been added to prevent kernel crash.
++	 * If disabled_macs_lock is not initialized then, kernel
++	 * will hang when code tries to get that lock.
++	 * 		--Kunal
++	 */
++	br->filt_protocols_lock = RW_LOCK_UNLOCKED;
++	br->disabled_macs_lock = RW_LOCK_UNLOCKED;
++	br->lock = RW_LOCK_UNLOCKED;
++	br->hash_lock = RW_LOCK_UNLOCKED;
++
++	br->bridge_id.prio[0] = 0x80;
++	br->bridge_id.prio[1] = 0x00;
++	memset(br->bridge_id.addr, 0, ETH_ALEN);
++
++	br->stp_enabled = 1;
++	br->designated_root = br->bridge_id;
++	br->root_path_cost = 0;
++	br->root_port = 0;
++	br->bridge_max_age = br->max_age = 20 * HZ;
++	br->bridge_hello_time = br->hello_time = 2 * HZ;
++	br->bridge_forward_delay = br->forward_delay = 15 * HZ;
++	br->topology_change = 0;
++	br->topology_change_detected = 0;
++	br_timer_clear(&br->hello_timer);
++	br_timer_clear(&br->tcn_timer);
++	br_timer_clear(&br->topology_change_timer);
++
++	br->ageing_time = 300 * HZ;
++	br->gc_interval = 4 * HZ;
++
++	/* Initialize with no-filtering */
++	br->flt_src = 0;
++	br->flt_dest = 0;
++	br->flt_src_allow = 0;
++	br->flt_dest_allow = 0;
++	br->protocol_filter_mode = 0;
++
++	return br;
++}
++
++/* called under bridge lock */
++static struct net_bridge_port *new_nbp(struct net_bridge *br, struct net_device *dev)
++{
++	int i;
++	struct net_bridge_port *p;
++
++	p = kmalloc(sizeof(*p), GFP_KERNEL);
++	if (p == NULL)
++		return p;
++
++	memset(p, 0, sizeof(*p));
++	p->br = br;
++	p->dev = dev;
++	p->path_cost = br_initial_port_cost(dev);
++	p->priority = 0x80;
++
++#ifndef CMU_BRIDGE 
++	dev->br_port = p;
++#else
++	if(! dev->br_port) {
++		dev->br_port = p;
++	} else {
++		/* This is hardcoded. Should be generic*/
++		dev->br_port->common_next = p;
++		dev->br_port->br_link = br;
++		p->common_next = NULL;
++	}
++#endif
++	for (i=1;i<255;i++)
++		if (br_get_port(br, i) == NULL)
++			break;
++
++	if (i == 255) {
++		kfree(p);
++		return NULL;
++	}
++
++	p->port_no = i;
++	br_init_port(p);
++	p->state = BR_STATE_DISABLED;
++
++	p->next = br->port_list;
++	br->port_list = p;
++
++	//if(!strncmp(dev->name, "eth2", 4)){
++	if(!strncmp(dev->name, "eth3", 4)){
++		net_port= kmalloc(sizeof(*net_port), GFP_ATOMIC);
++		if (net_port == NULL) {
++			return NULL;
++		}
++
++		memcpy(net_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&net_port->use_count, 1);
++		net_port->dst = p;
++		net_port->is_local = 1;
++		net_port->is_static = 1;
++		net_port->ageing_timer = jiffies;
++
++	//} else if (! strncmp(dev->name, "eth3", 4)){
++	} else if (! strncmp(dev->name, "eth1", 4)){
++		filter_port= kmalloc(sizeof(*filter_port), GFP_ATOMIC);
++		if (filter_port == NULL) {
++			return NULL;
++		}
++
++		memcpy(filter_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&filter_port->use_count, 1);
++		filter_port->dst = p;
++		filter_port->is_local = 1;
++		filter_port->is_static = 1;
++		filter_port->ageing_timer = jiffies;
++
++	//} else if(! strncmp(dev->name, "eth1", 4)) {
++	} else if(! strncmp(dev->name, "eth2", 4)) {
++		user_port= kmalloc(sizeof(*user_port), GFP_ATOMIC);
++		if (user_port == NULL) {
++			return NULL;
++		}
++
++		memcpy(user_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&user_port->use_count, 1);
++		user_port->dst = p;
++		user_port->is_local = 1;
++		user_port->is_static = 1;
++		user_port->ageing_timer = jiffies;
++	}
++
++	return p;
++}
++
++int br_add_bridge(char *name)
++{
++	struct net_bridge *br;
++
++	if ((br = new_nb(name)) == NULL)
++		return -ENOMEM;
++
++	if (__dev_get_by_name(name) != NULL) {
++		kfree(br);
++		return -EEXIST;
++	}
++
++	br->next = bridge_list;
++	bridge_list = br;
++
++	br_inc_use_count();
++	register_netdev(&br->dev);
++
++	return 0;
++}
++
++int br_del_bridge(char *name)
++{
++	struct net_bridge **b;
++	struct net_bridge *br;
++
++	if ((b = __find_br(name)) == NULL)
++		return -ENXIO;
++
++	br = *b;
++
++	if (br->dev.flags & IFF_UP)
++		return -EBUSY;
++
++	del_ifs(br);
++
++	*b = br->next;
++
++	unregister_netdev(&br->dev);
++	kfree(br);
++	br_dec_use_count();
++
++	return 0;
++}
++
++int br_add_if(struct net_bridge *br, struct net_device *dev)
++{
++	struct net_bridge_port *p;
++
++	if (dev->br_port != NULL){
++#ifndef CMU_BRIDGE
++		return -EBUSY;
++#endif
++	}
++
++	if (dev->flags & IFF_LOOPBACK || dev->type != ARPHRD_ETHER)
++		return -EINVAL;
++
++	if (dev->hard_start_xmit == br_dev_xmit)
++		return -ELOOP;
++
++	dev_hold(dev);
++	write_lock_bh(&br->lock);
++	if ((p = new_nbp(br, dev)) == NULL) {
++		write_unlock_bh(&br->lock);
++		dev_put(dev);
++		return -EXFULL;
++	}
++
++	dev_set_promiscuity(dev, 1);
++
++	br_stp_recalculate_bridge_id(br);
++	br_fdb_insert(br, p, dev->dev_addr, 1);
++	if ((br->dev.flags & IFF_UP) && (dev->flags & IFF_UP))
++		br_stp_enable_port(p);
++	write_unlock_bh(&br->lock);
++
++	return 0;
++}
++
++int br_del_if(struct net_bridge *br, struct net_device *dev)
++{
++	int retval;
++
++	write_lock_bh(&br->lock);
++	retval = __br_del_if(br, dev);
++	br_stp_recalculate_bridge_id(br);
++	write_unlock_bh(&br->lock);
++
++	return retval;
++}
++
++int br_get_bridge_ifindices(int *indices, int num)
++{
++	struct net_bridge *br;
++	int i;
++
++	br = bridge_list;
++	for (i=0;i<num;i++) {
++		if (br == NULL)
++			break;
++
++		indices[i] = br->dev.ifindex;
++		br = br->next;
++	}
++
++	return i;
++}
++
++/* called under ioctl_lock */
++void br_get_port_ifindices(struct net_bridge *br, int *ifindices)
++{
++	struct net_bridge_port *p;
++
++	p = br->port_list;
++	while (p != NULL) {
++		ifindices[p->port_no] = p->dev->ifindex;
++		p = p->next;
++	}
++}
++@
++
++
++1.3
++log
++@*** empty log message ***
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_if.c,v 1.2 2002/05/30 00:51:03 ktrivedi Exp ktrivedi $
++d237 2
++a238 1
++	if(!strncmp(dev->name, "eth2", 4)){
++d241 1
++a241 1
++			return;
++d251 2
++a252 1
++	} else if (! strncmp(dev->name, "eth3", 4)){
++d255 1
++a255 1
++			return;
++d265 2
++a266 1
++	} else if(! strncmp(dev->name, "eth1", 4)) {
++d269 1
++a269 1
++			return;
++@
++
++
++1.2
++log
++@initialize protocol lock
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_if.c,v 1.1 2002/05/22 20:46:38 ktrivedi Exp ktrivedi $
++d188 1
++@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_if.c,v 1.6.2.1 2001/12/24 00:59:27 davem Exp $
++d158 1
++@
+diff -Nurw bridge/RCS/br_input.c,v bridge-test/bridge/RCS/br_input.c,v
+--- bridge/RCS/br_input.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_input.c,v	Fri Jun 28 15:24:14 2002
+@@ -0,0 +1,648 @@
++head	1.10;
++access;
++symbols;
++locks
++	ktrivedi:1.10; strict;
++comment	@ * @;
++
++
++1.10
++date	2002.06.28.19.24.14;	author ktrivedi;	state Exp;
++branches;
++next	1.9;
++
++1.9
++date	2002.06.11.08.18.43;	author ktrivedi;	state Exp;
++branches;
++next	1.8;
++
++1.8
++date	2002.05.23.17.01.53;	author ktrivedi;	state Exp;
++branches;
++next	1.7;
++
++1.7
++date	2002.05.22.21.44.46;	author ktrivedi;	state Exp;
++branches;
++next	1.6;
++
++1.6
++date	2002.05.22.15.53.22;	author ktrivedi;	state Exp;
++branches;
++next	1.5;
++
++1.5
++date	2002.05.22.14.32.34;	author ktrivedi;	state Exp;
++branches;
++next	1.4;
++
++1.4
++date	2002.05.21.20.58.59;	author ktrivedi;	state Exp;
++branches;
++next	1.3;
++
++1.3
++date	2002.05.21.15.54.47;	author ktrivedi;	state Exp;
++branches;
++next	1.2;
++
++1.2
++date	2002.05.21.05.18.09;	author ktrivedi;	state Exp;
++branches;
++next	1.1;
++
++1.1
++date	2002.05.21.05.17.35;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@Take port lock.
++@
++
++
++1.10
++log
++@*** empty log message ***
++@
++text
++@/*
++ *	Handle incoming frames
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br_input.c,v 1.9 2002/06/11 08:18:43 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++#include <linux/if_bridge.h>
++#include <linux/netfilter_bridge.h>
++#include "br_private.h"
++
++unsigned char bridge_ula[6] = { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x00 };
++
++/* This function gets called in 3 cases. 1) BCast pkt, 2) Pkt desstined this ethernet card
++ *  3) Destined to this bridge device. Packet will be put again in the net_if queue
++ * and processed again.
++ * All these 3 types are not processed again as, they will be picked up by ptype_all_func*
++ *		--Kunal
++ */
++static int br_pass_frame_up_finish(struct sk_buff *skb)
++{
++	netif_rx(skb);
++
++	return 0;
++}
++
++static void br_pass_frame_up(struct net_bridge *br, struct sk_buff *skb)
++{
++	struct net_device *indev;
++
++	br->statistics.rx_packets++;
++	br->statistics.rx_bytes += skb->len;
++
++	indev = skb->dev;
++	skb->dev = &br->dev;
++	skb->pkt_type = PACKET_HOST;
++	skb_push(skb, ETH_HLEN);
++	skb->protocol = eth_type_trans(skb, &br->dev);
++
++	NF_HOOK(PF_BRIDGE, NF_BR_LOCAL_IN, skb, indev, NULL,
++			br_pass_frame_up_finish);
++}
++
++static int br_handle_frame_finish(struct sk_buff *skb)
++{
++	struct net_bridge *br;
++	unsigned char *dest, *src, *tdest, *tsrc, *tport;
++	struct net_bridge_fdb_entry *dst, *dest_port;
++	struct net_bridge_port *p;
++	unsigned int protocol;
++	int passedup, is_incoming, is_local;
++
++	dest = skb->mac.ethernet->h_dest;
++	src  = skb->mac.ethernet->h_source;
++	protocol = htons(skb->protocol);
++
++	p = skb->dev->br_port;
++	if (p == NULL)
++		goto err_nolock;
++
++	br = p->br;
++	read_lock(&br->lock);
++	if (skb->dev->br_port == NULL)
++		goto err;
++
++	/* Protocol Filtering */
++	if(br->protocol_filter_mode) {
++		if(br_ftpdb_get(br,protocol))
++			goto err;
++	}
++
++	passedup = 0;
++	is_incoming = 0;
++	is_local = 0;
++	dst = dest_port = NULL;
++
++	if (br->dev.flags & IFF_PROMISC) {
++		struct sk_buff *skb2;
++
++		skb2 = skb_clone(skb, GFP_ATOMIC);
++		if (skb2 != NULL) {
++			passedup = 1;
++			br_pass_frame_up(br, skb2);
++		}
++	}
++
++	if (dest[0] & 1) {
++		br_flood_forward(br, skb, !passedup);
++		if (!passedup)
++			br_pass_frame_up(br, skb);
++		goto out;
++	}
++
++	/* Initially packet was destined to user_port based on both of 
++	 * these conditions. It does not make sence, if same packet
++	 * comes here again.
++	 * !memcmp(skb->dev->dev_addr, filter_port->addr.addr, ETH_ALEN)){
++	 */
++	if(!memcmp(skb->dev->dev_addr, net_port->addr.addr, ETH_ALEN)) { 
++		dest_port = user_port;
++		is_incoming = 1;
++	} else if(!memcmp(skb->dev->dev_addr, user_port->addr.addr, ETH_ALEN))
++		dest_port = net_port;
++		
++
++	if (br->flt_src && !is_incoming) {
++		if(!br->flt_src_allow && !memcmp(skb->dev->dev_addr, 
++					user_port->addr.addr, ETH_ALEN)) { 
++			if(! br_ftdb_get(br,skb->mac.ethernet->h_source)) { 
++				//Debug info
++				/*tdest = skb->mac.ethernet->h_dest;
++				tsrc = skb->mac.ethernet->h_source;
++				printk(KERN_INFO "Pkt Info **** dev name (%s), ptype(%i), 
++					dmac(%x:%x:%x:%x:%x:%x), smac(%x:%x:%x:%x:%x:%x)\n",
++					skb->dev->name,  
++					skb->pkt_type, tdest[0],tdest[1],tdest[2],tdest[3],tdest[4],tdest[5],
++					tsrc[0], tsrc[1], tsrc[2],tsrc[3],tsrc[4],tsrc[5]);*/
++				dest_port = filter_port;
++			} else
++				dest_port = net_port;
++		} 
++	}
++
++	dst = dest_port;
++
++	/* There was not && 0, I was comparing wheather port MAC is same as
++	 * destination MAC. Let me, dig more in this. Currently it is working.
++	 * if (dst != NULL && dst->is_local && !memcmp(dst->addr.addr, dest, ETH_ALEN)) {
++	 *
++	 *  This if() had br_fdb_put() as well as second if() had br_fdb_put()
++	 */
++	if (dst != NULL && dst->is_local && 0) {
++		if (!passedup)
++			br_pass_frame_up(br, skb);
++		else
++			kfree_skb(skb);
++		goto out;
++	}
++
++	if (dst != NULL) {
++		br_forward(dst->dst, skb);
++		goto out;
++	}
++
++	br_flood_forward(br, skb, 0);
++
++out:
++	is_incoming = 0;
++	read_unlock(&br->lock);
++	return 0;
++
++err:
++	is_incoming = 0;
++	read_unlock(&br->lock);
++err_nolock:
++	kfree_skb(skb);
++	return 0;
++}
++
++void br_handle_frame(struct sk_buff *skb)
++{
++	struct net_bridge *br;
++	unsigned char *dest;
++	struct net_bridge_port *p;
++
++	dest = skb->mac.ethernet->h_dest;
++
++	p = skb->dev->br_port;
++	if (p == NULL)
++		goto err_nolock;
++
++	br = p->br;
++	read_lock(&br->lock);
++	if (skb->dev->br_port == NULL)
++		goto err;
++
++	if (!(br->dev.flags & IFF_UP) ||
++	    p->state == BR_STATE_DISABLED)
++		goto err;
++
++	if (skb->mac.ethernet->h_source[0] & 1)
++		goto err;
++
++	/*if (p->state == BR_STATE_LEARNING ||
++	    p->state == BR_STATE_FORWARDING)
++		br_fdb_insert(br, p, skb->mac.ethernet->h_source, 0);*/
++
++	if (br->stp_enabled &&
++	    !memcmp(dest, bridge_ula, 5) &&
++	    !(dest[5] & 0xF0))
++		goto handle_special_frame;
++
++	if (p->state == BR_STATE_FORWARDING) {
++		NF_HOOK(PF_BRIDGE, NF_BR_PRE_ROUTING, skb, skb->dev, NULL,
++			br_handle_frame_finish);
++		read_unlock(&br->lock);
++		return;
++	}
++
++err:
++	read_unlock(&br->lock);
++err_nolock:
++	kfree_skb(skb);
++	return;
++
++handle_special_frame:
++	if (!dest[5]) {
++		br_stp_handle_bpdu(skb);
++		return;
++	}
++
++	kfree_skb(skb);
++}
++@
++
++
++1.9
++log
++@Almost Final
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_input.c,v 1.9.2.1 2001/12/24 04:50:05 davem Exp $
++d25 6
++@
++
++
++1.8
++log
++@Comparing mac instead of name
++@
++text
++@a6 2
++ *  Arne Fitzenreiter (MAC Filter)  <arne@@fitzenreiter.de>
++ *  Kunal Trivedi (Switch Functionality) <ktrivedi@@cmu.edu>
++d8 1
++a8 1
++ *	$Id: br_input.c,v 1.7 2002/05/22 21:44:46 ktrivedi Exp ktrivedi $
++d19 1
++a19 2
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++a20 1
++
++a22 10
++
++/* This file is taken from 2.4.17 and above, as functionality doesn't
++ * differ in 2.4.18 and 2.4.17 (and above). They just did some
++ * resturcturing of the code.
++ * Difference:
++ * 		Most of the error checking conditions moved to br_handle_frame
++ *		Remove function __br_handle_frame. There are two functions 
++ *		instead of three. br_handle_frame and br_handle_frame_finish
++ */
++
++d49 1
++a49 1
++static void __br_handle_frame(struct sk_buff *skb, struct net_bridge_port *p)
++d52 5
++a56 6
++	unsigned char *dest;
++	unsigned char *src;
++	
++	struct net_bridge_fdb_entry *dst;
++	int passedup;
++	int switch_fwd;
++d58 3
++d62 3
++a64 2
++	dest = skb->mac.ethernet->h_dest;
++	src = skb->mac.ethernet->h_source;
++d67 3
++a69 5
++	passedup = 0;
++
++	if (!(br->dev.flags & IFF_UP) ||
++	    p->state == BR_STATE_DISABLED)
++		goto freeandout;
++d71 4
++a74 8
++	if (br->dev.flags & IFF_PROMISC) {
++		struct sk_buff *skb2;
++
++		skb2 = skb_clone(skb, GFP_ATOMIC);
++		if (skb2) {
++			passedup = 1;
++			br_pass_frame_up(br, skb2);
++		}
++d77 4
++a80 2
++	if (skb->mac.ethernet->h_source[0] & 1)
++		goto freeandout;
++d82 1
++a82 3
++	if (!passedup &&
++	    (dest[0] & 1) &&
++	    (br->dev.flags & IFF_ALLMULTI || br->dev.mc_list != NULL)) {
++d86 1
++a86 1
++		if (skb2) {
++a90 15
++			
++	if (br->stp_enabled &&
++	    !memcmp(dest, bridge_ula, 5) &&
++	    !(dest[5] & 0xF0))
++		goto handle_special_frame;
++	
++	/*if ( (p->state == BR_STATE_LEARNING ||
++	    p->state == BR_STATE_FORWARDING) && switch_fwd) 
++		br_fdb_insert(br, p, skb->mac.ethernet->h_source, 0);*/
++
++	if (p->state != BR_STATE_FORWARDING)
++		goto freeandout;
++
++	/*dst = br_fdb_get(br, dest);*/
++	dst = dest_port;
++d93 1
++a93 2
++		br_flood_forward(br, skb, 1);
++		/*br_forward(dst->dst, skb);*/
++d96 31
++a126 3
++		else
++			kfree_skb(skb);
++		return;
++d129 1
++a129 1
++	/*dst = br_fdb_get(br, dest);*/
++d131 7
++a137 1
++	if (dst != NULL && dst->is_local && !memcmp(dst->addr.addr,dest, ETH_ALEN)) {
++d142 1
++a142 2
++		/*br_fdb_put(dst);*/
++		return;
++d147 1
++a147 2
++		/*br_fdb_put(dst);*/
++		return;
++a150 1
++	return;
++d152 4
++a155 5
++ handle_special_frame:
++	if (!dest[5]) {
++		br_stp_handle_bpdu(skb);
++		return;
++	}
++d157 4
++a160 1
++ freeandout:
++d162 1
++d165 1
++a165 1
++static int br_handle_frame_finish(struct sk_buff *skb)
++d168 4
++a171 2
++	struct net_bridge_port  *p;
++	int is_incoming = 0;
++d173 5
++a177 5
++	p  = skb->dev->br_port;
++	if(!p)
++		return 0;
++	br = skb->dev->br_port->br;
++	
++d179 18
++a196 8
++	
++	//if(!strncmp(p->dev->name, "eth2",4) || !strncmp(p->dev->name,"eth3",4)){
++	if(!memcmp(skb->dev->dev_addr,net_port->addr.addr,ETH_ALEN) || 
++			!memcmp(skb->dev->dev_addr,filter_port->addr.addr,ETH_ALEN)){
++		dest_port = user_port;
++		is_incoming = 1;
++	} else
++		dest_port = net_port;
++d198 5
++a202 12
++	if (br->flt_src && !is_incoming) {
++		if (br->flt_src_allow) {
++			if (!br_ftdb_get(br,skb->mac.ethernet->h_source)){ 
++				kfree_skb(skb);
++				goto switchfree;
++			}
++		} else {
++			if(! br_ftdb_get(br,skb->mac.ethernet->h_source)) 
++				dest_port = filter_port;
++			else
++				dest_port = net_port;
++		}
++a203 2
++	
++	__br_handle_frame(skb, p);
++d205 1
++a205 2
++switchfree:
++	is_incoming = 0;
++d207 3
++d211 5
++a215 2
++	return 0;
++}
++d217 1
++a217 4
++void br_handle_frame(struct sk_buff *skb)
++{
++	NF_HOOK(PF_BRIDGE, NF_BR_PRE_ROUTING, skb, skb->dev, NULL,
++			br_handle_frame_finish);
++@
++
++
++1.7
++log
++@memcmp while comparing local frames
++@
++text
++@d10 1
++a10 1
++ *	$Id: br_input.c,v 1.6 2002/05/22 15:53:22 ktrivedi Exp ktrivedi $
++d177 3
++a179 1
++	if(!strncmp(p->dev->name, "eth2",4) || !strncmp(p->dev->name,"eth3",4)){
++@
++
++
++1.6
++log
++@*** empty log message ***
++@
++text
++@d10 1
++a10 1
++ *	$Id: br_input.c,v 1.5 2002/05/22 14:32:34 ktrivedi Exp ktrivedi $
++a37 1
++static int br_iterate = 0;
++a69 1
++	//struct net_bridge_port *p;
++a72 1
++	br_iterate = 0;
++a113 5
++	/*if(!strcmp(p->br->dev.name, "authBridge"))
++		switch_fwd = 0;
++	else
++		switch_fwd = 1;*/
++	
++d121 1
++a121 1
++	//dst = br_fdb_get(br, dest);
++d136 1
++a136 2
++	//if (dst != NULL && dst->is_local && !memcmp(dst->addr.addr,dest, ETH_ALEN)) {
++	if (dst != NULL && dst->is_local && 0) {
++d180 1
++a180 2
++	}
++	else
++@
++
++
++1.5
++log
++@Add memcmp condition, with is_local
++@
++text
++@d10 1
++a10 1
++ *	$Id: br_input.c,v 1.4 2002/05/21 20:58:59 ktrivedi Exp ktrivedi $
++d129 1
++d133 2
++a134 2
++		/*br_flood_forward(br, skb, 1);*/
++		br_forward(dst->dst, skb);
++d144 2
++a145 1
++	if (dst != NULL && dst->is_local && !memcmp(dst->addr.addr,dest, ETH_ALEN)) {
++d160 1
++a160 1
++	/*br_flood_forward(br, skb, 0);*/
++@
++
++
++1.4
++log
++@Taking care of incoming pkts from eth2
++@
++text
++@d10 1
++a10 1
++ *	$Id: br_input.c,v 1.3 2002/05/21 15:54:47 ktrivedi Exp ktrivedi $
++d143 1
++a143 1
++	if (dst != NULL && dst->is_local) {
++@
++
++
++1.3
++log
++@No fdb database. Hardcoded eth's. Very Bad. FIX ME
++@
++text
++@d10 1
++a10 1
++ *	$Id: br_input.c,v 1.2 2002/05/21 05:18:09 ktrivedi Exp ktrivedi $
++d148 1
++a148 1
++		br_fdb_put(dst);
++d154 1
++a154 1
++		br_fdb_put(dst);
++d175 1
++d184 6
++a189 1
++	dest_port = net_port;
++d191 1
++a191 1
++	if (br->flt_src) {
++d208 1
++@
++
++
++1.2
++log
++@Take port lock. Move filter down
++@
++text
++@d10 1
++a10 1
++ *	$Id: br_input.c,v 1.9 2001/08/14 22:05:57 davem Exp $
++d129 2
++d132 2
++a133 1
++		br_flood_forward(br, skb, 1);
++d141 1
++a141 1
++	dst = br_fdb_get(br, dest);
++d158 1
++a158 1
++	br_flood_forward(br, skb, 0);
++a180 2
++cmu_switch:
++	read_lock(&port_lock);
++d183 2
++d192 4
++a195 11
++			if(! br_ftdb_get(br,skb->mac.ethernet->h_source)) {
++				p = p->common_next;
++				if(p){ 
++					read_unlock(&br->lock);
++					br = p->br;
++					read_unlock(&port_lock);
++					goto cmu_switch; 
++				}
++				else
++					goto switchfree;
++			}
++a202 1
++	read_unlock(&port_lock);
++@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@d1 216
++@
+diff -Nurw bridge/RCS/br_ioctl.c,v bridge-test/bridge/RCS/br_ioctl.c,v
+--- bridge/RCS/br_ioctl.c,v	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/RCS/br_ioctl.c,v	Thu May 30 01:49:08 2002
+@@ -0,0 +1,380 @@
++head	1.2;
++access;
++symbols;
++locks; strict;
++comment	@ * @;
++
++
++1.2
++date	2002.05.30.05.49.08;	author ktrivedi;	state Exp;
++branches;
++next	1.1;
++
++1.1
++date	2002.05.22.20.49.11;	author ktrivedi;	state Exp;
++branches;
++next	;
++
++
++desc
++@@
++
++
++1.2
++log
++@Protocol Filtering
++@
++text
++@/*
++ *	Ioctl handler
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@@gnu.org>
++ *
++ *	$Id: br_ioctl.c,v 1.1 2002/05/22 20:49:11 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++#include <linux/inetdevice.h>
++#include <asm/uaccess.h>
++#include "br_private.h"
++
++static int br_ioctl_device(struct net_bridge *br,
++			   unsigned int cmd,
++			   unsigned long arg0,
++			   unsigned long arg1,
++			   unsigned long arg2)
++{
++	if (br == NULL)
++		return -EINVAL;
++
++	switch (cmd)
++	{
++	case BRCTL_ADD_IF:
++	case BRCTL_DEL_IF:
++	{
++		struct net_device *dev;
++		int ret;
++
++		dev = dev_get_by_index(arg0);
++		if (dev == NULL)
++			return -EINVAL;
++
++		if (cmd == BRCTL_ADD_IF)
++			ret = br_add_if(br, dev);
++		else
++			ret = br_del_if(br, dev);
++
++		dev_put(dev);
++		return ret;
++	}
++
++	case BRCTL_GET_BRIDGE_INFO:
++	{
++		struct __bridge_info b;
++
++		memset(&b, 0, sizeof(struct __bridge_info));
++		memcpy(&b.designated_root, &br->designated_root, 8);
++		memcpy(&b.bridge_id, &br->bridge_id, 8);
++		b.root_path_cost = br->root_path_cost;
++		b.max_age = br->max_age;
++		b.hello_time = br->hello_time;
++		b.forward_delay = br->forward_delay;
++		b.bridge_max_age = br->bridge_max_age;
++		b.bridge_hello_time = br->bridge_hello_time;
++		b.bridge_forward_delay = br->bridge_forward_delay;
++		b.topology_change = br->topology_change;
++		b.topology_change_detected = br->topology_change_detected;
++		b.root_port = br->root_port;
++		b.stp_enabled = br->stp_enabled;
++		b.ageing_time = br->ageing_time;
++		b.gc_interval = br->gc_interval;
++		b.hello_timer_value = br_timer_get_residue(&br->hello_timer);
++		b.tcn_timer_value = br_timer_get_residue(&br->tcn_timer);
++		b.topology_change_timer_value = br_timer_get_residue(&br->topology_change_timer);
++		b.gc_timer_value = br_timer_get_residue(&br->gc_timer);
++		b.flt_src = br->flt_src;
++		b.flt_dest = br->flt_dest;
++		b.flt_src_allow = br->flt_src_allow;
++		b.flt_dest_allow = br->flt_dest_allow;
++
++		if (copy_to_user((void *)arg0, &b, sizeof(b)))
++			return -EFAULT;
++
++		return 0;
++	}
++
++	case BRCTL_GET_PORT_LIST:
++	{
++		int i;
++		int indices[256];
++
++		for (i=0;i<256;i++)
++			indices[i] = 0;
++
++		br_get_port_ifindices(br, indices);
++		if (copy_to_user((void *)arg0, indices, 256*sizeof(int)))
++			return -EFAULT;
++
++		return 0;
++	}
++
++	case BRCTL_SET_BRIDGE_FORWARD_DELAY:
++		br->bridge_forward_delay = arg0;
++		if (br_is_root_bridge(br))
++			br->forward_delay = arg0;
++		return 0;
++
++	case BRCTL_SET_BRIDGE_HELLO_TIME:
++		br->bridge_hello_time = arg0;
++		if (br_is_root_bridge(br))
++			br->hello_time = arg0;
++		return 0;
++
++	case BRCTL_SET_BRIDGE_MAX_AGE:
++		br->bridge_max_age = arg0;
++		if (br_is_root_bridge(br))
++			br->max_age = arg0;
++		return 0;
++
++	case BRCTL_SET_AGEING_TIME:
++		br->ageing_time = arg0;
++		return 0;
++
++	case BRCTL_SET_GC_INTERVAL:
++		br->gc_interval = arg0;
++		return 0;
++
++	case BRCTL_GET_PORT_INFO:
++	{
++		struct __port_info p;
++		struct net_bridge_port *pt;
++
++		if ((pt = br_get_port(br, arg1)) == NULL)
++			return -EINVAL;
++
++		memset(&p, 0, sizeof(struct __port_info));
++		memcpy(&p.designated_root, &pt->designated_root, 8);
++		memcpy(&p.designated_bridge, &pt->designated_bridge, 8);
++		p.port_id = pt->port_id;
++		p.designated_port = pt->designated_port;
++		p.path_cost = pt->path_cost;
++		p.designated_cost = pt->designated_cost;
++		p.state = pt->state;
++		p.top_change_ack = pt->topology_change_ack;
++		p.config_pending = pt->config_pending;
++		p.message_age_timer_value = br_timer_get_residue(&pt->message_age_timer);
++		p.forward_delay_timer_value = br_timer_get_residue(&pt->forward_delay_timer);
++		p.hold_timer_value = br_timer_get_residue(&pt->hold_timer);
++
++		if (copy_to_user((void *)arg0, &p, sizeof(p)))
++			return -EFAULT;
++
++		return 0;
++	}
++
++	case BRCTL_SET_BRIDGE_STP_STATE:
++		br->stp_enabled = arg0?1:0;
++		return 0;
++
++	case BRCTL_SET_BRIDGE_PRIORITY:
++		br_stp_set_bridge_priority(br, arg0);
++		return 0;
++
++	case BRCTL_SET_PORT_PRIORITY:
++	{
++		struct net_bridge_port *p;
++
++		if ((p = br_get_port(br, arg0)) == NULL)
++			return -EINVAL;
++		br_stp_set_port_priority(p, arg1);
++		return 0;
++	}
++
++	case BRCTL_SET_PATH_COST:
++	{
++		struct net_bridge_port *p;
++
++		if ((p = br_get_port(br, arg0)) == NULL)
++			return -EINVAL;
++		br_stp_set_path_cost(p, arg1);
++		return 0;
++	}
++
++	case BRCTL_GET_FDB_ENTRIES:
++		return br_fdb_get_entries(br, (void *)arg0, arg1, arg2);
++
++	case BRCTL_SET_MAC_DISABLED:
++	{
++		br_ftdb_insert(br, (char *)arg0);
++		return 0;
++	}
++		
++	case BRCTL_SET_MAC_ENABLED:
++	{
++		br_ftdb_remove(br, (char *)arg0);
++		return 0;
++	}
++	
++	case BRCTL_GET_DISABLED_MACS:
++		return br_ftdb_get_entries(br, (void *)arg0, arg1, arg2);
++
++	case BRCTL_SET_MAC_FILTER:
++	{
++		arg0 ? br->flt_src : br->flt_dest = (unsigned char)arg1;
++		return 0;
++	}
++
++	case BRCTL_SET_MAC_FLT_POLICY:
++	{
++		arg0 ? br->flt_src_allow : br->flt_dest_allow = (unsigned char)arg1;
++		return 0;
++	}
++
++	case BRCTL_IS_MAC_EXIST:
++	{
++		return br_ftdb_get(br, (char *)arg0);
++	}
++
++	case BRCTL_ADD_FILT_PROTOCOL:
++	{
++		br_ftpdb_insert(br, arg0);
++		return 0;
++	}
++		
++	case BRCTL_DEL_FILT_PROTOCOL:
++	{
++		br_ftpdb_remove(br, arg0);
++		return 0;
++	}
++	
++	case BRCTL_GET_FILT_PROTOCOLS:
++	{
++		return br_ftpdb_get_entries(br, (void *)arg0, arg1, arg2);
++	}
++ 
++	case BRCTL_SET_PROTOCOL_FILTER_MODE:
++	{
++		br->protocol_filter_mode = arg0?1:0;
++		return 0;
++	}
++
++    case BRCTL_GET_PROTOCOL_FILTER_MODE:
++	{
++		return br->protocol_filter_mode;
++	}
++
++	}
++
++	return -EOPNOTSUPP;
++}
++
++static int br_ioctl_deviceless(unsigned int cmd,
++			       unsigned long arg0,
++			       unsigned long arg1)
++{
++	switch (cmd)
++	{
++	case BRCTL_GET_VERSION:
++		return BRCTL_VERSION;
++
++	case BRCTL_GET_BRIDGES:
++	{
++		int i;
++		int indices[64];
++
++		for (i=0;i<64;i++)
++			indices[i] = 0;
++
++		if (arg1 > 64)
++			arg1 = 64;
++		arg1 = br_get_bridge_ifindices(indices, arg1);
++		if (copy_to_user((void *)arg0, indices, arg1*sizeof(int)))
++			return -EFAULT;
++
++		return arg1;
++	}
++
++	case BRCTL_ADD_BRIDGE:
++	case BRCTL_DEL_BRIDGE:
++	{
++		char buf[IFNAMSIZ];
++
++		if (copy_from_user(buf, (void *)arg0, IFNAMSIZ))
++			return -EFAULT;
++
++		buf[IFNAMSIZ-1] = 0;
++
++		if (cmd == BRCTL_ADD_BRIDGE)
++			return br_add_bridge(buf);
++
++		return br_del_bridge(buf);
++	}
++	}
++
++	return -EOPNOTSUPP;
++}
++
++DECLARE_MUTEX(ioctl_mutex);
++
++int br_ioctl_deviceless_stub(unsigned long arg)
++{
++	int err;
++	unsigned long i[3];
++
++	if (!capable(CAP_NET_ADMIN))
++		return -EPERM;
++
++	if (copy_from_user(i, (void *)arg, 3*sizeof(unsigned long)))
++		return -EFAULT;
++
++	down(&ioctl_mutex);
++	err = br_ioctl_deviceless(i[0], i[1], i[2]);
++	up(&ioctl_mutex);
++
++	return err;
++}
++
++int br_ioctl(struct net_bridge *br, unsigned int cmd, unsigned long arg0, unsigned long arg1, unsigned long arg2)
++{
++	int err;
++
++	if (!capable(CAP_NET_ADMIN))
++		return -EPERM;
++
++	down(&ioctl_mutex);
++	err = br_ioctl_deviceless(cmd, arg0, arg1);
++	if (err == -EOPNOTSUPP)
++		err = br_ioctl_device(br, cmd, arg0, arg1, arg2);
++	up(&ioctl_mutex);
++
++	return err;
++}
++
++void br_call_ioctl_atomic(void (*fn)(void))
++{
++	down(&ioctl_mutex);
++	fn();
++	up(&ioctl_mutex);
++}
++@
++
++
++1.1
++log
++@Initial revision
++@
++text
++@d8 1
++a8 1
++ *	$Id: br_ioctl.c,v 1.4 2000/11/08 05:16:40 davem Exp $
++d218 28
++@
+diff -Nurw bridge/afs_if_bridge.h bridge-test/bridge/afs_if_bridge.h
+--- bridge/afs_if_bridge.h	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/afs_if_bridge.h	Wed May 29 11:47:40 2002
+@@ -0,0 +1,139 @@
++/*
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@gnu.org>
++ *
++ *	$Id: if_bridge.h,v 1.1 2000/02/18 16:47:01 davem Exp $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#ifndef _LINUX_IF_BRIDGE_H
++#define _LINUX_IF_BRIDGE_H
++
++#include <linux/types.h>
++
++#define BRCTL_VERSION 1
++
++#define BRCTL_GET_VERSION 0
++#define BRCTL_GET_BRIDGES 1
++#define BRCTL_ADD_BRIDGE 2
++#define BRCTL_DEL_BRIDGE 3
++#define BRCTL_ADD_IF 4
++#define BRCTL_DEL_IF 5
++#define BRCTL_GET_BRIDGE_INFO 6
++#define BRCTL_GET_PORT_LIST 7
++#define BRCTL_SET_BRIDGE_FORWARD_DELAY 8
++#define BRCTL_SET_BRIDGE_HELLO_TIME 9
++#define BRCTL_SET_BRIDGE_MAX_AGE 10
++#define BRCTL_SET_AGEING_TIME 11
++#define BRCTL_SET_GC_INTERVAL 12
++#define BRCTL_GET_PORT_INFO 13
++#define BRCTL_SET_BRIDGE_STP_STATE 14
++#define BRCTL_SET_BRIDGE_PRIORITY 15
++#define BRCTL_SET_PORT_PRIORITY 16
++#define BRCTL_SET_PATH_COST 17
++#define BRCTL_GET_FDB_ENTRIES 18
++/* MAC Filtering */
++#define BRCTL_SET_MAC_DISABLED 19
++#define BRCTL_SET_MAC_ENABLED 20
++#define BRCTL_GET_DISABLED_MACS 21
++#define BRCTL_SET_MAC_FILTER 22 
++#define BRCTL_GET_MAC_FILTER 23
++#define BRCTL_SET_MAC_FLT_POLICY 24
++#define BRCTL_GET_MAC_FLT_POLICY 25
++#define BRCTL_IS_MAC_EXIST       26
++/* Protocol Filtering */
++#define BRCTL_ADD_FILT_PROTOCOL  27 
++#define BRCTL_DEL_FILT_PROTOCOL  28
++#define BRCTL_GET_FILT_PROTOCOLS 29
++#define BRCTL_SET_PROTOCOL_FILTER_MODE  30
++#define BRCTL_GET_PROTOCOL_FILTER_MODE  31
++
++
++#define BR_STATE_DISABLED 0
++#define BR_STATE_LISTENING 1
++#define BR_STATE_LEARNING 2
++#define BR_STATE_FORWARDING 3
++#define BR_STATE_BLOCKING 4
++
++struct __bridge_info
++{
++	__u64 designated_root;
++	__u64 bridge_id;
++	__u32 root_path_cost;
++	__u32 max_age;
++	__u32 hello_time;
++	__u32 forward_delay;
++	__u32 bridge_max_age;
++	__u32 bridge_hello_time;
++	__u32 bridge_forward_delay;
++	__u8 topology_change;
++	__u8 topology_change_detected;
++	__u8 root_port;
++	__u8 stp_enabled;
++	__u32 ageing_time;
++	__u32 gc_interval;
++	__u32 hello_timer_value;
++	__u32 tcn_timer_value;
++	__u32 topology_change_timer_value;
++	__u32 gc_timer_value;
++	__u8 flt_src;
++	__u8 flt_dest;
++	__u8 flt_src_allow;
++	__u8 flt_dest_allow;
++};
++
++struct __port_info
++{
++	__u64 designated_root;
++	__u64 designated_bridge;
++	__u16 port_id;
++	__u16 designated_port;
++	__u32 path_cost;
++	__u32 designated_cost;
++	__u8 state;
++	__u8 top_change_ack;
++	__u8 config_pending;
++	__u8 unused0;
++	__u32 message_age_timer_value;
++	__u32 forward_delay_timer_value;
++	__u32 hold_timer_value;
++};
++
++struct __fdb_entry
++{
++	__u8 mac_addr[6];
++	__u8 port_no;
++	__u8 is_local;
++	__u32 ageing_timer_value;
++	__u32 unused;
++};
++
++struct __ftdb_entry
++{
++	__u8 mac_addr[6];
++};
++
++struct __ftpdb_entry
++{
++	__u16 filt_protocol;
++};
++
++#ifdef __KERNEL__
++
++#include <linux/netdevice.h>
++
++struct net_bridge;
++struct net_bridge_port;
++
++extern int (*br_ioctl_hook)(unsigned long arg);
++extern void (*br_handle_frame_hook)(struct sk_buff *skb);
++
++#endif
++
++#endif
+diff -Nurw bridge/br.c bridge-test/bridge/br.c
+--- bridge/br.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br.c	Wed May 22 16:49:06 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br.c,v 1.46.2.1 2001/12/24 00:56:13 davem Exp $
++ *	$Id: br.c,v 1.1 2002/05/22 20:49:05 ktrivedi Exp $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -20,7 +20,8 @@
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/init.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include <asm/uaccess.h>
+ #include "br_private.h"
+ 
+@@ -44,6 +45,7 @@
+ 
+ 	br_handle_frame_hook = br_handle_frame;
+ 	br_ioctl_hook = br_ioctl_deviceless_stub;
++	port_lock = RW_LOCK_UNLOCKED;
+ #if defined(CONFIG_ATM_LANE) || defined(CONFIG_ATM_LANE_MODULE)
+ 	br_fdb_get_hook = br_fdb_get;
+ 	br_fdb_put_hook = br_fdb_put;
+diff -Nurw bridge/br_device.c bridge-test/bridge/br_device.c
+--- bridge/br_device.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_device.c	Tue Jun 11 04:19:30 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_device.c,v 1.5.2.1 2001/12/24 00:59:27 davem Exp $
++ *	$Id: br_device.c,v 1.4 2002/06/11 08:19:26 ktrivedi Exp ktrivedi $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -15,8 +15,9 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
+ #include <asm/uaccess.h>
++#include "afs_if_bridge.h"
+ #include "br_private.h"
+ 
+ static int br_dev_do_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+@@ -56,12 +57,25 @@
+ 	dest = skb->mac.raw = skb->data;
+ 	skb_pull(skb, ETH_HLEN);
+ 
++	/*dst = NULL;
++	if(!strncmp(skb->dev->name, "eth2",4) || !strncmp(skb->dev->name, "eth3",4))
++		dst = user_port;
++	else if(!strncmp(skb->dev->name, "eth1",4))
++		dst = net_port;
++	if(!memcmp(skb->dev->dev_addr, net_port->addr.addr,ETH_ALEN) ||
++			!memcmp(skb->dev->dev_addr, filter_port->addr.addr, ETH_ALEN))
++		dst = user_port;
++	else if(!memcmp(skb->dev->dev_addr, user_port->addr.addr, ETH_ALEN))
++		dst = net_port;*/
++
++	dst = NULL;
+ 	if (dest[0] & 1) {
+ 		br_flood_deliver(br, skb, 0);
+ 		return 0;
+ 	}
+ 
+-	if ((dst = br_fdb_get(br, dest)) != NULL) {
++	//if ((dst = br_fdb_get(br,dest)) != NULL) {
++	if (dst != NULL) {
+ 		br_deliver(dst->dst, skb);
+ 		br_fdb_put(dst);
+ 		return 0;
+diff -Nurw bridge/br_fdb.c bridge-test/bridge/br_fdb.c
+--- bridge/br_fdb.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_fdb.c	Wed May 22 16:47:06 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_fdb.c,v 1.5.2.1 2002/01/17 00:59:01 davem Exp $
++ *	$Id: br_fdb.c,v 1.1 2002/05/22 20:47:05 ktrivedi Exp $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -15,9 +15,10 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/spinlock.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
+ #include <asm/atomic.h>
+ #include <asm/uaccess.h>
++#include "afs_if_bridge.h"
+ #include "br_private.h"
+ 
+ static __inline__ unsigned long __timeout(struct net_bridge *br)
+diff -Nurw bridge/br_filter.c bridge-test/bridge/br_filter.c
+--- bridge/br_filter.c	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/br_filter.c	Wed Jun  5 03:19:08 2002
+@@ -0,0 +1,390 @@
++/*
++ *	Mac filtering database
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Christian Welzel		<Sir_Gawain@gmx.de>
++ *  
++ *  Lock initialization problem resolved:  Kunal Trivedi
++ *
++ *	$Id: br_filter.c,v 1.2 2002/06/05 07:19:07 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/spinlock.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++#include <asm/atomic.h>
++#include <asm/uaccess.h>
++#include "br_private.h"
++
++// calculates the hash for a mac
++// fertig
++static __inline__ int br_mac_hash(unsigned char *mac)
++{
++	unsigned long x;
++
++	x = mac[0];
++	x = (x << 2) ^ mac[1];
++	x = (x << 2) ^ mac[2];
++	x = (x << 2) ^ mac[3];
++	x = (x << 2) ^ mac[4];
++	x = (x << 2) ^ mac[5];
++
++	x ^= x >> 8;
++
++	return x & (BR_HASH_SIZE - 1);
++}
++
++// Calculates hash for the protocol
++static __inline__ int br_protocol_hash(unsigned int filt_protocol)
++{
++	filt_protocol ^= filt_protocol >> 8;
++	return filt_protocol & (BR_HASH_SIZE-1);
++}
++
++// links diabled macs into hash
++// fertig
++static __inline__ void __disabled_macs_link(struct net_bridge *br,
++				   struct net_bridge_ftdb_entry *ent,
++				   int hash)
++{
++	ent->next_hash = br->disabled_macs[hash];
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = &ent->next_hash;
++	br->disabled_macs[hash] = ent;
++	ent->pprev_hash = &br->disabled_macs[hash];
++}
++
++// links protocol into hash
++static __inline__ void __filt_protocols_link(struct net_bridge *br,
++				   struct net_bridge_ftpdb_entry *ent,
++				   int hash)
++{
++	ent->next_hash = br->filt_protocols[hash];
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = &ent->next_hash;
++	br->filt_protocols[hash] = ent;
++	ent->pprev_hash = &br->filt_protocols[hash];
++}
++
++// unlinks disabled macs from hash (no further disabled)
++// fertig
++static __inline__ void __disabled_macs_unlink(struct net_bridge_ftdb_entry *ent)
++{
++	*(ent->pprev_hash) = ent->next_hash;
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = ent->pprev_hash;
++	ent->next_hash = NULL;
++	ent->pprev_hash = NULL;
++}
++
++// unlinks protocols from hash
++static __inline__ void __filt_protocols_unlink(struct net_bridge_ftpdb_entry *ent)
++{
++	*(ent->pprev_hash) = ent->next_hash;
++	if (ent->next_hash != NULL)
++		ent->next_hash->pprev_hash = ent->pprev_hash;
++	ent->next_hash = NULL;
++	ent->pprev_hash = NULL;
++}
++
++// tests if mac is unused -> delete it
++// fertig
++void br_ftdb_delete(struct net_bridge_ftdb_entry *ent)
++{
++	if (atomic_dec_and_test(&ent->use_count))
++		kfree(ent);
++}
++
++// tests if protocol -> delete it
++void br_ftpdb_delete(struct net_bridge_ftpdb_entry *ent)
++{
++	if (atomic_dec_and_test(&ent->use_count))
++		kfree(ent);
++}
++
++// removes a mac from hash (no further disabled)
++// fertig
++void br_ftdb_remove(struct net_bridge *br, unsigned char *addr)
++{
++	struct net_bridge_ftdb_entry *f;
++
++	write_lock_bh(&br->disabled_macs_lock);
++	f = br->disabled_macs[br_mac_hash(addr)];
++
++	while (f != NULL) {
++	        if (!memcmp(f->addr.addr, addr, ETH_ALEN)) {
++		        __disabled_macs_unlink(f);
++		        br_ftdb_delete(f);
++		}
++		f = f->next_hash;
++	}
++	write_unlock_bh(&br->disabled_macs_lock);
++}
++
++// removes a protocol from hash
++void br_ftpdb_remove(struct net_bridge *br, unsigned int fprot)
++{
++	struct net_bridge_ftpdb_entry *f;
++
++	write_lock_bh(&br->filt_protocols_lock);
++	f = br->filt_protocols[br_protocol_hash(fprot)];
++
++	while (f != NULL) {
++	        if (f->fprot==fprot) {
++		        __filt_protocols_unlink(f);
++		        br_ftpdb_delete(f);
++		}
++		f = f->next_hash;
++	}
++	write_unlock_bh(&br->filt_protocols_lock);
++}
++
++// returns pointer==1 if mac is disabled
++// fertig
++int br_ftdb_get(struct net_bridge *br, unsigned char *addr)
++{
++	struct net_bridge_ftdb_entry *ftdb;
++
++	read_lock_bh(&br->disabled_macs_lock);
++	ftdb = br->disabled_macs[br_mac_hash(addr)];
++	while (ftdb != NULL) {
++		if (!memcmp(ftdb->addr.addr, addr, ETH_ALEN)) {
++		        read_unlock_bh(&br->disabled_macs_lock);
++		        return 1;
++		}
++
++		ftdb = ftdb->next_hash;
++	}
++
++	read_unlock_bh(&br->disabled_macs_lock);
++	return 0;
++}
++
++// returns pointer==1 if protocol is in the list
++int br_ftpdb_get(struct net_bridge *br, unsigned int fprot)
++{
++	struct net_bridge_ftpdb_entry *ftpdb;
++
++	read_lock_bh(&br->filt_protocols_lock);
++	ftpdb = br->filt_protocols[br_protocol_hash(fprot)];
++	while (ftpdb != NULL) {
++		if (ftpdb->fprot==fprot) {
++		        read_unlock_bh(&br->filt_protocols_lock);
++		        return 1;
++		}
++
++		ftpdb = ftpdb->next_hash;
++	}
++
++	read_unlock_bh(&br->filt_protocols_lock);
++	return 0;
++}
++
++// returns all macs in hash
++// fertig
++int br_ftdb_get_entries(struct net_bridge *br,
++		       unsigned char *_buf,
++		       int maxnum,
++		       int offset)
++{
++	int i;
++	int num;
++	struct __ftdb_entry *walk;
++
++	num = 0;
++	walk = (struct __ftdb_entry *)_buf;
++
++	read_lock_bh(&br->disabled_macs_lock);
++	for (i=0;i<BR_HASH_SIZE;i++) {
++		struct net_bridge_ftdb_entry *f;
++
++		f = br->disabled_macs[i];
++		while (f != NULL && num < maxnum) {
++			struct __ftdb_entry ent;
++			int err;
++			struct net_bridge_ftdb_entry *g;
++			struct net_bridge_ftdb_entry **pp; 
++
++			if (offset) {
++				offset--;
++				f = f->next_hash;
++				continue;
++			}
++
++			memset(&ent, 0, sizeof(struct __ftdb_entry));
++			memcpy(ent.mac_addr, f->addr.addr, ETH_ALEN);
++
++			atomic_inc(&f->use_count);
++			read_unlock_bh(&br->disabled_macs_lock);
++			err = copy_to_user(walk, &ent, sizeof(struct __ftdb_entry));
++			read_lock_bh(&br->disabled_macs_lock);
++
++			g = f->next_hash;
++			pp = f->pprev_hash;
++			br_ftdb_delete(f);
++
++			if (err)
++				goto out_fault;
++
++			if (g == NULL && pp == NULL)
++				goto out_disappeared;
++
++			num++;
++			walk++;
++
++			f = g;
++		}
++	}
++
++ out:
++	read_unlock_bh(&br->disabled_macs_lock);
++	return num;
++
++ out_disappeared:
++	num = -EAGAIN;
++	goto out;
++
++ out_fault:
++	num = -EFAULT;
++	goto out;
++}
++
++// returns all protocols in hash
++int br_ftpdb_get_entries(struct net_bridge *br,
++                   unsigned char *_buf,
++                   int maxnum,
++                   int offset)
++{
++       int i;
++       int num;
++       struct __ftpdb_entry *walk;
++
++       num = 0;
++       walk = (struct __ftpdb_entry *)_buf;
++
++       read_lock_bh(&br->filt_protocols_lock);
++       for (i=0;i<BR_HASH_SIZE;i++) {
++               struct net_bridge_ftpdb_entry *f;
++
++               f = br->filt_protocols[i];
++               while (f != NULL && num < maxnum) {
++                       struct __ftpdb_entry ent;
++                       int err;
++                       struct net_bridge_ftpdb_entry *g;
++                       struct net_bridge_ftpdb_entry **pp;
++
++                       if (offset) {
++                               offset--;
++                               f = f->next_hash;
++                               continue;
++                       }
++
++                       ent.filt_protocol=f->fprot; 
++
++                      atomic_inc(&f->use_count);
++                       read_unlock_bh(&br->filt_protocols_lock);
++                       err = copy_to_user(walk, &ent, sizeof(struct __ftpdb_entry));
++		       read_lock_bh(&br->filt_protocols_lock);
++
++                       g = f->next_hash;
++                       pp = f->pprev_hash;
++                       br_ftpdb_delete(f);
++  
++                       if (err)
++		               goto out_fault;
++		       if (g == NULL && pp == NULL)
++		               goto out_disappeared;
++                       num++;
++                       walk++;
++		     
++                       f = g;
++               }
++	}
++out:
++	read_unlock_bh(&br->filt_protocols_lock);
++        return num;
++
++out_disappeared:
++	num = -EAGAIN;
++	goto out;
++
++out_fault:
++        num = -EFAULT;
++        goto out;
++}
++
++// inserts a mac into hash
++// fertig
++void br_ftdb_insert(struct net_bridge *br,
++		    unsigned char *addr)
++{
++	struct net_bridge_ftdb_entry *ftdb;
++	int hash;
++
++	hash = br_mac_hash(addr);
++
++	write_lock_bh(&br->disabled_macs_lock);
++	ftdb = br->disabled_macs[hash];
++	while (ftdb != NULL) {
++		if (!memcmp(ftdb->addr.addr, addr, ETH_ALEN)) {
++			write_unlock_bh(&br->disabled_macs_lock);
++			return;
++		}
++
++		ftdb = ftdb->next_hash;
++	}
++
++	ftdb = kmalloc(sizeof(*ftdb), GFP_ATOMIC);
++	if (ftdb == NULL) {
++		write_unlock_bh(&br->disabled_macs_lock);
++		return;
++	}
++
++	memcpy(ftdb->addr.addr, addr, ETH_ALEN);
++	atomic_set(&ftdb->use_count, 1);
++
++	__disabled_macs_link(br, ftdb, hash);
++
++	write_unlock_bh(&br->disabled_macs_lock);
++}
++
++// inserts a protocol into hash
++void br_ftpdb_insert(struct net_bridge *br,
++		    unsigned int fprot)
++{
++	struct net_bridge_ftpdb_entry *ftpdb;
++	int hash;
++
++	hash = br_protocol_hash(fprot);
++
++	write_lock_bh(&br->filt_protocols_lock);
++	ftpdb = br->filt_protocols[hash];
++	while (ftpdb != NULL) {
++		if (ftpdb->fprot==fprot) {
++			write_unlock_bh(&br->filt_protocols_lock);
++			return;
++		}
++
++		ftpdb = ftpdb->next_hash;
++	}
++
++	ftpdb = kmalloc(sizeof(*ftpdb), GFP_ATOMIC);
++	if (ftpdb == NULL) {
++		write_unlock_bh(&br->filt_protocols_lock);
++		return;
++	}
++
++	ftpdb->fprot=fprot;
++	atomic_set(&ftpdb->use_count, 1);
++
++	__filt_protocols_link(br, ftpdb, hash);
++
++	write_unlock_bh(&br->filt_protocols_lock);
++}
+diff -Nurw bridge/br_forward.c bridge-test/bridge/br_forward.c
+--- bridge/br_forward.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_forward.c	Tue Jun 11 04:19:50 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_forward.c,v 1.4 2001/08/14 22:05:57 davem Exp $
++ *	$Id: br_forward.c,v 1.2 2002/06/11 08:19:44 ktrivedi Exp ktrivedi $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -17,7 +17,8 @@
+ #include <linux/netdevice.h>
+ #include <linux/inetdevice.h>
+ #include <linux/skbuff.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include <linux/netfilter_bridge.h>
+ #include "br_private.h"
+ 
+@@ -52,6 +53,7 @@
+ 
+ 	indev = skb->dev;
+ 	skb->dev = to->dev;
++
+ 
+ 	NF_HOOK(PF_BRIDGE, NF_BR_LOCAL_OUT, skb, indev, skb->dev,
+ 			__br_forward_finish);
+diff -Nurw bridge/br_if.c bridge-test/bridge/br_if.c
+--- bridge/br_if.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_if.c	Tue Jun 11 04:19:39 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_if.c,v 1.6.2.1 2001/12/24 00:59:27 davem Exp $
++ *	$Id: br_if.c,v 1.4 2002/06/11 08:19:35 ktrivedi Exp ktrivedi $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -15,10 +15,11 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/if_arp.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
+ #include <linux/inetdevice.h>
+ #include <linux/rtnetlink.h>
+ #include <asm/uaccess.h>
++#include "afs_if_bridge.h"
+ #include "br_private.h"
+ 
+ static struct net_bridge *bridge_list;
+@@ -40,14 +41,24 @@
+ /* called under bridge lock */
+ static int __br_del_if(struct net_bridge *br, struct net_device *dev)
+ {
+-	struct net_bridge_port *p;
++	struct net_bridge_port *p, **prev;
+ 	struct net_bridge_port **pptr;
+ 
+ 	if ((p = dev->br_port) == NULL)
+ 		return -EINVAL;
+ 
++	p = br->port_list;
++	if(!p) 
++		return -EINVAL;
++	while(p) {
++		if(! strcmp(p->dev->name, dev->name))
++			break;
++		p = p->next;
++	}
++
+ 	br_stp_disable_port(p);
+ 
++#ifndef CMU_BRIDGE
+ 	dev_set_promiscuity(dev, -1);
+ 	dev->br_port = NULL;
+ 
+@@ -64,6 +75,37 @@
+ 	br_fdb_delete_by_port(br, p);
+ 	kfree(p);
+ 	dev_put(dev);
++#else
++	/* Delete the node from link list */
++	prev = &dev->br_port;
++	while(*prev) {
++		if(*prev == p) {
++			*prev = p->common_next;
++			 break;
++		}
++		prev = &((*prev)->common_next);
++	}
++
++	if(! dev->br_port) {
++		dev_set_promiscuity(dev, -1);
++	}
++	
++	pptr = &br->port_list;
++	while (*pptr != NULL) {
++		if (*pptr == p) {
++			*pptr = p->next;
++			break;
++		}
++
++		pptr = &((*pptr)->next);
++	}
++
++	br_fdb_delete_by_port(br, p);
++	kfree(p);
++	if(! dev->br_port) {
++		dev_put(dev);
++	}
++#endif
+ 
+ 	return 0;
+ }
+@@ -108,6 +150,13 @@
+ 	ether_setup(dev);
+ 	br_dev_setup(dev);
+ 
++	/* This has been added to prevent kernel crash.
++	 * If disabled_macs_lock is not initialized then, kernel
++	 * will hang when code tries to get that lock.
++	 * 		--Kunal
++	 */
++	br->filt_protocols_lock = RW_LOCK_UNLOCKED;
++	br->disabled_macs_lock = RW_LOCK_UNLOCKED;
+ 	br->lock = RW_LOCK_UNLOCKED;
+ 	br->hash_lock = RW_LOCK_UNLOCKED;
+ 
+@@ -131,6 +180,13 @@
+ 	br->ageing_time = 300 * HZ;
+ 	br->gc_interval = 4 * HZ;
+ 
++	/* Initialize with no-filtering */
++	br->flt_src = 0;
++	br->flt_dest = 0;
++	br->flt_src_allow = 0;
++	br->flt_dest_allow = 0;
++	br->protocol_filter_mode = 0;
++
+ 	return br;
+ }
+ 
+@@ -150,8 +206,18 @@
+ 	p->path_cost = br_initial_port_cost(dev);
+ 	p->priority = 0x80;
+ 
++#ifndef CMU_BRIDGE 
+ 	dev->br_port = p;
+-
++#else
++	if(! dev->br_port) {
++		dev->br_port = p;
++	} else {
++		/* This is hardcoded. Should be generic*/
++		dev->br_port->common_next = p;
++		dev->br_port->br_link = br;
++		p->common_next = NULL;
++	}
++#endif
+ 	for (i=1;i<255;i++)
+ 		if (br_get_port(br, i) == NULL)
+ 			break;
+@@ -168,6 +234,49 @@
+ 	p->next = br->port_list;
+ 	br->port_list = p;
+ 
++	//if(!strncmp(dev->name, "eth2", 4)){
++	if(!strncmp(dev->name, "eth3", 4)){
++		net_port= kmalloc(sizeof(*net_port), GFP_ATOMIC);
++		if (net_port == NULL) {
++			return NULL;
++		}
++
++		memcpy(net_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&net_port->use_count, 1);
++		net_port->dst = p;
++		net_port->is_local = 1;
++		net_port->is_static = 1;
++		net_port->ageing_timer = jiffies;
++
++	//} else if (! strncmp(dev->name, "eth3", 4)){
++	} else if (! strncmp(dev->name, "eth1", 4)){
++		filter_port= kmalloc(sizeof(*filter_port), GFP_ATOMIC);
++		if (filter_port == NULL) {
++			return NULL;
++		}
++
++		memcpy(filter_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&filter_port->use_count, 1);
++		filter_port->dst = p;
++		filter_port->is_local = 1;
++		filter_port->is_static = 1;
++		filter_port->ageing_timer = jiffies;
++
++	//} else if(! strncmp(dev->name, "eth1", 4)) {
++	} else if(! strncmp(dev->name, "eth2", 4)) {
++		user_port= kmalloc(sizeof(*user_port), GFP_ATOMIC);
++		if (user_port == NULL) {
++			return NULL;
++		}
++
++		memcpy(user_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&user_port->use_count, 1);
++		user_port->dst = p;
++		user_port->is_local = 1;
++		user_port->is_static = 1;
++		user_port->ageing_timer = jiffies;
++	}
++
+ 	return p;
+ }
+ 
+@@ -220,8 +329,11 @@
+ {
+ 	struct net_bridge_port *p;
+ 
+-	if (dev->br_port != NULL)
++	if (dev->br_port != NULL){
++#ifndef CMU_BRIDGE
+ 		return -EBUSY;
++#endif
++	}
+ 
+ 	if (dev->flags & IFF_LOOPBACK || dev->type != ARPHRD_ETHER)
+ 		return -EINVAL;
+diff -Nurw bridge/br_if.c.dev1 bridge-test/bridge/br_if.c.dev1
+--- bridge/br_if.c.dev1	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/br_if.c.dev1	Mon Jun  3 03:02:32 2002
+@@ -0,0 +1,399 @@
++/*
++ *	Userspace interface
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@gnu.org>
++ *
++ *	$Id: br_if.c,v 1.3 2002/05/30 05:51:54 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/if_arp.h>
++/*#include <linux/if_bridge.h>*/
++#include <linux/inetdevice.h>
++#include <linux/rtnetlink.h>
++#include <asm/uaccess.h>
++#include "afs_if_bridge.h"
++#include "br_private.h"
++
++static struct net_bridge *bridge_list;
++
++static int br_initial_port_cost(struct net_device *dev)
++{
++	if (!strncmp(dev->name, "lec", 3))
++		return 7;
++
++	if (!strncmp(dev->name, "eth", 3))
++		return 100;			/* FIXME handle 100Mbps */
++
++	if (!strncmp(dev->name, "plip", 4))
++		return 2500;
++
++	return 100;
++}
++
++/* called under bridge lock */
++static int __br_del_if(struct net_bridge *br, struct net_device *dev)
++{
++	struct net_bridge_port *p, **prev;
++	struct net_bridge_port **pptr;
++
++	if ((p = dev->br_port) == NULL)
++		return -EINVAL;
++
++	p = br->port_list;
++	if(!p) 
++		return -EINVAL;
++	while(p) {
++		if(! strcmp(p->dev->name, dev->name))
++			break;
++		p = p->next;
++	}
++
++	br_stp_disable_port(p);
++
++#ifndef CMU_BRIDGE
++	dev_set_promiscuity(dev, -1);
++	dev->br_port = NULL;
++
++	pptr = &br->port_list;
++	while (*pptr != NULL) {
++		if (*pptr == p) {
++			*pptr = p->next;
++			break;
++		}
++
++		pptr = &((*pptr)->next);
++	}
++
++	br_fdb_delete_by_port(br, p);
++	kfree(p);
++	dev_put(dev);
++#else
++	/* Delete the node from link list */
++	prev = &dev->br_port;
++	while(*prev) {
++		if(*prev == p) {
++			*prev = p->common_next;
++			 break;
++		}
++		prev = &((*prev)->common_next);
++	}
++
++	if(! dev->br_port) {
++		dev_set_promiscuity(dev, -1);
++	}
++	
++	pptr = &br->port_list;
++	while (*pptr != NULL) {
++		if (*pptr == p) {
++			*pptr = p->next;
++			break;
++		}
++
++		pptr = &((*pptr)->next);
++	}
++
++	br_fdb_delete_by_port(br, p);
++	kfree(p);
++	if(! dev->br_port) {
++		dev_put(dev);
++	}
++#endif
++
++	return 0;
++}
++
++static struct net_bridge **__find_br(char *name)
++{
++	struct net_bridge **b;
++	struct net_bridge *br;
++
++	b = &bridge_list;
++	while ((br = *b) != NULL) {
++		if (!strncmp(br->dev.name, name, IFNAMSIZ))
++			return b;
++
++		b = &(br->next);
++	}
++
++	return NULL;
++}
++
++static void del_ifs(struct net_bridge *br)
++{
++	write_lock_bh(&br->lock);
++	while (br->port_list != NULL)
++		__br_del_if(br, br->port_list->dev);
++	write_unlock_bh(&br->lock);
++}
++
++static struct net_bridge *new_nb(char *name)
++{
++	struct net_bridge *br;
++	struct net_device *dev;
++
++	if ((br = kmalloc(sizeof(*br), GFP_KERNEL)) == NULL)
++		return NULL;
++
++	memset(br, 0, sizeof(*br));
++	dev = &br->dev;
++
++	strncpy(dev->name, name, IFNAMSIZ);
++	dev->priv = br;
++	ether_setup(dev);
++	br_dev_setup(dev);
++
++	/* This has been added to prevent kernel crash.
++	 * If disabled_macs_lock is not initialized then, kernel
++	 * will hang when code tries to get that lock.
++	 * 		--Kunal
++	 */
++	br->filt_protocols_lock = RW_LOCK_UNLOCKED;
++	br->disabled_macs_lock = RW_LOCK_UNLOCKED;
++	br->lock = RW_LOCK_UNLOCKED;
++	br->hash_lock = RW_LOCK_UNLOCKED;
++
++	br->bridge_id.prio[0] = 0x80;
++	br->bridge_id.prio[1] = 0x00;
++	memset(br->bridge_id.addr, 0, ETH_ALEN);
++
++	br->stp_enabled = 1;
++	br->designated_root = br->bridge_id;
++	br->root_path_cost = 0;
++	br->root_port = 0;
++	br->bridge_max_age = br->max_age = 20 * HZ;
++	br->bridge_hello_time = br->hello_time = 2 * HZ;
++	br->bridge_forward_delay = br->forward_delay = 15 * HZ;
++	br->topology_change = 0;
++	br->topology_change_detected = 0;
++	br_timer_clear(&br->hello_timer);
++	br_timer_clear(&br->tcn_timer);
++	br_timer_clear(&br->topology_change_timer);
++
++	br->ageing_time = 300 * HZ;
++	br->gc_interval = 4 * HZ;
++
++	/* Initialize with no-filtering */
++	br->flt_src = 0;
++	br->flt_dest = 0;
++	br->flt_src_allow = 0;
++	br->flt_dest_allow = 0;
++	br->protocol_filter_mode = 0;
++
++	return br;
++}
++
++/* called under bridge lock */
++static struct net_bridge_port *new_nbp(struct net_bridge *br, struct net_device *dev)
++{
++	int i;
++	struct net_bridge_port *p;
++
++	p = kmalloc(sizeof(*p), GFP_KERNEL);
++	if (p == NULL)
++		return p;
++
++	memset(p, 0, sizeof(*p));
++	p->br = br;
++	p->dev = dev;
++	p->path_cost = br_initial_port_cost(dev);
++	p->priority = 0x80;
++
++#ifndef CMU_BRIDGE 
++	dev->br_port = p;
++#else
++	if(! dev->br_port) {
++		dev->br_port = p;
++	} else {
++		/* This is hardcoded. Should be generic*/
++		dev->br_port->common_next = p;
++		dev->br_port->br_link = br;
++		p->common_next = NULL;
++	}
++#endif
++	for (i=1;i<255;i++)
++		if (br_get_port(br, i) == NULL)
++			break;
++
++	if (i == 255) {
++		kfree(p);
++		return NULL;
++	}
++
++	p->port_no = i;
++	br_init_port(p);
++	p->state = BR_STATE_DISABLED;
++
++	p->next = br->port_list;
++	br->port_list = p;
++
++	if(!strncmp(dev->name, "eth2", 4)){
++		net_port= kmalloc(sizeof(*net_port), GFP_ATOMIC);
++		if (net_port == NULL) {
++			return;
++		}
++
++		memcpy(net_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&net_port->use_count, 1);
++		net_port->dst = p;
++		net_port->is_local = 1;
++		net_port->is_static = 1;
++		net_port->ageing_timer = jiffies;
++
++	} else if (! strncmp(dev->name, "eth3", 4)){
++		filter_port= kmalloc(sizeof(*filter_port), GFP_ATOMIC);
++		if (filter_port == NULL) {
++			return;
++		}
++
++		memcpy(filter_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&filter_port->use_count, 1);
++		filter_port->dst = p;
++		filter_port->is_local = 1;
++		filter_port->is_static = 1;
++		filter_port->ageing_timer = jiffies;
++
++	} else if(! strncmp(dev->name, "eth1", 4)) {
++		user_port= kmalloc(sizeof(*user_port), GFP_ATOMIC);
++		if (user_port == NULL) {
++			return;
++		}
++
++		memcpy(user_port->addr.addr, dev->dev_addr, ETH_ALEN);
++		atomic_set(&user_port->use_count, 1);
++		user_port->dst = p;
++		user_port->is_local = 1;
++		user_port->is_static = 1;
++		user_port->ageing_timer = jiffies;
++	}
++
++	return p;
++}
++
++int br_add_bridge(char *name)
++{
++	struct net_bridge *br;
++
++	if ((br = new_nb(name)) == NULL)
++		return -ENOMEM;
++
++	if (__dev_get_by_name(name) != NULL) {
++		kfree(br);
++		return -EEXIST;
++	}
++
++	br->next = bridge_list;
++	bridge_list = br;
++
++	br_inc_use_count();
++	register_netdev(&br->dev);
++
++	return 0;
++}
++
++int br_del_bridge(char *name)
++{
++	struct net_bridge **b;
++	struct net_bridge *br;
++
++	if ((b = __find_br(name)) == NULL)
++		return -ENXIO;
++
++	br = *b;
++
++	if (br->dev.flags & IFF_UP)
++		return -EBUSY;
++
++	del_ifs(br);
++
++	*b = br->next;
++
++	unregister_netdev(&br->dev);
++	kfree(br);
++	br_dec_use_count();
++
++	return 0;
++}
++
++int br_add_if(struct net_bridge *br, struct net_device *dev)
++{
++	struct net_bridge_port *p;
++
++	if (dev->br_port != NULL){
++#ifndef CMU_BRIDGE
++		return -EBUSY;
++#endif
++	}
++
++	if (dev->flags & IFF_LOOPBACK || dev->type != ARPHRD_ETHER)
++		return -EINVAL;
++
++	if (dev->hard_start_xmit == br_dev_xmit)
++		return -ELOOP;
++
++	dev_hold(dev);
++	write_lock_bh(&br->lock);
++	if ((p = new_nbp(br, dev)) == NULL) {
++		write_unlock_bh(&br->lock);
++		dev_put(dev);
++		return -EXFULL;
++	}
++
++	dev_set_promiscuity(dev, 1);
++
++	br_stp_recalculate_bridge_id(br);
++	br_fdb_insert(br, p, dev->dev_addr, 1);
++	if ((br->dev.flags & IFF_UP) && (dev->flags & IFF_UP))
++		br_stp_enable_port(p);
++	write_unlock_bh(&br->lock);
++
++	return 0;
++}
++
++int br_del_if(struct net_bridge *br, struct net_device *dev)
++{
++	int retval;
++
++	write_lock_bh(&br->lock);
++	retval = __br_del_if(br, dev);
++	br_stp_recalculate_bridge_id(br);
++	write_unlock_bh(&br->lock);
++
++	return retval;
++}
++
++int br_get_bridge_ifindices(int *indices, int num)
++{
++	struct net_bridge *br;
++	int i;
++
++	br = bridge_list;
++	for (i=0;i<num;i++) {
++		if (br == NULL)
++			break;
++
++		indices[i] = br->dev.ifindex;
++		br = br->next;
++	}
++
++	return i;
++}
++
++/* called under ioctl_lock */
++void br_get_port_ifindices(struct net_bridge *br, int *ifindices)
++{
++	struct net_bridge_port *p;
++
++	p = br->port_list;
++	while (p != NULL) {
++		ifindices[p->port_no] = p->dev->ifindex;
++		p = p->next;
++	}
++}
+diff -Nurw bridge/br_input.c bridge-test/bridge/br_input.c
+--- bridge/br_input.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_input.c	Fri Jun 28 15:24:14 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_input.c,v 1.9.2.1 2001/12/24 04:50:05 davem Exp $
++ *	$Id: br_input.c,v 1.10 2002/06/28 19:24:14 ktrivedi Exp ktrivedi $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -22,6 +22,12 @@
+ 
+ unsigned char bridge_ula[6] = { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x00 };
+ 
++/* This function gets called in 3 cases. 1) BCast pkt, 2) Pkt desstined this ethernet card
++ *  3) Destined to this bridge device. Packet will be put again in the net_if queue
++ * and processed again.
++ * All these 3 types are not processed again as, they will be picked up by ptype_all_func*
++ *		--Kunal
++ */
+ static int br_pass_frame_up_finish(struct sk_buff *skb)
+ {
+ 	netif_rx(skb);
+@@ -49,12 +55,15 @@
+ static int br_handle_frame_finish(struct sk_buff *skb)
+ {
+ 	struct net_bridge *br;
+-	unsigned char *dest;
+-	struct net_bridge_fdb_entry *dst;
++	unsigned char *dest, *src, *tdest, *tsrc, *tport;
++	struct net_bridge_fdb_entry *dst, *dest_port;
+ 	struct net_bridge_port *p;
+-	int passedup;
++	unsigned int protocol;
++	int passedup, is_incoming, is_local;
+ 
+ 	dest = skb->mac.ethernet->h_dest;
++	src  = skb->mac.ethernet->h_source;
++	protocol = htons(skb->protocol);
+ 
+ 	p = skb->dev->br_port;
+ 	if (p == NULL)
+@@ -65,7 +74,17 @@
+ 	if (skb->dev->br_port == NULL)
+ 		goto err;
+ 
++	/* Protocol Filtering */
++	if(br->protocol_filter_mode) {
++		if(br_ftpdb_get(br,protocol))
++			goto err;
++	}
++
+ 	passedup = 0;
++	is_incoming = 0;
++	is_local = 0;
++	dst = dest_port = NULL;
++
+ 	if (br->dev.flags & IFF_PROMISC) {
+ 		struct sk_buff *skb2;
+ 
+@@ -83,29 +102,66 @@
+ 		goto out;
+ 	}
+ 
+-	dst = br_fdb_get(br, dest);
+-	if (dst != NULL && dst->is_local) {
++	/* Initially packet was destined to user_port based on both of 
++	 * these conditions. It does not make sence, if same packet
++	 * comes here again.
++	 * !memcmp(skb->dev->dev_addr, filter_port->addr.addr, ETH_ALEN)){
++	 */
++	if(!memcmp(skb->dev->dev_addr, net_port->addr.addr, ETH_ALEN)) { 
++		dest_port = user_port;
++		is_incoming = 1;
++	} else if(!memcmp(skb->dev->dev_addr, user_port->addr.addr, ETH_ALEN))
++		dest_port = net_port;
++		
++
++	if (br->flt_src && !is_incoming) {
++		if(!br->flt_src_allow && !memcmp(skb->dev->dev_addr, 
++					user_port->addr.addr, ETH_ALEN)) { 
++			if(! br_ftdb_get(br,skb->mac.ethernet->h_source)) { 
++				//Debug info
++				/*tdest = skb->mac.ethernet->h_dest;
++				tsrc = skb->mac.ethernet->h_source;
++				printk(KERN_INFO "Pkt Info **** dev name (%s), ptype(%i), 
++					dmac(%x:%x:%x:%x:%x:%x), smac(%x:%x:%x:%x:%x:%x)\n",
++					skb->dev->name,  
++					skb->pkt_type, tdest[0],tdest[1],tdest[2],tdest[3],tdest[4],tdest[5],
++					tsrc[0], tsrc[1], tsrc[2],tsrc[3],tsrc[4],tsrc[5]);*/
++				dest_port = filter_port;
++			} else
++				dest_port = net_port;
++		} 
++	}
++
++	dst = dest_port;
++
++	/* There was not && 0, I was comparing wheather port MAC is same as
++	 * destination MAC. Let me, dig more in this. Currently it is working.
++	 * if (dst != NULL && dst->is_local && !memcmp(dst->addr.addr, dest, ETH_ALEN)) {
++	 *
++	 *  This if() had br_fdb_put() as well as second if() had br_fdb_put()
++	 */
++	if (dst != NULL && dst->is_local && 0) {
+ 		if (!passedup)
+ 			br_pass_frame_up(br, skb);
+ 		else
+ 			kfree_skb(skb);
+-		br_fdb_put(dst);
+ 		goto out;
+ 	}
+ 
+ 	if (dst != NULL) {
+ 		br_forward(dst->dst, skb);
+-		br_fdb_put(dst);
+ 		goto out;
+ 	}
+ 
+ 	br_flood_forward(br, skb, 0);
+ 
+ out:
++	is_incoming = 0;
+ 	read_unlock(&br->lock);
+ 	return 0;
+ 
+ err:
++	is_incoming = 0;
+ 	read_unlock(&br->lock);
+ err_nolock:
+ 	kfree_skb(skb);
+@@ -136,9 +192,9 @@
+ 	if (skb->mac.ethernet->h_source[0] & 1)
+ 		goto err;
+ 
+-	if (p->state == BR_STATE_LEARNING ||
++	/*if (p->state == BR_STATE_LEARNING ||
+ 	    p->state == BR_STATE_FORWARDING)
+-		br_fdb_insert(br, p, skb->mac.ethernet->h_source, 0);
++		br_fdb_insert(br, p, skb->mac.ethernet->h_source, 0);*/
+ 
+ 	if (br->stp_enabled &&
+ 	    !memcmp(dest, bridge_ula, 5) &&
+diff -Nurw bridge/br_input.c.org bridge-test/bridge/br_input.c.org
+--- bridge/br_input.c.org	Wed Dec 31 19:00:00 1969
++++ bridge-test/bridge/br_input.c.org	Sat May 25 10:26:20 2002
+@@ -0,0 +1,210 @@
++/*
++ *	Handle incoming frames
++ *	Linux ethernet bridge
++ *
++ *	Authors:
++ *	Lennert Buytenhek		<buytenh@gnu.org>
++ *  Arne Fitzenreiter (MAC Filter)  <arne@fitzenreiter.de>
++ *  Kunal Trivedi (Switch Functionality) <ktrivedi@cmu.edu>
++ *
++ *	$Id: br_input.c,v 1.8 2002/05/23 17:01:53 ktrivedi Exp ktrivedi $
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; either version
++ *	2 of the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/netdevice.h>
++#include <linux/etherdevice.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
++#include <linux/netfilter_bridge.h>
++
++#include "br_private.h"
++
++
++/* This file is taken from 2.4.17 and above, as functionality doesn't
++ * differ in 2.4.18 and 2.4.17 (and above). They just did some
++ * resturcturing of the code.
++ * Difference:
++ * 		Most of the error checking conditions moved to br_handle_frame
++ *		Remove function __br_handle_frame. There are two functions 
++ *		instead of three. br_handle_frame and br_handle_frame_finish
++ */
++
++unsigned char bridge_ula[6] = { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x00 };
++
++static int br_pass_frame_up_finish(struct sk_buff *skb)
++{
++	netif_rx(skb);
++
++	return 0;
++}
++
++static void br_pass_frame_up(struct net_bridge *br, struct sk_buff *skb)
++{
++	struct net_device *indev;
++
++	br->statistics.rx_packets++;
++	br->statistics.rx_bytes += skb->len;
++
++	indev = skb->dev;
++	skb->dev = &br->dev;
++	skb->pkt_type = PACKET_HOST;
++	skb_push(skb, ETH_HLEN);
++	skb->protocol = eth_type_trans(skb, &br->dev);
++
++	NF_HOOK(PF_BRIDGE, NF_BR_LOCAL_IN, skb, indev, NULL,
++			br_pass_frame_up_finish);
++}
++
++static void __br_handle_frame(struct sk_buff *skb, struct net_bridge_port *p)
++{
++	struct net_bridge *br;
++	unsigned char *dest;
++	unsigned char *src;
++	
++	struct net_bridge_fdb_entry *dst;
++	int passedup;
++	int switch_fwd;
++
++
++	dest = skb->mac.ethernet->h_dest;
++	src = skb->mac.ethernet->h_source;
++
++	br = p->br;
++	passedup = 0;
++
++	if (!(br->dev.flags & IFF_UP) ||
++	    p->state == BR_STATE_DISABLED)
++		goto freeandout;
++
++	if (br->dev.flags & IFF_PROMISC) {
++		struct sk_buff *skb2;
++
++		skb2 = skb_clone(skb, GFP_ATOMIC);
++		if (skb2) {
++			passedup = 1;
++			br_pass_frame_up(br, skb2);
++		}
++	}
++
++	if (skb->mac.ethernet->h_source[0] & 1)
++		goto freeandout;
++
++	if (!passedup &&
++	    (dest[0] & 1) &&
++	    (br->dev.flags & IFF_ALLMULTI || br->dev.mc_list != NULL)) {
++		struct sk_buff *skb2;
++
++		skb2 = skb_clone(skb, GFP_ATOMIC);
++		if (skb2) {
++			passedup = 1;
++			br_pass_frame_up(br, skb2);
++		}
++	}
++			
++	if (br->stp_enabled &&
++	    !memcmp(dest, bridge_ula, 5) &&
++	    !(dest[5] & 0xF0))
++		goto handle_special_frame;
++	
++	if ( (p->state == BR_STATE_LEARNING ||
++	    p->state == BR_STATE_FORWARDING) && switch_fwd) 
++		br_fdb_insert(br, p, skb->mac.ethernet->h_source, 0);
++
++	if (p->state != BR_STATE_FORWARDING)
++		goto freeandout;
++
++	/*dst = dest_port;*/
++
++	if (dest[0] & 1) {
++		br_flood_forward(br, skb, 1);
++		if (!passedup)
++			br_pass_frame_up(br, skb);
++		else
++			kfree_skb(skb);
++		return;
++	}
++
++	dst = br_fdb_get(br, dest);
++
++	//if (dst != NULL && dst->is_local && !memcmp(dst->addr.addr,dest, ETH_ALEN)) {
++	if (dst != NULL && dst->is_local) {
++		if (!passedup)
++			br_pass_frame_up(br, skb);
++		else
++			kfree_skb(skb);
++		br_fdb_put(dst);
++		return;
++	}
++
++	if (dst != NULL) {
++		br_forward(dst->dst, skb);
++		br_fdb_put(dst);
++		return;
++	}
++
++	br_flood_forward(br, skb, 0);
++	return;
++
++ handle_special_frame:
++	if (!dest[5]) {
++		br_stp_handle_bpdu(skb);
++		return;
++	}
++
++ freeandout:
++	kfree_skb(skb);
++}
++
++static int br_handle_frame_finish(struct sk_buff *skb)
++{
++	struct net_bridge *br;
++	struct net_bridge_port  *p;
++	int is_incoming = 0;
++
++	p  = skb->dev->br_port;
++	if(!p)
++		return 0;
++	br = skb->dev->br_port->br;
++	
++	read_lock(&br->lock);
++	
++	if(!memcmp(skb->dev->dev_addr,net_port->addr.addr,ETH_ALEN) || 
++			!memcmp(skb->dev->dev_addr,filter_port->addr.addr,ETH_ALEN)){
++		dest_port = user_port;
++		is_incoming = 1;
++	} else
++		dest_port = net_port;
++
++	if (br->flt_src && !is_incoming) {
++		if (br->flt_src_allow) {
++			if (!br_ftdb_get(br,skb->mac.ethernet->h_source)){ 
++				kfree_skb(skb);
++				goto switchfree;
++			}
++		} else {
++			if(! br_ftdb_get(br,skb->mac.ethernet->h_source)) 
++				dest_port = filter_port;
++			else
++				dest_port = net_port;
++		}
++	}
++	
++	__br_handle_frame(skb, p);
++
++switchfree:
++	is_incoming = 0;
++	read_unlock(&br->lock);
++
++	return 0;
++}
++
++void br_handle_frame(struct sk_buff *skb)
++{
++	NF_HOOK(PF_BRIDGE, NF_BR_PRE_ROUTING, skb, skb->dev, NULL,
++			br_handle_frame_finish);
++}
+diff -Nurw bridge/br_ioctl.c bridge-test/bridge/br_ioctl.c
+--- bridge/br_ioctl.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_ioctl.c	Thu May 30 01:49:15 2002
+@@ -5,7 +5,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_ioctl.c,v 1.4 2000/11/08 05:16:40 davem Exp $
++ *	$Id: br_ioctl.c,v 1.2 2002/05/30 05:49:08 ktrivedi Exp $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -14,7 +14,8 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include <linux/inetdevice.h>
+ #include <asm/uaccess.h>
+ #include "br_private.h"
+@@ -73,6 +74,10 @@
+ 		b.tcn_timer_value = br_timer_get_residue(&br->tcn_timer);
+ 		b.topology_change_timer_value = br_timer_get_residue(&br->topology_change_timer);
+ 		b.gc_timer_value = br_timer_get_residue(&br->gc_timer);
++		b.flt_src = br->flt_src;
++		b.flt_dest = br->flt_dest;
++		b.flt_src_allow = br->flt_src_allow;
++		b.flt_dest_allow = br->flt_dest_allow;
+ 
+ 		if (copy_to_user((void *)arg0, &b, sizeof(b)))
+ 			return -EFAULT;
+@@ -179,6 +184,67 @@
+ 
+ 	case BRCTL_GET_FDB_ENTRIES:
+ 		return br_fdb_get_entries(br, (void *)arg0, arg1, arg2);
++
++	case BRCTL_SET_MAC_DISABLED:
++	{
++		br_ftdb_insert(br, (char *)arg0);
++		return 0;
++	}
++		
++	case BRCTL_SET_MAC_ENABLED:
++	{
++		br_ftdb_remove(br, (char *)arg0);
++		return 0;
++	}
++	
++	case BRCTL_GET_DISABLED_MACS:
++		return br_ftdb_get_entries(br, (void *)arg0, arg1, arg2);
++
++	case BRCTL_SET_MAC_FILTER:
++	{
++		arg0 ? br->flt_src : br->flt_dest = (unsigned char)arg1;
++		return 0;
++	}
++
++	case BRCTL_SET_MAC_FLT_POLICY:
++	{
++		arg0 ? br->flt_src_allow : br->flt_dest_allow = (unsigned char)arg1;
++		return 0;
++	}
++
++	case BRCTL_IS_MAC_EXIST:
++	{
++		return br_ftdb_get(br, (char *)arg0);
++	}
++
++	case BRCTL_ADD_FILT_PROTOCOL:
++	{
++		br_ftpdb_insert(br, arg0);
++		return 0;
++	}
++		
++	case BRCTL_DEL_FILT_PROTOCOL:
++	{
++		br_ftpdb_remove(br, arg0);
++		return 0;
++	}
++	
++	case BRCTL_GET_FILT_PROTOCOLS:
++	{
++		return br_ftpdb_get_entries(br, (void *)arg0, arg1, arg2);
++	}
++ 
++	case BRCTL_SET_PROTOCOL_FILTER_MODE:
++	{
++		br->protocol_filter_mode = arg0?1:0;
++		return 0;
++	}
++
++    case BRCTL_GET_PROTOCOL_FILTER_MODE:
++	{
++		return br->protocol_filter_mode;
++	}
++
+ 	}
+ 
+ 	return -EOPNOTSUPP;
+diff -Nurw bridge/br_notify.c bridge-test/bridge/br_notify.c
+--- bridge/br_notify.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_notify.c	Thu Mar  7 12:57:31 2002
+@@ -14,7 +14,8 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include "br_private.h"
+ 
+ static int br_device_event(struct notifier_block *unused, unsigned long event, void *ptr);
+diff -Nurw bridge/br_private.h bridge-test/bridge/br_private.h
+--- bridge/br_private.h	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_private.h	Fri May 31 19:29:44 2002
+@@ -4,7 +4,7 @@
+  *	Authors:
+  *	Lennert Buytenhek		<buytenh@gnu.org>
+  *
+- *	$Id: br_private.h,v 1.6.2.1 2001/12/24 00:59:27 davem Exp $
++ *	$Id: br_private.h,v 1.6 2001/06/01 09:28:28 davem Exp $
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+@@ -17,7 +17,8 @@
+ 
+ #include <linux/netdevice.h>
+ #include <linux/miscdevice.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include "br_private_timer.h"
+ 
+ #define BR_HASH_BITS 8
+@@ -25,6 +26,8 @@
+ 
+ #define BR_HOLD_TIME (1*HZ)
+ 
++#define CMU_BRIDGE 1
++
+ typedef struct bridge_id bridge_id;
+ typedef struct mac_addr mac_addr;
+ typedef __u16 port_id;
+@@ -53,9 +56,30 @@
+ 	unsigned			is_static:1;
+ };
+ 
++struct net_bridge_ftdb_entry
++{
++	struct net_bridge_ftdb_entry	*next_hash;
++	struct net_bridge_ftdb_entry	**pprev_hash;
++	atomic_t			use_count;
++	mac_addr			addr;
++};
++
++struct net_bridge_ftpdb_entry
++{
++	struct net_bridge_ftpdb_entry	*next_hash;
++	struct net_bridge_ftpdb_entry	**pprev_hash;
++	atomic_t			use_count;
++	unsigned int			fprot;
++};
++
++
+ struct net_bridge_port
+ {
+ 	struct net_bridge_port		*next;
++#ifdef CMU_BRIDGE
++	struct net_bridge_port 		*common_next;
++	struct net_bridge			*br_link;
++#endif
+ 	struct net_bridge		*br;
+ 	struct net_device		*dev;
+ 	int				port_no;
+@@ -86,6 +110,17 @@
+ 	struct net_device_stats		statistics;
+ 	rwlock_t			hash_lock;
+ 	struct net_bridge_fdb_entry	*hash[BR_HASH_SIZE];
++	rwlock_t						disabled_macs_lock;
++	struct net_bridge_ftdb_entry	*disabled_macs[BR_HASH_SIZE];
++	rwlock_t 						filt_protocols_lock;
++	struct net_bridge_ftpdb_entry   *filt_protocols[BR_HASH_SIZE];
++	int 							protocol_filter_mode;
++
++	unsigned char			flt_src;
++	unsigned char			flt_dest;
++	unsigned char			flt_src_allow;
++	unsigned char			flt_dest_allow;
++
+ 	struct timer_list		tick;
+ 
+ 	/* STP */
+@@ -115,13 +150,14 @@
+ extern struct notifier_block br_device_notifier;
+ extern unsigned char bridge_ula[6];
+ 
++extern int br_dev_xmit(struct sk_buff *skb, struct net_device *dev);
+ /* br.c */
++rwlock_t			port_lock;
+ extern void br_dec_use_count(void);
+ extern void br_inc_use_count(void);
+ 
+ /* br_device.c */
+ extern void br_dev_setup(struct net_device *dev);
+-extern int br_dev_xmit(struct sk_buff *skb, struct net_device *dev);
+ 
+ /* br_fdb.c */
+ extern void br_fdb_changeaddr(struct net_bridge_port *p,
+@@ -154,6 +190,9 @@
+ 		      int clone);
+ 
+ /* br_if.c */
++struct net_bridge_fdb_entry *filter_port;
++struct net_bridge_fdb_entry *net_port;
++struct net_bridge_fdb_entry *user_port;
+ extern int br_add_bridge(char *name);
+ extern int br_del_bridge(char *name);
+ extern int br_add_if(struct net_bridge *br,
+@@ -177,6 +216,10 @@
+ 	     unsigned long arg2);
+ extern int br_ioctl_deviceless_stub(unsigned long arg);
+ 
++/* br_netfilter.c */
++extern int br_netfilter_init(void);
++extern void br_netfilter_fini(void);
++
+ /* br_stp.c */
+ extern int br_is_root_bridge(struct net_bridge *br);
+ extern struct net_bridge_port *br_get_port(struct net_bridge *br,
+@@ -201,4 +244,23 @@
+ /* br_stp_bpdu.c */
+ extern void br_stp_handle_bpdu(struct sk_buff *skb);
+ 
++/* br_filter.c */
++void br_ftdb_remove(struct net_bridge *br, unsigned char *addr);
++int br_ftdb_get(struct net_bridge *br, unsigned char *addr);
++int br_ftdb_get_entries(struct net_bridge *br,
++		       unsigned char *_buf,
++		       int maxnum,
++		       int offset);
++void br_ftdb_insert(struct net_bridge *br,
++		    unsigned char *addr);
++void br_ftpdb_remove(struct net_bridge *br, unsigned int fprot);
++int br_ftpdb_get(struct net_bridge *br, unsigned int fprot);
++int br_ftpdb_get_entries(struct net_bridge *br,
++		       unsigned char *_buf,
++		       int maxnum,
++		       int offset);
++void br_ftpdb_insert(struct net_bridge *br,
++		    unsigned int fprot);
++
+ #endif
++
+diff -Nurw bridge/br_stp.c bridge-test/bridge/br_stp.c
+--- bridge/br_stp.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_stp.c	Thu Mar  7 13:07:48 2002
+@@ -14,7 +14,8 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include "br_private.h"
+diff -Nurw bridge/br_stp_bpdu.c bridge-test/bridge/br_stp_bpdu.c
+--- bridge/br_stp_bpdu.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_stp_bpdu.c	Thu Mar  7 12:59:23 2002
+@@ -15,7 +15,8 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/if_ether.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include "br_private.h"
+ #include "br_private_stp.h"
+ 
+diff -Nurw bridge/br_stp_if.c bridge-test/bridge/br_stp_if.c
+--- bridge/br_stp_if.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_stp_if.c	Thu Mar  7 13:08:27 2002
+@@ -14,7 +14,8 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include "br_private.h"
+diff -Nurw bridge/br_stp_timer.c bridge-test/bridge/br_stp_timer.c
+--- bridge/br_stp_timer.c	Thu Aug  8 04:28:21 2002
++++ bridge-test/bridge/br_stp_timer.c	Thu Mar  7 13:09:00 2002
+@@ -14,7 +14,8 @@
+  */
+ 
+ #include <linux/kernel.h>
+-#include <linux/if_bridge.h>
++/*#include <linux/if_bridge.h>*/
++#include "afs_if_bridge.h"
+ #include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include "br_private.h"

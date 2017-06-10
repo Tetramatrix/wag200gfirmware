@@ -1,0 +1,2357 @@
+diff -ur linux-2.4.17-clean/Documentation/filesystems/Locking linux/Documentation/filesystems/Locking
+--- linux-2.4.17-clean/Documentation/filesystems/Locking	Fri Dec 21 09:41:53 2001
++++ linux/Documentation/filesystems/Locking	Sun Jul 14 19:44:08 2002
+@@ -60,7 +60,7 @@
+ readlink:	no	no		no
+ follow_link:	no	no		no
+ truncate:	yes	yes		no		(see below)
+-setattr:	yes	if ATTR_SIZE	no
++setattr:	no	yes  		no
+ permssion:	yes	no		no
+ getattr:						(see below)
+ revalidate:	no					(see below)
+@@ -234,7 +234,7 @@
+ locking rules:
+ 	All except ->poll() may block.
+ 		BKL
+-llseek:		yes
++llseek:		yes	(see below)
+ read:		no
+ write:		no
+ readdir:	yes	(see below)
+@@ -250,6 +250,13 @@
+ readv:		no
+ writev:		no
+ 
++->llseek() locking has moved from llseek to the individual llseek
++implementations.  If your fs is not using generic_file_llseek, you
++need to acquire and release the appropriate lock(s) in your ->llseek().
++For many filesystems, it is probably safe to acquire the inode
++semaphore.  Note some filesystems (i.e. remote ones) provide no
++protection for i_size so you will need to use the BKL.
++
+ ->open() locking is in-transit: big lock partially moved into the methods.
+ The only exception is ->open() in the instances of file_operations that never
+ end up in ->i_fop/->proc_fops, i.e. ones that belong to character devices
+diff -ur linux-2.4.17-clean/arch/cris/drivers/eeprom.c linux/arch/cris/drivers/eeprom.c
+--- linux-2.4.17-clean/arch/cris/drivers/eeprom.c	Thu Jul 26 15:10:06 2001
++++ linux/arch/cris/drivers/eeprom.c	Sun Jul 14 19:44:08 2002
+@@ -71,6 +71,7 @@
+ #include <linux/fs.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
++#include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include "i2c.h"
+ 
+@@ -445,36 +446,39 @@
+  *  orig 1: relative from current position
+  *  orig 2: position from last eeprom address
+  */
+-  
++  loff_t ret;
++
++  lock_kernel();
+   switch (orig)
+   {
+    case 0:
+-     file->f_pos = offset;
++     ret = file->f_pos = offset;
+      break;
+    case 1:
+-     file->f_pos += offset;
++     ret = file->f_pos += offset;
+      break;
+    case 2:
+-     file->f_pos = eeprom.size - offset;
++     ret = file->f_pos = eeprom.size - offset;
+      break;
+    default:
+-     return -EINVAL;
++     ret = -EINVAL;
+   }
+ 
+   /* truncate position */
+   if (file->f_pos < 0)
+   {
+     file->f_pos = 0;    
+-    return(-EOVERFLOW);
++    unlock_kernel();
++    ret = -EOVERFLOW;
+   }
+   
+   if (file->f_pos >= eeprom.size)
+   {
+     file->f_pos = eeprom.size - 1;
+-    return(-EOVERFLOW);
++    ret = -EOVERFLOW;
+   }
+ 
+-  return ( file->f_pos );
++  return ( ret );
+ }
+ 
+ /* Reads data from eeprom. */
+diff -ur linux-2.4.17-clean/arch/i386/kernel/cpuid.c linux/arch/i386/kernel/cpuid.c
+--- linux-2.4.17-clean/arch/i386/kernel/cpuid.c	Thu Oct 11 09:04:57 2001
++++ linux/arch/i386/kernel/cpuid.c	Sun Jul 14 19:44:08 2002
+@@ -35,6 +35,7 @@
+ #include <linux/poll.h>
+ #include <linux/smp.h>
+ #include <linux/major.h>
++#include <linux/smp_lock.h>
+ 
+ #include <asm/processor.h>
+ #include <asm/msr.h>
+@@ -82,16 +83,25 @@
+ 
+ static loff_t cpuid_seek(struct file *file, loff_t offset, int orig)
+ {
++  loff_t ret;
++
++  lock_kernel();
++
+   switch (orig) {
+   case 0:
+     file->f_pos = offset;
+-    return file->f_pos;
++    ret = file->f_pos;
++    break;
+   case 1:
+     file->f_pos += offset;
+-    return file->f_pos;
++    ret = file->f_pos;
++    break;
+   default:
+-    return -EINVAL;	/* SEEK_END not supported */
++    ret = -EINVAL;
+   }
++
++  unlock_kernel();
++  return ret;
+ }
+ 
+ static ssize_t cpuid_read(struct file * file, char * buf,
+diff -ur linux-2.4.17-clean/arch/i386/kernel/msr.c linux/arch/i386/kernel/msr.c
+--- linux-2.4.17-clean/arch/i386/kernel/msr.c	Thu Oct 11 09:04:57 2001
++++ linux/arch/i386/kernel/msr.c	Sun Jul 14 19:44:08 2002
+@@ -33,6 +33,7 @@
+ #include <linux/init.h>
+ #include <linux/poll.h>
+ #include <linux/smp.h>
++#include <linux/smp_lock.h>
+ #include <linux/major.h>
+ 
+ #include <asm/processor.h>
+@@ -162,16 +163,19 @@
+ 
+ static loff_t msr_seek(struct file *file, loff_t offset, int orig)
+ {
++  loff_t ret = -EINVAL;
++  lock_kernel();
+   switch (orig) {
+   case 0:
+     file->f_pos = offset;
+-    return file->f_pos;
++    ret = file->f_pos;
++    break;
+   case 1:
+     file->f_pos += offset;
+-    return file->f_pos;
+-  default:
+-    return -EINVAL;	/* SEEK_END not supported */
++    ret = file->f_pos;
+   }
++  unlock_kernel();
++  return ret;
+ }
+ 
+ static ssize_t msr_read(struct file * file, char * buf,
+diff -ur linux-2.4.17-clean/arch/ppc/kernel/ppc_htab.c linux/arch/ppc/kernel/ppc_htab.c
+--- linux-2.4.17-clean/arch/ppc/kernel/ppc_htab.c	Fri Nov  2 17:43:54 2001
++++ linux/arch/ppc/kernel/ppc_htab.c	Sun Jul 14 19:44:08 2002
+@@ -21,6 +21,7 @@
+ #include <linux/sysctl.h>
+ #include <linux/ctype.h>
+ #include <linux/threads.h>
++#include <linux/smp_lock.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/bitops.h>
+@@ -430,18 +431,20 @@
+ static long long
+ ppc_htab_lseek(struct file * file, loff_t offset, int orig)
+ {
++    long long ret = -EINVAL;
++
++    lock_kernel();
+     switch (orig) {
+     case 0:
+ 	file->f_pos = offset;
+-	return(file->f_pos);
++	ret = file->f_pos;
++	break;
+     case 1:
+ 	file->f_pos += offset;
+-	return(file->f_pos);
+-    case 2:
+-	return(-EINVAL);
+-    default:
+-	return(-EINVAL);
++	ret = file->f_pos;
+     }
++    unlock_kernel();
++    return ret;
+ }
+ 
+ int proc_dol2crvec(ctl_table *table, int write, struct file *filp,
+diff -ur linux-2.4.17-clean/drivers/char/mem.c linux/drivers/char/mem.c
+--- linux-2.4.17-clean/drivers/char/mem.c	Fri Dec 21 09:41:54 2001
++++ linux/drivers/char/mem.c	Sun Jul 14 19:44:08 2002
+@@ -21,6 +21,7 @@
+ #include <linux/raw.h>
+ #include <linux/tty.h>
+ #include <linux/capability.h>
++#include <linux/smp_lock.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/io.h>
+@@ -503,16 +504,23 @@
+  */
+ static loff_t memory_lseek(struct file * file, loff_t offset, int orig)
+ {
++	int ret;
++
++	lock_kernel();
+ 	switch (orig) {
+ 		case 0:
+ 			file->f_pos = offset;
+-			return file->f_pos;
++			ret = file->f_pos;
++			break;
+ 		case 1:
+ 			file->f_pos += offset;
+-			return file->f_pos;
++			ret = file->f_pos;
++			break;
+ 		default:
+-			return -EINVAL;
++			ret = -EINVAL;
+ 	}
++	unlock_kernel();
++	return ret;
+ }
+ 
+ static int open_port(struct inode * inode, struct file * filp)
+diff -ur linux-2.4.17-clean/drivers/char/nvram.c linux/drivers/char/nvram.c
+--- linux-2.4.17-clean/drivers/char/nvram.c	Fri Sep 14 14:40:00 2001
++++ linux/drivers/char/nvram.c	Sun Jul 14 19:44:08 2002
+@@ -213,6 +213,7 @@
+ 
+ static long long nvram_llseek(struct file *file,loff_t offset, int origin )
+ {
++	lock_kernel();
+ 	switch( origin ) {
+ 	  case 0:
+ 		/* nothing to do */
+@@ -224,6 +225,7 @@
+ 		offset += NVRAM_BYTES;
+ 		break;
+ 	}
++	unlock_kernel();
+ 	return( (offset >= 0) ? (file->f_pos = offset) : -EINVAL );
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/char/nwflash.c linux/drivers/char/nwflash.c
+--- linux-2.4.17-clean/drivers/char/nwflash.c	Fri Oct 12 13:48:42 2001
++++ linux/drivers/char/nwflash.c	Sun Jul 14 19:44:08 2002
+@@ -26,6 +26,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/rwsem.h>
+ #include <linux/init.h>
++#include <linux/smp_lock.h>
+ 
+ #include <asm/hardware/dec21285.h>
+ #include <asm/io.h>
+@@ -301,30 +302,45 @@
+  */
+ static long long flash_llseek(struct file *file, long long offset, int orig)
+ {
++	long long ret;
++
++	lock_kernel();
+ 	if (flashdebug)
+ 		printk(KERN_DEBUG "flash_llseek: offset=0x%X, orig=0x%X.\n",
+ 		       (unsigned int) offset, orig);
+ 
+ 	switch (orig) {
+ 	case 0:
+-		if (offset < 0)
+-			return -EINVAL;
++		if (offset < 0) {
++			ret = -EINVAL;
++			break;
++		}
+ 
+-		if ((unsigned int) offset > gbFlashSize)
+-			return -EINVAL;
++		if ((unsigned int) offset > gbFlashSize) {
++			ret = -EINVAL;
++			break;
++		}
+ 
+ 		file->f_pos = (unsigned int) offset;
+-		return file->f_pos;
++		ret = file->f_pos;
++		break;
+ 	case 1:
+-		if ((file->f_pos + offset) > gbFlashSize)
+-			return -EINVAL;
+-		if ((file->f_pos + offset) < 0)
+-			return -EINVAL;
++		if ((file->f_pos + offset) > gbFlashSize) {
++			ret = -EINVAL;
++			break;
++		}
++		if ((file->f_pos + offset) < 0) {
++			ret = -EINVAL;
++			break;
++		}
+ 		file->f_pos += offset;
+-		return file->f_pos;
++		ret = file->f_pos;
++		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
++	unlock_kernel();
++	return ret;
+ }
+ 
+ 
+diff -ur linux-2.4.17-clean/drivers/char/tty_io.c linux/drivers/char/tty_io.c
+--- linux-2.4.17-clean/drivers/char/tty_io.c	Fri Dec 21 09:41:54 2001
++++ linux/drivers/char/tty_io.c	Sun Jul 14 19:44:08 2002
+@@ -573,6 +573,8 @@
+ 	struct task_struct *p;
+ 	int tty_pgrp = -1;
+ 
++	lock_kernel();
++
+ 	if (tty) {
+ 		tty_pgrp = tty->pgrp;
+ 		if (on_exit && tty->driver.type != TTY_DRIVER_TYPE_PTY)
+@@ -582,6 +584,7 @@
+ 			kill_pg(current->tty_old_pgrp, SIGHUP, on_exit);
+ 			kill_pg(current->tty_old_pgrp, SIGCONT, on_exit);
+ 		}
++		unlock_kernel();	
+ 		return;
+ 	}
+ 	if (tty_pgrp > 0) {
+@@ -599,6 +602,7 @@
+ 	  	if (p->session == current->session)
+ 			p->tty = NULL;
+ 	read_unlock(&tasklist_lock);
++	unlock_kernel();
+ }
+ 
+ void wait_for_keypress(void)
+diff -ur linux-2.4.17-clean/drivers/char/vc_screen.c linux/drivers/char/vc_screen.c
+--- linux-2.4.17-clean/drivers/char/vc_screen.c	Sun Sep 16 21:22:40 2001
++++ linux/drivers/char/vc_screen.c	Sun Jul 14 19:44:08 2002
+@@ -36,6 +36,7 @@
+ #include <linux/selection.h>
+ #include <linux/kbd_kern.h>
+ #include <linux/console.h>
++#include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include <asm/byteorder.h>
+ #include <asm/unaligned.h>
+@@ -66,10 +67,13 @@
+ 
+ static loff_t vcs_lseek(struct file *file, loff_t offset, int orig)
+ {
+-	int size = vcs_size(file->f_dentry->d_inode);
++	int size;
+ 
++	lock_kernel();
++	size = vcs_size(file->f_dentry->d_inode);
+ 	switch (orig) {
+ 		default:
++			unlock_kernel();
+ 			return -EINVAL;
+ 		case 2:
+ 			offset += size;
+@@ -79,9 +83,12 @@
+ 		case 0:
+ 			break;
+ 	}
+-	if (offset < 0 || offset > size)
++	if (offset < 0 || offset > size) {
++		unlock_kernel();
+ 		return -EINVAL;
++	}
+ 	file->f_pos = offset;
++	unlock_kernel();
+ 	return file->f_pos;
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/ieee1394/pcilynx.c linux/drivers/ieee1394/pcilynx.c
+--- linux-2.4.17-clean/drivers/ieee1394/pcilynx.c	Fri Dec 21 09:41:54 2001
++++ linux/drivers/ieee1394/pcilynx.c	Sun Jul 14 19:44:08 2002
+@@ -29,6 +29,7 @@
+ #include <linux/pci.h>
+ #include <linux/fs.h>
+ #include <linux/poll.h>
++#include <linux/smp_lock.h>
+ #include <asm/byteorder.h>
+ #include <asm/atomic.h>
+ #include <asm/io.h>
+@@ -891,8 +892,9 @@
+ 
+ loff_t mem_llseek(struct file *file, loff_t offs, int orig)
+ {
+-        loff_t newoffs;
++        loff_t newoffs = -1;
+ 
++        lock_kernel();
+         switch (orig) {
+         case 0:
+                 newoffs = offs;
+@@ -902,12 +904,12 @@
+                 break;
+         case 2:
+                 newoffs = PCILYNX_MAX_MEMORY + 1 + offs;
+-                break;
+-        default:
+-                return -EINVAL;
+         }
+ 
+-        if (newoffs < 0 || newoffs > PCILYNX_MAX_MEMORY + 1) return -EINVAL;
++        if (newoffs < 0 || newoffs > PCILYNX_MAX_MEMORY + 1) {
++                lock_kernel();
++                return -EINVAL;
++        }
+ 
+         file->f_pos = newoffs;
+         return newoffs;
+diff -ur linux-2.4.17-clean/drivers/macintosh/nvram.c linux/drivers/macintosh/nvram.c
+--- linux-2.4.17-clean/drivers/macintosh/nvram.c	Mon Oct 15 13:43:24 2001
++++ linux/drivers/macintosh/nvram.c	Sun Jul 14 19:44:08 2002
+@@ -13,6 +13,7 @@
+ #include <linux/fcntl.h>
+ #include <linux/nvram.h>
+ #include <linux/init.h>
++#include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include <asm/nvram.h>
+ 
+@@ -20,6 +21,7 @@
+ 
+ static loff_t nvram_llseek(struct file *file, loff_t offset, int origin)
+ {
++	lock_kernel();
+ 	switch (origin) {
+ 	case 1:
+ 		offset += file->f_pos;
+@@ -28,9 +30,12 @@
+ 		offset += NVRAM_SIZE;
+ 		break;
+ 	}
+-	if (offset < 0)
++	if (offset < 0) {
++		unlock_kernel();
+ 		return -EINVAL;
++	}
+ 	file->f_pos = offset;
++	unlock_kernel();
+ 	return file->f_pos;
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/mtd/mtdchar.c linux/drivers/mtd/mtdchar.c
+--- linux-2.4.17-clean/drivers/mtd/mtdchar.c	Thu Oct  4 15:14:59 2001
++++ linux/drivers/mtd/mtdchar.c	Sun Jul 14 19:44:08 2002
+@@ -10,6 +10,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/smp_lock.h>
+ #include <linux/slab.h>
+ 
+ #ifdef CONFIG_DEVFS_FS
+@@ -31,6 +32,7 @@
+ {
+ 	struct mtd_info *mtd=(struct mtd_info *)file->private_data;
+ 
++	lock_kernel();
+ 	switch (orig) {
+ 	case 0:
+ 		/* SEEK_SET */
+@@ -45,6 +47,7 @@
+ 		file->f_pos =mtd->size + offset;
+ 		break;
+ 	default:
++		unlock_kernel();
+ 		return -EINVAL;
+ 	}
+ 
+@@ -53,6 +56,7 @@
+ 	else if (file->f_pos >= mtd->size)
+ 		file->f_pos = mtd->size - 1;
+ 
++	unlock_kernel();
+ 	return file->f_pos;
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/pci/proc.c linux/drivers/pci/proc.c
+--- linux-2.4.17-clean/drivers/pci/proc.c	Fri Nov 16 18:38:39 2001
++++ linux/drivers/pci/proc.c	Sun Jul 14 19:44:08 2002
+@@ -12,6 +12,7 @@
+ #include <linux/proc_fs.h>
+ #include <linux/init.h>
+ #include <linux/seq_file.h>
++#include <linux/smp_lock.h>
+ 
+ #include <asm/uaccess.h>
+ #include <asm/byteorder.h>
+@@ -21,8 +22,9 @@
+ static loff_t
+ proc_bus_pci_lseek(struct file *file, loff_t off, int whence)
+ {
+-	loff_t new;
++	loff_t new = -1;
+ 
++	lock_kernel();
+ 	switch (whence) {
+ 	case 0:
+ 		new = off;
+@@ -33,9 +35,8 @@
+ 	case 2:
+ 		new = PCI_CFG_SPACE_SIZE + off;
+ 		break;
+-	default:
+-		return -EINVAL;
+ 	}
++	unlock_kernel();
+ 	if (new < 0 || new > PCI_CFG_SPACE_SIZE)
+ 		return -EINVAL;
+ 	return (file->f_pos = new);
+diff -ur linux-2.4.17-clean/drivers/pnp/isapnp_proc.c linux/drivers/pnp/isapnp_proc.c
+--- linux-2.4.17-clean/drivers/pnp/isapnp_proc.c	Wed Jan 17 13:29:14 2001
++++ linux/drivers/pnp/isapnp_proc.c	Sun Jul 14 19:44:08 2002
+@@ -84,18 +84,26 @@
+ 
+ static loff_t isapnp_info_entry_lseek(struct file *file, loff_t offset, int orig)
+ {
++	loff_t ret;
++
++	lock_kernel();
++
+ 	switch (orig) {
+ 	case 0:	/* SEEK_SET */
+ 		file->f_pos = offset;
+-		return file->f_pos;
++		ret = file->f_pos;
++		break;
+ 	case 1:	/* SEEK_CUR */
+ 		file->f_pos += offset;
+-		return file->f_pos;
++		ret = file->f_pos;
++		break;
+ 	case 2:	/* SEEK_END */
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+-	return -ENXIO;
++
++	unlock_kernel();
++	return ret;
+ }
+ 
+ static ssize_t isapnp_info_entry_read(struct file *file, char *buffer,
+@@ -215,8 +223,9 @@
+ 
+ static loff_t isapnp_proc_bus_lseek(struct file *file, loff_t off, int whence)
+ {
+-	loff_t new;
+-	
++	loff_t new = -1;
++
++	lock_kernel();
+ 	switch (whence) {
+ 	case 0:
+ 		new = off;
+@@ -227,11 +236,12 @@
+ 	case 2:
+ 		new = 256 + off;
+ 		break;
+-	default:
+-		return -EINVAL;
+ 	}
+-	if (new < 0 || new > 256)
++	if (new < 0 || new > 256) {
++		unlock_kernel();
+ 		return -EINVAL;
++	}
++	unlock_kernel();
+ 	return (file->f_pos = new);
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/sbus/char/flash.c linux/drivers/sbus/char/flash.c
+--- linux-2.4.17-clean/drivers/sbus/char/flash.c	Wed Oct 10 23:42:47 2001
++++ linux/drivers/sbus/char/flash.c	Sun Jul 14 19:44:08 2002
+@@ -83,6 +83,7 @@
+ static long long
+ flash_llseek(struct file *file, long long offset, int origin)
+ {
++	lock_kernel();
+ 	switch (origin) {
+ 		case 0:
+ 			file->f_pos = offset;
+@@ -96,8 +97,10 @@
+ 			file->f_pos = flash.read_size;
+ 			break;
+ 		default:
++			unlock_kernel();
+ 			return -EINVAL;
+ 	}
++	unlock_kernel();
+ 	return file->f_pos;
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/sbus/char/jsflash.c linux/drivers/sbus/char/jsflash.c
+--- linux-2.4.17-clean/drivers/sbus/char/jsflash.c	Thu Oct 25 13:58:35 2001
++++ linux/drivers/sbus/char/jsflash.c	Sun Jul 14 19:44:08 2002
+@@ -259,16 +259,23 @@
+  */
+ static loff_t jsf_lseek(struct file * file, loff_t offset, int orig)
+ {
++	loff_t ret;
++
++	lock_kernel();
+ 	switch (orig) {
+ 		case 0:
+ 			file->f_pos = offset;
+-			return file->f_pos;
++			ret = file->f_pos;
++			break;
+ 		case 1:
+ 			file->f_pos += offset;
+-			return file->f_pos;
++			ret = file->f_pos;
++			break;
+ 		default:
+-			return -EINVAL;
++			ret = -EINVAL;
+ 	}
++	unlock_kernel();
++	return ret;
+ }
+ 
+ /*
+diff -ur linux-2.4.17-clean/drivers/usb/devices.c linux/drivers/usb/devices.c
+--- linux-2.4.17-clean/drivers/usb/devices.c	Fri Dec 21 09:41:55 2001
++++ linux/drivers/usb/devices.c	Sun Jul 14 19:44:08 2002
+@@ -554,21 +554,26 @@
+ 
+ static loff_t usb_device_lseek(struct file * file, loff_t offset, int orig)
+ {
++	loff_t ret;
++
++	lock_kernel();
++
+ 	switch (orig) {
+ 	case 0:
+ 		file->f_pos = offset;
+-		return file->f_pos;
+-
++		ret = file->f_pos;
++		break;
+ 	case 1:
+ 		file->f_pos += offset;
+-		return file->f_pos;
+-
++		ret = file->f_pos;
++		break;
+ 	case 2:
+-		return -EINVAL;
+-
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
++
++	unlock_kernel();
++	return ret;
+ }
+ 
+ struct file_operations usbdevfs_devices_fops = {
+diff -ur linux-2.4.17-clean/drivers/usb/devio.c linux/drivers/usb/devio.c
+--- linux-2.4.17-clean/drivers/usb/devio.c	Fri Nov  2 17:18:58 2001
++++ linux/drivers/usb/devio.c	Sun Jul 14 19:44:08 2002
+@@ -57,21 +57,26 @@
+ 
+ static loff_t usbdev_lseek(struct file *file, loff_t offset, int orig)
+ {
++	loff_t ret;
++
++	lock_kernel();
++
+ 	switch (orig) {
+ 	case 0:
+ 		file->f_pos = offset;
+-		return file->f_pos;
+-
++		ret = file->f_pos;
++		break;
+ 	case 1:
+ 		file->f_pos += offset;
+-		return file->f_pos;
+-
++		ret = file->f_pos;
++		break;
+ 	case 2:
+-		return -EINVAL;
+-
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
++
++	unlock_kernel();
++	return ret;
+ }
+ 
+ static ssize_t usbdev_read(struct file *file, char * buf, size_t nbytes, loff_t *ppos)
+diff -ur linux-2.4.17-clean/drivers/usb/drivers.c linux/drivers/usb/drivers.c
+--- linux-2.4.17-clean/drivers/usb/drivers.c	Wed Apr 26 15:22:55 2000
++++ linux/drivers/usb/drivers.c	Sun Jul 14 19:44:08 2002
+@@ -38,6 +38,7 @@
+ #include <linux/mm.h>
+ #include <linux/usb.h>
+ #include <linux/usbdevice_fs.h>
++#include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ 
+ /*****************************************************************/
+@@ -96,21 +97,24 @@
+ 
+ static loff_t usb_driver_lseek(struct file * file, loff_t offset, int orig)
+ {
++	loff_t ret;
++
++	lock_kernel();
+ 	switch (orig) {
+ 	case 0:
+ 		file->f_pos = offset;
+-		return file->f_pos;
+-
++		ret = file->f_pos;
++		break;
+ 	case 1:
+ 		file->f_pos += offset;
+-		return file->f_pos;
+-
++		ret = file->f_pos;
++		break;
+ 	case 2:
+-		return -EINVAL;
+-
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
++	unlock_kernel();
++	return ret;
+ }
+ 
+ struct file_operations usbdevfs_drivers_fops = {
+diff -ur linux-2.4.17-clean/drivers/usb/uhci-debug.h linux/drivers/usb/uhci-debug.h
+--- linux-2.4.17-clean/drivers/usb/uhci-debug.h	Thu Nov 22 11:49:54 2001
++++ linux/drivers/usb/uhci-debug.h	Sun Jul 14 19:44:08 2002
+@@ -12,6 +12,7 @@
+ #include <linux/config.h>
+ #include <linux/kernel.h>
+ #include <linux/proc_fs.h>
++#include <linux/smp_lock.h>
+ #include <asm/io.h>
+ 
+ #include "uhci.h"
+@@ -507,8 +508,11 @@
+ 
+ static loff_t uhci_proc_lseek(struct file *file, loff_t off, int whence)
+ {
+-	struct uhci_proc *up = file->private_data;
+-	loff_t new;
++	struct uhci_proc *up;
++	loff_t new = -1;
++
++	lock_kernel();
++	up = file->private_data;
+ 
+ 	switch (whence) {
+ 	case 0:
+@@ -517,12 +521,12 @@
+ 	case 1:
+ 		new = file->f_pos + off;
+ 		break;
+-	case 2:
+-	default:
+-		return -EINVAL;
+ 	}
+-	if (new < 0 || new > up->size)
++	if (new < 0 || new > up->size) {
++		unlock_kernel();
+ 		return -EINVAL;
++	}
++	unlock_kernel();
+ 	return (file->f_pos = new);
+ }
+ 
+diff -ur linux-2.4.17-clean/drivers/zorro/proc.c linux/drivers/zorro/proc.c
+--- linux-2.4.17-clean/drivers/zorro/proc.c	Tue Mar  7 10:52:41 2000
++++ linux/drivers/zorro/proc.c	Sun Jul 14 19:44:08 2002
+@@ -14,6 +14,7 @@
+ #include <linux/zorro.h>
+ #include <linux/proc_fs.h>
+ #include <linux/init.h>
++#include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include <asm/amigahw.h>
+ #include <asm/setup.h>
+@@ -21,8 +22,9 @@
+ static loff_t
+ proc_bus_zorro_lseek(struct file *file, loff_t off, int whence)
+ {
+-	loff_t new;
++	loff_t new = -1;
+ 
++	lock_kernel();
+ 	switch (whence) {
+ 	case 0:
+ 		new = off;
+@@ -33,11 +35,12 @@
+ 	case 2:
+ 		new = sizeof(struct ConfigDev) + off;
+ 		break;
+-	default:
+-		return -EINVAL;
+ 	}
+-	if (new < 0 || new > sizeof(struct ConfigDev))
++	if (new < 0 || new > sizeof(struct ConfigDev)) {
++		unlock_kernel();
+ 		return -EINVAL;
++	}
++	unlock_kernel();
+ 	return (file->f_pos = new);
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/adfs/inode.c linux/fs/adfs/inode.c
+--- linux-2.4.17-clean/fs/adfs/inode.c	Sun Sep 30 12:26:08 2001
++++ linux/fs/adfs/inode.c	Sun Jul 14 19:44:08 2002
+@@ -306,6 +306,8 @@
+ 	struct super_block *sb = inode->i_sb;
+ 	unsigned int ia_valid = attr->ia_valid;
+ 	int error;
++	
++	lock_kernel();
+ 
+ 	error = inode_change_ok(inode, attr);
+ 
+@@ -350,6 +352,7 @@
+ 	if (ia_valid & (ATTR_SIZE | ATTR_MTIME | ATTR_MODE))
+ 		mark_inode_dirty(inode);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/affs/inode.c linux/fs/affs/inode.c
+--- linux-2.4.17-clean/fs/affs/inode.c	Sun Sep 30 12:26:08 2001
++++ linux/fs/affs/inode.c	Sun Jul 14 19:44:08 2002
+@@ -226,6 +226,8 @@
+ 	struct inode *inode = dentry->d_inode;
+ 	int error;
+ 
++	lock_kernel();
++
+ 	pr_debug("AFFS: notify_change(%lu,0x%x)\n",inode->i_ino,attr->ia_valid);
+ 
+ 	error = inode_change_ok(inode,attr);
+@@ -245,6 +247,7 @@
+ 	if (!error && (attr->ia_valid & ATTR_MODE))
+ 		mode_to_prot(inode);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/attr.c linux/fs/attr.c
+--- linux-2.4.17-clean/fs/attr.c	Thu Oct 11 09:43:30 2001
++++ linux/fs/attr.c	Sun Jul 14 19:44:08 2002
+@@ -21,6 +21,8 @@
+ 	int retval = -EPERM;
+ 	unsigned int ia_valid = attr->ia_valid;
+ 
++	lock_kernel();
++
+ 	/* If force is set do it anyway. */
+ 	if (ia_valid & ATTR_FORCE)
+ 		goto fine;
+@@ -55,6 +57,7 @@
+ fine:
+ 	retval = 0;
+ error:
++	unlock_kernel();
+ 	return retval;
+ }
+ 
+@@ -62,7 +65,8 @@
+ {
+ 	unsigned int ia_valid = attr->ia_valid;
+ 	int error = 0;
+-
++	
++	lock_kernel();
+ 	if (ia_valid & ATTR_SIZE) {
+ 		error = vmtruncate(inode, attr->ia_size);
+ 		if (error)
+@@ -86,6 +90,7 @@
+ 	}
+ 	mark_inode_dirty(inode);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+@@ -114,6 +119,7 @@
+ int notify_change(struct dentry * dentry, struct iattr * attr)
+ {
+ 	struct inode *inode = dentry->d_inode;
++	mode_t mode = inode->i_mode;
+ 	int error;
+ 	time_t now = CURRENT_TIME;
+ 	unsigned int ia_valid = attr->ia_valid;
+@@ -126,8 +132,25 @@
+ 		attr->ia_atime = now;
+ 	if (!(ia_valid & ATTR_MTIME_SET))
+ 		attr->ia_mtime = now;
++	if (ia_valid & ATTR_KILL_SUID) {
++		if (mode & S_ISUID) {
++			if (!ia_valid & ATTR_MODE) {
++				ia_valid = attr->ia_valid |= ATTR_MODE;
++				attr->ia_mode = inode->i_mode;
++			}
++			attr->ia_mode &= ~S_ISUID;
++		}
++	}
++	if (ia_valid & ATTR_KILL_SGID) {
++		if ((mode & (S_ISGID | S_IXGRP)) == (S_ISGID | S_IXGRP)) {
++			if (!ia_valid & ATTR_MODE) {
++				ia_valid = attr->ia_valid |= ATTR_MODE;
++				attr->ia_mode = inode->i_mode;
++			}
++			attr->ia_mode &= ~S_ISGID;
++		}
++	}
+ 
+-	lock_kernel();
+ 	if (inode->i_op && inode->i_op->setattr) 
+ 		error = inode->i_op->setattr(dentry, attr);
+ 	else {
+@@ -140,7 +163,6 @@
+ 				error = inode_setattr(inode, attr);
+ 		}
+ 	}
+-	unlock_kernel();
+ 	if (!error) {
+ 		unsigned long dn_mask = setattr_mask(ia_valid);
+ 		if (dn_mask)
+diff -ur linux-2.4.17-clean/fs/block_dev.c linux/fs/block_dev.c
+--- linux-2.4.17-clean/fs/block_dev.c	Fri Dec 21 09:41:55 2001
++++ linux/fs/block_dev.c	Sun Jul 14 19:44:08 2002
+@@ -149,6 +149,7 @@
+ 	loff_t size = file->f_dentry->d_inode->i_bdev->bd_inode->i_size;
+ 	loff_t retval;
+ 
++	lock_kernel();
+ 	switch (origin) {
+ 		case 2:
+ 			offset += size;
+@@ -165,6 +166,7 @@
+ 		}
+ 		retval = offset;
+ 	}
++	unlock_kernel();
+ 	return retval;
+ }
+ 	
+diff -ur linux-2.4.17-clean/fs/coda/inode.c linux/fs/coda/inode.c
+--- linux-2.4.17-clean/fs/coda/inode.c	Fri Dec 21 09:41:55 2001
++++ linux/fs/coda/inode.c	Sun Jul 14 19:44:08 2002
+@@ -240,6 +240,8 @@
+         struct coda_vattr vattr;
+         int error;
+ 	
++	lock_kernel();
++	
+         memset(&vattr, 0, sizeof(vattr)); 
+ 
+         coda_iattr_to_vattr(iattr, &vattr);
+@@ -279,6 +281,8 @@
+ 		buf->f_ffree  = 9000000;
+ 	}
+ 
++	unlock_kernel();
++
+ 	/* and fill in the rest */
+ 	buf->f_type = CODA_SUPER_MAGIC;
+ 	buf->f_bsize = 1024;
+diff -ur linux-2.4.17-clean/fs/ext2/balloc.c linux/fs/ext2/balloc.c
+--- linux-2.4.17-clean/fs/ext2/balloc.c	Fri Oct  5 12:23:53 2001
++++ linux/fs/ext2/balloc.c	Sun Jul 14 19:44:08 2002
+@@ -539,6 +539,7 @@
+ 	 */
+ #ifdef EXT2_PREALLOCATE
+ 	/* Writer: ->i_prealloc* */
++	write_lock(&inode->u.ext2_i.i_meta_lock);
+ 	if (prealloc_count && !*prealloc_count) {
+ 		int	prealloc_goal;
+ 		unsigned long next_block = tmp + 1;
+@@ -576,8 +577,8 @@
+ 		ext2_debug ("Preallocated a further %lu bits.\n",
+ 			       (k - 1));
+ 	}
++	write_unlock(&inode->u.ext2_i.i_meta_lock);
+ #endif
+-
+ 	j = tmp;
+ 
+ 	mark_buffer_dirty(bh);
+diff -ur linux-2.4.17-clean/fs/ext2/ialloc.c linux/fs/ext2/ialloc.c
+--- linux-2.4.17-clean/fs/ext2/ialloc.c	Sun Nov 11 09:59:56 2001
++++ linux/fs/ext2/ialloc.c	Sun Jul 14 19:44:16 2002
+@@ -329,6 +329,7 @@
+ 	if (!inode)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	rwlock_init(&inode->u.ext2_i.i_meta_lock);
+ 	lock_super (sb);
+ 	es = sb->u.ext2_sb.s_es;
+ repeat:
+diff -ur linux-2.4.17-clean/fs/ext2/inode.c linux/fs/ext2/inode.c
+--- linux-2.4.17-clean/fs/ext2/inode.c	Wed Nov 21 14:07:25 2001
++++ linux/fs/ext2/inode.c	Sun Jul 14 19:44:08 2002
+@@ -51,8 +51,6 @@
+  */
+ void ext2_delete_inode (struct inode * inode)
+ {
+-	lock_kernel();
+-
+ 	if (is_bad_inode(inode) ||
+ 	    inode->i_ino == EXT2_ACL_IDX_INO ||
+ 	    inode->i_ino == EXT2_ACL_DATA_INO)
+@@ -60,6 +58,8 @@
+ 	inode->u.ext2_i.i_dtime	= CURRENT_TIME;
+ 	mark_inode_dirty(inode);
+ 	ext2_update_inode(inode, IS_SYNC(inode));
++	
++	lock_kernel();
+ 	inode->i_size = 0;
+ 	if (inode->i_blocks)
+ 		ext2_truncate (inode);
+@@ -68,24 +68,26 @@
+ 	unlock_kernel();
+ 	return;
+ no_delete:
+-	unlock_kernel();
+ 	clear_inode(inode);	/* We must guarantee clearing of inode... */
+ }
+ 
+ void ext2_discard_prealloc (struct inode * inode)
+ {
+ #ifdef EXT2_PREALLOCATE
+-	lock_kernel();
++	write_lock(&inode->u.ext2_i.i_meta_lock);
+ 	/* Writer: ->i_prealloc* */
+ 	if (inode->u.ext2_i.i_prealloc_count) {
+ 		unsigned short total = inode->u.ext2_i.i_prealloc_count;
+ 		unsigned long block = inode->u.ext2_i.i_prealloc_block;
+ 		inode->u.ext2_i.i_prealloc_count = 0;
+ 		inode->u.ext2_i.i_prealloc_block = 0;
++		write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 		/* Writer: end */
+ 		ext2_free_blocks (inode, block, total);
++	} else {
++		write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 	}
+-	unlock_kernel();
++		
+ #endif
+ }
+ 
+@@ -99,6 +101,7 @@
+ 
+ #ifdef EXT2_PREALLOCATE
+ 	/* Writer: ->i_prealloc* */
++	write_lock(&inode->u.ext2_i.i_meta_lock);
+ 	if (inode->u.ext2_i.i_prealloc_count &&
+ 	    (goal == inode->u.ext2_i.i_prealloc_block ||
+ 	     goal + 1 == inode->u.ext2_i.i_prealloc_block))
+@@ -106,9 +109,11 @@
+ 		result = inode->u.ext2_i.i_prealloc_block++;
+ 		inode->u.ext2_i.i_prealloc_count--;
+ 		/* Writer: end */
++		write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 		ext2_debug ("preallocation hit (%lu/%lu).\n",
+ 			    ++alloc_hits, ++alloc_attempts);
+ 	} else {
++		write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 		ext2_discard_prealloc (inode);
+ 		ext2_debug ("preallocation miss (%lu/%lu).\n",
+ 			    alloc_hits, ++alloc_attempts);
+@@ -254,9 +259,11 @@
+ 		if (!bh)
+ 			goto failure;
+ 		/* Reader: pointers */
++		read_lock(&inode->u.ext2_i.i_meta_lock);	
+ 		if (!verify_chain(chain, p))
+ 			goto changed;
+ 		add_chain(++p, bh, (u32*)bh->b_data + *++offsets);
++		read_unlock(&inode->u.ext2_i.i_meta_lock);
+ 		/* Reader: end */
+ 		if (!p->key)
+ 			goto no_block;
+@@ -264,6 +271,7 @@
+ 	return NULL;
+ 
+ changed:
++	read_unlock(&inode->u.ext2_i.i_meta_lock);
+ 	*err = -EAGAIN;
+ 	goto no_block;
+ failure:
+@@ -329,6 +337,8 @@
+ 				 unsigned long *goal)
+ {
+ 	/* Writer: ->i_next_alloc* */
++	
++	write_lock(&inode->u.ext2_i.i_meta_lock);
+ 	if (block == inode->u.ext2_i.i_next_alloc_block + 1) {
+ 		inode->u.ext2_i.i_next_alloc_block++;
+ 		inode->u.ext2_i.i_next_alloc_goal++;
+@@ -344,9 +354,11 @@
+ 			*goal = inode->u.ext2_i.i_next_alloc_goal;
+ 		if (!*goal)
+ 			*goal = ext2_find_near(inode, partial);
++		write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 		return 0;
+ 	}
+ 	/* Reader: end */
++	write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 	return -EAGAIN;
+ }
+ 
+@@ -452,6 +464,7 @@
+ 
+ 	/* Verify that place we are splicing to is still there and vacant */
+ 
++	write_lock(&inode->u.ext2_i.i_meta_lock);
+ 	/* Writer: pointers, ->i_next_alloc* */
+ 	if (!verify_chain(chain, where-1) || *where->p)
+ 		/* Writer: end */
+@@ -462,7 +475,7 @@
+ 	*where->p = where->key;
+ 	inode->u.ext2_i.i_next_alloc_block = block;
+ 	inode->u.ext2_i.i_next_alloc_goal = le32_to_cpu(where[num-1].key);
+-
++	write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 	/* Writer: end */
+ 
+ 	/* We are done with atomic stuff, now do the rest of housekeeping */
+@@ -485,6 +498,7 @@
+ 	return 0;
+ 
+ changed:
++	write_unlock(&inode->u.ext2_i.i_meta_lock);
+ 	for (i = 1; i < num; i++)
+ 		bforget(where[i].bh);
+ 	for (i = 0; i < num; i++)
+@@ -518,7 +532,6 @@
+ 	if (depth == 0)
+ 		goto out;
+ 
+-	lock_kernel();
+ reread:
+ 	partial = ext2_get_branch(inode, depth, offsets, chain, &err);
+ 
+@@ -540,7 +553,6 @@
+ 			brelse(partial->bh);
+ 			partial--;
+ 		}
+-		unlock_kernel();
+ out:
+ 		return err;
+ 	}
+@@ -943,6 +955,7 @@
+ 	inode->i_ctime = le32_to_cpu(raw_inode->i_ctime);
+ 	inode->i_mtime = le32_to_cpu(raw_inode->i_mtime);
+ 	inode->u.ext2_i.i_dtime = le32_to_cpu(raw_inode->i_dtime);
++	rwlock_init(&inode->u.ext2_i.i_meta_lock);
+ 	/* We now have enough fields to check if the inode was active or not.
+ 	 * This is needed because nfsd might try to access dead inodes
+ 	 * the test is that same one that e2fsck uses
+@@ -1150,9 +1163,7 @@
+ 
+ void ext2_write_inode (struct inode * inode, int wait)
+ {
+-	lock_kernel();
+ 	ext2_update_inode (inode, wait);
+-	unlock_kernel();
+ }
+ 
+ int ext2_sync_inode (struct inode *inode)
+diff -ur linux-2.4.17-clean/fs/ext3/inode.c linux/fs/ext3/inode.c
+--- linux-2.4.17-clean/fs/ext3/inode.c	Fri Dec 21 09:41:55 2001
++++ linux/fs/ext3/inode.c	Sun Jul 14 19:44:08 2002
+@@ -2374,6 +2374,8 @@
+ 			return error;
+ 	}
+ 
++	lock_kernel();
++
+ 	if (attr->ia_valid & ATTR_SIZE && attr->ia_size < inode->i_size) {
+ 		handle_t *handle;
+ 
+@@ -2401,6 +2403,7 @@
+ 
+ err_out:
+ 	ext3_std_error(inode->i_sb, error);
++	unlock_kernel();
+ 	if (!error)
+ 		error = rc;
+ 	return error;
+diff -ur linux-2.4.17-clean/fs/fat/inode.c linux/fs/fat/inode.c
+--- linux-2.4.17-clean/fs/fat/inode.c	Tue Nov 20 14:15:26 2001
++++ linux/fs/fat/inode.c	Sun Jul 14 19:44:08 2002
+@@ -1023,17 +1023,24 @@
+ {
+ 	struct super_block *sb = dentry->d_sb;
+ 	struct inode *inode = dentry->d_inode;
+-	int error;
++	int error = 0;
++
++	lock_kernel();
+ 
+ 	/* FAT cannot truncate to a longer file */
+ 	if (attr->ia_valid & ATTR_SIZE) {
+-		if (attr->ia_size > inode->i_size)
+-			return -EPERM;
++		if (attr->ia_size > inode->i_size) {
++			error = -EPERM;
++			goto out;
++		}
+ 	}
+ 
+ 	error = inode_change_ok(inode, attr);
+-	if (error)
+-		return MSDOS_SB(sb)->options.quiet ? 0 : error;
++	if (error) {
++		if( MSDOS_SB(sb)->options.quiet )
++		    error = 0; 
++ 		goto out;
++	}
+ 
+ 	if (((attr->ia_valid & ATTR_UID) && 
+ 	     (attr->ia_uid != MSDOS_SB(sb)->options.fs_uid)) ||
+@@ -1043,12 +1050,14 @@
+ 	     (attr->ia_mode & ~MSDOS_VALID_MODE)))
+ 		error = -EPERM;
+ 
+-	if (error)
+-		return MSDOS_SB(sb)->options.quiet ? 0 : error;
+-
++	if (error) {
++		if( MSDOS_SB(sb)->options.quiet )  
++			error = 0;
++		goto out;
++	}
+ 	error = inode_setattr(inode, attr);
+ 	if (error)
+-		return error;
++		goto out;
+ 
+ 	if (S_ISDIR(inode->i_mode))
+ 		inode->i_mode |= S_IXUGO;
+@@ -1056,6 +1065,8 @@
+ 	inode->i_mode = ((inode->i_mode & S_IFMT) | ((((inode->i_mode & S_IRWXU
+ 	    & ~MSDOS_SB(sb)->options.fs_umask) | S_IRUSR) >> 6)*S_IXUGO)) &
+ 	    ~MSDOS_SB(sb)->options.fs_umask;
+-	return 0;
++out:
++	unlock_kernel();
++	return error;
+ }
+ MODULE_LICENSE("GPL");
+diff -ur linux-2.4.17-clean/fs/hfs/file_cap.c linux/fs/hfs/file_cap.c
+--- linux-2.4.17-clean/fs/hfs/file_cap.c	Mon Sep 10 07:31:25 2001
++++ linux/fs/hfs/file_cap.c	Sun Jul 14 19:44:08 2002
+@@ -24,6 +24,7 @@
+ #include <linux/hfs_fs_sb.h>
+ #include <linux/hfs_fs_i.h>
+ #include <linux/hfs_fs.h>
++#include <linux/smp_lock.h>
+ 
+ /*================ Forward declarations ================*/
+ static loff_t      cap_info_llseek(struct file *, loff_t,
+@@ -91,6 +92,7 @@
+ {
+ 	long long retval;
+ 
++	lock_kernel();
+ 	switch (origin) {
+ 		case 2:
+ 			offset += file->f_dentry->d_inode->i_size;
+@@ -107,6 +109,7 @@
+ 		}
+ 		retval = offset;
+ 	}
++	unlock_kernel();
+ 	return retval;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/hfs/file_hdr.c linux/fs/hfs/file_hdr.c
+--- linux-2.4.17-clean/fs/hfs/file_hdr.c	Sun Aug 12 10:56:56 2001
++++ linux/fs/hfs/file_hdr.c	Sun Jul 14 19:44:08 2002
+@@ -29,6 +29,7 @@
+ #include <linux/hfs_fs_sb.h>
+ #include <linux/hfs_fs_i.h>
+ #include <linux/hfs_fs.h>
++#include <linux/smp_lock.h>
+ 
+ /* prodos types */
+ #define PRODOSI_FTYPE_DIR   0x0F
+@@ -347,6 +348,7 @@
+ {
+ 	long long retval;
+ 
++	lock_kernel();
+ 	switch (origin) {
+ 		case 2:
+ 			offset += file->f_dentry->d_inode->i_size;
+@@ -363,6 +365,7 @@
+ 		}
+ 		retval = offset;
+ 	}
++	unlock_kernel();
+ 	return retval;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/hfs/inode.c linux/fs/hfs/inode.c
+--- linux-2.4.17-clean/fs/hfs/inode.c	Wed Sep 12 15:34:06 2001
++++ linux/fs/hfs/inode.c	Sun Jul 14 19:44:08 2002
+@@ -117,17 +117,18 @@
+ 	struct hfs_cat_entry *entry = HFS_I(inode)->entry;
+ 	struct dentry **de = entry->sys_entry;
+ 	struct hfs_sb_info *hsb = HFS_SB(inode->i_sb);
+-	int error, i;
++	int error=0, i;
++
++	lock_kernel();
+ 
+ 	error = inode_change_ok(inode, attr); /* basic permission checks */
+ 	if (error) {
+ 		/* Let netatalk's afpd think chmod() always succeeds */
+ 		if (hsb->s_afpd &&
+ 		    (attr->ia_valid == (ATTR_MODE | ATTR_CTIME))) {
+-			return 0;
+-		} else {
+-			return error;
++			error = 0;
+ 		}
++		goto out; 
+ 	}
+ 
+ 	/* no uig/gid changes and limit which mode bits can be set */
+@@ -139,7 +140,10 @@
+ 	     (((entry->type == HFS_CDR_DIR) &&
+ 	       (attr->ia_mode != inode->i_mode))||
+ 	      (attr->ia_mode & ~HFS_VALID_MODE_BITS)))) {
+-		return hsb->s_quiet ? 0 : error;
++		if( hsb->s_quiet ) { 
++			error = 0;
++			goto out;
++		}
+ 	}
+ 	
+ 	if (entry->type == HFS_CDR_DIR) {
+@@ -170,9 +174,9 @@
+ 		}
+ 	}
+ 	error = inode_setattr(inode, attr);
+-	if (error)
+-		return error;
+-
++	if (error) 
++		goto out;
++	
+ 	/* We wouldn't want to mess with the sizes of the other fork */
+ 	attr->ia_valid &= ~ATTR_SIZE;
+ 
+@@ -204,7 +208,9 @@
+ 	}
+ 	/* size changes handled in hfs_extent_adj() */
+ 
+-	return 0;
++out:
++	unlock_kernel();
++	return error;
+ }
+ 
+ int hfs_notify_change(struct dentry *dentry, struct iattr * attr)
+diff -ur linux-2.4.17-clean/fs/hpfs/dir.c linux/fs/hpfs/dir.c
+--- linux-2.4.17-clean/fs/hpfs/dir.c	Mon Jun 11 19:15:27 2001
++++ linux/fs/hpfs/dir.c	Sun Jul 14 19:44:08 2002
+@@ -29,6 +29,7 @@
+ 	struct inode *i = filp->f_dentry->d_inode;
+ 	struct super_block *s = i->i_sb;
+ 	/*printk("dir lseek\n");*/
++	lock_kernel();
+ 	if (new_off == 0 || new_off == 1 || new_off == 11 || new_off == 12 || new_off == 13) goto ok;
+ 	hpfs_lock_inode(i);
+ 	pos = ((loff_t) hpfs_de_as_down_as_possible(s, i->i_hpfs_dno) << 4) + 1;
+@@ -39,10 +40,12 @@
+ 	}
+ 	hpfs_unlock_inode(i);
+ 	ok:
++	unlock_kernel();
+ 	return filp->f_pos = new_off;
+ 	fail:
+ 	hpfs_unlock_inode(i);
+ 	/*printk("illegal lseek: %016llx\n", new_off);*/
++	unlock_kernel();
+ 	return -ESPIPE;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/hpfs/inode.c linux/fs/hpfs/inode.c
+--- linux-2.4.17-clean/fs/hpfs/inode.c	Mon Sep 10 07:31:25 2001
++++ linux/fs/hpfs/inode.c	Sun Jul 14 19:44:08 2002
+@@ -299,15 +299,18 @@
+ int hpfs_notify_change(struct dentry *dentry, struct iattr *attr)
+ {
+ 	struct inode *inode = dentry->d_inode;
+-	int error;
+-	if ((attr->ia_valid & ATTR_SIZE) && attr->ia_size > inode->i_size) 
+-		return -EINVAL;
+-	if (inode->i_sb->s_hpfs_root == inode->i_ino) return -EINVAL;
+-	if ((error = inode_change_ok(inode, attr))) return error;
+-	error = inode_setattr(inode, attr);
+-	if (error) return error;
+-	hpfs_write_inode(inode);
+-	return 0;
++	int error=0;
++	lock_kernel();
++	if ( ((attr->ia_valid & ATTR_SIZE) && attr->ia_size > inode->i_size) ||
++	     (inode->i_sb->s_hpfs_root == inode->i_ino) ) {
++		error = -EINVAL;
++	} else if ((error = inode_change_ok(inode, attr))) {
++	} else if ((error = inode_setattr(inode, attr))) {
++	} else {
++		hpfs_write_inode(inode);
++	}
++	unlock_kernel();
++	return error;
+ }
+ 
+ void hpfs_write_if_changed(struct inode *inode)
+diff -ur linux-2.4.17-clean/fs/hpfs/namei.c linux/fs/hpfs/namei.c
+--- linux-2.4.17-clean/fs/hpfs/namei.c	Fri Dec 29 14:07:57 2000
++++ linux/fs/hpfs/namei.c	Sun Jul 14 19:44:08 2002
+@@ -340,11 +340,9 @@
+ 			goto ret;
+ 		}
+ 		/*printk("HPFS: truncating file before delete.\n");*/
+-		down(&inode->i_sem);
+ 		newattrs.ia_size = 0;
+ 		newattrs.ia_valid = ATTR_SIZE | ATTR_CTIME;
+ 		err = notify_change(dentry, &newattrs);
+-		up(&inode->i_sem);
+ 		put_write_access(inode);
+ 		if (err)
+ 			goto ret;
+diff -ur linux-2.4.17-clean/fs/intermezzo/dir.c linux/fs/intermezzo/dir.c
+--- linux-2.4.17-clean/fs/intermezzo/dir.c	Tue Nov 13 09:20:56 2001
++++ linux/fs/intermezzo/dir.c	Sun Jul 14 19:44:08 2002
+@@ -282,11 +282,13 @@
+         struct presto_file_set *fset;
+         struct lento_vfs_context info = { 0, 0, 0 };
+ 
++	lock_kernel();	
++
+         ENTRY;
+         error = presto_prep(de, &cache, &fset);
+         if ( error ) {
+                 EXIT;
+-                return error;
++                goto out;        
+         }
+ 
+         if (!iattr->ia_valid)
+@@ -300,7 +302,8 @@
+         
+         if ( presto_get_permit(de->d_inode) < 0 ) {
+                 EXIT;
+-                return -EROFS;
++                error = -EROFS;
++                goto out;
+         }
+ 
+         if (!ISLENTO(presto_c2m(cache)))
+@@ -308,6 +311,8 @@
+ 	info.flags |= LENTO_FL_IGNORE_TIME;
+         error = presto_do_setattr(fset, de, iattr, &info);
+         presto_put_permit(de->d_inode);
++out:
++        unlock_kernel();
+         return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/jffs/inode-v23.c linux/fs/jffs/inode-v23.c
+--- linux-2.4.17-clean/fs/jffs/inode-v23.c	Thu Oct  4 15:14:35 2001
++++ linux/fs/jffs/inode-v23.c	Sun Jul 14 19:44:08 2002
+@@ -198,11 +198,13 @@
+ 	struct jffs_file *f;
+ 	struct jffs_node *new_node;
+ 	int update_all;
+-	int res;
++	int res = 0;
+ 	int recoverable = 0;
+ 
+-	if ((res = inode_change_ok(inode, iattr)))
+-		return res;
++	lock_kernel();
++
++	if ((res = inode_change_ok(inode, iattr))) 
++		goto out;
+ 
+ 	c = (struct jffs_control *)inode->i_sb->u.generic_sbp;
+ 	fmc = c->fmc;
+@@ -217,7 +219,8 @@
+ 		       inode->i_ino);
+ 		D3(printk (KERN_NOTICE "notify_change(): up biglock\n"));
+ 		up(&fmc->biglock);
+-		return -EINVAL;
++		res = -EINVAL;
++		goto out;
+ 	});
+ 
+ 	D1(printk("***jffs_setattr(): file: \"%s\", ino: %u\n",
+@@ -237,7 +240,8 @@
+ 		D(printk("jffs_setattr(): Allocation failed!\n"));
+ 		D3(printk (KERN_NOTICE "notify_change(): up biglock\n"));
+ 		up(&fmc->biglock);
+-		return -ENOMEM;
++		res = -ENOMEM;
++		goto out;
+ 	}
+ 
+ 	new_node->data_offset = 0;
+@@ -323,7 +327,7 @@
+ 		jffs_free_node(new_node);
+ 		D3(printk (KERN_NOTICE "n_c(): up biglock\n"));
+ 		up(&c->fmc->biglock);
+-		return res;
++		goto out;
+ 	}
+ 
+ 	jffs_insert_node(c, f, &raw_inode, 0, new_node);
+@@ -331,7 +335,9 @@
+ 	mark_inode_dirty(inode);
+ 	D3(printk (KERN_NOTICE "n_c(): up biglock\n"));
+ 	up(&c->fmc->biglock);
+-	return 0;
++out:
++	unlock_kernel();
++	return res;
+ } /* jffs_notify_change()  */
+ 
+ 
+diff -ur linux-2.4.17-clean/fs/jffs2/file.c linux/fs/jffs2/file.c
+--- linux-2.4.17-clean/fs/jffs2/file.c	Thu Oct  4 15:13:18 2001
++++ linux/fs/jffs2/file.c	Sun Jul 14 19:44:08 2002
+@@ -41,6 +41,7 @@
+ #include <linux/fs.h>
+ #include <linux/pagemap.h>
+ #include <linux/jffs2.h>
++#include <linux/smp_lock.h>
+ #include "nodelist.h"
+ #include "crc32.h"
+ 
+@@ -91,12 +92,12 @@
+ 	int mdatalen = 0;
+ 	unsigned int ivalid;
+ 	__u32 phys_ofs, alloclen;
+-	int ret;
++	int ret = 0;
++	lock_kernel();
+ 	D1(printk(KERN_DEBUG "jffs2_setattr(): ino #%lu\n", inode->i_ino));
+ 	ret = inode_change_ok(inode, iattr);
+ 	if (ret) 
+-		return ret;
+-
++		goto out;
+ 	/* Special cases - we don't want more than one data node
+ 	   for these types on the medium at any time. So setattr
+ 	   must read the original data associated with the node
+@@ -113,12 +114,14 @@
+ 	} else if ((inode->i_mode & S_IFMT) == S_IFLNK) {
+ 		mdatalen = f->metadata->size;
+ 		mdata = kmalloc(f->metadata->size, GFP_USER);
+-		if (!mdata)
+-			return -ENOMEM;
++		if (!mdata) {
++			ret = -ENOMEM;
++			goto out;
++		}
+ 		ret = jffs2_read_dnode(c, f->metadata, mdata, 0, mdatalen);
+ 		if (ret) {
+ 			kfree(mdata);
+-			return ret;
++			goto out;
+ 		}
+ 		D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of symlink target\n", mdatalen));
+ 	}
+@@ -127,7 +130,8 @@
+ 	if (!ri) {
+ 		if ((inode->i_mode & S_IFMT) == S_IFLNK)
+ 			kfree(mdata);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto out;
+ 	}
+ 		
+ 	ret = jffs2_reserve_space(c, sizeof(*ri) + mdatalen, &phys_ofs, &alloclen, ALLOC_NORMAL);
+@@ -135,7 +139,7 @@
+ 		jffs2_free_raw_inode(ri);
+ 		if ((inode->i_mode & S_IFMT) == S_IFLNK)
+ 			 kfree(mdata);
+-		return ret;
++		goto out;
+ 	}
+ 	down(&f->sem);
+         ivalid = iattr->ia_valid;
+@@ -185,7 +189,8 @@
+ 	if (IS_ERR(new_metadata)) {
+ 		jffs2_free_raw_inode(ri);
+ 		up(&f->sem);
+-		return PTR_ERR(new_metadata);
++		ret = PTR_ERR(new_metadata);
++		goto out;
+ 	}
+ 	/* It worked. Update the inode */
+ 	inode->i_atime = ri->atime;
+@@ -216,7 +221,9 @@
+ 	}
+ 	jffs2_free_raw_inode(ri);
+ 	up(&f->sem);
+-	return 0;
++out:
++	unlock_kernel();
++	return ret;
+ }
+ 
+ int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+diff -ur linux-2.4.17-clean/fs/ncpfs/file.c linux/fs/ncpfs/file.c
+--- linux-2.4.17-clean/fs/ncpfs/file.c	Mon Sep 10 09:04:53 2001
++++ linux/fs/ncpfs/file.c	Sun Jul 14 19:44:09 2002
+@@ -18,6 +18,7 @@
+ #include <linux/locks.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
++#include <linux/smp_lock.h>
+ 
+ #include <linux/ncp_fs.h>
+ #include "ncplib_kernel.h"
+@@ -281,7 +282,7 @@
+ 
+ struct file_operations ncp_file_operations =
+ {
+-	llseek:		generic_file_llseek,
++	llseek:		remote_llseek,
+ 	read:		ncp_file_read,
+ 	write:		ncp_file_write,
+ 	ioctl:		ncp_ioctl,
+diff -ur linux-2.4.17-clean/fs/ncpfs/inode.c linux/fs/ncpfs/inode.c
+--- linux-2.4.17-clean/fs/ncpfs/inode.c	Sun Sep 30 12:26:08 2001
++++ linux/fs/ncpfs/inode.c	Sun Jul 14 19:44:09 2002
+@@ -27,6 +27,7 @@
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+ #include <linux/init.h>
++#include <linux/smp_lock.h>
+ 
+ #include <linux/ncp_fs.h>
+ 
+@@ -552,6 +553,8 @@
+ 
+ 	result = -EIO;
+ 
++	lock_kernel();	
++
+ 	server = NCP_SERVER(inode);
+ 	if ((!server) || !ncp_conn_valid(server))
+ 		goto out;
+@@ -596,7 +599,8 @@
+ 				info.attributes |=  (aRONLY|aRENAMEINHIBIT|aDELETEINHIBIT);
+                 } else if (!S_ISREG(inode->i_mode))
+                 {
+-                        return -EPERM;
++			result = -EPERM;
++			goto out;
+                 }
+                 else
+                 {
+@@ -682,7 +686,8 @@
+ 			attr->ia_size);
+ 
+ 		if ((result = ncp_make_open(inode, O_WRONLY)) < 0) {
+-			return -EACCES;
++			result = -EACCES;
++			goto out;
+ 		}
+ 		ncp_write_kernel(NCP_SERVER(inode), NCP_FINFO(inode)->file_handle,
+ 			  attr->ia_size, 0, "", &written);
+@@ -695,6 +700,7 @@
+ 			result = vmtruncate(inode, attr->ia_size);
+ 	}
+ out:
++	unlock_kernel();
+ 	return result;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/nfs/file.c linux/fs/nfs/file.c
+--- linux-2.4.17-clean/fs/nfs/file.c	Sun Sep 23 09:48:01 2001
++++ linux/fs/nfs/file.c	Sun Jul 14 19:44:09 2002
+@@ -41,7 +41,7 @@
+ static int  nfs_fsync(struct file *, struct dentry *dentry, int datasync);
+ 
+ struct file_operations nfs_file_operations = {
+-	llseek:		generic_file_llseek,
++	llseek:		remote_llseek,
+ 	read:		nfs_file_read,
+ 	write:		nfs_file_write,
+ 	mmap:		nfs_file_mmap,
+diff -ur linux-2.4.17-clean/fs/nfs/inode.c linux/fs/nfs/inode.c
+--- linux-2.4.17-clean/fs/nfs/inode.c	Fri Dec 21 09:41:55 2001
++++ linux/fs/nfs/inode.c	Sun Jul 14 19:44:09 2002
+@@ -783,6 +783,8 @@
+ 	struct nfs_fattr fattr;
+ 	int error;
+ 
++	lock_kernel();
++
+ 	/*
+ 	 * Make sure the inode is up-to-date.
+ 	 */
+@@ -827,6 +829,7 @@
+ 	}
+ 	error = nfs_refresh_inode(inode, &fattr);
+ out:
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/nfsd/vfs.c linux/fs/nfsd/vfs.c
+--- linux-2.4.17-clean/fs/nfsd/vfs.c	Fri Dec 21 09:41:55 2001
++++ linux/fs/nfsd/vfs.c	Sun Jul 14 19:44:09 2002
+@@ -266,6 +266,7 @@
+ 		if (err)
+ 			goto out_nfserr;
+ 
++		size_change = 1;
+ 		err = locks_verify_truncate(inode, NULL, iap->ia_size);
+ 		if (err) {
+ 			put_write_access(inode);
+@@ -281,35 +282,24 @@
+ 	}
+ 
+ 	/* Revoke setuid/setgid bit on chown/chgrp */
+-	if ((iap->ia_valid & ATTR_UID) && (imode & S_ISUID)
+-	 && iap->ia_uid != inode->i_uid) {
+-		iap->ia_valid |= ATTR_MODE;
+-		iap->ia_mode = imode &= ~S_ISUID;
+-	}
+-	if ((iap->ia_valid & ATTR_GID) && (imode & S_ISGID)
+-	 && iap->ia_gid != inode->i_gid) {
+-		iap->ia_valid |= ATTR_MODE;
+-		iap->ia_mode = imode &= ~S_ISGID;
+-	}
++	if ((iap->ia_valid & ATTR_UID) && iap->ia_uid != inode->i_uid)
++		iap->ia_valid |= ATTR_KILL_SUID;
++	if ((iap->ia_valid & ATTR_GID) && iap->ia_gid != inode->i_gid)
++		iap->ia_valid |= ATTR_KILL_SGID;
+ 
+ 	/* Change the attributes. */
+ 
+-
+ 	iap->ia_valid |= ATTR_CTIME;
+ 
+-	if (iap->ia_valid & ATTR_SIZE) {
+-		fh_lock(fhp);
+-		size_change = 1;
+-	}
+ 	err = nfserr_notsync;
+ 	if (!check_guard || guardtime == inode->i_ctime) {
++		fh_lock(fhp);
+ 		err = notify_change(dentry, iap);
+ 		err = nfserrno(err);
+-	}
+-	if (size_change) {
+ 		fh_unlock(fhp);
+-		put_write_access(inode);
+ 	}
++	if (size_change)
++		put_write_access(inode);
+ 	if (!err)
+ 		if (EX_ISSYNC(fhp->fh_export))
+ 			write_inode_now(inode, 1);
+@@ -710,10 +700,11 @@
+ 	/* clear setuid/setgid flag after write */
+ 	if (err >= 0 && (inode->i_mode & (S_ISUID | S_ISGID))) {
+ 		struct iattr	ia;
++		ia.ia_valid = ATTR_KILL_SUID | ATTR_KILL_SGID;
+ 
+-		ia.ia_valid = ATTR_MODE;
+-		ia.ia_mode  = inode->i_mode & ~(S_ISUID | S_ISGID);
++		down(&inode->i_sem);
+ 		notify_change(dentry, &ia);
++		up(&inode->i_sem);
+ 	}
+ 
+ 	if (err >= 0 && stable) {
+@@ -1142,7 +1133,9 @@
+ 				iap->ia_valid |= ATTR_CTIME;
+ 				iap->ia_mode = (iap->ia_mode&S_IALLUGO)
+ 					| S_IFLNK;
++				down(&dentry->d_inode->i_sem);
+ 				err = notify_change(dnew, iap);
++				up(&dentry->d_inode->i_sem);
+ 				if (!err && EX_ISSYNC(fhp->fh_export))
+ 					write_inode_now(dentry->d_inode, 1);
+ 		       }
+diff -ur linux-2.4.17-clean/fs/open.c linux/fs/open.c
+--- linux-2.4.17-clean/fs/open.c	Fri Oct 12 13:48:42 2001
++++ linux/fs/open.c	Sun Jul 14 19:44:09 2002
+@@ -73,20 +73,19 @@
+ 
+ int do_truncate(struct dentry *dentry, loff_t length)
+ {
+-	struct inode *inode = dentry->d_inode;
+-	int error;
+ 	struct iattr newattrs;
+-
++	int err;
++	
+ 	/* Not pretty: "inode->i_size" shouldn't really be signed. But it is. */
+ 	if (length < 0)
+ 		return -EINVAL;
+ 
+-	down(&inode->i_sem);
+ 	newattrs.ia_size = length;
+ 	newattrs.ia_valid = ATTR_SIZE | ATTR_CTIME;
+-	error = notify_change(dentry, &newattrs);
+-	up(&inode->i_sem);
+-	return error;
++	down(&dentry->d_inode->i_sem);
++	err = notify_change(dentry, &newattrs);
++	up(&dentry->d_inode->i_sem);
++	return err;
+ }
+ 
+ static inline long do_sys_truncate(const char * path, loff_t length)
+@@ -260,7 +259,9 @@
+ 		    (error = permission(inode,MAY_WRITE)) != 0)
+ 			goto dput_and_out;
+ 	}
++	down(&inode->i_sem);
+ 	error = notify_change(nd.dentry, &newattrs);
++	up(&inode->i_sem);
+ dput_and_out:
+ 	path_release(&nd);
+ out:
+@@ -304,7 +305,9 @@
+ 		if ((error = permission(inode,MAY_WRITE)) != 0)
+ 			goto dput_and_out;
+ 	}
++	down(&inode->i_sem);
+ 	error = notify_change(nd.dentry, &newattrs);
++	up(&inode->i_sem);
+ dput_and_out:
+ 	path_release(&nd);
+ out:
+@@ -472,11 +475,13 @@
+ 	err = -EPERM;
+ 	if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
+ 		goto out_putf;
++	down(&inode->i_sem);
+ 	if (mode == (mode_t) -1)
+ 		mode = inode->i_mode;
+ 	newattrs.ia_mode = (mode & S_IALLUGO) | (inode->i_mode & ~S_IALLUGO);
+ 	newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
+ 	err = notify_change(dentry, &newattrs);
++	up(&inode->i_sem);
+ 
+ out_putf:
+ 	fput(file);
+@@ -504,11 +509,13 @@
+ 	if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
+ 		goto dput_and_out;
+ 
++	down(&inode->i_sem);
+ 	if (mode == (mode_t) -1)
+ 		mode = inode->i_mode;
+ 	newattrs.ia_mode = (mode & S_IALLUGO) | (inode->i_mode & ~S_IALLUGO);
+ 	newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
+ 	error = notify_change(nd.dentry, &newattrs);
++	up(&inode->i_sem);
+ 
+ dput_and_out:
+ 	path_release(&nd);
+@@ -533,45 +540,20 @@
+ 	error = -EPERM;
+ 	if (IS_IMMUTABLE(inode) || IS_APPEND(inode))
+ 		goto out;
+-	if (user == (uid_t) -1)
+-		user = inode->i_uid;
+-	if (group == (gid_t) -1)
+-		group = inode->i_gid;
+-	newattrs.ia_mode = inode->i_mode;
+-	newattrs.ia_uid = user;
+-	newattrs.ia_gid = group;
+-	newattrs.ia_valid =  ATTR_UID | ATTR_GID | ATTR_CTIME;
+-	/*
+-	 * If the user or group of a non-directory has been changed by a
+-	 * non-root user, remove the setuid bit.
+-	 * 19981026	David C Niemi <niemi@tux.org>
+-	 *
+-	 * Changed this to apply to all users, including root, to avoid
+-	 * some races. This is the behavior we had in 2.0. The check for
+-	 * non-root was definitely wrong for 2.2 anyway, as it should
+-	 * have been using CAP_FSETID rather than fsuid -- 19990830 SD.
+-	 */
+-	if ((inode->i_mode & S_ISUID) == S_ISUID &&
+-		!S_ISDIR(inode->i_mode))
+-	{
+-		newattrs.ia_mode &= ~S_ISUID;
+-		newattrs.ia_valid |= ATTR_MODE;
++	newattrs.ia_valid =  ATTR_CTIME;
++	if (user != (uid_t) -1) {
++		newattrs.ia_valid |= ATTR_UID;
++		newattrs.ia_uid = user;
+ 	}
+-	/*
+-	 * Likewise, if the user or group of a non-directory has been changed
+-	 * by a non-root user, remove the setgid bit UNLESS there is no group
+-	 * execute bit (this would be a file marked for mandatory locking).
+-	 * 19981026	David C Niemi <niemi@tux.org>
+-	 *
+-	 * Removed the fsuid check (see the comment above) -- 19990830 SD.
+-	 */
+-	if (((inode->i_mode & (S_ISGID | S_IXGRP)) == (S_ISGID | S_IXGRP)) 
+-		&& !S_ISDIR(inode->i_mode))
+-	{
+-		newattrs.ia_mode &= ~S_ISGID;
+-		newattrs.ia_valid |= ATTR_MODE;
++	if (group != (gid_t) -1) {
++		newattrs.ia_valid |= ATTR_GID;
++		newattrs.ia_gid = group;
+ 	}
++	if (!S_ISDIR(inode->i_mode))
++		newattrs.ia_valid |= ATTR_KILL_SUID|ATTR_KILL_SGID;
++	down(&inode->i_sem);
+ 	error = notify_change(dentry, &newattrs);
++	up(&inode->i_sem);
+ out:
+ 	return error;
+ }
+diff -ur linux-2.4.17-clean/fs/proc/generic.c linux/fs/proc/generic.c
+--- linux-2.4.17-clean/fs/proc/generic.c	Fri Sep  7 10:53:59 2001
++++ linux/fs/proc/generic.c	Sun Jul 14 19:44:09 2002
+@@ -16,6 +16,7 @@
+ #include <linux/stat.h>
+ #define __NO_VERSION__
+ #include <linux/module.h>
++#include <linux/smp_lock.h>
+ #include <asm/bitops.h>
+ 
+ static ssize_t proc_file_read(struct file * file, char * buf,
+@@ -140,22 +141,29 @@
+ static loff_t
+ proc_file_lseek(struct file * file, loff_t offset, int orig)
+ {
++    loff_t ret = -EINVAL;
++    lock_kernel();
++
+     switch (orig) {
+     case 0:
+ 	if (offset < 0)
+-	    return -EINVAL;    
++	    goto out;
+ 	file->f_pos = offset;
+-	return(file->f_pos);
++	ret = file->f_pos;
++	goto out;
+     case 1:
+ 	if (offset + file->f_pos < 0)
+-	    return -EINVAL;    
++	    goto out;
+ 	file->f_pos += offset;
+-	return(file->f_pos);
++	ret = file->f_pos;
++	goto out;
+     case 2:
+-	return(-EINVAL);
+     default:
+-	return(-EINVAL);
+     }
++
++out:
++    unlock_kernel();
++    return ret;
+ }
+ 
+ /*
+diff -ur linux-2.4.17-clean/fs/read_write.c linux/fs/read_write.c
+--- linux-2.4.17-clean/fs/read_write.c	Sun Aug  5 13:12:41 2001
++++ linux/fs/read_write.c	Sun Jul 14 19:44:09 2002
+@@ -28,7 +28,37 @@
+ loff_t generic_file_llseek(struct file *file, loff_t offset, int origin)
+ {
+ 	long long retval;
++	struct inode *inode = file->f_dentry->d_inode->i_mapping->host;
+ 
++	down(&inode->i_sem);
++
++	switch (origin) {
++		case 2:
++			offset += inode->i_size;
++			break;
++		case 1:
++			offset += file->f_pos;
++	}
++	retval = -EINVAL;
++	if (offset>=0 && offset<=file->f_dentry->d_inode->i_sb->s_maxbytes) {
++		if (offset>=0 && offset<=inode->i_sb->s_maxbytes) {
++			file->f_pos = offset;
++			file->f_reada = 0;
++			file->f_version = ++event;
++		}
++		retval = offset;
++	}
++
++	up(&inode->i_sem);
++
++	return retval;
++}
++
++loff_t remote_llseek(struct file *file, loff_t offset, int origin)
++{
++	long long retval;
++
++	lock_kernel();
+ 	switch (origin) {
+ 		case 2:
+ 			offset += file->f_dentry->d_inode->i_size;
+@@ -45,6 +75,7 @@
+ 		}
+ 		retval = offset;
+ 	}
++	unlock_kernel();
+ 	return retval;
+ }
+ 
+@@ -57,6 +88,7 @@
+ {
+ 	long long retval;
+ 
++	lock_kernel();
+ 	switch (origin) {
+ 		case 2:
+ 			offset += file->f_dentry->d_inode->i_size;
+@@ -73,21 +105,18 @@
+ 		}
+ 		retval = offset;
+ 	}
++	unlock_kernel();
+ 	return retval;
+ }
+ 
+ static inline loff_t llseek(struct file *file, loff_t offset, int origin)
+ {
+ 	loff_t (*fn)(struct file *, loff_t, int);
+-	loff_t retval;
+ 
+ 	fn = default_llseek;
+ 	if (file->f_op && file->f_op->llseek)
+ 		fn = file->f_op->llseek;
+-	lock_kernel();
+-	retval = fn(file, offset, origin);
+-	unlock_kernel();
+-	return retval;
++	return fn(file, offset, origin);
+ }
+ 
+ asmlinkage off_t sys_lseek(unsigned int fd, off_t offset, unsigned int origin)
+diff -ur linux-2.4.17-clean/fs/reiserfs/file.c linux/fs/reiserfs/file.c
+--- linux-2.4.17-clean/fs/reiserfs/file.c	Fri Dec 21 09:42:03 2001
++++ linux/fs/reiserfs/file.c	Sun Jul 14 19:44:09 2002
+@@ -93,25 +93,32 @@
+ static int reiserfs_setattr(struct dentry *dentry, struct iattr *attr) {
+     struct inode *inode = dentry->d_inode ;
+     int error ;
++    lock_kernel();
+     if (attr->ia_valid & ATTR_SIZE) {
+ 	/* version 2 items will be caught by the s_maxbytes check
+ 	** done for us in vmtruncate
+ 	*/
+ 	if (get_inode_item_key_version(inode) == KEY_FORMAT_3_5 &&
+-	    attr->ia_size > MAX_NON_LFS)
+-            return -EFBIG ;
++	    attr->ia_size > MAX_NON_LFS) {
++            error = -EFBIG ;
++	    goto out;
++	}
+     }
+ 
+     if ((((attr->ia_valid & ATTR_UID) && (attr->ia_uid & ~0xffff)) ||
+ 	 ((attr->ia_valid & ATTR_GID) && (attr->ia_gid & ~0xffff))) &&
+-	(get_inode_sd_version (inode) == STAT_DATA_V1))
++	(get_inode_sd_version (inode) == STAT_DATA_V1)) {
+ 		/* stat data of format v3.5 has 16 bit uid and gid */
+-	    return -EINVAL;
++	    error = -EINVAL;
++	    goto out;
++    }
+ 
+     error = inode_change_ok(inode, attr) ;
+     if (!error)
+         inode_setattr(inode, attr) ;
+ 
++out:
++    unlock_kernel();
+     return error ;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/smbfs/file.c linux/fs/smbfs/file.c
+--- linux-2.4.17-clean/fs/smbfs/file.c	Tue Oct  2 17:03:34 2001
++++ linux/fs/smbfs/file.c	Sun Jul 14 19:44:09 2002
+@@ -377,7 +377,7 @@
+ 
+ struct file_operations smb_file_operations =
+ {
+-	llseek:		generic_file_llseek,
++	llseek:		remote_llseek,
+ 	read:		smb_file_read,
+ 	write:		smb_file_write,
+ 	ioctl:		smb_ioctl,
+diff -ur linux-2.4.17-clean/fs/smbfs/inode.c linux/fs/smbfs/inode.c
+--- linux-2.4.17-clean/fs/smbfs/inode.c	Tue Oct  2 17:03:34 2001
++++ linux/fs/smbfs/inode.c	Sun Jul 14 19:44:09 2002
+@@ -514,6 +514,8 @@
+ 	int error, changed, refresh = 0;
+ 	struct smb_fattr fattr;
+ 
++	lock_kernel();
++
+ 	error = smb_revalidate_inode(dentry);
+ 	if (error)
+ 		goto out;
+@@ -604,6 +606,7 @@
+ out:
+ 	if (refresh)
+ 		smb_refresh_inode(dentry);
++	unlock_kernel();
+ 	return error;
+ }
+ 
+diff -ur linux-2.4.17-clean/fs/umsdos/inode.c linux/fs/umsdos/inode.c
+--- linux-2.4.17-clean/fs/umsdos/inode.c	Sun Sep 30 12:26:08 2001
++++ linux/fs/umsdos/inode.c	Sun Jul 14 19:44:09 2002
+@@ -19,7 +19,7 @@
+ #include <linux/umsdos_fs.h>
+ #include <linux/list.h>
+ #include <linux/pagemap.h>
+-
++#include <linux/smp_lock.h>
+ extern struct dentry_operations umsdos_dentry_operations;
+ 
+ struct dentry *saved_root;	/* Original root if changed */
+@@ -164,6 +164,8 @@
+ 	struct dentry *temp, *old_dentry = NULL;
+ 	int ret;
+ 
++	lock_kernel();
++
+ 	ret = umsdos_parse (dentry->d_name.name, dentry->d_name.len,
+ 				&info);
+ 	if (ret)
+@@ -207,14 +209,13 @@
+ 	if (ret)
+ 		goto out;
+ 
+-	down(&dir->i_sem);
+ 	ret = umsdos_notify_change_locked(dentry, attr);
+-	up(&dir->i_sem);
+ 	if (ret == 0)
+ 		ret = inode_setattr (inode, attr);
+ out:
+ 	if (old_dentry)
+ 		dput (dentry);	/* if we had to use fake dentry for hardlinks, dput() it now */
++	unlock_kernel();
+ 	return ret;
+ }
+ 
+diff -ur linux-2.4.17-clean/include/linux/ext2_fs_i.h linux/include/linux/ext2_fs_i.h
+--- linux-2.4.17-clean/include/linux/ext2_fs_i.h	Mon Sep 17 13:16:30 2001
++++ linux/include/linux/ext2_fs_i.h	Sun Jul 14 19:44:09 2002
+@@ -36,6 +36,7 @@
+ 	__u32	i_prealloc_count;
+ 	__u32	i_dir_start_lookup;
+ 	int	i_new_inode:1;	/* Is a freshly allocated inode */
++	rwlock_t	i_meta_lock;
+ };
+ 
+ #endif	/* _LINUX_EXT2_FS_I */
+diff -ur linux-2.4.17-clean/include/linux/fs.h linux/include/linux/fs.h
+--- linux-2.4.17-clean/include/linux/fs.h	Fri Dec 21 09:42:03 2001
++++ linux/include/linux/fs.h	Sun Jul 14 19:44:09 2002
+@@ -331,6 +331,8 @@
+ #define ATTR_MTIME_SET	256
+ #define ATTR_FORCE	512	/* Not a change, but a change it */
+ #define ATTR_ATTR_FLAG	1024
++#define ATTR_KILL_SUID	2048
++#define ATTR_KILL_SGID	4096
+ 
+ /*
+  * This is the Inode Attributes structure, used for notify_change().  It
+@@ -1340,7 +1342,7 @@
+ 	}
+ 	return inode;
+ }
+-extern void remove_suid(struct inode *inode);
++extern void remove_suid(struct dentry *);
+ 
+ extern void insert_inode_hash(struct inode *);
+ extern void remove_inode_hash(struct inode *);
+@@ -1400,6 +1402,7 @@
+ extern void do_generic_file_read(struct file *, loff_t *, read_descriptor_t *, read_actor_t);
+ extern loff_t no_llseek(struct file *file, loff_t offset, int origin);
+ extern loff_t generic_file_llseek(struct file *file, loff_t offset, int origin);
++extern loff_t remote_llseek(struct file *file, loff_t offset, int origin);
+ extern ssize_t generic_read_dir(struct file *, char *, size_t, loff_t *);
+ extern int generic_file_open(struct inode * inode, struct file * filp);
+ 
+diff -ur linux-2.4.17-clean/ipc/sem.c linux/ipc/sem.c
+--- linux-2.4.17-clean/ipc/sem.c	Sun Sep 30 12:26:42 2001
++++ linux/ipc/sem.c	Sun Jul 14 19:44:09 2002
+@@ -62,6 +62,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
++#include <linux/smp_lock.h>
+ #include <asm/uaccess.h>
+ #include "util.h"
+ 
+@@ -995,6 +996,8 @@
+ 	struct sem_array *sma;
+ 	int nsems, i;
+ 
++	lock_kernel();
++
+ 	/* If the current process was sleeping for a semaphore,
+ 	 * remove it from the queue.
+ 	 */
+@@ -1051,6 +1054,8 @@
+ 		sem_unlock(semid);
+ 	}
+ 	current->semundo = NULL;
++
++	unlock_kernel();
+ }
+ 
+ #ifdef CONFIG_PROC_FS
+diff -ur linux-2.4.17-clean/kernel/exit.c linux/kernel/exit.c
+--- linux-2.4.17-clean/kernel/exit.c	Wed Nov 21 14:42:27 2001
++++ linux/kernel/exit.c	Sun Jul 14 19:44:09 2002
+@@ -435,7 +435,6 @@
+ #endif
+ 	__exit_mm(tsk);
+ 
+-	lock_kernel();
+ 	sem_exit();
+ 	__exit_files(tsk);
+ 	__exit_fs(tsk);
+diff -ur linux-2.4.17-clean/kernel/ksyms.c linux/kernel/ksyms.c
+--- linux-2.4.17-clean/kernel/ksyms.c	Fri Dec 21 09:42:04 2001
++++ linux/kernel/ksyms.c	Sun Jul 14 19:44:09 2002
+@@ -248,6 +248,7 @@
+ EXPORT_SYMBOL(vfs_statfs);
+ EXPORT_SYMBOL(generic_read_dir);
+ EXPORT_SYMBOL(generic_file_llseek);
++EXPORT_SYMBOL(remote_llseek);
+ EXPORT_SYMBOL(no_llseek);
+ EXPORT_SYMBOL(__pollwait);
+ EXPORT_SYMBOL(poll_freewait);
+diff -ur linux-2.4.17-clean/mm/filemap.c linux/mm/filemap.c
+--- linux-2.4.17-clean/mm/filemap.c	Fri Dec 21 09:42:04 2001
++++ linux/mm/filemap.c	Sun Jul 14 19:44:09 2002
+@@ -2816,18 +2816,19 @@
+ 	return page;
+ }
+ 
+-inline void remove_suid(struct inode *inode)
++inline void remove_suid(struct dentry *dentry)
+ {
+-	unsigned int mode;
++	struct iattr newattrs;
++	struct inode *inode = dentry->d_inode;
++	unsigned int mode = inode->i_mode & (S_ISUID|S_ISGID|S_IXGRP);
+ 
+-	/* set S_IGID if S_IXGRP is set, and always set S_ISUID */
+-	mode = (inode->i_mode & S_IXGRP)*(S_ISGID/S_IXGRP) | S_ISUID;
++	if (!(mode & S_IXGRP))
++		mode &= S_ISUID;
+ 
+ 	/* was any of the uid bits set? */
+-	mode &= inode->i_mode;
+ 	if (mode && !capable(CAP_FSETID)) {
+-		inode->i_mode &= ~mode;
+-		mark_inode_dirty(inode);
++		newattrs.ia_valid = ATTR_KILL_SUID | ATTR_KILL_SGID;
++		notify_change(dentry, &newattrs);
+ 	}
+ }
+ 
+@@ -2959,7 +2960,7 @@
+ 	if (count == 0)
+ 		goto out;
+ 
+-	remove_suid(inode);
++	remove_suid(file->f_dentry);
+ 	inode->i_ctime = inode->i_mtime = CURRENT_TIME;
+ 	mark_inode_dirty_sync(inode);
+ 
+diff -ur linux-2.4.17-clean/mm/shmem.c linux/mm/shmem.c
+--- linux-2.4.17-clean/mm/shmem.c	Fri Dec 21 09:42:05 2001
++++ linux/mm/shmem.c	Sun Jul 14 19:44:09 2002
+@@ -788,7 +788,7 @@
+ 
+ 	status	= 0;
+ 	if (count) {
+-		remove_suid(inode);
++		remove_suid(file->f_dentry);
+ 		inode->i_ctime = inode->i_mtime = CURRENT_TIME;
+ 	}
+ 

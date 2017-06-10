@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Diagnostics - Ping</title> 
+<meta name="description" content="LINKSYS WAG200G 1013">
+<META http-equiv="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<LINK REL="stylesheet" TYPE="text/css" HREF="cisco.css">
+
+<script language="javascript" type="text/javascript" src="func.js"></script>
+<script language="javascript" type="text/javascript" src="msg.js"></script>
+<script language="javascript" type="text/javascript" src="linux.js"></script>
+<script language="javascript" type="text/javascript">
+<!-- hide script from old browsers
+
+var refresh_flag = @refresh_flag#
+
+function refresh()
+{
+//    dataToVisible(document.forms[0]);
+	if(refresh_flag == 1)
+    	window.setTimeout("window.location.href='setup.cgi?next_file=Ping.htm'",1500);
+}
+
+
+//
+//-->	
+</script>
+</head>
+<body bgColor="#808080" onload="refresh();">
+<form name="ping" method="POST" action="setup.cgi">
+	<div align="center">
+	    <table border="0" cellSpacing="0" cellPadding="0" width="660" bgColor="#ffffff">
+		<tr>
+		    <td bgcolor="#6666cc">
+			<br>
+			<hr size="1" color="#ffffff">
+			<img src="UI_Linksys.gif" width="164" height="57" alt="" border="0">
+		    </TD>
+		
+</TR>
+		<tr>
+             <td height="15" bgcolor="#E7E7E7"></TD>
+        
+</TR>
+		<tr>
+		    <td>
+			<table border="0" cellspacing="0" cellpadding="4">
+			        <tr>
+             <td height="7" bgcolor="#E7E7E7" width="165"></TD>
+			 <td height="7" width="533" colspan="2"></TD>
+        
+</TR>
+			    <tr>
+				<td width="164" height="24" align="right" class="bwhead" valign="top" nowrap>Ping</TD>
+				<td>&nbsp;</TD>
+			    
+</TR>
+<tr>
+<td bgColor="#e7e7e7" class="boldhead" valign="top"></TD>
+<td colspan="2" align="center" class="num">
+<textarea name="ping_result" class="num" cols="62" rows="22" wrap="off" readonly>
+@ping_output#
+</textarea>
+</TD>
+
+</TR>
+<tr>
+<td bgColor="#e7e7e7" class="boldhead" valign="top"></TD>
+                                    <td>
+					
+					&nbsp; &nbsp; &nbsp; <input type="submit" name="close" value="Close" class="slbutton" onClick="return true;">
+					<br> &nbsp; 
+                                    </TD>
+</TR>
+			</table>
+			
+		    </TD>
+		
+</TR>
+</table>
+</div>
+<input type="hidden" name="todo" value="ping_close">
+<input type="hidden" name="this_file" value="Ping.htm">
+<input type="hidden" name="next_file" value="Ping.htm">
+<input type="hidden" name="message" value="@msg_text#">
+    </form>
+</body>
+</html>

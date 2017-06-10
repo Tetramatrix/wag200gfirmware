@@ -1,0 +1,32 @@
+accel.o: accel.c \
+   rivafb.h $(dep_rivafb.h)
+fbdev.o: fbdev.c \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/module.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/kernel.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/errno.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/string.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/mm.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/selection.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/tty.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/slab.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/delay.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/init.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/pci.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/console.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtrr.h) \
+   rivafb.h $(dep_rivafb.h) \
+   nvreg.h $(dep_nvreg.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/pci.h)
+riva_hw.o: riva_hw.c \
+   riva_hw.h $(dep_riva_hw.h) \
+   riva_tbl.h $(dep_riva_tbl.h)
+dep_rivafb.h += \
+   /home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/linux/fb.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb4.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb4.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb8.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb16.h) \
+   /home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h $(dep_/home/chi/Linksys/projekt/code/kernel/src/include/video/fbcon-cfb32.h) \
+   riva_hw.h $(dep_riva_hw.h) \
+   $(wildcard /home/chi/Linksys/projekt/code/kernel/src/include/config/mtrr.h)

@@ -1,0 +1,743 @@
+--- linux-2.6-git.orig/include/linux/skbuff.h	2006-11-29 16:15:54.000000000 +0100
++++ linux-2.6-git/include/linux/skbuff.h	2006-11-29 17:20:21.000000000 +0100
+@@ -283,7 +283,8 @@ struct sk_buff {
+ 				nfctinfo:3;
+ 	__u8			pkt_type:3,
+ 				fclone:2,
+-				ipvs_property:1;
++				ipvs_property:1,
++				emergency:1;
+ 	__be16			protocol;
+ 
+ 	void			(*destructor)(struct sk_buff *skb);
+@@ -328,10 +329,13 @@ struct sk_buff {
+ 
+ #include <asm/system.h>
+ 
++#define SKB_ALLOC_FCLONE	0x01
++#define SKB_ALLOC_RX		0x02
++
+ extern void kfree_skb(struct sk_buff *skb);
+ extern void	       __kfree_skb(struct sk_buff *skb);
+ extern struct sk_buff *__alloc_skb(unsigned int size,
+-				   gfp_t priority, int fclone);
++				   gfp_t priority, int flags);
+ static inline struct sk_buff *alloc_skb(unsigned int size,
+ 					gfp_t priority)
+ {
+@@ -341,7 +345,7 @@ static inline struct sk_buff *alloc_skb(
+ static inline struct sk_buff *alloc_skb_fclone(unsigned int size,
+ 					       gfp_t priority)
+ {
+-	return __alloc_skb(size, priority, 1);
++	return __alloc_skb(size, priority, SKB_ALLOC_FCLONE);
+ }
+ 
+ extern struct sk_buff *alloc_skb_from_cache(kmem_cache_t *cp,
+@@ -1102,7 +1106,8 @@ static inline void __skb_queue_purge(str
+ static inline struct sk_buff *__dev_alloc_skb(unsigned int length,
+ 					      gfp_t gfp_mask)
+ {
+-	struct sk_buff *skb = alloc_skb(length + NET_SKB_PAD, gfp_mask);
++	struct sk_buff *skb =
++		__alloc_skb(length + NET_SKB_PAD, gfp_mask, SKB_ALLOC_RX);
+ 	if (likely(skb))
+ 		skb_reserve(skb, NET_SKB_PAD);
+ 	return skb;
+Index: linux-2.6-git/include/net/sock.h
+===================================================================
+--- linux-2.6-git.orig/include/net/sock.h	2006-11-29 16:21:27.000000000 +0100
++++ linux-2.6-git/include/net/sock.h	2006-11-29 17:20:21.000000000 +0100
+@@ -391,6 +391,7 @@ enum sock_flags {
+ 	SOCK_RCVTSTAMP, /* %SO_TIMESTAMP setting */
+ 	SOCK_LOCALROUTE, /* route locally only, %SO_DONTROUTE setting */
+ 	SOCK_QUEUE_SHRUNK, /* write queue has been shrunk recently */
++	SOCK_VMIO, /* the VM depends on us - make sure we're serviced */
+ };
+ 
+ static inline void sock_copy_flags(struct sock *nsk, struct sock *osk)
+@@ -413,6 +414,40 @@ static inline int sock_flag(struct sock 
+ 	return test_bit(flag, &sk->sk_flags);
+ }
+ 
++static inline int sk_has_vmio(struct sock *sk)
++{
++	return sock_flag(sk, SOCK_VMIO);
++}
++
++#define MAX_PAGES_PER_SKB 3
++#define MAX_FRAGMENTS ((65536 + 1500 - 1) / 1500)
++/*
++ * Guestimate the per request queue TX upper bound.
++ */
++#define TX_RESERVE_PAGES \
++	(4 * MAX_FRAGMENTS * MAX_PAGES_PER_SKB)
++
++extern atomic_t vmio_socks;
++extern atomic_t emergency_rx_skbs;
++
++static inline int sk_vmio_socks(void)
++{
++	return atomic_read(&vmio_socks);
++}
++
++extern int sk_emergency_skb_get(void);
++
++static inline void sk_emergency_skb_put(void)
++{
++	return atomic_dec(&emergency_rx_skbs);
++}
++
++extern void sk_adjust_memalloc(int socks, int tx_reserve_pages);
++extern void ipfrag_add_memory(int ipfrag_reserve);
++extern void iprt_add_memory(int rt_reserve);
++extern int sk_set_vmio(struct sock *sk);
++extern int sk_clear_vmio(struct sock *sk);
++
+ static inline void sk_acceptq_removed(struct sock *sk)
+ {
+ 	sk->sk_ack_backlog--;
+@@ -720,6 +755,7 @@ static inline void sk_stream_writequeue_
+ 
+ static inline int sk_stream_rmem_schedule(struct sock *sk, struct sk_buff *skb)
+ {
++	// XXX: skb->emergency stuff
+ 	return (int)skb->truesize <= sk->sk_forward_alloc ||
+ 		sk_stream_mem_schedule(sk, skb->truesize, 1);
+ }
+Index: linux-2.6-git/net/core/dev.c
+===================================================================
+--- linux-2.6-git.orig/net/core/dev.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/core/dev.c	2006-11-29 17:20:21.000000000 +0100
+@@ -1768,10 +1768,23 @@ int netif_receive_skb(struct sk_buff *sk
+ 	struct net_device *orig_dev;
+ 	int ret = NET_RX_DROP;
+ 	unsigned short type;
++	unsigned long pflags = current->flags;
++
++	/* Emergency skb are special, they should
++	 *  - be delivered to SOCK_VMIO sockets only
++	 *  - stay away from userspace
++	 *  - have bounded memory usage
++	 *
++	 * Use PF_MEMALLOC as a poor mans memory pool - the grouping kind.
++	 * This saves us from propagating the allocation context down to all
++	 * allocation sites.
++	 */
++	if (unlikely(skb->emergency))
++		current->flags |= PF_MEMALLOC;
+ 
+ 	/* if we've gotten here through NAPI, check netpoll */
+ 	if (skb->dev->poll && netpoll_rx(skb))
+-		return NET_RX_DROP;
++		goto out;
+ 
+ 	if (!skb->tstamp.off_sec)
+ 		net_timestamp(skb);
+@@ -1782,7 +1795,7 @@ int netif_receive_skb(struct sk_buff *sk
+ 	orig_dev = skb_bond(skb);
+ 
+ 	if (!orig_dev)
+-		return NET_RX_DROP;
++		goto out;
+ 
+ 	__get_cpu_var(netdev_rx_stat).total++;
+ 
+@@ -1799,6 +1812,8 @@ int netif_receive_skb(struct sk_buff *sk
+ 		goto ncls;
+ 	}
+ #endif
++	if (unlikely(skb->emergency))
++		goto skip_taps;
+ 
+ 	list_for_each_entry_rcu(ptype, &ptype_all, list) {
+ 		if (!ptype->dev || ptype->dev == skb->dev) {
+@@ -1808,6 +1823,7 @@ int netif_receive_skb(struct sk_buff *sk
+ 		}
+ 	}
+ 
++skip_taps:
+ #ifdef CONFIG_NET_CLS_ACT
+ 	if (pt_prev) {
+ 		ret = deliver_skb(skb, pt_prev, orig_dev);
+@@ -1820,17 +1836,28 @@ int netif_receive_skb(struct sk_buff *sk
+ 
+ 	if (ret == TC_ACT_SHOT || (ret == TC_ACT_STOLEN)) {
+ 		kfree_skb(skb);
+-		goto out;
++		goto unlock;
+ 	}
+ 
+ 	skb->tc_verd = 0;
+ ncls:
+ #endif
+ 
++	if (unlikely(skb->emergency))
++		switch(skb->protocol) {
++			case __constant_htons(ETH_P_ARP):
++			case __constant_htons(ETH_P_IP):
++			case __constant_htons(ETH_P_IPV6):
++				break;
++
++			default:
++				goto drop;
++		}
++
+ 	handle_diverter(skb);
+ 
+ 	if (handle_bridge(&skb, &pt_prev, &ret, orig_dev))
+-		goto out;
++		goto unlock;
+ 
+ 	type = skb->protocol;
+ 	list_for_each_entry_rcu(ptype, &ptype_base[ntohs(type)&15], list) {
+@@ -1845,6 +1872,7 @@ ncls:
+ 	if (pt_prev) {
+ 		ret = pt_prev->func(skb, skb->dev, pt_prev, orig_dev);
+ 	} else {
++drop:
+ 		kfree_skb(skb);
+ 		/* Jamal, now you will not able to escape explaining
+ 		 * me how you were going to use this. :-)
+@@ -1852,8 +1880,10 @@ ncls:
+ 		ret = NET_RX_DROP;
+ 	}
+ 
+-out:
++unlock:
+ 	rcu_read_unlock();
++out:
++	current->flags = pflags;
+ 	return ret;
+ }
+ 
+Index: linux-2.6-git/net/core/skbuff.c
+===================================================================
+--- linux-2.6-git.orig/net/core/skbuff.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/core/skbuff.c	2006-11-29 17:20:21.000000000 +0100
+@@ -139,29 +139,34 @@ EXPORT_SYMBOL(skb_truesize_bug);
+  *	Buffers may only be allocated from interrupts using a @gfp_mask of
+  *	%GFP_ATOMIC.
+  */
+-struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+-			    int fclone)
++struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask, int flags)
+ {
+ 	kmem_cache_t *cache;
+ 	struct skb_shared_info *shinfo;
+ 	struct sk_buff *skb;
+ 	u8 *data;
++	int emergency = 0;
+ 
+-	cache = fclone ? skbuff_fclone_cache : skbuff_head_cache;
++	size = SKB_DATA_ALIGN(size);
++	cache = (flags & SKB_ALLOC_FCLONE)
++		? skbuff_fclone_cache : skbuff_head_cache;
++	if (flags & SKB_ALLOC_RX)
++		gfp_mask |= __GFP_NOMEMALLOC|__GFP_NOWARN;
+ 
++retry_alloc:
+ 	/* Get the HEAD */
+ 	skb = kmem_cache_alloc(cache, gfp_mask & ~__GFP_DMA);
+ 	if (!skb)
+-		goto out;
++		goto noskb;
+ 
+ 	/* Get the DATA. Size must match skb_add_mtu(). */
+-	size = SKB_DATA_ALIGN(size);
+ 	data = kmalloc_track_caller(size + sizeof(struct skb_shared_info),
+ 			gfp_mask);
+ 	if (!data)
+ 		goto nodata;
+ 
+ 	memset(skb, 0, offsetof(struct sk_buff, truesize));
++	skb->emergency = emergency;
+ 	skb->truesize = size + sizeof(struct sk_buff);
+ 	atomic_set(&skb->users, 1);
+ 	skb->head = data;
+@@ -178,7 +183,7 @@ struct sk_buff *__alloc_skb(unsigned int
+ 	shinfo->ip6_frag_id = 0;
+ 	shinfo->frag_list = NULL;
+ 
+-	if (fclone) {
++	if (flags & SKB_ALLOC_FCLONE) {
+ 		struct sk_buff *child = skb + 1;
+ 		atomic_t *fclone_ref = (atomic_t *) (child + 1);
+ 
+@@ -186,12 +191,29 @@ struct sk_buff *__alloc_skb(unsigned int
+ 		atomic_set(fclone_ref, 1);
+ 
+ 		child->fclone = SKB_FCLONE_UNAVAILABLE;
++		child->emergency = skb->emergency;
+ 	}
+ out:
+ 	return skb;
++
+ nodata:
+ 	kmem_cache_free(cache, skb);
+ 	skb = NULL;
++noskb:
++	/* Attempt emergency allocation when RX skb. */
++	if (likely(!(flags & SKB_ALLOC_RX) || !sk_vmio_socks()))
++		goto out;
++
++	if (!emergency) {
++		if (sk_emergency_skb_get()) {
++			gfp_mask &= ~(__GFP_NOMEMALLOC|__GFP_NOWARN);
++			gfp_mask |= __GFP_EMERGENCY;
++			emergency = 1;
++			goto retry_alloc;
++		}
++	} else
++		sk_emergency_skb_put();
++
+ 	goto out;
+ }
+ 
+@@ -268,7 +290,7 @@ struct sk_buff *__netdev_alloc_skb(struc
+ {
+ 	struct sk_buff *skb;
+ 
+-	skb = alloc_skb(length + NET_SKB_PAD, gfp_mask);
++	skb = __alloc_skb(length + NET_SKB_PAD, gfp_mask, SKB_ALLOC_RX);
+ 	if (likely(skb)) {
+ 		skb_reserve(skb, NET_SKB_PAD);
+ 		skb->dev = dev;
+@@ -317,6 +339,8 @@ static void skb_release_data(struct sk_b
+ 			skb_drop_fraglist(skb);
+ 
+ 		kfree(skb->head);
++		if (unlikely(skb->emergency))
++			sk_emergency_skb_put();
+ 	}
+ }
+ 
+@@ -437,6 +461,9 @@ struct sk_buff *skb_clone(struct sk_buff
+ 		n->fclone = SKB_FCLONE_CLONE;
+ 		atomic_inc(fclone_ref);
+ 	} else {
++		if (unlikely(skb->emergency))
++			gfp_mask |= __GFP_EMERGENCY;
++
+ 		n = kmem_cache_alloc(skbuff_head_cache, gfp_mask);
+ 		if (!n)
+ 			return NULL;
+@@ -471,6 +498,7 @@ struct sk_buff *skb_clone(struct sk_buff
+ #if defined(CONFIG_IP_VS) || defined(CONFIG_IP_VS_MODULE)
+ 	C(ipvs_property);
+ #endif
++	C(emergency);
+ 	C(protocol);
+ 	n->destructor = NULL;
+ #ifdef CONFIG_NETFILTER
+@@ -686,12 +714,19 @@ int pskb_expand_head(struct sk_buff *skb
+ 	u8 *data;
+ 	int size = nhead + (skb->end - skb->head) + ntail;
+ 	long off;
++	int emergency = 0;
+ 
+ 	if (skb_shared(skb))
+ 		BUG();
+ 
+ 	size = SKB_DATA_ALIGN(size);
+ 
++	if (unlikely(skb->emergency) && sk_emergency_skb_get()) {
++		gfp_mask |= __GFP_EMERGENCY;
++		emergency = 1;
++	} else
++		gfp_mask |= __GFP_NOMEMALLOC;
++
+ 	data = kmalloc(size + sizeof(struct skb_shared_info), gfp_mask);
+ 	if (!data)
+ 		goto nodata;
+@@ -724,6 +759,8 @@ int pskb_expand_head(struct sk_buff *skb
+ 	return 0;
+ 
+ nodata:
++	if (unlikely(emergency))
++		sk_emergency_skb_put();
+ 	return -ENOMEM;
+ }
+ 
+Index: linux-2.6-git/net/core/sock.c
+===================================================================
+--- linux-2.6-git.orig/net/core/sock.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/core/sock.c	2006-11-29 17:20:21.000000000 +0100
+@@ -195,6 +195,120 @@ __u32 sysctl_rmem_default __read_mostly 
+ /* Maximal space eaten by iovec or ancilliary data plus some space */
+ int sysctl_optmem_max __read_mostly = sizeof(unsigned long)*(2*UIO_MAXIOV+512);
+ 
++static DEFINE_SPINLOCK(memalloc_lock);
++static int rx_net_reserve;
++
++atomic_t vmio_socks;
++atomic_t emergency_rx_skbs;
++
++static int ipfrag_threshold;
++
++#define ipfrag_mtu()	(1500) /* XXX: should be smallest mtu system wide */
++#define ipfrag_skbs()	(ipfrag_threshold / ipfrag_mtu())
++#define ipfrag_pages()	(ipfrag_threshold / (ipfrag_mtu() * (PAGE_SIZE / ipfrag_mtu())))
++
++static int iprt_pages;
++
++/*
++ * is there room for another emergency skb.
++ */
++int sk_emergency_skb_get(void)
++{
++	int nr = atomic_add_return(1, &emergency_rx_skbs);
++	int thresh = (3 * ipfrag_skbs()) / 2;
++	if (nr < thresh)
++		return 1;
++
++	atomic_dec(&emergency_rx_skbs);
++	return 0;
++}
++
++/**
++ *	sk_adjust_memalloc - adjust the global memalloc reserve for critical RX
++ *	@socks: number of new %SOCK_VMIO sockets
++ *	@tx_resserve_pages: number of pages to (un)reserve for TX
++ *
++ *	This function adjusts the memalloc reserve based on system demand.
++ *	The RX reserve is a limit, and only added once, not for each socket.
++ *
++ *	NOTE:
++ *	   @tx_reserve_pages is an upper-bound of memory used for TX hence
++ *	   we need not account the pages like we do for RX pages.
++ */
++void sk_adjust_memalloc(int socks, int tx_reserve_pages)
++{
++	unsigned long flags;
++	int reserve = tx_reserve_pages;
++	int nr_socks;
++
++	spin_lock_irqsave(&memalloc_lock, flags);
++	nr_socks = atomic_add_return(socks, &vmio_socks);
++	BUG_ON(nr_socks < 0);
++
++	if (nr_socks) {
++		int rx_pages = 2 * ipfrag_pages() + iprt_pages;
++		reserve += rx_pages - rx_net_reserve;
++		rx_net_reserve = rx_pages;
++	} else {
++		reserve -= rx_net_reserve;
++		rx_net_reserve = 0;
++	}
++
++	if (reserve)
++		adjust_memalloc_reserve(reserve);
++	spin_unlock_irqrestore(&memalloc_lock, flags);
++}
++EXPORT_SYMBOL_GPL(sk_adjust_memalloc);
++
++/*
++ * tiny helper function to track the total ipfragment memory
++ * needed because of modular ipv6
++ */
++void ipfrag_add_memory(int frags)
++{
++	ipfrag_threshold += frags;
++	sk_adjust_memalloc(0, 0);
++}
++EXPORT_SYMBOL_GPL(ipfrag_add_memory);
++
++void iprt_add_memory(int pages)
++{
++	iprt_pages += pages;
++	sk_adjust_memalloc(0, 0);
++}
++EXPORT_SYMBOL_GPL(iprt_add_memory);
++
++/**
++ *	sk_set_vmio - sets %SOCK_VMIO
++ *	@sk: socket to set it on
++ *
++ *	Set %SOCK_VMIO on a socket and increase the memalloc reserve
++ *	accordingly.
++ */
++int sk_set_vmio(struct sock *sk)
++{
++	int set = sock_flag(sk, SOCK_VMIO);
++	if (!set) {
++		sk_adjust_memalloc(1, 0);
++		sock_set_flag(sk, SOCK_VMIO);
++		sk->sk_allocation |= __GFP_EMERGENCY;
++	}
++	return !set;
++}
++EXPORT_SYMBOL_GPL(sk_set_vmio);
++
++int sk_clear_vmio(struct sock *sk)
++{
++	int set = sock_flag(sk, SOCK_VMIO);
++	if (set) {
++		sk_adjust_memalloc(-1, 0);
++		sock_reset_flag(sk, SOCK_VMIO);
++		sk->sk_allocation &= ~__GFP_EMERGENCY;
++	}
++	return set;
++}
++EXPORT_SYMBOL_GPL(sk_clear_vmio);
++
+ static int sock_set_timeout(long *timeo_p, char __user *optval, int optlen)
+ {
+ 	struct timeval tv;
+@@ -238,6 +352,12 @@ int sock_queue_rcv_skb(struct sock *sk, 
+ 	int err = 0;
+ 	int skb_len;
+ 
++	if (unlikely(skb->emergency)) {
++		if (!sk_has_vmio(sk)) {
++			err = -ENOMEM;
++			goto out;
++		}
++	} else
+ 	/* Cast skb->rcvbuf to unsigned... It's pointless, but reduces
+ 	   number of warnings when compiling with -W --ANK
+ 	 */
+@@ -877,6 +997,7 @@ void sk_free(struct sock *sk)
+ 	struct sk_filter *filter;
+ 	struct module *owner = sk->sk_prot_creator->owner;
+ 
++	sk_clear_vmio(sk);
+ 	if (sk->sk_destruct)
+ 		sk->sk_destruct(sk);
+ 
+Index: linux-2.6-git/net/ipv4/ipmr.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv4/ipmr.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/ipv4/ipmr.c	2006-11-29 17:20:21.000000000 +0100
+@@ -1340,6 +1340,9 @@ int ip_mr_input(struct sk_buff *skb)
+ 	struct mfc_cache *cache;
+ 	int local = ((struct rtable*)skb->dst)->rt_flags&RTCF_LOCAL;
+ 
++	if (unlikely(skb->emergency))
++		goto drop;
++
+ 	/* Packet is looped back after forward, it should not be
+ 	   forwarded second time, but still can be delivered locally.
+ 	 */
+@@ -1411,6 +1414,7 @@ int ip_mr_input(struct sk_buff *skb)
+ dont_forward:
+ 	if (local)
+ 		return ip_local_deliver(skb);
++drop:
+ 	kfree_skb(skb);
+ 	return 0;
+ }
+Index: linux-2.6-git/net/ipv4/sysctl_net_ipv4.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv4/sysctl_net_ipv4.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/ipv4/sysctl_net_ipv4.c	2006-11-29 17:20:21.000000000 +0100
+@@ -18,6 +18,7 @@
+ #include <net/route.h>
+ #include <net/tcp.h>
+ #include <net/cipso_ipv4.h>
++#include <net/sock.h>
+ 
+ /* From af_inet.c */
+ extern int sysctl_ip_nonlocal_bind;
+@@ -129,6 +130,17 @@ static int sysctl_tcp_congestion_control
+ 	return ret;
+ }
+ 
++int proc_dointvec_fragment(ctl_table *table, int write, struct file *filp,
++		     void __user *buffer, size_t *lenp, loff_t *ppos)
++{
++	int ret;
++	int old_thresh = *(int *)table->data;
++	ret = proc_dointvec(table,write,filp,buffer,lenp,ppos);
++	ipfrag_add_memory(*(int *)table->data - old_thresh);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(proc_dointvec_fragment);
++
+ ctl_table ipv4_table[] = {
+         {
+ 		.ctl_name	= NET_IPV4_TCP_TIMESTAMPS,
+@@ -234,7 +246,7 @@ ctl_table ipv4_table[] = {
+ 		.data		= &sysctl_ipfrag_high_thresh,
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+-		.proc_handler	= &proc_dointvec
++		.proc_handler	= &proc_dointvec_fragment
+ 	},
+ 	{
+ 		.ctl_name	= NET_IPV4_IPFRAG_LOW_THRESH,
+Index: linux-2.6-git/net/ipv4/tcp_ipv4.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv4/tcp_ipv4.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/ipv4/tcp_ipv4.c	2006-11-29 17:20:21.000000000 +0100
+@@ -1096,6 +1096,15 @@ int tcp_v4_rcv(struct sk_buff *skb)
+ 	if (!sk)
+ 		goto no_tcp_socket;
+ 
++	if (unlikely(skb->emergency)) {
++	       	if (!sk_has_vmio(sk))
++			goto discard_and_relse;
++		/*
++		   decrease window size..
++		   tcp_enter_quickack_mode(sk);
++		*/
++	}
++
+ process:
+ 	if (sk->sk_state == TCP_TIME_WAIT)
+ 		goto do_time_wait;
+Index: linux-2.6-git/net/ipv6/sysctl_net_ipv6.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv6/sysctl_net_ipv6.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/ipv6/sysctl_net_ipv6.c	2006-11-29 17:20:21.000000000 +0100
+@@ -15,6 +15,10 @@
+ 
+ #ifdef CONFIG_SYSCTL
+ 
++extern int proc_dointvec_fragment(ctl_table *table, int write,
++	       	struct file *filp, void __user *buffer, size_t *lenp,
++	       	loff_t *ppos);
++
+ static ctl_table ipv6_table[] = {
+ 	{
+ 		.ctl_name	= NET_IPV6_ROUTE,
+@@ -44,7 +48,7 @@ static ctl_table ipv6_table[] = {
+ 		.data		= &sysctl_ip6frag_high_thresh,
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+-		.proc_handler	= &proc_dointvec
++		.proc_handler	= &proc_dointvec_fragment
+ 	},
+ 	{
+ 		.ctl_name	= NET_IPV6_IP6FRAG_LOW_THRESH,
+Index: linux-2.6-git/net/netfilter/core.c
+===================================================================
+--- linux-2.6-git.orig/net/netfilter/core.c	2006-11-29 16:15:54.000000000 +0100
++++ linux-2.6-git/net/netfilter/core.c	2006-11-29 17:20:21.000000000 +0100
+@@ -181,6 +181,11 @@ next_hook:
+ 		kfree_skb(*pskb);
+ 		ret = -EPERM;
+ 	} else if ((verdict & NF_VERDICT_MASK)  == NF_QUEUE) {
++		if (unlikely((*pskb)->emergency)) {
++			printk(KERN_ERR "nf_hook: NF_QUEUE encountered for "
++					"emergency skb - skipping rule.\n");
++			goto next_hook;
++		}
+ 		NFDEBUG("nf_hook: Verdict = QUEUE.\n");
+ 		if (!nf_queue(*pskb, elem, pf, hook, indev, outdev, okfn,
+ 			      verdict >> NF_VERDICT_BITS))
+Index: linux-2.6-git/security/selinux/avc.c
+===================================================================
+--- linux-2.6-git.orig/security/selinux/avc.c	2006-11-29 16:15:54.000000000 +0100
++++ linux-2.6-git/security/selinux/avc.c	2006-11-29 17:20:21.000000000 +0100
+@@ -333,7 +333,7 @@ static struct avc_node *avc_alloc_node(v
+ {
+ 	struct avc_node *node;
+ 
+-	node = kmem_cache_alloc(avc_node_cachep, SLAB_ATOMIC);
++	node = kmem_cache_alloc(avc_node_cachep, SLAB_ATOMIC | __GFP_NOMEMALLOC);
+ 	if (!node)
+ 		goto out;
+ 
+Index: linux-2.6-git/net/ipv4/ip_fragment.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv4/ip_fragment.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/ipv4/ip_fragment.c	2006-11-29 17:20:21.000000000 +0100
+@@ -743,6 +743,7 @@ void ipfrag_init(void)
+ 	ipfrag_secret_timer.function = ipfrag_secret_rebuild;
+ 	ipfrag_secret_timer.expires = jiffies + sysctl_ipfrag_secret_interval;
+ 	add_timer(&ipfrag_secret_timer);
++	ipfrag_add_memory(sysctl_ipfrag_high_thresh);
+ }
+ 
+ EXPORT_SYMBOL(ip_defrag);
+Index: linux-2.6-git/net/ipv6/reassembly.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv6/reassembly.c	2006-11-29 16:15:54.000000000 +0100
++++ linux-2.6-git/net/ipv6/reassembly.c	2006-11-29 17:20:21.000000000 +0100
+@@ -759,4 +759,5 @@ void __init ipv6_frag_init(void)
+ 	ip6_frag_secret_timer.function = ip6_frag_secret_rebuild;
+ 	ip6_frag_secret_timer.expires = jiffies + sysctl_ip6frag_secret_interval;
+ 	add_timer(&ip6_frag_secret_timer);
++	ipfrag_add_memory(sysctl_ip6frag_high_thresh);
+ }
+Index: linux-2.6-git/net/ipv4/route.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv4/route.c	2006-11-29 16:15:53.000000000 +0100
++++ linux-2.6-git/net/ipv4/route.c	2006-11-29 17:20:21.000000000 +0100
+@@ -2906,6 +2906,17 @@ static int ipv4_sysctl_rtcache_flush_str
+ 	return 0;
+ }
+ 
++static int proc_dointvec_rt_size(ctl_table *table, int write, struct file *filp,
++		     void __user *buffer, size_t *lenp, loff_t *ppos)
++{
++	int ret;
++	int old = *(int *)table->data;
++	ret = proc_dointvec(table,write,filp,buffer,lenp,ppos);
++	iprt_add_memory(kmem_cache_objs_to_pages(ipv4_dst_ops.kmem_cachep,
++				*(int *)table->data - old));
++	return ret;
++}
++
+ ctl_table ipv4_route_table[] = {
+         {
+ 		.ctl_name 	= NET_IPV4_ROUTE_FLUSH,
+@@ -2948,7 +2959,7 @@ ctl_table ipv4_route_table[] = {
+ 		.data		= &ip_rt_max_size,
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+-		.proc_handler	= &proc_dointvec,
++		.proc_handler	= &proc_dointvec_rt_size,
+ 	},
+ 	{
+ 		/*  Deprecated. Use gc_min_interval_ms */
+@@ -3175,6 +3186,8 @@ int __init ip_rt_init(void)
+ 
+ 	ipv4_dst_ops.gc_thresh = (rt_hash_mask + 1);
+ 	ip_rt_max_size = (rt_hash_mask + 1) * 16;
++	iprt_add_memory(kmem_cache_objs_to_pages(ipv4_dst_ops.kmem_cachep,
++				ip_rt_max_size));
+ 
+ 	devinet_init();
+ 	ip_fib_init();
+Index: linux-2.6-git/net/ipv6/route.c
+===================================================================
+--- linux-2.6-git.orig/net/ipv6/route.c	2006-11-29 16:21:27.000000000 +0100
++++ linux-2.6-git/net/ipv6/route.c	2006-11-29 17:20:21.000000000 +0100
+@@ -2365,6 +2365,17 @@ int ipv6_sysctl_rtcache_flush(ctl_table 
+ 		return -EINVAL;
+ }
+ 
++static int proc_dointvec_rt_size(ctl_table *table, int write, struct file *filp,
++		     void __user *buffer, size_t *lenp, loff_t *ppos)
++{
++	int ret;
++	int old = *(int *)table->data;
++	ret = proc_dointvec(table,write,filp,buffer,lenp,ppos);
++	iprt_add_memory(kmem_cache_objs_to_pages(ip6_dst_ops.kmem_cachep,
++				*(int *)table->data - old));
++	return ret;
++}
++
+ ctl_table ipv6_route_table[] = {
+         {
+ 		.ctl_name	=	NET_IPV6_ROUTE_FLUSH, 
+@@ -2388,7 +2399,7 @@ ctl_table ipv6_route_table[] = {
+          	.data		=	&ip6_rt_max_size,
+ 		.maxlen		=	sizeof(int),
+ 		.mode		=	0644,
+-         	.proc_handler	=	&proc_dointvec,
++         	.proc_handler	=	&proc_dointvec_rt_size,
+ 	},
+ 	{
+ 		.ctl_name	=	NET_IPV6_ROUTE_GC_MIN_INTERVAL,
+@@ -2473,6 +2484,8 @@ void __init ip6_route_init(void)
+ 
+ 	proc_net_fops_create("rt6_stats", S_IRUGO, &rt6_stats_seq_fops);
+ #endif
++	iprt_add_memory(kmem_cache_objs_to_pages(ip6_dst_ops.kmem_cachep,
++				ip6_rt_max_size));
+ #ifdef CONFIG_XFRM
+ 	xfrm6_init();
+ #endif
